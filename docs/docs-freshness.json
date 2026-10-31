@@ -12,7 +12,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "b25086e614b05e1f7dc774d60b5fbb6371d5d86a"
+          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -226,11 +226,11 @@
         },
         "skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "9298f619da539d64db34ebb30b511fefc8dbf69d"
+          "oid": "f74a0d97985506c9b3c09ebe380379240f20bd78"
         },
         "skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "8634d1b0053275eeb3d4e7fb8f68c44d0997a591"
+          "oid": "673d9456d685907413c876013d88b5bebd296088"
         },
         "skills/codify/templates/ai-sdk/run.ts": {
           "mode": "100644",
@@ -442,7 +442,7 @@
         },
         "skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "8634d1b0053275eeb3d4e7fb8f68c44d0997a591"
+          "oid": "673d9456d685907413c876013d88b5bebd296088"
         },
         "skills/skillify/scripts/codify_runtime/templates/ai-sdk/run.ts": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         },
         "skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "35ac7c5a32c2ae6fcbd4bbe2d7e56f8e69594b18"
+          "oid": "643bf9e39b35265d2a26497954ff9f33ae90505a"
         },
         "skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -537,8 +537,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Recompiled all 19 current native contract artifacts after the reviewed compiler/configuration and scoped-scratch changes; verified the source interfaces against docs/normalization.md, docs/codify.md, docs/skillify.md and command references. This refresh records generated lock bytes; the reviewed usage and limits are unchanged."
+      "no_doc_impact": false,
+      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
     },
     "catalog": {
       "docs": {
@@ -552,7 +552,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "b25086e614b05e1f7dc774d60b5fbb6371d5d86a"
+          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -626,7 +626,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed inventory-wide normalization for all 19 owned skills, actual native/compiler/process/clone tests, current-source SkillOpt evidence, shared source-generation and JSON/runtime ownership, doctor/CI gates, and LF/vendor preservation policy; updated focused installation, runner, authoring and coverage docs."
+      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
     },
     "documentation": {
       "docs": {
@@ -789,7 +789,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "b25086e614b05e1f7dc774d60b5fbb6371d5d86a"
+          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
         },
         "docs/runner.md": {
           "mode": "100644",
@@ -819,7 +819,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed inventory-wide normalization for all 19 owned skills, actual native/compiler/process/clone tests, current-source SkillOpt evidence, shared source-generation and JSON/runtime ownership, doctor/CI gates, and LF/vendor preservation policy; updated focused installation, runner, authoring and coverage docs."
+      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
     },
     "setup": {
       "docs": {
@@ -837,7 +837,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "b25086e614b05e1f7dc774d60b5fbb6371d5d86a"
+          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
         }
       },
       "inputs": {
@@ -851,7 +851,7 @@
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
-          "oid": "fdea5190dee6d794d612ec67beccca73d66e17b8"
+          "oid": "302db9328e679b14838722e104945e4641abd2c4"
         },
         "harnesses/bootstrap/profiles.json": {
           "mode": "100644",
@@ -950,8 +950,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Pinned the new Node 24 GitHub Actions checkout/setup-python steps to commits resolved from their official v5/v6 refs; reviewed behavior and existing CI documentation remain accurate."
+      "no_doc_impact": false,
+      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
     },
     "skills": {
       "docs": {
@@ -989,7 +989,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "b25086e614b05e1f7dc774d60b5fbb6371d5d86a"
+          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -2970,8 +2970,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Recompiled all 19 current native contract artifacts after the reviewed compiler/configuration and scoped-scratch changes; verified the source interfaces against docs/normalization.md, docs/codify.md, docs/skillify.md and command references. This refresh records generated lock bytes; the reviewed usage and limits are unchanged."
+      "no_doc_impact": false,
+      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
     }
   },
   "object_format": "sha1",

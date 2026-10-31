@@ -133,7 +133,9 @@ typed commands, contract schemas, and reviewed decision splits. Doctor runs it
 through the managed command interpreter when ready, and explicitly reports pending
 verification if an offline first setup lacks it. The repository's
 [CI workflow](../.github/workflows/skills.yml) also checks conformance, docs, and
-actual compiler/contract behavior without running a paid model or provider job.
+the full offline regression suite without running a paid model or provider job.
+Native Graphify and AI SDK integration checks require their explicitly enabled
+local runtimes; those additional checks are covered by the retained local run.
 
 Frozen source modes use Git-portable executable status, so secure checkout
 umasks do not invalidate identical code while changed executable status still

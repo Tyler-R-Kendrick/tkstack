@@ -28,8 +28,5 @@ jobs:
         run: .tkstack/runtime/command-schema/bin/python -B scripts/check_skills.py
       - name: Check reviewed documentation
         run: python -B scripts/check_docs.py check
-      - name: Run compiler and contract behavior tests
-        run: |
-          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_codify.py -v
-          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_command_schema.py -v
-          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_skill_normalization.py -v
+      - name: Run the full offline regression suite
+        run: .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -v

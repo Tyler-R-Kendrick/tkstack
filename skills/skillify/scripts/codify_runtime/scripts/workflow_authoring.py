@@ -36,4 +36,3 @@ def workflow_files(backend, description):
         guide = guide.replace(key, value)
     files["references/tool.md"] = guide.encode()
     return files
-
