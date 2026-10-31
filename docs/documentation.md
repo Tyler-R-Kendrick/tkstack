@@ -51,7 +51,9 @@ requires reviewing all areas. Saved history remains in normal Git history.
 - New/deleted/renamed matched sources are detected, independent of timestamps.
 
 The installer-owned steering block in root `AGENTS.md` is normalized for both
-worktree and index fingerprints because its absolute paths vary across clones.
+worktree and index fingerprints to accommodate legacy checkout-specific paths.
+Self-project setup now emits portable relative pointers and a repository owner
+marker; external project/home targets retain checkout-specific ownership.
 Authored instructions outside that block are checked normally; renderer changes
 are covered by the mapped source scripts. Malformed/duplicate marker blocks are
 not normalized. This keeps fresh installation from creating machine-path drift

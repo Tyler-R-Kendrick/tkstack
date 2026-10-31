@@ -143,4 +143,9 @@ does. Authored text uses LF attributes; pinned vendor bytes are excluded from
 normalization. A real commit/clone regression verifies cached artifact portability.
 Existing source/case/code drift still requires explicit recompilation.
 
+Self-project installation retains portable repository-owned instruction pointers
+in `AGENTS.md` and `CLAUDE.md`; external installations preserve checkout-specific
+ownership. Fresh self-install, relocation and foreign-ownership regressions cover
+this boundary in addition to the compiled-package clone check.
+
 Native compiler bindings retain explicit provider/model/harness configuration, selected project and deadline. Nested executions share owned process groups and terminate remaining group processes when their invocation finishes or fails. Native scratch uses the shared scoped `.tkstack/sessions/` primitive.

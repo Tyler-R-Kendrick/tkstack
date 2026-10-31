@@ -163,6 +163,88 @@ class InstallTests(unittest.TestCase):
         for path in (self.target / ".codex/AGENTS.md", self.target / ".claude/CLAUDE.md"):
             self.assertEqual(path.read_text(), "Keep my existing instructions.\n")
 
+    def test_self_project_steering_survives_relocation_and_keeps_foreign_ownership(self):
+        from steering_adapter import apply_instructions, instruction_plan
+        root = self.target / 'dotfiles'
+        for name in ('learn', 'tkstack-principles', 'unslop'):
+            directory = root / 'skills' / name
+            directory.mkdir(parents=True)
+            (directory / 'SKILL.md').write_text('Fixture skill\n')
+        (root / 'skills/learn/scripts').mkdir()
+        (root / 'skills/learn/scripts/learn.py').write_text('# Fixture helper\n')
+        (root / 'AGENTS.md').write_text('Keep repository guidance.\n')
+        (root / 'CLAUDE.md').write_text('@AGENTS.md\n')
+        apply_instructions(instruction_plan(root, root, ['codex', 'claude'], 'project'))
+        for name in ('AGENTS.md', 'CLAUDE.md'):
+            text = (root / name).read_text()
+            self.assertIn('tkstack:steering:source repository', text)
+            self.assertNotIn(str(root), text)
+            self.assertIn('`.agents/steering/rules.md`', text)
+        relocated = self.target / 'relocated'
+        shutil.copytree(root, relocated)
+        self.assertEqual(instruction_plan(relocated, relocated, ['codex', 'claude'], 'project'), [])
+        foreign = self.target / 'foreign'
+        foreign.mkdir()
+        shutil.copyfile(relocated / 'AGENTS.md', foreign / 'AGENTS.md')
+        before = (foreign / 'AGENTS.md').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'another checkout'):
+            instruction_plan(relocated, foreign, ['codex'], 'project')
+        self.assertEqual((foreign / 'AGENTS.md').read_bytes(), before)
+        self.assertEqual(instruction_plan(relocated, foreign, ['codex'], 'project', uninstall=True), [])
+
+    def test_self_project_migrates_only_its_own_legacy_steering_block(self):
+        import hashlib
+        from steering_adapter import apply_instructions, instruction_plan
+        root = self.target / 'dotfiles'
+        (root / 'skills/learn').mkdir(parents=True)
+        (root / 'skills/learn/SKILL.md').write_text('Fixture skill\n')
+        identity = hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16]
+        path = root / 'AGENTS.md'
+        path.write_text('Keep guidance.\n<!-- tkstack:steering:start -->\n<!-- tkstack:steering:source ' + identity + ' -->\nOld pointer\n<!-- tkstack:steering:end -->\n')
+        apply_instructions(instruction_plan(root, root, ['codex'], 'project'))
+        self.assertIn('tkstack:steering:source repository', path.read_text())
+        self.assertTrue(path.read_text().startswith('Keep guidance.\n'))
+        path.write_text(path.read_text().replace('source repository', 'source unrelated-checkout'))
+        before = path.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'another checkout'):
+            instruction_plan(root, root, ['codex'], 'project')
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_rendered_learning_command_executes_from_a_source_path_with_spaces(self):
+        import json
+        import shlex
+        from steering_adapter import instruction_plan
+        source = self.target / 'dotfiles source'
+        helper = source / 'skills/learn/scripts/learn.py'
+        helper.parent.mkdir(parents=True)
+        (source / 'skills/learn/SKILL.md').write_text('Fixture skill\n')
+        helper.write_text('import json,sys\nprint(json.dumps(sys.argv[1:]))\n')
+        changes = instruction_plan(source, self.target / 'installed home', ['codex'], 'home')
+        line = next(line for line in changes[0][2].splitlines() if line.startswith('Use `python3 '))
+        command = line[len('Use `'):].split('` for layered steering.')[0]
+        executed = subprocess.run(shlex.split(command), capture_output=True, text=True)
+        self.assertEqual(executed.returncode, 0, executed.stderr)
+        self.assertEqual(json.loads(executed.stdout), ['show', '--all-scopes'])
+
+    def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
+        checkout = self.target / 'self checkout'
+        checkout.mkdir()
+        for directory in ('vendor', 'scripts', 'harnesses', 'skills'):
+            shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
+                            ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
+        for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
+            shutil.copy2(ROOT / name, checkout / name)
+        before = {name: (checkout / name).read_bytes() for name in ('AGENTS.md', 'CLAUDE.md')}
+        command = [sys.executable, str(checkout / 'scripts/install.py'), '--target', str(checkout),
+                   '--harness', 'codex', '--harness', 'claude']
+        installed = subprocess.run(command, capture_output=True, text=True, timeout=60)
+        self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        for name, data in before.items():
+            self.assertEqual((checkout / name).read_bytes(), data)
+        checked = subprocess.run([sys.executable, str(checkout / 'scripts/doctor.py'), '--target', str(checkout),
+                                  '--harness', 'codex', '--harness', 'claude'], capture_output=True, text=True, timeout=60)
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+
     def test_unslop_personal_ownership_preserves_pstack_and_migrates_only_owned_links(self):
         skills = install.collect(ROOT, "skills")
         self.assertEqual(skills["unslop"], ROOT / "skills/unslop")

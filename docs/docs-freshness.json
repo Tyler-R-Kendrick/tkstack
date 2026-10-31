@@ -12,7 +12,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
+          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -538,7 +538,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
+      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
     },
     "catalog": {
       "docs": {
@@ -552,7 +552,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
+          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -626,7 +626,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
+      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
     },
     "documentation": {
       "docs": {
@@ -636,7 +636,7 @@
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "8b8737e7e743f439915a034d13e9f7d797a54ddf"
+          "oid": "7890533ae1b10f88fd945d111c9b6e061bd05c6e"
         }
       },
       "inputs": {
@@ -707,7 +707,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "279f4a61d4480d2301bbe8f822b4227f09ca170a"
+          "oid": "d2dd31f32d293f337f001090798164480c4f6397"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -778,8 +778,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed inventory-wide normalization for all 19 owned skills, actual native/compiler/process/clone tests, current-source SkillOpt evidence, shared source-generation and JSON/runtime ownership, doctor/CI gates, and LF/vendor preservation policy; updated focused installation, runner, authoring and coverage docs."
+      "no_doc_impact": true,
+      "reason": "Reviewed the mapped native steering renderer after quoting its generated Learn helper invocation; source paths with spaces now remain a single argument. The documented ownership and fingerprint behavior is unchanged."
     },
     "execution": {
       "docs": {
@@ -789,7 +789,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
+          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
         },
         "docs/runner.md": {
           "mode": "100644",
@@ -819,7 +819,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
+      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
     },
     "setup": {
       "docs": {
@@ -829,7 +829,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "f7fc050517b0349f096f911084eb10d7164d756f"
+          "oid": "03130082d80e3405876e5d6817121aeed0c18255"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -837,7 +837,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
+          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
         }
       },
       "inputs": {
@@ -943,15 +943,15 @@
         },
         "scripts/steering_adapter.py": {
           "mode": "100644",
-          "oid": "a7ef5c0f3d807eaaa948ab320a5e62df64e10118"
+          "oid": "4fe99318c7197f2d17cbc4577b76fca2effc8ada"
         },
         "scripts/tkstack_state.py": {
           "mode": "100644",
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
+      "no_doc_impact": true,
+      "reason": "Reviewed the steering adapter helper-command quoting fix: shlex.join preserves source paths containing spaces when following the generated command. The external/home ownership contract and documented invocation are unchanged."
     },
     "skills": {
       "docs": {
@@ -981,7 +981,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "962f6086e47acebe344ee9b852d6c2eae46aa9c3"
+          "oid": "f248fbcb23ba77033a408b3dcf9edb5b97a1cb32"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -989,7 +989,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "2f31e10c8e7548e6a73944f473c0ebf911245cad"
+          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -2971,7 +2971,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Adversarial delivery review: expand CI from compiler-only subsets to the complete offline regression suite; document optional native-runtime checks and preserve measured policy limits. Canonical authoring source now has one terminal newline; synchronized the standalone release and rebuilt both affected locks. Reviewed the unchanged installer/runner/catalog contracts against the shared normalization guide."
+      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
     }
   },
   "object_format": "sha1",

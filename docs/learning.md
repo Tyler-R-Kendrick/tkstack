@@ -95,6 +95,13 @@ It preserves existing instructions and maintains only its marked block:
 | Project | `AGENTS.md` | `CLAUDE.md` | `.cursor/rules/tkstack-steering.mdc` |
 | Home | `~/.codex/AGENTS.md` | `~/.claude/CLAUDE.md` | `~/.cursor/rules/tkstack-steering.mdc` |
 
+Project setup targeting the dotfiles checkout itself uses relative pointers and
+a repository owner marker in `AGENTS.md` and `CLAUDE.md`. These committed blocks
+survive a fresh clone without referring to the original machine. Only that
+self-project case can migrate its matching legacy checkout marker. Other
+targets retain absolute pointers and checkout-specific ownership; setup still
+refuses a foreign block and uninstall leaves it alone.
+
 The pointers require reading matching active rules at task start and after a
 correction, then capturing new evidence with `learn`. This is instruction-based
 capture by the active agent, not a claim that a background service can read

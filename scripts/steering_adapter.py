@@ -2,6 +2,7 @@
 
 import hashlib
 from pathlib import Path
+import shlex
 from harness_paths import codex_directory
 
 
@@ -10,12 +11,17 @@ END = "<!-- tkstack:steering:end -->"
 
 
 def instruction_plan(root, target, harnesses, scope, uninstall=False):
+    root, target = root.resolve(), target.resolve()
+    self_project = scope == "project" and target == root
     has_steering = (root / ".tkstack/steering").is_dir() or (root / "skills/learn/SKILL.md").is_file()
     has_principles = (root / "skills/tkstack-principles/SKILL.md").is_file()
     if not has_steering and not has_principles:
         return []
-    owner = "<!-- tkstack:steering:source " + hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16] + " -->"
-    pointer = target / ".agents/steering/rules.md"
+    checkout_owner = "<!-- tkstack:steering:source " + hashlib.sha256(str(root).encode()).hexdigest()[:16] + " -->"
+    owner = "<!-- tkstack:steering:source repository -->" if self_project else checkout_owner
+    pointer_root = Path('.') if self_project else target
+    helper_root = Path('.') if self_project else root
+    pointer = pointer_root / ".agents/steering/rules.md"
     block = "\n".join([BEGIN, owner])
     if has_steering:
         block += "\n" + "\n".join([
@@ -27,20 +33,20 @@ def instruction_plan(root, target, harnesses, scope, uninstall=False):
         ])
     if (root / "skills/learn/scripts/learn.py").is_file():
         block += "\n" + "\n".join([
-            f"Use `python3 {root / 'skills/learn/scripts/learn.py'} show --all-scopes` for layered steering.",
+            f"Use `{shlex.join(['python3', str(helper_root / 'skills/learn/scripts/learn.py'), 'show', '--all-scopes'])}` for layered steering.",
             "Workspace rules take precedence over user rules, then global rules with the same ID.",
             "Use configured .tkstack roots; write only to the selected scope. Session scratch belongs",
             "in .tkstack/sessions/<session>/; an invoked learn consolidates that evidence through",
             "the appropriate ___ify skills. Report/audit and automatic feedback capture retain their scope."])
     if has_principles:
         block += "\n" + "\n".join([
-            f"At task start, read `{target / '.agents/principles/SKILL.md'}` and its applicable full principles.",
+            f"At task start, read `{pointer_root / '.agents/principles/SKILL.md'}` and its applicable full principles.",
             "Use deterministic code/rules first, constrained decision models/APIs second,",
             "and LLMs/agents last. Design all code for bounded concurrency with explicit",
             "dependencies, isolated mutable state, and stable results; serialize only for a concrete constraint."])
     if has_steering and (root / "skills/unslop/SKILL.md").is_file():
         block += "\n" + "\n".join([
-            f"When grading AI outputs, use the unslop skill and `{target / '.agents/steering/unslop/patterns.md'}`.",
+            f"When grading AI outputs, use the unslop skill and `{pointer_root / '.agents/steering/unslop/patterns.md'}`.",
             "Record user-identified slop patterns with unslop in the same correction ledger;",
             "apply confirmed scoped patterns and retain legitimate exceptions. Inspect actual",
             "artifacts before judging visual or runtime quality; missing evidence is unreviewed."])
@@ -65,7 +71,8 @@ def instruction_plan(root, target, harnesses, scope, uninstall=False):
             start, end = before.index(BEGIN), before.index(END) + len(END)
             if end <= start:
                 raise ValueError(f"Malformed steering markers in {path}")
-            if owner not in before[start:end]:
+            owned = owner in before[start:end] or (self_project and checkout_owner in before[start:end])
+            if not owned:
                 if uninstall:
                     continue
                 raise ValueError(f"Steering block belongs to another checkout: {path}")

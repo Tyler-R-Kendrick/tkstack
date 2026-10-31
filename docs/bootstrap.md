@@ -16,6 +16,11 @@ layout in the source checkout, and verifies the result. Keep the checkout:
 installed links, launchers, and runtime recipes refer to it. Moving it requires
 re-running setup and handling any existing links owned by the old checkout.
 
+Installing into the dotfiles checkout itself with `--scope project` keeps its
+committed `AGENTS.md` and `CLAUDE.md` pointers relative and portable. A fresh
+clone can initialize its own links/state without adopting another checkout's
+instruction block. Foreign instructions in other targets remain protected.
+
 ## Profiles and commands
 
 | Profile | Host configuration | Native Lever Copilot layout |
