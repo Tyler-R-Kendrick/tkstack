@@ -13,7 +13,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
-SPEC = importlib.util.spec_from_file_location("workflow_skillify", ROOT / "skills/skillify/scripts/skillify.py")
+SPEC = importlib.util.spec_from_file_location("workflow_skillify", ROOT / "skills/learn/skills/skillify/scripts/skillify.py")
 skillify = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(skillify)
 
@@ -41,7 +41,7 @@ class SkillifyWorkflowTests(unittest.TestCase):
                               capture_output=True, text=True, cwd=self.root)
 
     def complete(self):
-        (self.target / 'commands/run.md').write_bytes((ROOT / 'skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
+        (self.target / 'commands/run.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
         for path in [self.target / "SKILL.md", *(self.target / "references").glob("*.md")]:
             path.write_text(path.read_text().replace("TODO(SKILLIFY):", "Completed:"))
 

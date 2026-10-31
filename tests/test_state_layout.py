@@ -85,7 +85,7 @@ class StateLayoutTests(unittest.TestCase):
 
     def test_every_custom_skill_has_the_same_storage_primitive_and_reference(self):
         canonical = (ROOT / "scripts/tkstack_state.py").read_bytes()
-        for entry in (ROOT / "skills").glob("*/SKILL.md"):
+        for entry in [*(ROOT / "skills").glob("*/SKILL.md"), *(ROOT / "skills").glob("*/skills/*/SKILL.md")]:
             with self.subTest(skill=entry.parent.name):
                 self.assertEqual((entry.parent / "scripts/tkstack_state.py").read_bytes(), canonical)
                 self.assertTrue((entry.parent / "references/storage.md").is_file())

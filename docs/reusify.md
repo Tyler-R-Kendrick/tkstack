@@ -1,7 +1,7 @@
 # Reusify
 
 Use `/reusify <pattern>` or `$reusify` to turn repeated code into a canonical
-reusable asset. The [portable skill](../skills/reusify/SKILL.md) covers templates,
+reusable asset. The [portable skill](../skills/learn/skills/reusify/SKILL.md) covers templates,
 snippets, native code generators, shared modules/libraries, and UI components.
 Its name follows skillify/hookify/lintify and names the desired action: reuse.
 Subcommands are optional; omitting one keeps the targeted pattern workflow.
@@ -12,7 +12,7 @@ extracts suitable snippets/templates/macros/codegen/shared code, migrates
 applicable uses, registers actual invocations, and checks native behavior and
 unchanged-input repeatability. It must deliver usable assets rather than stop
 at an inventory. Explicit preview/audit is read-only. Scope, kinds, limits, and
-concurrency parameters are detailed in the [init reference](../skills/reusify/references/init.md).
+concurrency parameters are detailed in the [init reference](../skills/learn/skills/reusify/references/init.md).
 
 These are agent skill invocations. The Python catalog/evidence helper below
 keeps its read-only `find`/`check`/`assess` interface; it has no shell `init`
@@ -39,10 +39,10 @@ are actual existing entrypoints, not invented implementations. Reusify itself
 was created using skillify's existing scaffolder.
 
 ```sh
-python3 skills/reusify/scripts/reusify.py check --project .
-python3 skills/reusify/scripts/reusify.py find --project . --query "skill scaffold"
-python3 skills/reusify/scripts/reusify.py find --project . --query "lint rule"
-python3 skills/reusify/scripts/reusify.py assess --project . --input /path/to/occurrences.json
+python3 skills/learn/skills/reusify/scripts/reusify.py check --project .
+python3 skills/learn/skills/reusify/scripts/reusify.py find --project . --query "skill scaffold"
+python3 skills/learn/skills/reusify/scripts/reusify.py find --project . --query "lint rule"
+python3 skills/learn/skills/reusify/scripts/reusify.py assess --project . --input /path/to/occurrences.json
 ```
 
 The helper is read-only. It performs bounded literal catalog lookup, validates
@@ -75,7 +75,7 @@ bounded. The initial native run caught a Unicode literal bug; the retained
 before/after receipts are under `.tkstack/evidence/reusify/`.
 
 ```sh
-python3 skills/reusify/examples/copier/verify.py --copier /path/to/copier
+python3 skills/learn/skills/reusify/examples/copier/verify.py --copier /path/to/copier
 ```
 
 The local validation environment is ignored at

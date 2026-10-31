@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPT = ROOT / "skills/instructify/scripts/instructify.py"
+SCRIPT = ROOT / "skills/learn/skills/instructify/scripts/instructify.py"
 sys.dont_write_bytecode = True
 
 
@@ -34,7 +34,7 @@ class InstructifyTests(unittest.TestCase):
         self.project.mkdir()
         self.source = self.project / "harnesses/instructions/policy.json"
         self.source.parent.mkdir(parents=True)
-        self.manifest = json.loads((ROOT / "skills/instructify/examples/manifest.json").read_text())
+        self.manifest = json.loads((ROOT / "skills/learn/skills/instructify/examples/manifest.json").read_text())
         self.save()
 
     def save(self):
@@ -229,7 +229,7 @@ class InstructifyTests(unittest.TestCase):
 
     def test_standalone_copy_and_cli_check_preserve_plugin_cache(self):
         cache = self.project.parent / "plugin-cache/instructify"
-        shutil.copytree(ROOT / "skills/instructify", cache, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/instructify", cache, ignore=shutil.ignore_patterns("__pycache__"))
         helper = load("standalone_instructify", cache / "scripts/instructify.py")
         before = {p.relative_to(cache): p.read_bytes() for p in cache.rglob("*") if p.is_file()}
         helper.apply(self.project, helper.build_plan(self.project, self.source))

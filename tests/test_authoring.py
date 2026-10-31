@@ -22,8 +22,8 @@ def load(name, path):
     return module
 
 
-skillify = load("skillify_helper", ROOT / "skills/skillify/scripts/skillify.py")
-hookify = load("hookify_helper", ROOT / "skills/hookify/scripts/hookify.py")
+skillify = load("skillify_helper", ROOT / "skills/learn/skills/skillify/scripts/skillify.py")
+hookify = load("hookify_helper", ROOT / "skills/learn/skills/hookify/scripts/hookify.py")
 
 
 class AuthoringTests(unittest.TestCase):
@@ -31,7 +31,7 @@ class AuthoringTests(unittest.TestCase):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
-        self.policy = json.loads((ROOT / "skills/hookify/examples/policy.json").read_text())
+        self.policy = json.loads((ROOT / "skills/learn/skills/hookify/examples/policy.json").read_text())
         self.rules = self.root / "rules with spaces.json"
         self.save()
 
@@ -39,7 +39,7 @@ class AuthoringTests(unittest.TestCase):
         self.rules.write_text(json.dumps(self.policy))
 
     def hook(self, payload, adapter="claude"):
-        return subprocess.run([sys.executable, str(ROOT / "skills/hookify/scripts/hookify.py"),
+        return subprocess.run([sys.executable, str(ROOT / "skills/learn/skills/hookify/scripts/hookify.py"),
             "run", "--rules", str(self.rules), "--adapter", adapter],
             input=json.dumps(payload), text=True, capture_output=True)
 
@@ -104,9 +104,9 @@ class AuthoringTests(unittest.TestCase):
 
     def test_owned_authoring_packages_are_self_contained_and_copied_skill_still_works(self):
         for name in ("skillify", "hookify"):
-            self.assertEqual(skillify.validate(ROOT / "skills" / name)["name"], name)
+            self.assertEqual(skillify.validate(ROOT / "skills/learn/skills" / name)["name"], name)
         cache = self.root / "plugin cache/skillify"
-        shutil.copytree(ROOT / "skills/skillify", cache, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/skillify", cache, ignore=shutil.ignore_patterns("__pycache__"))
         helper = load("copied_skillify", cache / "scripts/skillify.py")
         before = {str(p.relative_to(cache)): p.read_bytes() for p in cache.rglob("*") if p.is_file()}
         target = self.root / "project/skills/new-check"
@@ -116,7 +116,7 @@ class AuthoringTests(unittest.TestCase):
         self.assertTrue((target / "SKILL.md").is_file())
 
     def test_replay_known_decisions_is_stable_under_parallelism(self):
-        cases = json.loads((ROOT / "skills/hookify/examples/cases.json").read_text())
+        cases = json.loads((ROOT / "skills/learn/skills/hookify/examples/cases.json").read_text())
         serial = hookify.replay(self.policy, cases, 1)
         parallel = hookify.replay(self.policy, list(reversed(cases)), 4)
         self.assertTrue(serial["passed"])

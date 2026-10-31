@@ -1,10 +1,13 @@
 # Custom skill distribution
 
-All **19 packages** are listed: 15 skills under development live at root
-`skills/<name>/`, and the four third-party-derived packages (`fal-ai`,
-`headroom`, `open-design`, `rtk`) live at `.agents/skills/<name>/`. Each contains a matching
+All **19 packages** ship in **12 plugins**: 8 skills under development live at
+root `skills/<name>/`, the four third-party-derived packages (`fal-ai`,
+`headroom`, `open-design`, `rtk`) live at `.agents/skills/<name>/`, and Learn
+carries 7 subskills (`codify`, `flowify`, `hookify`, `instructify`, `lintify`,
+`reusify`, `skillify`) at `skills/learn/skills/<name>/`. Each contains a matching
 `SKILL.md`, license, conditional Markdown references, and its required local
-resources. The root `.claude-plugin/marketplace.json` has one entry per package.
+resources. The root `.claude-plugin/marketplace.json` has one entry per root
+package; installing `learn@tkstack` installs its subskills as `/learn <name>`.
 
 | Area | Packages |
 | --- | --- |

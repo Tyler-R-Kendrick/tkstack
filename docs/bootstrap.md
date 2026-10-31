@@ -193,7 +193,7 @@ installers. Those narrower commands remain available for focused maintenance.
 
 The shared Markdown command runtime (`command-schema`) is another automatic
 Python recipe: PyYAML 6.0.3, jsonschema 4.26.0, and hashed transitive dependencies
-from `skills/codify/requirements/requirements.lock`. The `codify` and `skillify`
+from `skills/learn/skills/codify/requirements/requirements.lock`. The `codify` and `skillify`
 shims launch their actual source tools through that private interpreter, so
 fresh hosts need no system-level YAML/JSON Schema packages.
 

@@ -18,11 +18,11 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(ROOT / 'skills/codify/scripts'))
+sys.path.insert(0, str(ROOT / 'skills/learn/skills/codify/scripts'))
 import package_runtime as runtime
 sys.path.insert(0, str(ROOT / 'scripts'))
-from skill_roots import all_packages  # noqa: E402
-PACKAGES = all_packages(ROOT)
+from skill_roots import owned  # noqa: E402
+PACKAGES = owned(ROOT)
 
 
 class SkillNormalizationTests(unittest.TestCase):
@@ -39,7 +39,7 @@ class SkillNormalizationTests(unittest.TestCase):
             entry = PACKAGES.get(skill, ROOT / 'skills' / skill) / 'scripts/run.py'
             argv = [sys.executable, '-B', str(entry), '--input', '-']
         else:
-            argv = [sys.executable, '-B', str(ROOT / 'skills/codify/scripts/codify.py'), 'invoke', str(PACKAGES.get(skill, ROOT / 'skills' / skill)), '--', *command, *args]
+            argv = [sys.executable, '-B', str(ROOT / 'skills/learn/skills/codify/scripts/codify.py'), 'invoke', str(PACKAGES.get(skill, ROOT / 'skills' / skill)), '--', *command, *args]
         process = subprocess.run(argv, input=raw, capture_output=True, text=True, timeout=90,
             env={**os.environ, 'TKSTACK_WORKSPACE_DIR': str(self.project / '.tkstack')})
         self.assertEqual(process.returncode, expected, process.stdout + process.stderr)
@@ -163,8 +163,8 @@ class SkillNormalizationTests(unittest.TestCase):
         self.assertEqual(next(iter(state['corrections'].values()))['user_text'], payload['user_text'])
 
     def test_hook_replay_runs_native_cases_and_preserves_failure_exit_and_output(self):
-        policy = ROOT / 'skills/hookify/examples/policy.json'
-        cases = ROOT / 'skills/hookify/examples/cases.json'
+        policy = ROOT / 'skills/learn/skills/hookify/examples/policy.json'
+        cases = ROOT / 'skills/learn/skills/hookify/examples/cases.json'
         result = self.call('hookify', ['native', 'replay'], ['--rules', str(policy), '--cases', str(cases), '--jobs', '1.0'])
         self.assertTrue(result['passed'])
         bad = json.loads(cases.read_text())
@@ -177,7 +177,7 @@ class SkillNormalizationTests(unittest.TestCase):
 
     def test_native_instruction_planner_and_native_workflow_inspector(self):
         manifest = self.project / 'instructions.json'
-        manifest.write_bytes((ROOT / 'skills/instructify/examples/manifest.json').read_bytes())
+        manifest.write_bytes((ROOT / 'skills/learn/skills/instructify/examples/manifest.json').read_bytes())
         result = self.call('instructify', ['native', 'plan'], ['--project', str(self.project), '--input', str(manifest)])
         self.assertTrue(result['changes'])
         self.assertFalse((self.project / 'AGENTS.md').exists())
@@ -207,7 +207,7 @@ class SkillNormalizationTests(unittest.TestCase):
         clone = self.project / 'clone/write'
         process = subprocess.run(['git', 'clone', '-q', str(source), str(clone)], capture_output=True, text=True)
         self.assertEqual(process.returncode, 0, process.stderr)
-        process = subprocess.run([sys.executable, str(ROOT / 'skills/codify/scripts/codify.py'), 'check', str(clone / 'scripts/workflow.lock.json')], capture_output=True, text=True)
+        process = subprocess.run([sys.executable, str(ROOT / 'skills/learn/skills/codify/scripts/codify.py'), 'check', str(clone / 'scripts/workflow.lock.json')], capture_output=True, text=True)
         self.assertEqual(process.returncode, 0, process.stderr)
 
     def test_native_compiler_and_runner_execute_the_real_code_contract(self):
@@ -232,7 +232,7 @@ class SkillNormalizationTests(unittest.TestCase):
 
     def test_skillify_compiler_preserves_normalized_native_resources(self):
         package = self.project / 'flowify'
-        shutil.copytree(ROOT / 'skills/flowify', package)
+        shutil.copytree(ROOT / 'skills/learn/skills/flowify', package)
         result = self.call('skillify', ['native', 'compile'], ['--target', str(package), '--cases', str(package / 'scripts/workflow.cases.json'), '--project', str(self.project), '--timeout', '5'])
         self.assertEqual(result['status'], 'compiled')
         target = self.project / 'scoped-flow'
@@ -254,7 +254,7 @@ class SkillNormalizationTests(unittest.TestCase):
         self.assertEqual(result['decision'], 'reject')
 
     def test_normalizer_dry_run_idempotence_and_generated_ownership(self):
-        spec = importlib.util.spec_from_file_location('normalize_fixture', ROOT / 'skills/skillify/scripts/skillify.py')
+        spec = importlib.util.spec_from_file_location('normalize_fixture', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
         skillify = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(skillify)
         package = self.project / 'write'
@@ -280,7 +280,7 @@ class SkillNormalizationTests(unittest.TestCase):
         payload['jobs'] = True
         with patch.object(runtime.subprocess, 'Popen') as process:
             with self.assertRaisesRegex(ValueError, 'Contract violation'):
-                runtime.execute(payload, ROOT / 'skills/codify')
+                runtime.execute(payload, ROOT / 'skills/learn/skills/codify')
             process.assert_not_called()
 
     def test_strict_json_rejects_overflow_without_conflating_valid_finite_numbers(self):

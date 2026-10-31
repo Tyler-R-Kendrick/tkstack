@@ -44,7 +44,7 @@ class SkillEvolutionTests(unittest.TestCase):
     def test_marketplace_packages_have_root_skills_and_bundled_licenses(self):
         marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
         self.assertEqual({plugin["name"] for plugin in marketplace["plugins"]},
-                         {"learn", "sdlc", "unslop", "hill-climb", "tkstack-principles", "skillify", "hookify", "instructify", "flowify", "investigate", "write", "document", "fal-ai", "headroom", "open-design", "rtk", "lintify", "reusify", "codify"})
+                         {"learn", "sdlc", "unslop", "hill-climb", "tkstack-principles", "investigate", "write", "document", "fal-ai", "headroom", "open-design", "rtk"})
         adopted = {"fal-ai", "headroom", "open-design", "rtk"}
         for plugin in marketplace["plugins"]:
             root = ".agents/skills" if plugin["name"] in adopted else "skills"
@@ -60,6 +60,19 @@ class SkillEvolutionTests(unittest.TestCase):
             self.assertLessEqual(len(description), 1024)
             self.assertIn("license: MIT", content)
             self.assertEqual((directory / "LICENSE").read_bytes(), (ROOT / "LICENSE").read_bytes())
+
+    def test_ify_subskills_ship_inside_the_learn_plugin_as_complete_packages(self):
+        learn = ROOT / "skills/learn"
+        subskills = {"codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify"}
+        self.assertEqual({path.name for path in (learn / "skills").iterdir()}, subskills)
+        for name in sorted(subskills):
+            with self.subTest(subskill=name):
+                directory = learn / "skills" / name
+                self.assertFalse(directory.is_symlink())
+                for part in ("SKILL.md", "LICENSE", "commands", "references", "scripts/workflow.lock.json"):
+                    self.assertTrue((directory / part).exists(), part)
+                self.assertEqual(re.search(r"^name: (.+)$", (directory / "SKILL.md").read_text(), re.M)[1], name)
+                self.assertIn("run:\n  skill: skills/" + name + "\n", (learn / "commands" / (name + ".md")).read_text())
 
     def test_standalone_learning_writes_project_store_and_leaves_plugin_cache_alone(self):
         cached = self.root / "plugin-cache/learn"

@@ -23,3 +23,26 @@ def all_packages(root):
     if shared := set(developed) & set(adopted):
         raise ValueError("Skill package in both roots: " + ", ".join(sorted(shared)))
     return {**developed, **adopted}
+
+
+def subskills(package):
+    """Complete packages nested at <package>/skills/<name>/ that ship with their parent."""
+    return packages(package, "skills")
+
+
+def owned(root):
+    """Every committed package plus the subskills packaged inside them, by unique name."""
+    result = all_packages(root)
+    for parent in list(result.values()):
+        for name, path in subskills(parent).items():
+            if name in result:
+                raise ValueError("Duplicate skill package name: " + name)
+            result[name] = path
+    return result
+
+
+def nested(path, root):
+    """True when a SKILL.md directory sits inside another package below root."""
+    path, root = Path(path), Path(root)
+    return any((parent / "SKILL.md").is_file() for parent in path.parents
+               if parent != root and parent.is_relative_to(root))

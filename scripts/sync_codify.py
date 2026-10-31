@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def inventory():
-    source = ROOT / 'skills/codify'
+    source = ROOT / 'skills/learn/skills/codify'
     paths = [source / 'LICENSE', source / 'references/command-definitions.md', *[source / 'scripts' / name for name in
         ('codify.py', 'workflow_authoring.py', 'tkstack_state.py', 'command_schema.py', 'command.schema.json', 'command_manual.py', 'json_contract.py', 'package_runtime.py')]]
     for directory in (source / 'templates', source / 'scripts/ai-runtime', source / 'requirements'):
@@ -21,7 +21,7 @@ def inventory():
 
 
 def sync(check=False):
-    destination = ROOT / 'skills/skillify/scripts/codify_runtime'
+    destination = ROOT / 'skills/learn/skills/skillify/scripts/codify_runtime'
     expected = inventory()
     actual = {path.relative_to(destination): path.read_bytes() for path in destination.rglob('*') if path.is_file()}
     changed = sorted(str(path) for path in set(expected) | set(actual) if expected.get(path) != actual.get(path))

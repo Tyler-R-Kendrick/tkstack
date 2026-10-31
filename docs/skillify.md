@@ -14,16 +14,16 @@ folder. The AI SDK supplies model/decision/harness boundaries, not a new workflo
 DSL or an implied durable scheduler.
 
 ```sh
-python3 skills/skillify/scripts/skillify.py scaffold \
+python3 skills/learn/skills/skillify/scripts/skillify.py scaffold \
   --target /repo/skills/my-tool --name my-tool \
   --description 'Use for the actual intended task.' --backend ai-sdk
 
-python3 skills/skillify/scripts/skillify.py convert /repo/skills/existing \
+python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing \
   --backend ai-sdk --dry-run
-python3 skills/skillify/scripts/skillify.py convert /repo/skills/existing \
+python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing \
   --backend ai-sdk
 
-python3 skills/skillify/scripts/skillify.py check /repo/skills/my-tool --require-tool
+python3 skills/learn/skills/skillify/scripts/skillify.py check /repo/skills/my-tool --require-tool
 ```
 
 The pure Python backend is the smallest default for deterministic work. The
@@ -44,13 +44,13 @@ man` exports man(1) roff source; nested help and aliases use that same page mode
 `version`/`--version` report the declared `metadata.version`, or `unversioned` if
 absent. Both work without a lock, model, terminal formatter, or state writes.
 Workflow code cannot override these names, routes, aliases, or global flags.
-See [the reserved command contract](../skills/codify/references/command-definitions.md#reserved-help-and-version).
+See [the reserved command contract](../skills/learn/skills/codify/references/command-definitions.md#reserved-help-and-version).
 
 Conversion preserves exact prior Markdown as authoring data, retains frontmatter
 and license, rejects collisions, and updates the main file to document invocation.
 Adapt an existing fitting executable directly instead of overwriting it with a
-starter. See [the conversion contract](../skills/skillify/references/executable-workflows.md)
-and [helper commands](../skills/skillify/references/commands.md).
+starter. See [the conversion contract](../skills/learn/skills/skillify/references/executable-workflows.md)
+and [helper commands](../skills/learn/skills/skillify/references/commands.md).
 
 ## Shared compiler and executable lock
 
@@ -59,9 +59,9 @@ runtime. Skillify consumes a generated standalone release, checked by doctor.
 After implementing the workflow and real contract cases, run:
 
 ```sh
-python3 skills/skillify/scripts/skillify.py compile /repo/skills/my-tool \
+python3 skills/learn/skills/skillify/scripts/skillify.py compile /repo/skills/my-tool \
   --cases /repo/skills/my-tool/cases.json
-python3 skills/codify/scripts/codify.py run /repo/skills/my-tool/scripts/workflow.lock.json --input input.json
+python3 skills/learn/skills/codify/scripts/codify.py run /repo/skills/my-tool/scripts/workflow.lock.json --input input.json
 ```
 
 The lock freezes exact executable bytes and source/case provenance. Runtime
@@ -90,7 +90,7 @@ no model credentials for deterministic paths.
 Calls share a bounded active/queued capacity budget. Deadlines and cancellation
 reach the native SDK. A specialized decision model can still be probabilistic;
 an LLM behind a decision API is not deterministic. Keep the final policy gate
-in workflow code. See [configuration and native limits](../skills/skillify/references/inference.md)
+in workflow code. See [configuration and native limits](../skills/learn/skills/skillify/references/inference.md)
 for exact versions, supported profiles, authentication, and harness restrictions.
 
 ## Verification
@@ -108,9 +108,9 @@ They do not run a paid provider request or live harness session. The native
 decision/harness APIs are experimental; upgrades require version-matched checks.
 
 ```sh
-npm --prefix skills/codify/scripts/ai-runtime ci
-npm --prefix skills/codify/scripts/ai-runtime run check
-npm --prefix skills/codify/scripts/ai-runtime test
+npm --prefix skills/learn/skills/codify/scripts/ai-runtime ci
+npm --prefix skills/learn/skills/codify/scripts/ai-runtime run check
+npm --prefix skills/learn/skills/codify/scripts/ai-runtime test
 TKSTACK_AI_SDK_DEPENDENCIES="$PWD/skills/codify/scripts/ai-runtime/node_modules" \
   python3 -m unittest discover -s tests -p test_skillify_workflows.py -v
 ```
@@ -133,8 +133,8 @@ locked dependencies, and referenced usage. Complete the actual workflow contract
 Use `skillify.py commands <package> --format responses|chat` to export tools, and
 `skillify.py invoke <package> -- <command> [arguments]` or `--call <tool-call.json>`
 to invoke the same compiled code. Metadata and code drift require recompilation.
-Read [the authoring procedure](../skills/skillify/references/subcommands.md) and
-[shared signature contract](../skills/codify/references/command-definitions.md).
+Read [the authoring procedure](../skills/learn/skills/skillify/references/subcommands.md) and
+[shared signature contract](../skills/learn/skills/codify/references/command-definitions.md).
 
 ## Normalize an existing owned skill
 

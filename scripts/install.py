@@ -12,7 +12,7 @@ sys.dont_write_bytecode = True
 import subprocess
 
 from tkstack_state import ensure_state
-from skill_roots import ADOPTED, packages
+from skill_roots import ADOPTED, nested, packages
 from runtime_environment import with_paths
 
 from steering_adapter import apply_instructions, instruction_plan
@@ -172,7 +172,8 @@ def sourced(root, kind, harness=None):
         aliases = aliases_by_source.get(source_name, {})
         candidates = ([directory / "graphify"] if kind == "skills" and source_name == "graphify" else
                       list(packages(root, ADOPTED).values()) if source_name == ADOPTED_SOURCE else
-                      sorted(p.parent for p in directory.rglob("SKILL.md")) if kind == "skills" else
+                      sorted(p.parent for p in directory.rglob("SKILL.md")
+                             if source_name is not None or not nested(p.parent, directory)) if kind == "skills" else
                       sorted(directory.glob("*.mdc" if kind == "rules" else "*.md")))
         missing = set(aliases) - {path.name for path in candidates}
         if missing:

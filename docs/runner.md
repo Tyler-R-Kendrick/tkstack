@@ -69,7 +69,11 @@ binding or implicit workflow/indexing/model job at startup.
 ## Names and scoped registry
 
 Source defaults come from `harnesses/runner.json` plus the installer's canonical
-skill catalog, preserving owned/upstream aliases. Each scoped `.tkstack` root
+skill catalog, preserving owned/upstream aliases. Packaged subskills, such as
+Learn's ___ify skills, also register under their own names, so
+`.tkstack/tkstack skills codify -- help` and
+`.tkstack/tkstack skills learn -- codify help` reach the same package and lock.
+Harness installation still links only the parent. Each scoped `.tkstack` root
 can add `runner.json` with version 1 and optional `skills`, `workflows`, `config`,
 and `dependencies` fields:
 
@@ -105,7 +109,7 @@ Pure-code locks ignore ambient model settings and Node caches. Explicit
 For locks declaring inference, use the existing **version 1 Vercel AI SDK**
 `providers`/`profiles` format, including language chat/Responses/gateway,
 decision, or supported harness profiles. Reuse
-[the canonical configuration contract](../skills/codify/references/inference.md).
+[the canonical configuration contract](../skills/learn/skills/codify/references/inference.md).
 No second model schema, guessed default model, or provider fallback is added.
 
 Selection order is explicit `--config`, TKSTACK_CONFIG, then workspace/user/global

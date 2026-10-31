@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(ROOT / "skills/reusify/scripts"))
+sys.path.insert(0, str(ROOT / "skills/learn/skills/reusify/scripts"))
 import reusify
 
 
@@ -130,7 +130,7 @@ class ReusifyTests(unittest.TestCase):
     def test_macro_assets_are_discoverable_without_execution(self):
         macro = self.entry("native-expansion", "macro")
         self.write_catalog([macro, self.entry()])
-        result = subprocess.run([sys.executable, str(ROOT / "skills/reusify/scripts/reusify.py"),
+        result = subprocess.run([sys.executable, str(ROOT / "skills/learn/skills/reusify/scripts/reusify.py"),
                                  "find", "--project", str(self.project), "--query", "parse", "--kind", "macro"],
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -179,7 +179,7 @@ class ReusifyTests(unittest.TestCase):
 
     def test_standalone_cli_missing_catalog_is_not_a_clean_no_match(self):
         package = self.base / "plugin-cache/reusify"
-        shutil.copytree(ROOT / "skills/reusify", package, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/reusify", package, ignore=shutil.ignore_patterns("__pycache__"))
         before = {str(path.relative_to(package)): path.read_bytes() for path in package.rglob("*") if path.is_file()}
         result = subprocess.run([sys.executable, str(package / "scripts/reusify.py"), "find",
                                  "--project", str(self.project), "--query", "parse"],

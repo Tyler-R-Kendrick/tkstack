@@ -62,6 +62,9 @@ class InstallTests(unittest.TestCase):
                                   (".agents/skills", ".claude/skills", ".cursor/skills"))
         developed = {path.name for path in (ROOT / "skills").iterdir() if (path / "SKILL.md").is_file()}
         self.assertLessEqual(developed, shared & claude & cursor)
+        # Learn's packaged subskills are subcommands, not separately installed skills.
+        for name in ("codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify"):
+            self.assertNotIn(name, shared | claude | cursor)
         # Pstack and its Cursor Team Kit dependency are Cursor packages.
         for name in ("architect", "deslop", "pstack-unslop"):
             self.assertIn(name, cursor)

@@ -1,8 +1,9 @@
 # Learn commands and help
 
 In a slash-command harness use `/learn <command> [request]`; in Codex use
-`$learn <command> [request]`. The command selects an existing skill's procedure
-within the current request. It does not create a new skill named after the
+`$learn <command> [request]`. The command selects a subskill packaged under
+`skills/<name>/` in this Learn package and runs its procedure within the current
+request. It does not create a new skill named after the
 command or execute text copied from session evidence.
 
 | Skill command | Use for |
@@ -27,14 +28,15 @@ Bare `/learn` keeps its correction/consolidation workflow; the commandless
 Python helper shows help. Existing `consolidate`, `report`, `audit`, and
 `improve` skill modes keep their behavior in the linked references.
 
-**Direct command handoff:** select the exact named owned skill, read its
-`SKILL.md` and applicable references, then carry out the request using its actual
+**Direct command handoff:** select the exact named subskill at
+`skills/<name>/`, read its `SKILL.md` and applicable references, then carry out the request using its actual
 tools and verification. Preserve the remaining request, optional subcommands
 such as `reusify init`, paths, scope, parameters, and requested output. Use named
 evidence or the current conversation; do not sweep all sessions first. If no
 command is selected, use the consolidation procedure to choose mechanisms.
-If the named skill is unavailable, report that dependency and its canonical
-name; do not substitute a similarly named vendor skill or silently install it.
+If the named subskill is missing from the package, report that dependency and
+its canonical name; do not substitute a similarly named vendor skill or silently
+install it.
 
 **Scope across handoff:** `--preview`, `--dry-run`, `--report`, `--audit`, and
 natural-language review-only requests keep the entire handoff read-only,
@@ -54,7 +56,16 @@ python3 <learn-directory>/scripts/learn.py help reusify
 python3 <learn-directory>/scripts/learn.py help sessions
 ```
 
-No command and `help` exit 0 without initialization, scans, or sibling execution.
+Compiled execution reaches each subskill through Learn's typed command surface.
+`commands/<name>.md` mounts `skills/<name>` with `run: {skill: ...}` and passes
+the remaining arguments to the subskill's own commands and lock:
+
+```sh
+.tkstack/tkstack skills learn -- skillify native check skills/write
+.tkstack/tkstack skills learn -- reusify --help
+```
+
+No command and `help` exit 0 without initialization, scans, or subskill execution.
 `help <native-command>` shows that helper parser's options. `help <___ify>`
 shows the focused section below, even in a standalone Learn package. Unknown
 topics fail with usage and exit 2. `-h`/`--help` remain standard parser help.
@@ -71,7 +82,7 @@ use [records](records.md). For report/audit/improve modes, use
 Usage: `/learn skillify [request]`; help: `/learn help skillify`.
 
 Example: `/learn skillify turn our contract-review procedure into a reusable tool`.
-Read the installed `skillify` index, its authoring procedure, executable-workflow
+Read the packaged `skills/skillify` index, its authoring procedure, executable-workflow
 contract, and command reference. Update a fitting owned skill first. Keep its
 main `SKILL.md` an invocation index, details in `references/`, and executable
 behavior in `scripts/`. Use Codify for shared compilation and verify actual

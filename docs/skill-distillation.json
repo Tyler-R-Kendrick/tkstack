@@ -575,11 +575,11 @@
     },
     {
       "name": "flowify",
-      "path": "skills/flowify/SKILL.md",
+      "path": "skills/learn/skills/flowify/SKILL.md",
       "sha256": "1a9cd97cc2afff9f7ddaf7183180815e4b71845ae43e1f670c94b69bc963ad0d",
       "lines": 138,
       "bytes": 8353,
-      "canonical_source_path": "skills/flowify/SKILL.md",
+      "canonical_source_path": "skills/learn/skills/flowify/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -944,11 +944,11 @@
     },
     {
       "name": "hookify",
-      "path": "skills/hookify/SKILL.md",
+      "path": "skills/learn/skills/hookify/SKILL.md",
       "sha256": "ee1e486a50f6f20a91d74f5667617d70647b23917706d24703c6b5222d9321e5",
       "lines": 139,
       "bytes": 7991,
-      "canonical_source_path": "skills/hookify/SKILL.md",
+      "canonical_source_path": "skills/learn/skills/hookify/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -1056,11 +1056,11 @@
     },
     {
       "name": "instructify",
-      "path": "skills/instructify/SKILL.md",
+      "path": "skills/learn/skills/instructify/SKILL.md",
       "sha256": "4e93abe0468c05e7c9a021c815e32323f75deb0a3ec3ccca9e06956cbeddb09d",
       "lines": 148,
       "bytes": 8825,
-      "canonical_source_path": "skills/instructify/SKILL.md",
+      "canonical_source_path": "skills/learn/skills/instructify/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -2298,11 +2298,11 @@
     },
     {
       "name": "skillify",
-      "path": "skills/skillify/SKILL.md",
+      "path": "skills/learn/skills/skillify/SKILL.md",
       "sha256": "6914d40b3c2427c5b979dfcdfc3d210830266cf1ea67ca2baf2190fabd291f8e",
       "lines": 139,
       "bytes": 7877,
-      "canonical_source_path": "skills/skillify/SKILL.md",
+      "canonical_source_path": "skills/learn/skills/skillify/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [

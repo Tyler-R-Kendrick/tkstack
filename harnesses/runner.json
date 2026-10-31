@@ -2,6 +2,6 @@
   "version": 1,
   "skills": {},
   "workflows": {
-    "normalize-labels": "../skills/codify/examples/normalize-labels"
+    "normalize-labels": "../skills/learn/skills/codify/examples/normalize-labels"
   }
 }

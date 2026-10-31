@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown command interfaces require the bundled hash-locked PyYAML/jsonschema environment. Python 3.11+ for packaging and pure-code workflows. Optional Vercel AI SDK backend requires Node 24+ and its locked npm dependencies; model/harness calls require explicit profiles and native access. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.9.0"
+  version: "0.10.0"
 ---
 
 # Skillify

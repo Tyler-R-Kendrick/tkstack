@@ -58,7 +58,7 @@ def normalize(directory, profile, engine, dry_run=False):
     identity = engine.command_schema.package_identity(directory)
     if model.get('name') != identity['name'] or model.get('version') != 1:
         raise ValueError('A version 1 contract must match the owned skill name')
-    if set(model) - {'version', 'name', 'purpose', 'criteria', 'facts_schema', 'native', 'delegate', 'limits'}:
+    if set(model) - {'version', 'name', 'purpose', 'criteria', 'facts_schema', 'native', 'subskills', 'delegate', 'limits'}:
         raise ValueError('Unknown contract fields')
     if not (directory / 'LICENSE').is_file() or not model.get('criteria') or not model.get('purpose') or not model.get('limits'):
         raise ValueError('Preserve the license and supply actual criteria/purpose/limits')
@@ -103,6 +103,22 @@ def normalize(directory, profile, engine, dry_run=False):
             if parameter.get('repeat') and parameter['schema'].get('type') != 'array':
                 raise ValueError('Repeated flags require an array')
         command(name, binding['cli_path'], binding['description'], binding['parameters'])
+    for name, mount in model.get('subskills', {}).items():
+        if not re.fullmatch(r'[a-z][a-z0-9-]*', name) or set(mount) != {'path', 'description'}:
+            raise ValueError('Subskills map a command name to a contained path and description')
+        child = engine.command_schema.mounted(directory, mount['path'])
+        if engine.command_schema.package_identity(child)['name'] != name:
+            raise ValueError('A subskill command must use its package name: ' + name)
+        document = {'schema': 'tkstack.command/v1', 'tool': {'type': 'function',
+            'name': identity['name'].replace('-', '_') + '_' + name.replace('-', '_'), 'description': mount['description'],
+            'strict': True, 'parameters': engine.command_schema.MOUNT},
+            'cli': {'path': [name], 'defaults': {'argv': []}}, 'run': {'skill': mount['path']}}
+        engine.command_schema.validate_document(document)
+        body = f'# {name.capitalize()}\n\n{mount["description"]}\n\n'
+        body += f'Routes `{name} [command ...]` and `{name} --help` to the packaged [{name} subskill](../{mount["path"]}/SKILL.md). '
+        body += 'Its own command files define the typed signatures, and its own lock binds execution.\n'
+        files['commands/' + name + '.md'] = ('---\n' + yaml.safe_dump(document, sort_keys=False) + '---\n\n' + body).encode()
+        definitions.append((name, 'commands/' + name + '.md'))
     if model.get('delegate'):
         engine.command_schema.regular(directory, model['delegate'])
     for name in ('help', 'version'):

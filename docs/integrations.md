@@ -121,4 +121,4 @@ The automatic `command-schema` runtime is installed privately from Codify's
 hash-locked PyYAML/jsonschema recipe. Bootstrap generates `codify` and `skillify`
 shims using its interpreter. No account or model is needed for command discovery,
 OpenAI-compatible schema exports, typed argument validation, or pure-code locks.
-See [the command contract](../skills/codify/references/command-definitions.md).
+See [the command contract](../skills/learn/skills/codify/references/command-definitions.md).

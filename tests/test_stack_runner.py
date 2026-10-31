@@ -35,7 +35,7 @@ class StackRunnerTests(unittest.TestCase):
 
     def fixture(self, directory=None):
         directory = directory or self.workspace / 'skills/labels'
-        shutil.copytree(ROOT / 'skills/codify/examples/normalize-labels', directory,
+        shutil.copytree(ROOT / 'skills/learn/skills/codify/examples/normalize-labels', directory,
             ignore=shutil.ignore_patterns('workflow.lock.json'))
         (directory / 'SKILL.md').write_text('---\nname: labels\ndescription: Normalize labels.\n---\nUse the compiled command.\n')
         runner.codify.compile_workflow(directory / 'PROMPT.md', directory / 'scripts/run.py',
@@ -229,7 +229,7 @@ export async function execute(input: z.infer<typeof inputSchema>, _inference: In
   return {labels: [...new Set(input.labels)].sort(), model: profile.model, provider: config.providers[profile.provider].kind, profiles: Object.keys(config.profiles), workspace: process.env.TKSTACK_WORKSPACE_DIR!};
 }
 ''')
-        (package / 'commands/run.md').write_bytes((ROOT / 'skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
+        (package / 'commands/run.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
         config = {'version': 1, 'providers': {'api': {'kind': 'openai', 'apiKeyEnv': 'NOT_CALLED_KEY'}},
             'profiles': {'rewrite': {'kind': 'language', 'provider': 'api', 'api': 'responses', 'model': 'baseline-model'}}}
         compile_config = self.workspace / 'compile-profiles.json'

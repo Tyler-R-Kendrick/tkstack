@@ -23,7 +23,7 @@ jobs:
       - name: Install locked command dependencies
         run: |
           python -m venv .tkstack/runtime/command-schema
-          .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/codify/requirements/requirements.lock
+          .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
       - name: Check every owned skill and executable artifact
         run: .tkstack/runtime/command-schema/bin/python -B scripts/check_skills.py
       - name: Check reviewed documentation

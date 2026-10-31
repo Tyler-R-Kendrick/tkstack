@@ -23,7 +23,7 @@ def load(path):
     return module
 
 
-lintify = load(ROOT / "skills/lintify/scripts/lintify.py")
+lintify = load(ROOT / "skills/learn/skills/lintify/scripts/lintify.py")
 
 
 class LintifyTests(unittest.TestCase):
@@ -81,7 +81,7 @@ class LintifyTests(unittest.TestCase):
 
     def test_missing_or_escaping_template_is_rejected_before_creation(self):
         package = self.root / "package"
-        shutil.copytree(ROOT / "skills/lintify", package, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/lintify", package, ignore=shutil.ignore_patterns("__pycache__"))
         template = package / "templates/eslint/eslint.config.mjs"
         template.unlink()
         target = self.root / "example"
@@ -115,7 +115,7 @@ class LintifyTests(unittest.TestCase):
 
     def test_standalone_package_does_not_copy_cache_or_change_its_source(self):
         cache = self.root / "plugin-cache/lintify"
-        shutil.copytree(ROOT / "skills/lintify", cache, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/lintify", cache, ignore=shutil.ignore_patterns("__pycache__"))
         junk = cache / "templates/eslint/node_modules/accidental"
         junk.mkdir(parents=True)
         (junk / "do-not-copy.txt").write_text("cache")

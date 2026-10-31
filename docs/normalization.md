@@ -1,6 +1,6 @@
 # Owned skill normalization
 
-All 19 packages under `skills/` and `.agents/skills/` share the owned Skillify/Codify command protocol:
+All 19 packages under `skills/` (including Learn's subskills in `skills/learn/skills/`) and `.agents/skills/` share the owned Skillify/Codify command protocol:
 reserved default help and version, an explicit contract `model`, a retained-report
 `verify`, and a current compiled `scripts/workflow.lock.json`. Existing native
 helpers remain the owners of their actual algorithms. Their typed native
@@ -66,7 +66,7 @@ Stitch authentication retain their separately reported requirements.
 The normalization followed Learn's evidence-backed improvement procedure,
 Skillify's progressive packaging/normalizer, Codify's real compiler/runner, and
 Reusify's shared-code rule. Three equivalent strict JSON readers were extracted
-into canonical `skills/codify/scripts/json_contract.py`; compiler, command and
+into canonical `skills/learn/skills/codify/scripts/json_contract.py`; compiler, command and
 contract runtimes reuse it. One canonical `package_runtime.py` supplies packaged
 copies for all 19 standalone skill cores. Generated copies are distribution
 outputs, not independent implementations or evidence for further extraction.
@@ -79,6 +79,13 @@ read-only dry-run. Cooperative package writers use an OS lock; publication is
 atomic per file. An interrupted source update still requires a fresh successful
 compile before delivery. Runtime/session records stay in `.tkstack`; the relative
 generation manifest and lock are authored package/build artifacts.
+
+A profile's optional `subskills` map (`name -> {path, description}`) generates
+one mount command per packaged subskill, `run: {skill: skills/<name>}`, which
+passes its `argv` to that subskill's own commands and lock. Learn mounts its
+seven ___ify subskills this way. Compile a parent with explicit `--include`
+entries for its own files so its lock does not snapshot the subskills, which
+keep their own locks.
 
 ```sh
 python3 scripts/tool.py skillify normalize skills/write \

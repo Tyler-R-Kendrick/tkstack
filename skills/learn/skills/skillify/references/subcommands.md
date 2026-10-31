@@ -33,6 +33,13 @@ Codify owns this implementation; do not write a second parser or dispatcher.
    schema alone does not prove the workflow. Keep help/preview read-only and
    preserve existing authorization for actual effects and residual inference.
 
+A parent skill that ships subskills mounts each one as a subcommand. Add a
+`subskills` map (`name -> {path, description}`) to the parent's contract profile
+and normalize: it generates `commands/<name>.md` with `run: {skill: <path>}` and
+an `argv` passthrough. Each subskill stays a complete package with its own
+`SKILL.md`, `commands/`, `scripts/`, `references/`, and lock. See
+[mounted subskills](../scripts/codify_runtime/references/command-definitions.md#mounted-subskills).
+
 Help generates one man-page model from package metadata, command frontmatter,
 descriptions, body, aliases, parameters, flags, defaults, and constraints.
 `help [command ...]` and `<command> --help` render the same canonical page using
