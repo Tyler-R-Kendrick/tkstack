@@ -12,6 +12,7 @@ sys.dont_write_bytecode = True
 import subprocess
 
 from tkstack_state import ensure_state
+from skill_roots import ADOPTED, packages
 from runtime_environment import with_paths
 
 from steering_adapter import apply_instructions, instruction_plan
@@ -24,6 +25,8 @@ SKILL_PATHS = {
     "claude": Path(".claude/skills"),
     "cursor": Path(".cursor/skills"),
 }
+# Committed third-party-derived packages; they install like a harness-independent source.
+ADOPTED_SOURCE = "adopted"
 AGENT_PATHS = {
     "claude": Path(".claude/agents"),
     "cursor": Path(".cursor/agents"),
@@ -71,6 +74,20 @@ def rewrite_callers(root, source):
     config = root / "harnesses/skills.json"
     return (json.loads(config.read_text()).get("rewrite_callers", {}).get(source, True)
             if config.exists() else True)
+
+
+def placement(rules, kind, source):
+    """Harnesses that receive a source's content; None means every selected harness.
+
+    Personal content joins every harness. Harness-independent upstream skills go
+    only to the shared `.agents/skills` directory (the codex slot); explicitly
+    placed sources, such as Cursor-only packages, keep their own harnesses.
+    """
+    if source is None:
+        return None
+    if source in rules.get("sources", {}):
+        return set(rules["sources"][source])
+    return set(rules["default"]) if kind == "skills" and "default" in rules else None
 
 
 def rewrite_invocations(text, aliases):
@@ -135,18 +152,26 @@ def source_directories(root, kind, harness=None):
         relative = paths.get(kind, kind)
         if relative is not None:
             result.append((name, root / "vendor" / name / relative))
+    if kind == "skills":
+        result.append((ADOPTED_SOURCE, root / ADOPTED))
     result.append((None, root / kind))
     return result
 
 
 def collect(root, kind, harness=None):
     """Combine upstream and personal content, rejecting ambiguous names."""
+    return {name: path for name, (_, path) in sourced(root, kind, harness).items()}
+
+
+def sourced(root, kind, harness=None):
+    """Map each collected name to its source (None for personal) and path."""
     sources = source_directories(root, kind, harness)
     aliases_by_source = skill_aliases(root) if kind == "skills" else {}
     items = {}
     for source_name, directory in sources:
         aliases = aliases_by_source.get(source_name, {})
         candidates = ([directory / "graphify"] if kind == "skills" and source_name == "graphify" else
+                      list(packages(root, ADOPTED).values()) if source_name == ADOPTED_SOURCE else
                       sorted(p.parent for p in directory.rglob("SKILL.md")) if kind == "skills" else
                       sorted(directory.glob("*.mdc" if kind == "rules" else "*.md")))
         missing = set(aliases) - {path.name for path in candidates}
@@ -160,8 +185,16 @@ def collect(root, kind, harness=None):
                 raise ValueError(f"Duplicate {kind} name: {name}")
             if aliases and (path.name in aliases or rewrite_callers(root, source_name)):
                 path = root / ".tkstack" / source_name / kind / path.relative_to(directory)
-            items[name] = path.resolve()
+            items[name] = (source_name, path.resolve())
     return items
+
+
+def placed(root, kind, harness):
+    """Collected items that belong in one harness's native directory."""
+    config = root / "harnesses/skills.json"
+    rules = json.loads(config.read_text()).get("placement", {}) if config.exists() else {}
+    return {name: path for name, (source, path) in sourced(root, kind, harness).items()
+            if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
 
 
 def link_plan(root, target, harnesses):
@@ -172,15 +205,17 @@ def link_plan(root, target, harnesses):
     if harnesses and (principles / "SKILL.md").is_file():
         plan.append((principles.resolve(), target / ".agents/principles"))
     for harness in harnesses:
-        skills, agents = collect(root, "skills", harness), collect(root, "agents", harness)
+        skills, agents = placed(root, "skills", harness), placed(root, "agents", harness)
+        # A package committed at its own destination (self-install) needs no link.
         plan.extend((source, target / SKILL_PATHS[harness] / name)
-                    for name, source in skills.items())
+                    for name, source in skills.items()
+                    if (target / SKILL_PATHS[harness]).resolve() / name != source)
         if harness in AGENT_PATHS:
             plan.extend((source, target / AGENT_PATHS[harness] / name)
                         for name, source in agents.items())
         if harness == "cursor":
             plan.extend((source, target / ".cursor/rules" / name)
-                        for name, source in collect(root, "rules", harness).items())
+                        for name, source in placed(root, "rules", harness).items())
             for rule in sorted((root / "harnesses/cursor").glob("*.mdc")):
                 plan.append((rule.resolve(), target / ".cursor/rules" / rule.name))
     return plan
@@ -188,6 +223,34 @@ def link_plan(root, target, harnesses):
 
 def matches(destination, source):
     return destination.is_symlink() and destination.resolve() == source
+
+
+def stale_links(root, target, harnesses, plan):
+    """This checkout's links in native directories that the plan no longer places."""
+    planned = {destination for _, destination in plan}
+    directories = [SKILL_PATHS[h] for h in harnesses] + [AGENT_PATHS[h] for h in harnesses
+                                                          if h in AGENT_PATHS]
+    if "cursor" in harnesses:
+        directories.append(Path(".cursor/rules"))
+    root = root.resolve()
+    stale = []
+    for relative in directories:
+        directory = target / relative
+        if directory.is_symlink() or not directory.is_dir():
+            continue
+        for path in sorted(directory.iterdir()):
+            if path.is_symlink() and path not in planned and \
+                    (directory / os.readlink(path)).resolve().is_relative_to(root):
+                stale.append(path)
+    return stale
+
+
+def remove_stale(paths, dry_run=False):
+    for path in paths:
+        print(f"{'Would ' if dry_run else ''}remove stale: {path}")
+        if not dry_run:
+            path.unlink()
+    return len(paths)
 
 
 def alias_migrations(root, target, harnesses):
@@ -297,6 +360,7 @@ def main():
                 initialize_state(ROOT)
                 prepare_aliases(ROOT)
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
+        changes += remove_stale(stale_links(ROOT, target, harnesses, plan), dry_run=args.dry_run)
         apply_instructions(instructions, dry_run=args.dry_run)
         apply_configuration(configurations, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError) as error:

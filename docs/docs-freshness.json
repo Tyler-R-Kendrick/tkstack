@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -12,13 +12,14 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
+          "oid": "f8a55c3d3350aa822210f67f276ff54d247aa7e2"
         },
         "docs/skillify.md": {
           "mode": "100644",
           "oid": "c9a6c777be93b82739029c5ce899b0682f26d5c6"
         }
       },
+      "docs_refresh_reason": "Third-party-derived fal-ai, headroom, open-design and rtk moved from skills/ to .agents/skills/; installer places outside skills by origin (shared .agents/skills, Cursor-only pstack/cursor-team-kit) and prunes stale links; docs reviewed and updated.",
       "inputs": {
         "scripts/sync_codify.py": {
           "mode": "100644",
@@ -544,25 +545,25 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5188d37b4b4e837fd9cd0a389a49a1f5748535ed"
+          "oid": "d4dce9c760521c6dfeeca178b50343f5971c4522"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
+          "oid": "f8a55c3d3350aa822210f67f276ff54d247aa7e2"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "721214db563a16ca740224c1eb8f42cebd6afbf1"
+          "oid": "08d54704c6ac8f7342cfe8fb7523ea55ade0219a"
         }
       },
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "dddd7768191470ccf379d6e123033c47a6364642"
+          "oid": "c11fcc499d6123effa0aa90e16fe27938ceb6b7c"
         },
         "agents/README.md": {
           "mode": "100644",
@@ -570,7 +571,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "772b10b4b9c7efd07799935864e1c08944b27824"
+          "oid": "d9c6a2c923f83053c2d88f9a7575c22dcf3aea8b"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -618,7 +619,7 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "a381e1f4048545f70587595d5add0d8260d71494"
+          "oid": "3fc5643e00450c4b35f3eac1f40f6acebaa92f44"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -626,13 +627,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
+      "reason": "Integration readiness table now states the fal-ai provider skill installs into shared .agents/skills/ after the third-party-derived package move."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -707,7 +708,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "d2dd31f32d293f337f001090798164480c4f6397"
+          "oid": "f9b2ddf0dc7ad454ff0b7e753272b7d693cf620b"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -727,7 +728,7 @@
         },
         "tests/test_lever.py": {
           "mode": "100644",
-          "oid": "536716afe70cbbd19396e1eed3f282a32aa5fbd0"
+          "oid": "ca528153e015310909aeaa2dfb8ae9f17dca6a84"
         },
         "tests/test_lintify.py": {
           "mode": "100644",
@@ -755,11 +756,11 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "11306c2e66428967d7dfe632fe1c7d4ae3511b26"
+          "oid": "cf36d9602b001fc3c5d69835cdfdcde5acfabc3a"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "235320267516ed2bb8edaef5de193caca8344331"
+          "oid": "43006b7097ed46cb5ef9b93361d037eb796dfec4"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -778,24 +779,25 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Post-merge CI exposed a procfs test-observation race after the mandatory pidfd exit proof. Catch only expected reaping errors for the optional stat read and use the retained pidfd for identity-safe cleanup. No product command, runtime behavior or documented invariant changed; no tests or exit assertions were removed."
+      "no_doc_impact": false,
+      "reason": "Third-party-derived fal-ai, headroom, open-design and rtk moved from skills/ to .agents/skills/; installer places outside skills by origin (shared .agents/skills, Cursor-only pstack/cursor-team-kit) and prunes stale links; docs reviewed and updated."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
+          "oid": "f8a55c3d3350aa822210f67f276ff54d247aa7e2"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "ed72f4de393f353d796d92dcdf90809109a81d00"
         }
       },
+      "docs_refresh_reason": "Third-party-derived fal-ai, headroom, open-design and rtk moved from skills/ to .agents/skills/; installer places outside skills by origin (shared .agents/skills, Cursor-only pstack/cursor-team-kit) and prunes stale links; docs reviewed and updated.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -825,7 +827,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -833,11 +835,11 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5188d37b4b4e837fd9cd0a389a49a1f5748535ed"
+          "oid": "d4dce9c760521c6dfeeca178b50343f5971c4522"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
+          "oid": "f8a55c3d3350aa822210f67f276ff54d247aa7e2"
         }
       },
       "inputs": {
@@ -891,7 +893,7 @@
         },
         "scripts/check_skills.py": {
           "mode": "100644",
-          "oid": "6946853b9b6ecc3cdbe5f557f8f4e0922258f4a3"
+          "oid": "1bfe0d6614efbbc23b30c40ae093ab199ea0eaac"
         },
         "scripts/codex-cloud-setup.sh": {
           "mode": "100755",
@@ -903,7 +905,7 @@
         },
         "scripts/doctor.py": {
           "mode": "100755",
-          "oid": "f5bd7ff4873fa2fc9a25903e5baa7667953f7ed1"
+          "oid": "9c1efc484c305d9e8633259df22e35ccc2422a29"
         },
         "scripts/graphify_adapter.py": {
           "mode": "100644",
@@ -919,7 +921,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "eca57a7891ed62c9a46340d956476157cab61605"
+          "oid": "8dd0062dbe1acdd9101d462da80fb0553dffab44"
         },
         "scripts/npm_runtime.py": {
           "mode": "100644",
@@ -941,6 +943,10 @@
           "mode": "100644",
           "oid": "70e68bafb1b6be08dc7595b5f3f78e70292d6c20"
         },
+        "scripts/skill_roots.py": {
+          "mode": "100644",
+          "oid": "8d7696e09cc47c5b1cd58b69ccc5f76641105c7e"
+        },
         "scripts/steering_adapter.py": {
           "mode": "100644",
           "oid": "4fe99318c7197f2d17cbc4577b76fca2effc8ada"
@@ -950,14 +956,14 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed the steering adapter helper-command quoting fix: shlex.join preserves source paths containing spaces when following the generated command. The external/home ownership contract and documented invocation are unchanged."
+      "no_doc_impact": false,
+      "reason": "Integration readiness table now states the fal-ai provider skill installs into shared .agents/skills/ after the third-party-derived package move."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42077d20f963dea9c1bbea43db770916af2abfd2"
+          "oid": "6d39f7f91f060cd0ddacf85fd97e04bba954a285"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -977,7 +983,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5188d37b4b4e837fd9cd0a389a49a1f5748535ed"
+          "oid": "d4dce9c760521c6dfeeca178b50343f5971c4522"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -989,7 +995,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3e3d38508faaab1755ea7cb291f789475bfa2a33"
+          "oid": "f8a55c3d3350aa822210f67f276ff54d247aa7e2"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1013,7 +1019,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "721214db563a16ca740224c1eb8f42cebd6afbf1"
+          "oid": "08d54704c6ac8f7342cfe8fb7523ea55ade0219a"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1123,7 +1129,7 @@
         },
         "skills/README.md": {
           "mode": "100644",
-          "oid": "f57f76553c43a99b7a5508f1b332eb3e6e90c085"
+          "oid": "001e985733d0340f835ec30d38c43a4d39c5621a"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1204,82 +1210,6 @@
         "skills/document/scripts/workflow.lock.json": {
           "mode": "100644",
           "oid": "28a857cba179736b33686ad59dd2cf813970f231"
-        },
-        "skills/fal-ai/LICENSE": {
-          "mode": "100644",
-          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
-        },
-        "skills/fal-ai/SKILL.md": {
-          "mode": "100644",
-          "oid": "e48cb9e033681e94b6ca0a4f53f50d2d18b87bb1"
-        },
-        "skills/fal-ai/commands/help.md": {
-          "mode": "100644",
-          "oid": "9ba7aeb3d64eb0a285555333f6b59aa0bc1ea2d6"
-        },
-        "skills/fal-ai/commands/model.md": {
-          "mode": "100644",
-          "oid": "ca543d838c40240f2d361f9ac839900c17f5e676"
-        },
-        "skills/fal-ai/commands/verify.md": {
-          "mode": "100644",
-          "oid": "27992b4ca8bff7f8ed929b03cdf167c2383ad5dd"
-        },
-        "skills/fal-ai/commands/version.md": {
-          "mode": "100644",
-          "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
-        },
-        "skills/fal-ai/references/distilled-sources.md": {
-          "mode": "100644",
-          "oid": "3c96f8f708894c86eda878af97c0d40bf35d5e04"
-        },
-        "skills/fal-ai/references/execution.md": {
-          "mode": "100644",
-          "oid": "5e4566e97ca6bde8115f500cbe791e46b68724e9"
-        },
-        "skills/fal-ai/references/fal-adapter.md": {
-          "mode": "100644",
-          "oid": "c22cceab91ebd6e48de4a3641d76b906fd4f437e"
-        },
-        "skills/fal-ai/references/media-production.md": {
-          "mode": "100644",
-          "oid": "a0bcc64340cbbb3b896df74f7cfb68698a67636e"
-        },
-        "skills/fal-ai/references/storage.md": {
-          "mode": "100644",
-          "oid": "c5823db25a62fe98ce0340fccc923c0727e12f6b"
-        },
-        "skills/fal-ai/scripts/contract.json": {
-          "mode": "100644",
-          "oid": "7f885ef0ffe1ecc99640c8eec39bb8e011cda8e5"
-        },
-        "skills/fal-ai/scripts/json_contract.py": {
-          "mode": "100644",
-          "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
-        },
-        "skills/fal-ai/scripts/normalization.json": {
-          "mode": "100644",
-          "oid": "4b58fdb37210d78b81522a5d2ae2ae04d2825a2f"
-        },
-        "skills/fal-ai/scripts/package_runtime.py": {
-          "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
-        },
-        "skills/fal-ai/scripts/run.py": {
-          "mode": "100644",
-          "oid": "221d91cca68a470b77994090eb692e23970e5d1f"
-        },
-        "skills/fal-ai/scripts/tkstack_state.py": {
-          "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
-        },
-        "skills/fal-ai/scripts/workflow.cases.json": {
-          "mode": "100644",
-          "oid": "0113243e0a569451e160c9e5de619a4c0563c11a"
-        },
-        "skills/fal-ai/scripts/workflow.lock.json": {
-          "mode": "100644",
-          "oid": "87c6f83cf3af6648cf1224101274aa4720d428cb"
         },
         "skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1424,78 +1354,6 @@
         "skills/flowify/templates/rhai/workflow.rhai.tmpl": {
           "mode": "100644",
           "oid": "b3df280d7e4d627ec358be08e24bada503c497e8"
-        },
-        "skills/headroom/LICENSE": {
-          "mode": "100644",
-          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
-        },
-        "skills/headroom/SKILL.md": {
-          "mode": "100644",
-          "oid": "01f599c06386ed4bb7d7103af1896535ccadf925"
-        },
-        "skills/headroom/commands/help.md": {
-          "mode": "100644",
-          "oid": "9ba7aeb3d64eb0a285555333f6b59aa0bc1ea2d6"
-        },
-        "skills/headroom/commands/model.md": {
-          "mode": "100644",
-          "oid": "fdf2ba34a605f8843b4eb3f44b19a277e3960aad"
-        },
-        "skills/headroom/commands/verify.md": {
-          "mode": "100644",
-          "oid": "834db4330a9b77ef749c48577f7cbcd2ec1e8bc1"
-        },
-        "skills/headroom/commands/version.md": {
-          "mode": "100644",
-          "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
-        },
-        "skills/headroom/references/distilled-sources.md": {
-          "mode": "100644",
-          "oid": "1f8a47c182ef65579de76d91b2218ba0e2f1ade5"
-        },
-        "skills/headroom/references/execution.md": {
-          "mode": "100644",
-          "oid": "da67164df667d2b19d8020dcc784970fb5d89241"
-        },
-        "skills/headroom/references/runtime-and-fidelity.md": {
-          "mode": "100644",
-          "oid": "a62eccaa007104d565de3a18ca7ca5b5658085a7"
-        },
-        "skills/headroom/references/storage.md": {
-          "mode": "100644",
-          "oid": "c5823db25a62fe98ce0340fccc923c0727e12f6b"
-        },
-        "skills/headroom/scripts/contract.json": {
-          "mode": "100644",
-          "oid": "58df516f77001f93a07321ec3aaa87499afeaa89"
-        },
-        "skills/headroom/scripts/json_contract.py": {
-          "mode": "100644",
-          "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
-        },
-        "skills/headroom/scripts/normalization.json": {
-          "mode": "100644",
-          "oid": "1c67c81dd5e687efb4c09ed442a5d93a498568e6"
-        },
-        "skills/headroom/scripts/package_runtime.py": {
-          "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
-        },
-        "skills/headroom/scripts/run.py": {
-          "mode": "100644",
-          "oid": "221d91cca68a470b77994090eb692e23970e5d1f"
-        },
-        "skills/headroom/scripts/tkstack_state.py": {
-          "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
-        },
-        "skills/headroom/scripts/workflow.cases.json": {
-          "mode": "100644",
-          "oid": "4a436dee875e81dba5f7b6bd55639977a5e4eaa6"
-        },
-        "skills/headroom/scripts/workflow.lock.json": {
-          "mode": "100644",
-          "oid": "328f71bdbcb7cc1228cad815b1594c990a55b2da"
         },
         "skills/hill-climb/LICENSE": {
           "mode": "100644",
@@ -2197,90 +2055,6 @@
           "mode": "100644",
           "oid": "f2a20f3e7c646949b12afdbdf1f70a353c30973b"
         },
-        "skills/open-design/LICENSE": {
-          "mode": "100644",
-          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
-        },
-        "skills/open-design/SKILL.md": {
-          "mode": "100644",
-          "oid": "82e6345d0b3c4b7d9702b5b69bb791d568142333"
-        },
-        "skills/open-design/commands/help.md": {
-          "mode": "100644",
-          "oid": "9ba7aeb3d64eb0a285555333f6b59aa0bc1ea2d6"
-        },
-        "skills/open-design/commands/model.md": {
-          "mode": "100644",
-          "oid": "5f933cddf824e2ec4397567441bd894912cda7af"
-        },
-        "skills/open-design/commands/verify.md": {
-          "mode": "100644",
-          "oid": "6c8fca400f5a420b28bdb15c1d940c803377141a"
-        },
-        "skills/open-design/commands/version.md": {
-          "mode": "100644",
-          "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
-        },
-        "skills/open-design/references/design-brief.md": {
-          "mode": "100644",
-          "oid": "be41b2e1e1c2997235c343ff4d691059590e64ff"
-        },
-        "skills/open-design/references/design-system.md": {
-          "mode": "100644",
-          "oid": "614efa7950b6e5d6f74081610c654f0a629dcf5d"
-        },
-        "skills/open-design/references/distilled-sources.md": {
-          "mode": "100644",
-          "oid": "c344a794de9517aa0a424b3e95b55999ac2a708e"
-        },
-        "skills/open-design/references/execution.md": {
-          "mode": "100644",
-          "oid": "ce5ace4b98421dbde8a4bb129a7681b5231135e8"
-        },
-        "skills/open-design/references/interface-craft.md": {
-          "mode": "100644",
-          "oid": "f12d151fdd90357ca5bd152eab4c1fd74218d744"
-        },
-        "skills/open-design/references/open-design-adapter.md": {
-          "mode": "100644",
-          "oid": "8195842c465af02942ba609ce484ac74ccd77a4c"
-        },
-        "skills/open-design/references/storage.md": {
-          "mode": "100644",
-          "oid": "c5823db25a62fe98ce0340fccc923c0727e12f6b"
-        },
-        "skills/open-design/scripts/contract.json": {
-          "mode": "100644",
-          "oid": "113ad14e5396080dae512990573f6b2269b9858a"
-        },
-        "skills/open-design/scripts/json_contract.py": {
-          "mode": "100644",
-          "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
-        },
-        "skills/open-design/scripts/normalization.json": {
-          "mode": "100644",
-          "oid": "2938060f8f1dbd32706d102fc642f46c2d9bc589"
-        },
-        "skills/open-design/scripts/package_runtime.py": {
-          "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
-        },
-        "skills/open-design/scripts/run.py": {
-          "mode": "100644",
-          "oid": "221d91cca68a470b77994090eb692e23970e5d1f"
-        },
-        "skills/open-design/scripts/tkstack_state.py": {
-          "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
-        },
-        "skills/open-design/scripts/workflow.cases.json": {
-          "mode": "100644",
-          "oid": "6476fa503b524c8c859799322b6b722cbacac1b2"
-        },
-        "skills/open-design/scripts/workflow.lock.json": {
-          "mode": "100644",
-          "oid": "ebf3a036286fb227b69315d12a3e8c756db77488"
-        },
         "skills/reusify/LICENSE": {
           "mode": "100644",
           "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
@@ -2424,78 +2198,6 @@
         "skills/reusify/scripts/workflow.lock.json": {
           "mode": "100644",
           "oid": "6cec100b3a9b38f1eb018ae22fb9aed679df008f"
-        },
-        "skills/rtk/LICENSE": {
-          "mode": "100644",
-          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
-        },
-        "skills/rtk/SKILL.md": {
-          "mode": "100644",
-          "oid": "bbd86a171b9877e458cfb256e8f76d1482f088ae"
-        },
-        "skills/rtk/commands/help.md": {
-          "mode": "100644",
-          "oid": "9ba7aeb3d64eb0a285555333f6b59aa0bc1ea2d6"
-        },
-        "skills/rtk/commands/model.md": {
-          "mode": "100644",
-          "oid": "b7c731d9c78592f9c76ad5330e3fd8fc3d2358c2"
-        },
-        "skills/rtk/commands/verify.md": {
-          "mode": "100644",
-          "oid": "7d4bb4352d3c2f03e6e6d76a1c6053dbc29ed8f9"
-        },
-        "skills/rtk/commands/version.md": {
-          "mode": "100644",
-          "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
-        },
-        "skills/rtk/references/distilled-sources.md": {
-          "mode": "100644",
-          "oid": "147a37ebfc0d8c5e0fae432cd97d8d7926d6ed83"
-        },
-        "skills/rtk/references/execution.md": {
-          "mode": "100644",
-          "oid": "45b53b609f66a9586b0833c3dd0284a54750488c"
-        },
-        "skills/rtk/references/runtime-and-fidelity.md": {
-          "mode": "100644",
-          "oid": "fc56579b9b07bfa8de259f6d4a8201b597d7202d"
-        },
-        "skills/rtk/references/storage.md": {
-          "mode": "100644",
-          "oid": "c5823db25a62fe98ce0340fccc923c0727e12f6b"
-        },
-        "skills/rtk/scripts/contract.json": {
-          "mode": "100644",
-          "oid": "e60a4bd1fc83f01fa1c9334c81bf2660713424ab"
-        },
-        "skills/rtk/scripts/json_contract.py": {
-          "mode": "100644",
-          "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
-        },
-        "skills/rtk/scripts/normalization.json": {
-          "mode": "100644",
-          "oid": "1a016afe0ddc6022d81834af352577e69e38705b"
-        },
-        "skills/rtk/scripts/package_runtime.py": {
-          "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
-        },
-        "skills/rtk/scripts/run.py": {
-          "mode": "100644",
-          "oid": "221d91cca68a470b77994090eb692e23970e5d1f"
-        },
-        "skills/rtk/scripts/tkstack_state.py": {
-          "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
-        },
-        "skills/rtk/scripts/workflow.cases.json": {
-          "mode": "100644",
-          "oid": "3db0a6f1b6d35c97461a74290e32e7db4b8b6af5"
-        },
-        "skills/rtk/scripts/workflow.lock.json": {
-          "mode": "100644",
-          "oid": "b0d418073f40e507283c356f2aadad6881352e90"
         },
         "skills/sdlc/LICENSE": {
           "mode": "100644",
@@ -2971,7 +2673,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The real Git-clone adversarial check reproduced a self-install refusal caused by committed machine-owned AGENTS/CLAUDE steering. Reviewed and documented portable repository ownership only for self-project setup, safe matching legacy migration, and unchanged foreign-target protections; new relocation, real self-install, and negative ownership regressions pass."
+      "reason": "Integration readiness table now states the fal-ai provider skill installs into shared .agents/skills/ after the third-party-derived package move."
     }
   },
   "object_format": "sha1",

@@ -1,4 +1,9 @@
-# Personal skills
+# Skills under development
+
+This directory is reserved for skills under active development. Skills installed
+from or wrapping an outside source do not belong here: harness-independent ones
+are committed in `.agents/skills/` (or pinned under `vendor/`), and Cursor-only
+packages such as Pstack install into `.cursor/skills/`.
 
 Add each skill as `<name>/SKILL.md`, keeping references, templates, and scripts in
 the same directory. The installer finds skill directories recursively and links
@@ -8,7 +13,8 @@ Keep upstream edits out of this directory and out of `vendor/`. Configure a
 name collision in `harnesses/skills.json`; the installer generates the adapted
 view under `.tkstack/`. Personal skills join all selected harnesses on install.
 
-All 19 owned packages are canonical root skills compatible with the
+These 15 packages, plus the four third-party-derived packages in
+`.agents/skills/`, are compatible with the
 [Agent Skills format](https://agentskills.io/specification) and
 [skills.sh discovery](https://github.com/vercel-labs/skills/blob/main/docs/creating-skills.md).
 Keep their relative resources and licenses self-contained: marketplace clients

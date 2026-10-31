@@ -49,11 +49,42 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(install.apply(self.plan), 0)
         for source, destination in self.plan:
             self.assertTrue(install.matches(destination, source))
-        for relative in install.SKILL_PATHS.values():
-            reference = self.target / relative / "architect/references/runner-prompt.md"
-            self.assertTrue(reference.is_file())
-            script = self.target / relative / "show-me-your-work/scripts/log.sh"
-            self.assertTrue(script.stat().st_mode & 0o111)
+        reference = self.target / ".cursor/skills/architect/references/runner-prompt.md"
+        self.assertTrue(reference.is_file())
+        script = self.target / ".cursor/skills/show-me-your-work/scripts/log.sh"
+        self.assertTrue(script.stat().st_mode & 0o111)
+
+    def test_skills_install_into_the_directory_matching_their_origin(self):
+        by_directory = {}
+        for _, destination in self.plan:
+            by_directory.setdefault(destination.parent.relative_to(self.target), set()).add(destination.name)
+        shared, claude, cursor = (by_directory[Path(p)] for p in
+                                  (".agents/skills", ".claude/skills", ".cursor/skills"))
+        developed = {path.name for path in (ROOT / "skills").iterdir() if (path / "SKILL.md").is_file()}
+        self.assertLessEqual(developed, shared & claude & cursor)
+        # Pstack and its Cursor Team Kit dependency are Cursor packages.
+        for name in ("architect", "deslop", "pstack-unslop"):
+            self.assertIn(name, cursor)
+            self.assertNotIn(name, shared | claude)
+        # Harness-independent upstream and third-party-derived skills stay shared.
+        for name in ("matt-tdd", "lever", "caveman", "fal-ai", "headroom", "open-design", "rtk"):
+            self.assertIn(name, shared)
+            self.assertNotIn(name, claude | cursor)
+        # Sources with native per-harness variants keep their own directories.
+        for name in ("graphify", "impeccable"):
+            self.assertIn(name, shared & claude & cursor)
+
+    def test_reinstall_removes_links_outside_their_new_placement(self):
+        install.apply(self.plan)
+        moved = self.target / ".claude/skills/architect"
+        moved.symlink_to(ROOT / "vendor/pstack/skills/architect", target_is_directory=True)
+        foreign = self.target / ".claude/skills/someone-elses"
+        foreign.symlink_to(self.target, target_is_directory=True)
+        stale = install.stale_links(ROOT, self.target, list(install.SKILL_PATHS), self.plan)
+        self.assertEqual(stale, [moved])
+        self.assertEqual(install.remove_stale(stale), 1)
+        self.assertFalse(moved.is_symlink())
+        self.assertTrue(foreign.is_symlink())
 
     def test_collision_stops_before_creating_other_links(self):
         _, destination = self.plan[-1]

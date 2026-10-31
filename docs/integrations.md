@@ -15,7 +15,7 @@ Runtime readiness is separate from those installed files. Use the root
 | Headroom | `headroomlabs-ai/headroom` 0.42.0 | Source guidance, Headroom skill, pinned Python runtime recipe and MCP specification | Installed from its Python hash lock; explicit local proxy for CCR operations |
 | OpenDesign | `nexu-io/open-design` | Official plugin manifest and MCP specification, local routing skill | Official local application/CLI via `OPEN_DESIGN_CLI` |
 | Higgsfield | `higgsfield-ai/skills` 0.14.0 | All nine skills and their supporting scripts and references | Installed CLI 1.2.3; normal account authentication before media operations |
-| fal.ai | First-party OAuth MCP relay | Provider skill and remote MCP entry for all three harnesses | Host OAuth sign-in, not verified by this file setup |
+| fal.ai | First-party OAuth MCP relay | Provider skill in shared `.agents/skills/` and remote MCP entry for all three harnesses | Host OAuth sign-in, not verified by this file setup |
 | WikiSkill | `ashutoshsinghpr7/wikiskill` 0.1.5 | Eight skills, working vendored Python CLI, isolated Codex workspace | No package download needed; actual evolution requires its normal model access and evaluation task |
 | Graphify | `Graphify-Labs/graphify` 0.9.97 | Native skills, hash-locked local CLI/MCP, Claude guidance hooks, Cursor rule | Installed; restart hosts. Code-only extraction needs no model key. See [setup](graphify.md). |
 | OpenWiki | `langchain-ai/openwiki` 0.7.2 | Official skill, locked local npm CLI, and working stdio MCP for Codex/Claude/Cursor | Restart the harness; host-driven generation uses its existing session. See [setup and native evidence](openwiki.md) |

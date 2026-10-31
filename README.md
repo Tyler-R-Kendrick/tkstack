@@ -92,7 +92,7 @@ explain routing. Pstack owns `tdd`; Matt's version is `matt-tdd`.
 with explicit requirement/ADR revisions when development findings change the plan.
 Use `.tkstack/tkstack skills sdlc -- help` for its deterministic task commands.
 
-All **19 owned skills** now expose the shared typed command protocol and compiled
+All **19 repository skills** now expose the shared typed command protocol and compiled
 artifacts. Use `skills <name> -- model` for its contract, `verify --report ...` for
 retained-evidence checks, and `native ...` for its available existing helper.
 [Normalization and per-skill coverage](docs/normalization.md) records actual
@@ -149,8 +149,12 @@ and [model/provider configuration](skills/codify/references/inference.md).
 
 ## Maintain this repository
 
-Owned skills live in `skills/`, shared agents in `agents/`, and host settings in
-`harnesses/`. Preserve `vendor/` snapshots and update `sources.lock.json` when
+Skills under active development live in `skills/`; third-party-derived packages
+live in `.agents/skills/`, shared agents in `agents/`, and host settings in
+`harnesses/`. The installer places outside skills by origin: harness-independent
+ones in `.agents/skills/` only, Pstack and Cursor Team Kit in `.cursor/skills/`
+only (see `harnesses/skills.json`), and it removes this checkout's links that no
+longer match that placement. Preserve `vendor/` snapshots and update `sources.lock.json` when
 updating an upstream revision. The [maintainer guides](docs/authoring.md) and
 [bootstrap reference](docs/bootstrap.md) describe narrower installation tools and
 removal of owned links/configuration without deleting personal state.

@@ -31,7 +31,7 @@
     },
     {
       "name": "fal-ai",
-      "source": "./skills/fal-ai",
+      "source": "./.agents/skills/fal-ai",
       "description": "Plan and produce images, video, audio, brand assets, and product media with explicit deliverables and actual output inspection. Use for fal.ai or a provider-neutral media production brief. Preserve explicit Higgsfield or other provider selections and use their real adapters.",
       "version": "0.3.0",
       "license": "MIT",
@@ -53,7 +53,7 @@
     },
     {
       "name": "headroom",
-      "source": "./skills/headroom",
+      "source": "./.agents/skills/headroom",
       "description": "Use Headroom for explicit reversible context compression, CCR retrieval, or agent wrapping. Verify original-context fidelity and actual runtime readiness while preserving provider and account routing.",
       "version": "0.3.0",
       "license": "MIT",
@@ -130,7 +130,7 @@
     },
     {
       "name": "open-design",
-      "source": "./skills/open-design",
+      "source": "./.agents/skills/open-design",
       "description": "Design or refine interfaces, prototypes, slides, and design systems using a portable brief and artifact-review workflow. Use for UI/UX creation, redesign, critique, or OpenDesign work. Explicit OpenDesign requests retain that provider and its actual runtime.",
       "version": "0.3.0",
       "license": "MIT",
@@ -152,7 +152,7 @@
     },
     {
       "name": "rtk",
-      "source": "./skills/rtk",
+      "source": "./.agents/skills/rtk",
       "description": "Use Rust Token Killer to filter shell output, inspect measured token savings, or configure RTK integration. Preserve command semantics, native permissions, and an unfiltered route for exact evidence.",
       "version": "0.3.0",
       "license": "MIT",
