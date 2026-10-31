@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import select
+import signal
 from pathlib import Path
 import subprocess
 import sys
@@ -305,15 +306,19 @@ class SkillNormalizationTests(unittest.TestCase):
             events.register(descriptor, select.POLLIN)
             self.assertTrue(events.poll(5000), 'Native descendant outlived its owned invocation')
         finally:
-            os.close(descriptor)
             try:
-                os.kill(result['pid'], 9)
+                signal.pidfd_send_signal(descriptor, signal.SIGKILL)
             except ProcessLookupError:
                 pass
+            finally:
+                os.close(descriptor)
         state = Path('/proc') / str(result['pid']) / 'stat'
-        if state.exists():
-            # A killed orphan may remain a zombie until the host init reaps it.
-            self.assertIn(state.read_text().split(') ', 1)[1].split()[0], ('Z', 'X'))
+        try:
+            observed = state.read_text()
+        except (FileNotFoundError, ProcessLookupError):
+            return
+        # A killed orphan may remain a zombie until the host init reaps it.
+        self.assertIn(observed.split(') ', 1)[1].split()[0], ('Z', 'X'))
 
 
 if __name__ == '__main__':

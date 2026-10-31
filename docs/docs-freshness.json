@@ -759,7 +759,7 @@
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "40e14dbc3d07c4cb441e93990b0477b2600fb425"
+          "oid": "235320267516ed2bb8edaef5de193caca8344331"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -779,7 +779,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the mapped native steering renderer after quoting its generated Learn helper invocation; source paths with spaces now remain a single argument. The documented ownership and fingerprint behavior is unchanged."
+      "reason": "Post-merge CI exposed a procfs test-observation race after the mandatory pidfd exit proof. Catch only expected reaping errors for the optional stat read and use the retained pidfd for identity-safe cleanup. No product command, runtime behavior or documented invariant changed; no tests or exit assertions were removed."
     },
     "execution": {
       "docs": {
