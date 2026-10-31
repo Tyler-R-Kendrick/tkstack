@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "name": "hill-climb",
+  "purpose": "Compare actual paired measurements against frozen noise-aware gates and untouched confirmation.",
+  "criteria": [
+    {
+      "id": "frozen-evaluation",
+      "description": "Freeze the workload, runner/grader, guardrails, splits and budget before tuning."
+    },
+    {
+      "id": "measurement",
+      "description": "Inspect comparable baseline/candidate receipts and measure unchanged noise."
+    },
+    {
+      "id": "keep-revert",
+      "description": "Keep or revert using actual attributable gain and per-case no-regression evidence."
+    },
+    {
+      "id": "confirmation",
+      "description": "Confirm a fixed winner on untouched cases against the original baseline."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "same_workload": {
+        "type": "boolean",
+        "const": true
+      },
+      "confirmation_used_for_tuning": {
+        "type": "boolean",
+        "const": false
+      },
+      "claim_improvement": {
+        "type": "boolean"
+      },
+      "gain_exceeds_noise": {
+        "type": "boolean"
+      },
+      "confirmation_observed": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "same_workload",
+      "confirmation_used_for_tuning",
+      "claim_improvement",
+      "gain_exceeds_noise",
+      "confirmation_observed"
+    ],
+    "additionalProperties": false,
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "claim_improvement": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "gain_exceeds_noise": {
+              "const": true
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "claim_improvement": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "confirmation_observed": {
+              "const": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  "native": {
+    "native_compare": {
+      "entrypoint": "scripts/hill_climb.py",
+      "prefix": [],
+      "parameters": {
+        "plan": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--plan"
+          ],
+          "path": true
+        },
+        "baseline": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--baseline"
+          ],
+          "path": true
+        },
+        "candidate": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--candidate"
+          ],
+          "path": true
+        },
+        "split": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "selection",
+              "confirm"
+            ]
+          },
+          "flags": [
+            "--split"
+          ],
+          "default": "selection"
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "compare"
+      ],
+      "description": "Compare actual retained paired measurements with the existing noise and confirmation gate."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Use native compare against actual retained measurement receipts and untouched confirmation. This contract gate computes no quality or performance gain."
+  ]
+}

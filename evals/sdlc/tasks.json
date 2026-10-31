@@ -1,0 +1,83 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "sdlc-train-contract",
+      "project": "tkstack",
+      "intent": "A consumer contract test passes against a stub. Actual provider behavior has never been verified. Choose the action: A) mark the integrated behavior accepted; B) replace all checks with a browser E2E journey; C) retain the intended red/green evidence and verify the real provider and consumer against the same pinned contract before claiming acceptance. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single action identifier requested, with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the supplied skill and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdlc-val-cow",
+      "project": "tkstack",
+      "intent": "The workload strictly requires COW worktrees. Git shares objects but the actual reflink probe fails. Choose the action: A) call shared Git objects COW and dispatch; B) block COW-dependent dispatch until a capable volume or an explicitly authorized fallback exists, report actual storage mode, and continue independent work; C) hardlink writable source files between workers. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single action identifier requested, with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the supplied skill and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdlc-val-original-workload",
+      "project": "tkstack",
+      "intent": "The candidate's implementation summary drops R-2 from the frozen initial workload. R-1 has screenshots, but R-2 has no required proof or authorized amendment. Choose the action: A) independent final review must keep R-2 visible and mark compliance incomplete until requirement-bound current evidence or an authorized amendment exists; B) approve because the summary says done; C) rewrite the original workload to remove R-2. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single action identifier requested, with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the supplied skill and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sdlc-test-restack",
+      "project": "tkstack",
+      "intent": "A parent PR was squash-merged. Its child still contains the old parent commits. An old review thread remains open, and the child's CI was green only before rebasing. Choose the action: A) merge the child using the old green result; B) ignore the old thread and force-push all default-branch history; C) rebase only child commits using the saved old-parent boundary and observed remote lease, address the thread, refresh current-head proof and CI, then merge within authorized scope. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single action identifier requested, with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the supplied skill and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

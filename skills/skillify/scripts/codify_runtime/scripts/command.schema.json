@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tkstack:command:v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "tkstack.command/v1"
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "function"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_-]{0,63}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strict": {
+          "const": true
+        },
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description",
+        "strict",
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "cli": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_-]{0,63}$"
+          },
+          "minItems": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_-]{0,63}$"
+            },
+            "minItems": 1
+          }
+        },
+        "positionals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "flags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "defaults": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "run": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "artifact"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "builtin": {
+              "enum": [
+                "help",
+                "version"
+              ]
+            }
+          },
+          "required": [
+            "builtin"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "tool",
+    "cli",
+    "run"
+  ],
+  "additionalProperties": false
+}

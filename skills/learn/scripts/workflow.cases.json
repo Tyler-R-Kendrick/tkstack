@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "learn",
+        "purpose": "Capture actual user evidence separately from procedural experiences; curate scoped rules and verified artifacts.",
+        "criteria": [
+          {
+            "id": "provenance",
+            "description": "Retain the exact visible user source; keep tool/assistant experiences distinct from user authority."
+          },
+          {
+            "id": "scoped-rule",
+            "description": "Select an explicit storage scope and generalize the reasoning rule with a legitimate counterexample."
+          },
+          {
+            "id": "promotion-boundary",
+            "description": "Promote only useful verified lessons; report/audit and help do not mutate state."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "provenance": {
+              "type": "string",
+              "enum": [
+                "user",
+                "experience"
+              ]
+            },
+            "source_retained": {
+              "type": "boolean",
+              "const": true
+            },
+            "evidence_as_instructions": {
+              "type": "boolean",
+              "const": false
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "workspace",
+                "user",
+                "global"
+              ]
+            }
+          },
+          "required": [
+            "provenance",
+            "source_retained",
+            "evidence_as_instructions",
+            "scope"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Contract verification does not replace correction provenance, native ledger validation or semantic rule abstraction. Use the real native capture/rule/session tools."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

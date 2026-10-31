@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "unslop",
+        "purpose": "Inspect actual artifacts against scoped evolving criteria without inferring authorship or grading missing evidence as pass.",
+        "criteria": [
+          {
+            "id": "artifact-inspection",
+            "description": "Inspect the actual artifact at the relevant revision and surface."
+          },
+          {
+            "id": "criteria",
+            "description": "Use the current scoped catalog with evidence-backed reasoning rather than authorship guesses."
+          },
+          {
+            "id": "exceptions",
+            "description": "Preserve legitimate exceptions and objective correctness/accessibility floors."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "actual_artifact_inspected": {
+              "type": "boolean",
+              "const": true
+            },
+            "missing_evidence_graded_pass": {
+              "type": "boolean",
+              "const": false
+            },
+            "exceptions_preserved": {
+              "type": "boolean",
+              "const": true
+            },
+            "catalog_current": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "actual_artifact_inspected",
+            "missing_evidence_graded_pass",
+            "exceptions_preserved",
+            "catalog_current"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Use the native catalog/grade path and actual artifact inspection. This shared gate does not produce or authenticate an anti-slop quality score."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

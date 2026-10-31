@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "tkstack-principles-train-contract",
+      "project": "tkstack",
+      "intent": "A factual invariant can be fully enforced in deterministic code. A) Ask an LLM on every call. B) Use a model API by default. C) Enforce it in code and reserve inference for actual insufficiency. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "tkstack-principles-val-contract",
+      "project": "tkstack",
+      "intent": "Three independent expensive tasks have isolated ownership and a shared budget. A) Serialize by habit. B) Run a bounded parallel frontier with stable fan-in and explicit dependencies. C) Start unbounded nested worker pools. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "tkstack-principles-test-contract",
+      "project": "tkstack",
+      "intent": "A trivial pure function is already safe for parallel callers. A) Keep it simple; do not add a pool per function without a real need. B) Add a background worker for every invocation. C) Pretend parallelism removes actual dependencies. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

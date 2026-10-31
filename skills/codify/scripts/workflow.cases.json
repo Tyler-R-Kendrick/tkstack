@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "codify",
+        "purpose": "Lower meaning once, verify native behavior and execute the retained compiled artifact.",
+        "criteria": [
+          {
+            "id": "native-outcome",
+            "description": "Exercise the native implementation on reproduction, transfer and rejection cases."
+          },
+          {
+            "id": "artifact-freshness",
+            "description": "Bind command/source/case bytes to a current executable artifact and reject stale input."
+          },
+          {
+            "id": "inference-boundary",
+            "description": "Execute code on reuse; declare any residual model/provider/harness inference explicitly."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "actual_code_verified": {
+              "type": "boolean",
+              "const": true
+            },
+            "frozen_artifact_current": {
+              "type": "boolean",
+              "const": true
+            },
+            "implicit_inference": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "actual_code_verified",
+            "frozen_artifact_current",
+            "implicit_inference"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Contract verification does not replace actual compile/check/run outcomes or establish semantic equivalence of arbitrary Markdown."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+# @WORKFLOW_NAME@
+
+This is a native MAF YAML workflow with an ordinary asynchronous Python binding.
+It fingerprints explicit local files, joins bounded reads in input order, and
+emits the actual binding receipt. It invokes no agent or external service.
+
+Create a project-local environment and install requirements.lock with hash
+verification. The lock was generated for the tested CPython 3.12/Linux profile;
+regenerate and test a lock for another target platform/Python version. The
+requirements.txt file records direct requirements, not the transitive lock.
+MAF 1.4.0/Power Fx also requires a supported .NET runtime. The example was tested
+with .NET 8; set DOTNET_ROOT to its installation path when it is project-local.
+Do not assume installing a Python wheel also provisions the native runtime.
+
+```sh
+python run.py --project /path/to/project --input inputs.json --jobs 4
+```
+
+Adapt inputs.json to existing project files. Paths are project-relative; escaping
+the project and duplicate canonical files are rejected. Keep input files stable
+or use a read-only snapshot: parallel hashing is not a filesystem snapshot.
+
+Fresh-run success requires the workflow's emitted output to equal the actual
+successful binding receipt. Exceptions and tool failures cannot become an empty
+success. This example does not implement checkpoints/resume or external effects.
+Add those semantics explicitly for a real workflow. Native MAF execution must
+be tested separately from direct binding tests and YAML inspection.
+
+Replace the example's stages/bindings with the actual requested procedure before
+claiming the requested workflow is complete. Keep conditions and deterministic
+checks in code; register an agent only for residual judgment within scope.

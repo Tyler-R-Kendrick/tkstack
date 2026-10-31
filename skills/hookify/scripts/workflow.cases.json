@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "hookify",
+        "purpose": "Compile explicit tool-event policies and verify portable/native replay without inventing host activation.",
+        "criteria": [
+          {
+            "id": "predicate",
+            "description": "Use the explicit event/predicate contract, typed equality and missing-value semantics."
+          },
+          {
+            "id": "replay",
+            "description": "Replay real allowed, denied, transfer and exception events through the intended adapter."
+          },
+          {
+            "id": "activation-boundary",
+            "description": "Keep portable evaluation, native registration and observed activation distinct."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "installed_demo_enabled": {
+              "type": "boolean",
+              "const": false
+            },
+            "claim_activation": {
+              "type": "boolean"
+            },
+            "activation_observed": {
+              "type": "boolean"
+            },
+            "native_boundary_preserved": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "installed_demo_enabled",
+            "claim_activation",
+            "activation_observed",
+            "native_boundary_preserved"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "claim_activation": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "activation_observed": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Use native check/replay/run and actual host evidence. A report does not activate or authenticate a native hook."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

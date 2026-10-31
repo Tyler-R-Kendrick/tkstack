@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "skillify",
+        "purpose": "Package a verified executable procedure and typed progressive command index.",
+        "criteria": [
+          {
+            "id": "execution-contract",
+            "description": "Implement and verify the actual tool; a scaffold or prompt-forwarding wrapper is incomplete."
+          },
+          {
+            "id": "progressive-disclosure",
+            "description": "Keep the main skill as an index with typed commands and conditional referenced topics."
+          },
+          {
+            "id": "native-tool",
+            "description": "Check actual CLI/API outcomes, reserved discovery and native effect boundaries."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "workflow_implemented": {
+              "type": "boolean",
+              "const": true
+            },
+            "progressive_index": {
+              "type": "boolean",
+              "const": true
+            },
+            "real_tool_verified": {
+              "type": "boolean",
+              "const": true
+            },
+            "prompt_forwarding_only": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "workflow_implemented",
+            "progressive_index",
+            "real_tool_verified",
+            "prompt_forwarding_only"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Contract verification does not finish a scaffold or prove an authored skill procedure effective; exercise its real executable outcome."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

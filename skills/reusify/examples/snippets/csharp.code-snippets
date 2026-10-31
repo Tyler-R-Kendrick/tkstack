@@ -1,0 +1,11 @@
+{
+  "Partial record": {
+    "scope": "csharp",
+    "prefix": "partial-record",
+    "body": [
+      "public partial record ${1:RecordName}(${2:string Value});",
+      "$0"
+    ],
+    "description": "Declare a partial record with explicit parameters; requires a compatible C# version."
+  }
+}

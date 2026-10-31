@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "name": "open-design",
+  "purpose": "Refine an actual rendered interface while preserving product truth, accessibility and explicit provider choice.",
+  "criteria": [
+    {
+      "id": "brief",
+      "description": "Preserve the product brief, identity, constraints and truthful content."
+    },
+    {
+      "id": "rendered-states",
+      "description": "Inspect actual renders at relevant sizes/states; missing captures remain unreviewed."
+    },
+    {
+      "id": "design-system",
+      "description": "Reuse semantic tokens/components and preserve accessibility."
+    },
+    {
+      "id": "provider",
+      "description": "Use an explicitly selected provider and report its actual runtime limits."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "actual_render_inspected": {
+        "type": "boolean",
+        "const": true
+      },
+      "accessibility_preserved": {
+        "type": "boolean",
+        "const": true
+      },
+      "provider_requested": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "provider_used": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "actual_render_inspected",
+      "accessibility_preserved",
+      "provider_requested",
+      "provider_used"
+    ],
+    "additionalProperties": false
+  },
+  "native": {},
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Actual provider/runtime access is required for execution. Verification does not start a provider job, proxy or account session.",
+    "The deterministic core does not render a UI or authenticate visual quality; use actual available rendering/provider tools and inspect the real states."
+  ]
+}

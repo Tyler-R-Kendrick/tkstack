@@ -1,0 +1,5 @@
+import json
+
+# JSON decoding preserves non-BMP Unicode across Python's different literal semantics.
+DISPLAY_NAME = json.loads({{ display_name | tojson | tojson }})
+WORKER_LIMIT = {{ worker_limit }}

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "name": "rtk",
+  "purpose": "Filter real command output while preserving exit status, permissions and an unfiltered evidence route.",
+  "criteria": [
+    {
+      "id": "runtime",
+      "description": "Verify the actual Rust Token Killer executable and supported native wrapper."
+    },
+    {
+      "id": "command-fidelity",
+      "description": "Preserve command meaning, exit status, permissions and provider choice."
+    },
+    {
+      "id": "unfiltered-evidence",
+      "description": "Keep an unfiltered route for exact evidence and distinguish output ratios from billing."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "exit_status_preserved": {
+        "type": "boolean",
+        "const": true
+      },
+      "unfiltered_evidence_available": {
+        "type": "boolean",
+        "const": true
+      },
+      "permission_boundary_preserved": {
+        "type": "boolean",
+        "const": true
+      },
+      "billing_claim_from_ratio": {
+        "type": "boolean",
+        "const": false
+      }
+    },
+    "required": [
+      "exit_status_preserved",
+      "unfiltered_evidence_available",
+      "permission_boundary_preserved",
+      "billing_claim_from_ratio"
+    ],
+    "additionalProperties": false
+  },
+  "native": {},
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Actual provider/runtime access is required for execution. Verification does not start a provider job, proxy or account session.",
+    "The deterministic core does not filter a command or measure token savings. Exercise actual RTK with preserved exits, native permissions and unfiltered evidence."
+  ]
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "block-generated-edit",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Edit",
+        "tool_input": {
+          "file_path": "src/api.generated.ts",
+          "new_string": "replacement"
+        }
+      }
+    },
+    "expected": {
+      "decision": "block",
+      "matches": [
+        "demo-block-generated-edit"
+      ]
+    }
+  },
+  {
+    "id": "warn-debug-write",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Write",
+        "tool_input": {
+          "file_path": "src/app.ts",
+          "content": "console.log(value)"
+        }
+      }
+    },
+    "expected": {
+      "decision": "warn",
+      "matches": [
+        "demo-warn-debug-write"
+      ]
+    }
+  },
+  {
+    "id": "allow-normal-write",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Write",
+        "tool_input": {
+          "file_path": "src/app.ts",
+          "content": "export const count = 1;"
+        }
+      }
+    },
+    "expected": {
+      "decision": "allow",
+      "matches": []
+    }
+  },
+  {
+    "id": "allow-unrelated-tool",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Read",
+        "tool_input": {
+          "file_path": "src/api.generated.ts"
+        }
+      }
+    },
+    "expected": {
+      "decision": "allow",
+      "matches": []
+    }
+  },
+  {
+    "id": "allow-missing-field",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Write",
+        "tool_input": {}
+      }
+    },
+    "expected": {
+      "decision": "allow",
+      "matches": []
+    }
+  },
+  {
+    "id": "block-wins-over-warning",
+    "input": {
+      "event": "before-tool",
+      "fields": {
+        "tool_name": "Write",
+        "tool_input": {
+          "file_path": "src/api.generated.ts",
+          "content": "console.log(value)"
+        }
+      }
+    },
+    "expected": {
+      "decision": "block",
+      "matches": [
+        "demo-block-generated-edit",
+        "demo-warn-debug-write"
+      ]
+    }
+  }
+]

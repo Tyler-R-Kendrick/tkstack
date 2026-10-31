@@ -1,0 +1,12 @@
+# Normalize authored text without changing pinned vendor bytes or binary assets.
+/skills/** text=auto eol=lf
+/scripts/** text=auto eol=lf
+/tests/** text=auto eol=lf
+/evals/** text=auto eol=lf
+/docs/** text=auto eol=lf
+/harnesses/** text=auto eol=lf
+/.github/** text=auto eol=lf
+/.claude-plugin/** text=auto eol=lf
+/*.md text eol=lf
+/*.json text eol=lf
+/vendor/** -text

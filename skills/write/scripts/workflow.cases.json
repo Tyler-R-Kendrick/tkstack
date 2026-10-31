@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "write",
+        "purpose": "Produce the requested human-facing draft with grounded facts, coherent progression and preserved author meaning.",
+        "criteria": [
+          {
+            "id": "source-fidelity",
+            "description": "Preserve author meaning and distinguish facts/quotes from unsupported material."
+          },
+          {
+            "id": "argument",
+            "description": "Read the complete draft for continuity, grounded concepts and the reader task."
+          },
+          {
+            "id": "artifact-review",
+            "description": "Review actual text for purpose and applicable anti-slop criteria; publication needs its real scope."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "invented_sources": {
+              "type": "boolean",
+              "const": false
+            },
+            "meaning_preserved": {
+              "type": "boolean",
+              "const": true
+            },
+            "published": {
+              "type": "boolean"
+            },
+            "publication_requested": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "invented_sources",
+            "meaning_preserved",
+            "published",
+            "publication_requested"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "published": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "publication_requested": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "The deterministic core checks source/evidence boundaries. It does not generate or authenticate the quality of an article; actual composition and text inspection remain required."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

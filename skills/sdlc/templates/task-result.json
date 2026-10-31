@@ -1,0 +1,12 @@
+{
+  "task_id": "REPLACE_WITH_CLAIMED_TASK_ID",
+  "workload_sha256": "REPLACE_WITH_FROZEN_INITIAL_WORKLOAD_SHA256",
+  "head_sha": "REPLACE_WITH_ACTUAL_TASK_BRANCH_HEAD",
+  "dependency_heads": {},
+  "requirements": ["R-001"],
+  "result": "pending",
+  "checks": ["REPLACE_WITH_ACTUAL_ACCEPTANCE_CHECK_IDS"],
+  "evidence_manifest": "REPLACE_WITH_RETAINED_EVIDENCE_MANIFEST",
+  "review_report": "REPLACE_WITH_INDEPENDENT_REVIEW_REFERENCE",
+  "remaining_findings": []
+}

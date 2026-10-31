@@ -1,0 +1,334 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "root-skill-package",
+      "kind": "generator",
+      "summary": "Scaffold or convert an owned skill into a script-backed executable tool, invocation index, referenced contracts, and license.",
+      "artifact": "skills/skillify/scripts/skillify.py",
+      "guide": "skills/skillify/SKILL.md",
+      "tags": [
+        "skill",
+        "scaffold",
+        "metadata",
+        "license",
+        "index",
+        "references",
+        "progressive-disclosure",
+        "tool",
+        "workflow",
+        "convert",
+        "code-mode"
+      ],
+      "usage": "python3 skills/skillify/scripts/skillify.py scaffold --target <absent-target> --name <kebab-name> --description <description> --backend <python|ai-sdk>; or convert <owned-skill> --dry-run. Complete and execute the actual workflow, then check --require-tool per guide."
+    },
+    {
+      "id": "native-lint-package",
+      "kind": "generator",
+      "summary": "Scaffold isolated native CLI lint rule examples with fixtures and dependency locks.",
+      "artifact": "skills/lintify/scripts/lintify.py",
+      "guide": "skills/lintify/SKILL.md",
+      "tags": [
+        "lint",
+        "rule",
+        "scaffold",
+        "eslint",
+        "gptlint",
+        "lintbook"
+      ],
+      "usage": "python3 skills/lintify/scripts/lintify.py scaffold --backend <eslint|lintbook|gptlint> --target <absent-target>; adapt to the real rule and validate with the native engine."
+    },
+    {
+      "id": "native-workflow-package",
+      "kind": "generator",
+      "summary": "Scaffold a native executable workflow definition with code bindings and examples.",
+      "artifact": "skills/flowify/scripts/flowify.py",
+      "guide": "skills/flowify/SKILL.md",
+      "tags": [
+        "workflow",
+        "scaffold",
+        "maf",
+        "rhai",
+        "bindings"
+      ],
+      "usage": "python3 skills/flowify/scripts/flowify.py scaffold --backend <maf|rhai> --target <absent-target> --name <name>; verify actual runtime and behavior per guide."
+    },
+    {
+      "id": "scoped-instruction-bindings",
+      "kind": "generator",
+      "summary": "Plan and apply owned scoped agent instructions with drift and ownership checks.",
+      "artifact": "skills/instructify/scripts/instructify.py",
+      "guide": "skills/instructify/SKILL.md",
+      "tags": [
+        "instruction",
+        "manifest",
+        "scope",
+        "agent",
+        "ownership"
+      ],
+      "usage": "python3 skills/instructify/scripts/instructify.py plan --project <repo> --input <manifest>; inspect the plan before using the documented apply/check commands."
+    },
+    {
+      "id": "parameterized-configuration-module",
+      "kind": "template",
+      "summary": "Generate a Python configuration module from typed validated Copier inputs without model inference.",
+      "artifact": "skills/reusify/examples/copier",
+      "guide": "skills/reusify/references/templates.md",
+      "tags": [
+        "copier",
+        "jinja",
+        "python",
+        "template",
+        "configuration",
+        "module"
+      ],
+      "usage": "copier copy --defaults --data display_name=<label> --data worker_limit=<1..32> skills/reusify/examples/copier <absent-output>; use a compatible installed Copier and validate output."
+    },
+    {
+      "id": "skill-inference-runtime",
+      "kind": "library",
+      "summary": "Version-pinned Vercel AI SDK boundary for explicit chat/Responses, native Decisions, and official harness profiles with bounded capacity.",
+      "artifact": "skills/codify/scripts/ai-runtime",
+      "guide": "skills/codify/references/inference.md",
+      "tags": [
+        "ai-sdk",
+        "model",
+        "provider",
+        "decision",
+        "harness",
+        "runtime",
+        "configuration"
+      ],
+      "usage": "Import createInference from inference.ts and supply an explicit configuration; invoke language, decide, or harness only for the workflow residual. Use the native lock/check/test commands in the guide."
+    },
+    {
+      "id": "tkstack-local-state",
+      "kind": "module",
+      "summary": "Resolve explicit workspace/user/global tkstack roots, isolate ignored temporary sessions, and preserve private-state Git policy with bounded writer ownership.",
+      "artifact": "scripts/tkstack_state.py",
+      "guide": "docs/state-layout.md",
+      "tags": [
+        "state",
+        "session",
+        "workspace",
+        "gitignore",
+        "storage",
+        "scope",
+        "global",
+        "user",
+        "temporary"
+      ],
+      "usage": "tkstack_state.py locations; path|init --scope <workspace|user|global> --session <id> --namespace <name>. Import state_root/state_path/session_path/session_tempdir for explicit ownership."
+    },
+    {
+      "id": "prompt-workflow-compiler",
+      "kind": "generator",
+      "summary": "Compile once-lowered prompt/Markdown procedures into reproducible verified code-bearing lock artifacts; execute frozen code without reinterpreting source.",
+      "artifact": "skills/codify/scripts/codify.py",
+      "guide": "skills/codify/SKILL.md",
+      "tags": [
+        "codify",
+        "prompt",
+        "markdown",
+        "compiler",
+        "lock",
+        "workflow",
+        "deterministic"
+      ],
+      "usage": "codify.py scaffold <source> --target <absent-dir>; implement the native workflow, then compile <source> --entrypoint <cli> --cases <contracts> --output <artifact>; run <artifact> --input <json>."
+    },
+    {
+      "id": "session-consolidation-engine",
+      "kind": "library",
+      "summary": "Collect bounded scoped session evidence and deterministically route explicit abstract findings into the smallest ___ify action graph.",
+      "artifact": "skills/learn/scripts/session_learning.py",
+      "guide": "skills/learn/references/session-consolidation.md",
+      "tags": [
+        "learn",
+        "session",
+        "abstraction",
+        "routing",
+        "scope",
+        "reuse"
+      ],
+      "usage": "learn.py sessions review [--session <id>] [--save]; then sessions plan --snapshot <snapshot.json> --input <semantic-decisions.json> [--save]. Execute selected skills through the authored consolidation procedure."
+    },
+    {
+      "id": "dotfiles-bootstrap",
+      "kind": "generator",
+      "summary": "Provision reproducible agent dotfiles through a single noninteractive entrypoint with private prerequisites, bounded runtime workers, scoped initialization, owned configuration, and verification.",
+      "artifact": "scripts/bootstrap.py",
+      "guide": "docs/bootstrap.md",
+      "tags": [
+        "dotfiles",
+        "bootstrap",
+        "setup",
+        "devcontainer",
+        "codex-cloud",
+        "offline",
+        "runtime"
+      ],
+      "usage": "./install.sh [--profile dotfiles|devcontainer|codex-cloud] [--target <home-or-project> --scope home|project] [--workspace <project>]; use --dry-run/--check for read-only operations or --offline for cached startup."
+    },
+    {
+      "id": "managed-runtime-paths",
+      "kind": "module",
+      "summary": "Resolve private runtime prerequisites for host-launched tools and installers while preserving supplied authentication, proxy, and CA variables.",
+      "artifact": "scripts/runtime_environment.py",
+      "guide": "docs/bootstrap.md",
+      "tags": [
+        "runtime",
+        "environment",
+        "path",
+        "mcp",
+        "hook",
+        "toolchain"
+      ],
+      "usage": "Import with_paths(root, environment=None) to obtain an independent environment mapping with existing private bin paths prepended; launch the owned child with that mapping."
+    },
+    {
+      "id": "markdown-command-runtime",
+      "kind": "library",
+      "summary": "Validate Markdown/YAML command signatures and deterministically map nested CLI commands, aliases, typed flags, or OpenAI tool calls to the same verified compiled artifact.",
+      "artifact": "skills/codify/scripts/command_schema.py",
+      "guide": "skills/codify/references/command-definitions.md",
+      "tags": [
+        "command",
+        "subcommand",
+        "schema",
+        "openai",
+        "function",
+        "tool",
+        "cli",
+        "yaml",
+        "alias"
+      ],
+      "usage": "codify.py commands <package> --format responses|chat; invoke <package> -- <command> [args] or invoke <package> --call <tool-call.json>. Author commands/*.md and compile with their matching implementation."
+    },
+    {
+      "id": "scoped-skill-workflow-runner",
+      "kind": "module",
+      "summary": "Discover scoped skill/workflow packages and invoke their frozen Codify commands or locks with selected existing inference profiles and independent child environments.",
+      "artifact": "scripts/tkstack.py",
+      "guide": "docs/runner.md",
+      "tags": [
+        "runner",
+        "cli",
+        "skill",
+        "workflow",
+        "registry",
+        "scope",
+        "provider",
+        "model",
+        "compiled"
+      ],
+      "usage": ".tkstack/tkstack skills <name> -- <command> [arguments]; workflows <package-or-lock>; list|tools|check for read-only discovery. Install into an explicit scope using runner_install.py."
+    },
+    {
+      "id": "documentation-freshness-gate",
+      "kind": "module",
+      "summary": "Compare source/document review snapshots and generated README facts, using live files or the actual Git index; shared by native completion hooks and pre-commit.",
+      "artifact": "scripts/check_docs.py",
+      "guide": "docs/documentation.md",
+      "tags": [
+        "docs",
+        "readme",
+        "freshness",
+        "git",
+        "staged",
+        "hooks",
+        "lint"
+      ],
+      "usage": "check_docs.py check [--staged]; render generated README facts; explicitly review and refresh --area <name> --reason <actual-review>; --no-doc-impact documents internal-only exceptions."
+    },
+    {
+      "id": "durable-sdlc-task-coordinator",
+      "kind": "module",
+      "summary": "SQLite WAL task coordination, expiring fenced ownership, Git/proof readiness, and explicit issue/workload/ADR revisions.",
+      "artifact": "skills/sdlc/scripts/task_store.py",
+      "guide": "skills/sdlc/references/durable-task-graph.md",
+      "tags": [
+        "sdlc",
+        "sqlite",
+        "dag",
+        "lease",
+        "recovery",
+        "requirements",
+        "adr"
+      ],
+      "usage": ".tkstack/tkstack skills sdlc -- tasks init|status|claim|heartbeat|finish|quiesce|recover|issue|revise|history|gate --run <run> --actor <owner> ...; see typed commands/*.md. Use local .tkstack/sdlc state and actual quiescence evidence."
+    },
+    {
+      "id": "deterministic-command-manual",
+      "kind": "module",
+      "summary": "One metadata/signature-derived man-page model with escaped man(1) source and fixed console rendering for shared reserved help.",
+      "artifact": "skills/codify/scripts/command_manual.py",
+      "guide": "skills/codify/references/command-definitions.md",
+      "tags": [
+        "help",
+        "man",
+        "roff",
+        "console",
+        "deterministic",
+        "commands"
+      ],
+      "usage": "Use command_schema.help_text/execute for reserved help, or command_manual.render(identity, command_items, topic, format). Keep signatures and metadata authoritative; no host pager/formatter, model calls, timestamps, or state writes."
+    },
+    {
+      "id": "skill-contract-runtime",
+      "kind": "module",
+      "summary": "Canonical typed skill contract/report verification and bounded native helper transport.",
+      "artifact": "skills/codify/scripts/package_runtime.py",
+      "guide": "docs/normalization.md",
+      "tags": [
+        "skills",
+        "contracts",
+        "normalization",
+        "deterministic"
+      ],
+      "usage": "Use Skillify normalize from an explicit contract profile; all distributed runtime copies derive from this owner."
+    },
+    {
+      "id": "strict-json-contract",
+      "kind": "module",
+      "summary": "One strict duplicate/non-finite/overflow JSON parser for compiler, command protocol and packaged skill cores.",
+      "artifact": "skills/codify/scripts/json_contract.py",
+      "guide": "docs/normalization.md",
+      "tags": [
+        "skills",
+        "contracts",
+        "normalization",
+        "deterministic"
+      ],
+      "usage": "Import loads or retain existing parse_json/json_value aliases. Keep size limits at the actual file/input boundary."
+    },
+    {
+      "id": "owned-skill-normalizer",
+      "kind": "generator",
+      "summary": "Generate typed model/verify/native interfaces while preserving native code and source-generation ownership.",
+      "artifact": "skills/skillify/scripts/skill_normalize.py",
+      "guide": "docs/normalization.md",
+      "tags": [
+        "skills",
+        "contracts",
+        "normalization",
+        "deterministic"
+      ],
+      "usage": "skillify normalize <skill> --profile <contract.json> --dry-run; review/apply, update docs/cases/index/version, then compile and run conformance."
+    },
+    {
+      "id": "owned-skill-conformance",
+      "kind": "module",
+      "summary": "Read-only inventory-wide skill schema, shared source, generator, metadata, split and artifact freshness CLI gate.",
+      "artifact": "scripts/check_skills.py",
+      "guide": "docs/normalization.md",
+      "tags": [
+        "skills",
+        "contracts",
+        "normalization",
+        "deterministic"
+      ],
+      "usage": "python3 scripts/tool.py command-schema -B scripts/check_skills.py; doctor and CI call the same shared validators."
+    }
+  ]
+}

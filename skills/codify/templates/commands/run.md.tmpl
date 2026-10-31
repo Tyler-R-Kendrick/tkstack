@@ -1,0 +1,32 @@
+---
+schema: tkstack.command/v1
+tool:
+  type: function
+  name: execute_workflow
+  description: Execute the verified workflow.
+  strict: true
+  parameters:
+    type: object
+    properties:
+      request:
+        type: string
+        description: Replace with the actual workflow parameter contract before shipping.
+    required:
+    - request
+    additionalProperties: false
+cli:
+  path:
+  - run
+  aliases:
+  - - execute
+  positionals:
+  - request
+run:
+  artifact: scripts/workflow.lock.json
+---
+
+# Run the verified workflow
+
+TODO(SKILLIFY): Replace this draft signature with the real workflow parameters,
+CLI bindings, aliases, examples, effects, errors, and completion contract.
+Compile with `commands/` included; execution rejects stale definitions.

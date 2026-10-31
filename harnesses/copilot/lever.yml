@@ -1,0 +1,18 @@
+# Repository defaults for Lever; explicit task instructions still set requested autonomy.
+# L2 is Lever's fallback when no instruction says who lands the work.
+# There is no repository cap or standing merge grant in this template.
+autonomy:
+  default: L2
+
+spend:
+  tier: high
+  premium_for: [diagnosis, planning, risky_review]
+
+budgets:
+  github_api_calls_per_merged_pr: 75
+  max_parallel_arms: 4
+  min_poll_interval_minutes: 4
+
+status:
+  timezone: America/Chicago
+  quiet_when_unchanged: true

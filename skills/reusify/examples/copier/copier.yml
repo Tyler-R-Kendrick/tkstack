@@ -1,0 +1,14 @@
+_min_copier_version: "9.7.1"
+_subdirectory: template
+
+display_name:
+  type: str
+  default: Example
+  validator: >-
+    {% if not (display_name | trim) %}A nonblank display name is required.{% endif %}
+
+worker_limit:
+  type: int
+  default: 4
+  validator: >-
+    {% if worker_limit < 1 or worker_limit > 32 %}Worker limit must be between 1 and 32.{% endif %}

@@ -1,0 +1,30 @@
+{
+  "name": "tkstack agent dotfiles",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24"
+    }
+  },
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "${containerWorkspaceFolder}/.tkstack/bin:${containerEnv:PATH}"
+  },
+  "postCreateCommand": [
+    "bash",
+    "${containerWorkspaceFolder}/install.sh",
+    "--profile",
+    "devcontainer",
+    "--workspace",
+    "${containerWorkspaceFolder}"
+  ],
+  "postStartCommand": [
+    "bash",
+    "${containerWorkspaceFolder}/install.sh",
+    "--profile",
+    "devcontainer",
+    "--workspace",
+    "${containerWorkspaceFolder}",
+    "--offline"
+  ]
+}

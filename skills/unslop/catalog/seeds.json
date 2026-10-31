@@ -1,0 +1,726 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "id": "decorative-eyebrows",
+      "domains": [
+        "web"
+      ],
+      "title": "Eyebrows above every heading",
+      "signal": "Repeated small labels restate headings without adding navigation or meaning.",
+      "reason": "A default section template replaces information hierarchy.",
+      "fix": "Remove redundant labels; let headings and spacing establish hierarchy.",
+      "exception": "A real category, breadcrumb, or required editorial label can orient the reader.",
+      "example": "FEATURES above Our features above a feature list.",
+      "counterexample": "A research article labels its section Methods to distinguish it from Results.",
+      "origin": "user-seeded",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "badge-spam",
+      "domains": [
+        "web"
+      ],
+      "title": "Badges everywhere",
+      "signal": "Pills, chips, and status dots decorate most headings or cards without distinct semantics.",
+      "reason": "Decoration competes with the information and real states.",
+      "fix": "Reserve badges for useful status, taxonomy, counts, or filtering.",
+      "exception": "A dense operations table can legitimately show many independent live states.",
+      "example": "Every feature has NEW, PRO, or AI POWERED with no behavioral meaning.",
+      "counterexample": "A deployment dashboard marks failed and pending jobs with accessible status labels.",
+      "origin": "user-seeded",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "narration-comments",
+      "domains": [
+        "code"
+      ],
+      "title": "Comments narrating obvious code",
+      "signal": "Comments repeat the next expression, type, or function name.",
+      "reason": "Comment volume substitutes for clear names and reasoning.",
+      "fix": "Delete narration; retain rationale, invariants, hazards, public contracts, and legal notices.",
+      "exception": "Explain a nonobvious constraint even when the code itself is short.",
+      "example": "# Increment count immediately before count += 1.",
+      "counterexample": "A comment explains why a retry must not repeat a non-idempotent payment.",
+      "origin": "user-seeded",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "meaningless-tests",
+      "domains": [
+        "tests"
+      ],
+      "title": "Tests with no meaningful oracle",
+      "signal": "Assertions are tautologies, compare a value to itself, or check only that a mock returns its configured value.",
+      "reason": "A green suite is confused with evidence of required behavior.",
+      "fix": "Assert an independently specified observable outcome at a public seam; prove a relevant wrong implementation fails.",
+      "exception": "A small invariant or reviewed snapshot can be valuable when it catches a meaningful regression.",
+      "example": "assert result == result or assert True after calling an empty stub.",
+      "counterexample": "A provider contract rejects a response missing a consumer-required field.",
+      "origin": "user-seeded",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "template-card-grids",
+      "domains": [
+        "web"
+      ],
+      "title": "Template-driven card grids",
+      "signal": "Unrelated content is forced into identical cards, nested cards, or repeated three-column sections.",
+      "reason": "A convenient component substitutes for the content structure.",
+      "fix": "Use layout suited to comparison, sequence, reading, or action; flatten needless wrappers.",
+      "exception": "A product catalog or comparable items can benefit from a consistent card grid.",
+      "example": "A legal policy is split into pricing-style cards.",
+      "counterexample": "Comparable projects each show a preview, title, owner, and useful action.",
+      "origin": "impeccable",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "unmotivated-effects",
+      "domains": [
+        "web",
+        "image"
+      ],
+      "title": "Unmotivated visual effects",
+      "signal": "Glass, glow, gradients, giant blurred orbs, or faux grain repeat without supporting the brief.",
+      "reason": "A fashionable effect is used as a substitute for visual direction.",
+      "fix": "Choose effects from the subject, brand, materials, and hierarchy; remove unsupported flourishes.",
+      "exception": "A requested neon poster, frosted material study, or established brand gradient is intentional.",
+      "example": "An accounting form gets neon glows and a huge gradient orb behind every field.",
+      "counterexample": "A concert poster uses glowing type consistent with its night-club brief.",
+      "origin": "frontcraft",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "ornamental-typography",
+      "domains": [
+        "web",
+        "image"
+      ],
+      "title": "Ornamental typography without hierarchy",
+      "signal": "Tracked uppercase labels, arbitrary italic words, or highlighted words appear as repeated decoration.",
+      "reason": "A typography trick takes the place of a readable hierarchy.",
+      "fix": "Use coherent type roles and emphasize only semantic distinctions.",
+      "exception": "An editorial identity or a diagram can intentionally need these treatments.",
+      "example": "Every headline colors one arbitrary word despite identical meaning.",
+      "counterexample": "A language lesson highlights the particular word whose pronunciation is being taught.",
+      "origin": "hallmark",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "fake-proof",
+      "domains": [
+        "writing",
+        "web",
+        "image",
+        "video",
+        "audio"
+      ],
+      "title": "Invented credibility",
+      "signal": "Metrics, logos, citations, testimonials, case studies, or provenance claims lack a verified source.",
+      "reason": "Plausible detail is mistaken for factual evidence.",
+      "fix": "Remove unsupported claims or clearly label approved fictional/mock content; preserve real evidence.",
+      "exception": "Explicitly fictional art and clearly labeled sample data do not claim to be real.",
+      "example": "A live product page claims 10,000 customers and shows companies never consulted.",
+      "counterexample": "A prototype visibly labels its sample customer quote as placeholder content.",
+      "origin": "hallmark",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "dead-interactions",
+      "domains": [
+        "web"
+      ],
+      "title": "Decorative or simulated functionality",
+      "signal": "Controls do nothing, links point nowhere, or success states appear without the operation succeeding.",
+      "reason": "A screenshot is optimized while the actual task remains impossible.",
+      "fix": "Wire the requested behavior, expose honest unavailable states, and validate real boundaries.",
+      "exception": "A visibly labeled static mockup may intentionally demonstrate only appearance.",
+      "example": "A signup form always displays Success without sending or storing anything.",
+      "counterexample": "A disabled preview button explains that this prototype does not submit data.",
+      "origin": "frontcraft",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "missing-product-states",
+      "domains": [
+        "web"
+      ],
+      "title": "Only the happy-path screenshot works",
+      "signal": "Loading, empty, error, long-content, keyboard, or narrow-screen states break required use.",
+      "reason": "A single attractive frame is treated as the complete experience.",
+      "fix": "Inspect relevant states at realistic content and viewport sizes; repair task and accessibility failures.",
+      "exception": "Do not invent product states outside the task; assess those the real flow requires.",
+      "example": "A fixed-width checkout hides its submit button on a phone.",
+      "counterexample": "A responsive table has a usable small-screen reading path and visible keyboard focus.",
+      "origin": "impeccable",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "decorative-data",
+      "domains": [
+        "web",
+        "image"
+      ],
+      "title": "Data-like decoration",
+      "signal": "Charts, terminal text, status lights, or technical-looking labels imply data that does not exist.",
+      "reason": "The appearance of technical substance stands in for meaning.",
+      "fix": "Use actual explained data or remove the pseudo-information.",
+      "exception": "An openly fictional sci-fi interface can use decorative telemetry.",
+      "example": "A sales dashboard draws unlabeled random bars as evidence of growth.",
+      "counterexample": "A chart names its measure, interval, source, and actual values.",
+      "origin": "impeccable",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "speculative-abstractions",
+      "domains": [
+        "code"
+      ],
+      "title": "Abstractions without a present need",
+      "signal": "Factories, wrappers, plugin layers, or config machinery have no current caller or requirement.",
+      "reason": "Imagined flexibility inflates the maintenance surface.",
+      "fix": "Implement the smallest coherent current behavior and keep justified extension seams.",
+      "exception": "A demonstrated second implementation, public interface, or actual variation can justify abstraction.",
+      "example": "A one-use formatter gets an abstract factory and registry of providers.",
+      "counterexample": "Two supported backends share a small tested storage contract.",
+      "origin": "deslop",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "defensive-noise",
+      "domains": [
+        "code"
+      ],
+      "title": "Defensive noise and hidden failures",
+      "signal": "Broad catches, impossible guards, or fallback values hide broken invariants or failures.",
+      "reason": "Appearing robust masks uncertainty about the contract.",
+      "fix": "Validate real trust boundaries; propagate or handle failures explicitly at the correct owner.",
+      "exception": "Untrusted input and genuinely recoverable failures require validation and narrow recovery.",
+      "example": "catch Exception returns an empty list after a required database write fails.",
+      "counterexample": "An HTTP boundary validates external JSON and returns a specific input error.",
+      "origin": "deslop",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "type-escape-hatches",
+      "domains": [
+        "code"
+      ],
+      "title": "Type escapes replacing a contract",
+      "signal": "Any casts, ignored diagnostics, or unchecked coercions suppress a real interface mismatch.",
+      "reason": "Removing a compiler complaint is mistaken for fixing behavior.",
+      "fix": "Model the boundary and narrow unknown input with actual validation.",
+      "exception": "A documented, narrow interop shim may be necessary for an untyped library.",
+      "example": "Cast a failed payment response to any so the success renderer compiles.",
+      "counterexample": "A validated discriminated union distinguishes success from failure.",
+      "origin": "deslop",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "boilerplate-bloat",
+      "domains": [
+        "code"
+      ],
+      "title": "Boilerplate and dependency bloat",
+      "signal": "Unrequested scaffolding, dependencies, duplicated helpers, or generated layers dominate a small change.",
+      "reason": "Output volume substitutes for a complete minimal deliverable.",
+      "fix": "Reuse the local idioms and remove unused machinery while preserving required behavior.",
+      "exception": "Generated protocol bindings and required framework glue can be large and justified.",
+      "example": "A two-line parsing fix introduces a new framework and parallel utility hierarchy.",
+      "counterexample": "A required client binding is generated from the pinned service contract.",
+      "origin": "deslop",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "fake-completion",
+      "domains": [
+        "code",
+        "writing"
+      ],
+      "title": "Placeholder work reported as complete",
+      "signal": "TODO stubs, canned return values, omitted branches, or unrun checks are described as finished or verified.",
+      "reason": "A completion narrative replaces delivery evidence.",
+      "fix": "Implement the authorized behavior or state the exact remaining limitation and verification status.",
+      "exception": "A requested scaffold may contain clearly labeled placeholders.",
+      "example": "A function returns a hardcoded success while the report says production-ready and tested.",
+      "counterexample": "A scaffold report identifies its stub and states which checks actually ran.",
+      "origin": "slopkit",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "implementation-mirror-tests",
+      "domains": [
+        "tests"
+      ],
+      "title": "Tests mirror the implementation",
+      "signal": "Expected values are recomputed with the same algorithm or copied from unreviewed output.",
+      "reason": "The oracle repeats the same mistake as the code.",
+      "fix": "Derive expectations from examples, invariants, requirements, or a real independent contract.",
+      "exception": "A separately derived reference implementation can serve as an independent oracle.",
+      "example": "The test imports the function to calculate its own expected result.",
+      "counterexample": "A tax example uses an independently calculated amount from the published rule.",
+      "origin": "matt-tdd",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "mock-only-contracts",
+      "domains": [
+        "tests"
+      ],
+      "title": "Mocks posing as contracts",
+      "signal": "Tests prove internal calls or mutually agreeing mocks without exercising the consumer/provider boundary.",
+      "reason": "An implementation detail is confused with externally required behavior.",
+      "fix": "Verify actual boundary serialization, validation, and compatibility against the real provider implementation or its verified contract.",
+      "exception": "A narrowly isolated unit test may use mocks; call counts matter for explicit side-effect or resource limits.",
+      "example": "Both sides mock the same assumed response and declare API compatibility.",
+      "counterexample": "A consumer-required schema is checked against actual provider responses in isolation.",
+      "origin": "matt-tdd",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "test-count-padding",
+      "domains": [
+        "tests"
+      ],
+      "title": "Redundant tests for appearance",
+      "signal": "Many tests restate the same outcome or assert implementation details without covering distinct risks.",
+      "reason": "Test count and line coverage replace behavioral confidence.",
+      "fix": "Keep distinct behavior and boundary cases; remove duplicates and brittle private-detail assertions.",
+      "exception": "A data-driven matrix is justified when cases exercise materially different boundaries.",
+      "example": "Twenty tests each assert that a trivial getter returns the fixture value.",
+      "counterexample": "Boundary cases cover zero, maximum, missing, and invalid quantities with specified outcomes.",
+      "origin": "matt-tdd",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "green-by-weakening",
+      "domains": [
+        "tests"
+      ],
+      "title": "Green by weakening the test",
+      "signal": "Assertions are deleted, expectations copy a bug, or tests are skipped solely to remove a failure.",
+      "reason": "A green indicator becomes the goal instead of the required outcome.",
+      "fix": "Determine whether the implementation or requirement changed; retain a test that distinguishes the intended behavior.",
+      "exception": "A documented obsolete requirement can justify revising or retiring its test.",
+      "example": "Skip the regression test after the fix fails, then report all checks green.",
+      "counterexample": "Update a contract only after an explicit requirement change and show its new behavioral evidence.",
+      "origin": "matt-tdd",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "inflated-prose",
+      "domains": [
+        "writing"
+      ],
+      "title": "Inflation without a concrete claim",
+      "signal": "Grand significance, generic praise, vague authority, or corporate verbs replace a specific actor and action.",
+      "reason": "The language sounds substantial without communicating evidence.",
+      "fix": "State the supported fact, action, example, or uncertainty in the intended voice.",
+      "exception": "Expressive or promotional writing can be appropriate when its claims remain grounded.",
+      "example": "This groundbreaking solution revolutionizes seamless collaboration without saying what it does.",
+      "counterexample": "The tool assigns each review comment to its owner and records its resolution.",
+      "origin": "humanizer",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "formulaic-prose",
+      "domains": [
+        "writing"
+      ],
+      "title": "Formulaic rhetorical scaffolding",
+      "signal": "Repeated staged contrasts, forced triads, canned summaries, or synonym cycling organize otherwise simple points.",
+      "reason": "A familiar rhetorical template overwhelms the actual argument.",
+      "fix": "Keep the logical relation and natural rhythm; cut scaffolding that adds no meaning.",
+      "exception": "A real contrast, three genuine alternatives, or requested formal summary can help comprehension.",
+      "example": "Every paragraph ends with an inspirational takeaway and repeats the same contrast.",
+      "counterexample": "A technical comparison explicitly contrasts latency and throughput because the decision depends on them.",
+      "origin": "pstack",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "formatting-as-substance",
+      "domains": [
+        "writing"
+      ],
+      "title": "Formatting as substance",
+      "signal": "Fragments, excessive bold labels, unnecessary tables, or repetitive headings inflate a small answer.",
+      "reason": "Visual structure is mistaken for explanatory content.",
+      "fix": "Use connected prose or a compact structure appropriate to the actual information.",
+      "exception": "A real mapping, sequence, or long reference benefits from a table or headings.",
+      "example": "A one-step answer has six headings, bold labels, and a recap.",
+      "counterexample": "A compatibility matrix presents actual differences across five platforms.",
+      "origin": "pstack",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "fabricated-human-voice",
+      "domains": [
+        "writing"
+      ],
+      "title": "Invented personal voice",
+      "signal": "Fake anecdotes, deliberate errors, or invented sensory experience are added to appear human.",
+      "reason": "Humanization is confused with fabricated evidence or caricature.",
+      "fix": "Preserve the actual author voice and supported experience; improve specificity without invention.",
+      "exception": "Clearly fictional narration may use an invented first-person speaker.",
+      "example": "An editor invents a childhood memory for the author of a factual article.",
+      "counterexample": "An edit keeps the supplied real anecdote and removes generic connective filler.",
+      "origin": "humanizer",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "verification-overclaim",
+      "domains": [
+        "writing"
+      ],
+      "title": "Verification and certainty overclaims",
+      "signal": "A report claims tests, renders, media inspection, deployment, or certainty beyond what was observed.",
+      "reason": "Confidence and clean phrasing hide the evidence boundary.",
+      "fix": "Separate edited, run, observed, and unresolved; keep caveats that change the decision.",
+      "exception": "A concise report can state verified outcomes when actual evidence supports them.",
+      "example": "Say visually verified after reading only CSS, or tests passed without running them.",
+      "counterexample": "State source checked; rendered layout not inspected when no renderer was available.",
+      "origin": "slopkit",
+      "level": "floor",
+      "severity": "critical",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "generic-brief-mismatch",
+      "domains": [
+        "image",
+        "video",
+        "audio",
+        "web"
+      ],
+      "title": "Generic output that misses the brief",
+      "signal": "Polished stock tropes replace the specified subject, audience, materials, story, or product task.",
+      "reason": "Surface polish is mistaken for requirement satisfaction.",
+      "fix": "Compare the actual artifact with the brief; choose subject-specific composition and assets.",
+      "exception": "A stock aesthetic can be correct when explicitly requested and relevant.",
+      "example": "A requested repair tutorial becomes a cinematic montage with no visible repair steps.",
+      "counterexample": "A repair sequence clearly shows each requested operation with consistent parts.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "visual-geometry-artifacts",
+      "domains": [
+        "image",
+        "video"
+      ],
+      "title": "Unintentional geometry artifacts",
+      "signal": "Anatomy, joints, objects, reflections, occlusion, shadows, or perspective are incoherent in inspected regions.",
+      "reason": "Local plausibility fails to form a consistent physical scene.",
+      "fix": "Inspect the full image and relevant closeups or frames; repair the actual inconsistent region.",
+      "exception": "Surreal, diagrammatic, or intentionally impossible geometry may be the brief.",
+      "example": "A hand grows a sixth finger while gripping a physically disconnected handle.",
+      "counterexample": "An intentionally Escher-like illustration follows its requested impossible-space concept.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "garbled-visual-text",
+      "domains": [
+        "image",
+        "video",
+        "web"
+      ],
+      "title": "Garbled or meaningless visual text",
+      "signal": "Requested text, signage, labels, or logos are unreadable, misspelled, duplicated, or semantically wrong.",
+      "reason": "Text-like shapes stand in for required information.",
+      "fix": "Use accurate typography or regenerate/edit the actual asset, then inspect at delivery size.",
+      "exception": "Abstract texture can resemble text when no readable message is intended.",
+      "example": "A product image misspells the required model name on its packaging.",
+      "counterexample": "An abstract artwork uses letter-like marks without claiming they are readable copy.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "overprocessed-materials",
+      "domains": [
+        "image",
+        "video"
+      ],
+      "title": "Unrequested plastic or overprocessed materials",
+      "signal": "Waxy skin, uniform gloss, oversharpened edges, fake bokeh, or incoherent detail erase required material qualities.",
+      "reason": "A generic polished finish substitutes for appropriate texture and optics.",
+      "fix": "Match the requested medium, lighting, materials, and level of finish.",
+      "exception": "Glossy toys, beauty retouching, or stylized renders can intentionally use these qualities.",
+      "example": "A documentary portrait has plastic skin and painted-on texture despite a natural-light brief.",
+      "counterexample": "A shiny vinyl character render intentionally uses smooth reflective surfaces.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "identity-and-style-drift",
+      "domains": [
+        "image",
+        "video"
+      ],
+      "title": "Identity or scene drift",
+      "signal": "Required characters, products, materials, lighting, or art direction change inconsistently across regions or shots.",
+      "reason": "Independent generations fail the continuity requirement.",
+      "fix": "Track required identities and scene constraints; compare references and shots before delivery.",
+      "exception": "A story can intentionally change time, lighting, costume, or visual style.",
+      "example": "A product switches its control layout between demonstration shots with no explanation.",
+      "counterexample": "A time-lapse intentionally changes lighting while preserving the product geometry.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "temporal-artifacts",
+      "domains": [
+        "video"
+      ],
+      "title": "Temporal artifacts and meaningless motion",
+      "signal": "Objects morph, edges flicker, limbs appear, continuity breaks, or transitions obscure the requested action.",
+      "reason": "A plausible frame is confused with a coherent sequence.",
+      "fix": "Watch the relevant sequence in motion; inspect suspect frames and repair continuity or timing.",
+      "exception": "Deliberate morph animation, jump cuts, and experimental flicker can be intentional.",
+      "example": "A cup handle dissolves halfway through an otherwise realistic pour.",
+      "counterexample": "An explicitly requested morph transition transforms one object into another.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    },
+    {
+      "id": "audio-artifacts",
+      "domains": [
+        "audio",
+        "video"
+      ],
+      "title": "Unintentional audio artifacts",
+      "signal": "Clipping, repeated phrases, timing gaps, synthetic prosody, or identity drift conflict with required intelligibility and continuity.",
+      "reason": "A generated track is delivered without listening to the actual sequence.",
+      "fix": "Listen at the intended playback level and check relevant transitions, pronunciation, and sync.",
+      "exception": "A robotic voice, distortion, or abrupt cut may be an explicit artistic choice.",
+      "example": "A narration repeats a sentence and clips the start of the next required instruction.",
+      "counterexample": "A requested radio-robot effect intentionally uses distortion while keeping instructions intelligible.",
+      "origin": "synthesis",
+      "level": "reflex",
+      "severity": "major",
+      "scope": {
+        "kind": "personal",
+        "value": "*"
+      },
+      "status": "active",
+      "evidence": []
+    }
+  ]
+}

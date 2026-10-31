@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "instructify",
+        "purpose": "Plan hashed scoped instruction updates, preserving foreign content and actual loading boundaries.",
+        "criteria": [
+          {
+            "id": "scope",
+            "description": "Resolve the actual inherited scope, imports and intended instruction trigger."
+          },
+          {
+            "id": "ownership",
+            "description": "Preserve foreign content and installer ownership; compare hashed input before writing."
+          },
+          {
+            "id": "native-binding",
+            "description": "Verify file binding separately from observed native host loading."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "ownership_preserved": {
+              "type": "boolean",
+              "const": true
+            },
+            "stale_input_applied": {
+              "type": "boolean",
+              "const": false
+            },
+            "scope_preserved": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "ownership_preserved",
+            "stale_input_applied",
+            "scope_preserved"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Use the native hashed plan/check/apply path for ownership and stale-plan enforcement; actual harness loading remains separately observed."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

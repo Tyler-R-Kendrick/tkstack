@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+tkstack_source="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+tkstack_repo="$(git rev-parse --show-toplevel)"
+exec "${TKSTACK_PYTHON:-python3}" -B "$tkstack_source/scripts/check_docs.py" --repo "$tkstack_repo" check --staged

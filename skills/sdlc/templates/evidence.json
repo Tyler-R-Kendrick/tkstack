@@ -1,0 +1,82 @@
+{
+  "workload_sha256": "REPLACE_WITH_FROZEN_INITIAL_WORKLOAD_SHA256",
+  "head_sha": "REPLACE_WITH_EXACT_REVIEWED_HEAD",
+  "implementation_owner": "REPLACE_WITH_ACTUAL_IMPLEMENTER_ID",
+  "amendments": [],
+  "checks": [
+    {
+      "id": "BDD-001",
+      "requirements": ["R-001"],
+      "kind": "bdd",
+      "command": "REPLACE_WITH_ACTUAL_BDD_CHECK_COMMAND",
+      "result": "pending",
+      "head_sha": "REPLACE_WITH_EXACT_CHECKED_HEAD"
+    },
+    {
+      "id": "CONSUMER-001",
+      "requirements": ["R-001"],
+      "kind": "contract",
+      "role": "consumer",
+      "contract_artifact": "contracts/interaction.json",
+      "contract_sha256": "REPLACE_WITH_HASH_OF_THE_SAME_INTERACTION_ARTIFACT",
+      "command": "REPLACE_WITH_ACTUAL_CONSUMER_VERIFICATION_COMMAND",
+      "result": "pending",
+      "head_sha": "REPLACE_WITH_EXACT_CHECKED_HEAD"
+    },
+    {
+      "id": "PROVIDER-001",
+      "requirements": ["R-001"],
+      "kind": "contract",
+      "role": "provider",
+      "real_provider": false,
+      "contract_artifact": "contracts/interaction.json",
+      "contract_sha256": "REPLACE_WITH_HASH_OF_THE_SAME_INTERACTION_ARTIFACT",
+      "command": "REPLACE_WITH_ACTUAL_REAL_PROVIDER_VERIFICATION_COMMAND",
+      "result": "pending",
+      "head_sha": "REPLACE_WITH_EXACT_CHECKED_HEAD"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "contracts/interaction.json",
+      "sha256": "REPLACE_WITH_RETAINED_ARTIFACT_HASH",
+      "requirements": ["R-001"],
+      "kind": "contract",
+      "revision": "REPLACE_WITH_EXACT_CANDIDATE_HEAD",
+      "capture_command": "REPLACE_WITH_ACTUAL_ARTIFACT_CAPTURE_COMMAND",
+      "environment": {
+        "fixture": "REPLACE_WITH_PINNED_FIXTURE_VERSION",
+        "consumer_revision": "REPLACE_WITH_ACTUAL_CONSUMER_REVISION",
+        "provider_revision": "REPLACE_WITH_ACTUAL_PROVIDER_REVISION"
+      }
+    }
+  ],
+  "compliance": [
+    {
+      "requirement": "R-001",
+      "verdict": "pending",
+      "checks": ["BDD-001", "CONSUMER-001", "PROVIDER-001"],
+      "evidence": ["contracts/interaction.json"],
+      "rationale": "REPLACE_WITH_OBSERVATIONS_FROM_THE_INITIAL_WORKLOAD_AND_ACTUAL_EVIDENCE"
+    }
+  ],
+  "findings": [],
+  "review": {
+    "reviewer": "REPLACE_WITH_ACTUAL_INDEPENDENT_REVIEWER_ID",
+    "workload_sha256": "REPLACE_WITH_FROZEN_INITIAL_WORKLOAD_SHA256",
+    "head_sha": "REPLACE_WITH_EXACT_REVIEWED_HEAD",
+    "evidence_sha256": "REPLACE_WITH_REVIEW_DIGEST_OF_THE_INSPECTED_PAYLOAD",
+    "verdict": "pending",
+    "requirements_complete": false,
+    "amendments_verified": false
+  },
+  "pr": {
+    "head_sha": "REPLACE_WITH_CURRENT_REMOTE_PR_HEAD",
+    "checks_green": false,
+    "comments_complete": false,
+    "approvals_current": false,
+    "dependencies_merged": false,
+    "mergeable": false,
+    "comments": []
+  }
+}

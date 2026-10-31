@@ -1,0 +1,16 @@
+# Local installations; sources live in vendor/, skills/, and agents/.
+/.agents/
+/.claude/
+/.cursor/
+/.codex/
+/.mcp.json
+# Generated Lever Copilot layout; canonical files stay in vendor/lever.
+/.github/skills/
+/.github/docs
+/.github/templates
+/.github/config
+/.github/automations
+__pycache__/
+node_modules/
+*.py[cod]
+.DS_Store

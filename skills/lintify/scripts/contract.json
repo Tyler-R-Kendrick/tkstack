@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "name": "lintify",
+  "purpose": "Reuse a native linter where possible and verify discovery, locations, exits and real exceptions.",
+  "criteria": [
+    {
+      "id": "native-discovery",
+      "description": "Run the actual linter on discovered targets, rather than passing because fixtures were ignored."
+    },
+    {
+      "id": "diagnostics",
+      "description": "Verify diagnostic locations, messages and process exit behavior."
+    },
+    {
+      "id": "counterexamples",
+      "description": "Exercise good/bad/transfer/exception fixtures; semantic model rules remain probabilistic."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "real_cli_exercised": {
+        "type": "boolean",
+        "const": true
+      },
+      "semantic_backend": {
+        "type": "boolean"
+      },
+      "claim_deterministic": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "real_cli_exercised",
+      "semantic_backend",
+      "claim_deterministic"
+    ],
+    "additionalProperties": false,
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "semantic_backend": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "claim_deterministic": {
+              "const": false
+            }
+          }
+        }
+      }
+    ]
+  },
+  "native": {
+    "native_scaffold": {
+      "entrypoint": "scripts/lintify.py",
+      "prefix": [
+        "scaffold"
+      ],
+      "parameters": {
+        "backend": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "eslint",
+              "lintbook",
+              "gptlint"
+            ]
+          },
+          "flags": [
+            "--backend"
+          ]
+        },
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--target"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "scaffold"
+      ],
+      "description": "Create the existing native ESLint/Lintbook/GPTLint example package; installation never activates it."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Run real good/bad/transfer/exception files through the selected native CLI; an ignored fixture or Markdown rule alone cannot prove enforcement."
+  ]
+}

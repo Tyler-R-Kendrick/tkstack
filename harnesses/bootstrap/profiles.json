@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "profiles": {
+    "dotfiles": {
+      "harnesses": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "copilot": true
+    },
+    "devcontainer": {
+      "harnesses": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "copilot": true
+    },
+    "codex-cloud": {
+      "harnesses": [
+        "codex"
+      ],
+      "copilot": false
+    }
+  }
+}

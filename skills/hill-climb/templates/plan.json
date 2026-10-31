@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "objective": "Reduce startup latency while preserving required behavior",
+  "metric": "latency_ms",
+  "direction": "lower",
+  "min_gain": 5,
+  "noise_floor": 2,
+  "noise_evidence": "Replace with repeated unchanged-baseline evidence",
+  "target": 100,
+  "guardrails": [{"metric": "quality", "direction": "higher", "tolerance": 0}],
+  "reps": 3,
+  "splits": {"train": ["train-a"], "selection": ["select-a", "select-b"], "confirm": ["holdout-a", "holdout-b"]},
+  "frozen_files": [{"path": "../../../eval/run.py", "sha256": "REPLACE_WITH_REAL_SHA256"}],
+  "editable_paths": ["src/startup.py"],
+  "budget": {"max_rounds": 5, "max_cost_usd": 0, "max_minutes": 30},
+  "stop": {"min_attempts": 1, "plateau_patience": 3},
+  "model_based": false
+}

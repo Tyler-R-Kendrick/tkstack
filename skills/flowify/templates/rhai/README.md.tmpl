@@ -1,0 +1,28 @@
+# @WORKFLOW_NAME@
+
+This definition uses Rhai with Grok's xai-workflow host. It makes no agent calls.
+Plain Rhai does not provide phase(), fingerprint(), complete(), or Grok journaling.
+
+With a compatible Grok source checkout, Rust/Cargo, and cached locked dependencies:
+
+```sh
+cargo run --offline --locked --manifest-path /path/to/grok-build/Cargo.toml \
+  -p xai-workflow --example validate < workflow.rhai
+```
+
+That is upstream native compilation/mock-host validation. Its example uses stub
+probe inputs, not inputs.json, and is not production execution or live-agent proof.
+Real host integration uses xai_workflow::run_workflow with WorkflowRunParams,
+explicit args, Journal, cancellation, operation limits, and a host-request channel.
+Use the installed Grok host's actual workflow integration rather than inventing
+a CLI subcommand or treating a generic rhai binary as a Grok runtime.
+
+The supplied input query is explicit text. The host fingerprint function hashes
+a namespaced, serialized request; its result is not the raw text SHA-256 used by
+the MAF file example. Preserve stable input/script identity when replaying journals.
+Rhai's control flow is deterministic; any newly added agent/tool effects need
+their own contracts, quota/budget, output checks, isolation, and replay semantics.
+Grok parallel() launches agents from option maps; it is not a generic CPU loop.
+
+Replace this example with the actual requested procedure. Do not delegate simple
+code checks to agents just to make the definition look like an agent workflow.

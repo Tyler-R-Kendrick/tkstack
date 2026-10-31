@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "tkstack-principles",
+        "purpose": "Choose the least inferential sufficient mechanism with bounded concurrency and explicit ownership.",
+        "criteria": [
+          {
+            "id": "least-inference",
+            "description": "Use deterministic code first, narrow decision models second, agents last where prior mechanisms are insufficient."
+          },
+          {
+            "id": "bounded-concurrency",
+            "description": "Keep dependency/ownership boundaries explicit and independent work bounded and parallelizable."
+          },
+          {
+            "id": "evidence",
+            "description": "Inspect real outcomes and state limitations; a static check is not semantic or performance proof."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "mechanism": {
+              "type": "string",
+              "enum": [
+                "code",
+                "decision_model",
+                "llm"
+              ]
+            },
+            "code_sufficient": {
+              "type": "boolean"
+            },
+            "decision_model_sufficient": {
+              "type": "boolean"
+            },
+            "concurrency_bounded": {
+              "type": "boolean",
+              "const": true
+            },
+            "ownership_explicit": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "mechanism",
+            "code_sufficient",
+            "decision_model_sufficient",
+            "concurrency_bounded",
+            "ownership_explicit"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "code_sufficient": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "mechanism": {
+                    "const": "code"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code_sufficient": {
+                    "const": false
+                  },
+                  "decision_model_sufficient": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "mechanism": {
+                    "const": "decision_model"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "mechanism": {
+                    "const": "code"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "code_sufficient": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "mechanism": {
+                    "const": "llm"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "code_sufficient": {
+                    "const": false
+                  },
+                  "decision_model_sufficient": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Reported mechanism sufficiency needs real reasoning/evidence; this code checks contradictory recorded choices, not arbitrary problem solvability."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

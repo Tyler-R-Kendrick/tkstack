@@ -1,0 +1,11 @@
+{
+  "name": "lintify-gptlint-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "inspect": "gptlint --config gptlint.config.mjs --no-grit --print-config",
+    "estimate": "gptlint --config gptlint.config.mjs --no-grit --dry-run --concurrency 2"
+  },
+  "devDependencies": { "gptlint": "1.6.0" }
+}

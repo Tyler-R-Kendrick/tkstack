@@ -1,0 +1,14 @@
+<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+<#@ parameter name="WorkerLimit" type="System.Int32" #>
+<#
+if (WorkerLimit < 1 || WorkerLimit > 32)
+    throw new System.ArgumentOutOfRangeException("WorkerLimit");
+#>
+namespace Generated
+{
+    public static class Limits
+    {
+        public const int Workers = <#= WorkerLimit.ToString(System.Globalization.CultureInfo.InvariantCulture) #>;
+    }
+}

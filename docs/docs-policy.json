@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "areas": {
+    "setup": {
+      "inputs": [
+        "install.sh",
+        ".devcontainer/**",
+        "harnesses/bootstrap/**",
+        "scripts/**",
+        ".github/workflows/**",
+        ".gitattributes"
+      ],
+      "exclude": [
+        "scripts/tkstack.py",
+        "scripts/tool.py",
+        "scripts/runtime_environment.py",
+        "scripts/run_hook.py",
+        "scripts/check_docs.py",
+        "scripts/docs_hook.py",
+        "scripts/setup_repo_hooks.py",
+        "scripts/sync_codify.py",
+        "scripts/evolve.py"
+      ],
+      "docs": [
+        "README.md",
+        "docs/bootstrap.md",
+        "docs/integrations.md",
+        "docs/normalization.md"
+      ]
+    },
+    "execution": {
+      "inputs": [
+        "scripts/tkstack.py",
+        "scripts/tool.py",
+        "scripts/runtime_environment.py",
+        "scripts/run_hook.py",
+        "harnesses/runner.json"
+      ],
+      "docs": [
+        "README.md",
+        "docs/runner.md",
+        "docs/normalization.md"
+      ]
+    },
+    "authoring": {
+      "inputs": [
+        "skills/codify/**",
+        "skills/skillify/**",
+        "scripts/sync_codify.py"
+      ],
+      "docs": [
+        "README.md",
+        "docs/codify.md",
+        "docs/skillify.md",
+        "docs/normalization.md"
+      ]
+    },
+    "catalog": {
+      "inputs": [
+        "sources.lock.json",
+        ".claude-plugin/**",
+        "harnesses/**",
+        "agents/**"
+      ],
+      "exclude": [
+        "harnesses/bootstrap/**",
+        "harnesses/runner.json"
+      ],
+      "docs": [
+        "README.md",
+        "docs/skills.md",
+        "docs/integrations.md",
+        "docs/normalization.md"
+      ]
+    },
+    "skills": {
+      "inputs": [
+        "skills/**",
+        "evals/**",
+        "scripts/evolve.py"
+      ],
+      "exclude": [
+        "skills/codify/**",
+        "skills/skillify/**"
+      ],
+      "docs": [
+        "README.md",
+        "docs/skills.md",
+        "docs/standards.md",
+        "docs/learning.md",
+        "docs/sdlc.md",
+        "docs/authoring.md",
+        "docs/skill-distillation.md",
+        "docs/unslop.md",
+        "docs/hill-climb.md",
+        "docs/flowify.md",
+        "docs/lintify.md",
+        "docs/reusify.md",
+        "docs/principles.md",
+        "docs/state-layout.md",
+        "docs/skill-evolution.md",
+        "docs/grok-learn.md",
+        "docs/integrations.md",
+        "docs/normalization.md"
+      ]
+    },
+    "documentation": {
+      "inputs": [
+        "AGENTS.md",
+        ".githooks/**",
+        "docs/docs-policy.json",
+        "scripts/check_docs.py",
+        "scripts/docs_hook.py",
+        "scripts/setup_repo_hooks.py",
+        "tests/**"
+      ],
+      "docs": [
+        "README.md",
+        "docs/documentation.md"
+      ]
+    }
+  }
+}

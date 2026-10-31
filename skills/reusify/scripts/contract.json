@@ -1,0 +1,199 @@
+{
+  "version": 1,
+  "name": "reusify",
+  "purpose": "Find existing assets, establish semantic equivalence and extract the smallest deterministic code-production asset.",
+  "criteria": [
+    {
+      "id": "reuse-search",
+      "description": "Inspect suitable existing assets before authoring another implementation."
+    },
+    {
+      "id": "equivalence",
+      "description": "Use distinct source occurrences and semantic equivalence; preserve legitimate differences."
+    },
+    {
+      "id": "native-generation",
+      "description": "Run the native expansion/compiler/consumer checks and preserve original behavior."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "observed_occurrences": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "explicit_request": {
+        "type": "boolean"
+      },
+      "existing_asset_checked": {
+        "type": "boolean",
+        "const": true
+      },
+      "behavior_preserved": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "observed_occurrences",
+      "explicit_request",
+      "existing_asset_checked",
+      "behavior_preserved"
+    ],
+    "additionalProperties": false,
+    "allOf": [
+      {
+        "anyOf": [
+          {
+            "properties": {
+              "observed_occurrences": {
+                "minimum": 3
+              }
+            }
+          },
+          {
+            "properties": {
+              "explicit_request": {
+                "const": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "native": {
+    "native_check": {
+      "entrypoint": "scripts/reusify.py",
+      "prefix": [
+        "check"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "default": ".",
+          "path": true
+        },
+        "catalog": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--catalog"
+          ],
+          "default": ".tkstack/reuse/catalog.json"
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "check"
+      ],
+      "description": "Check the real reuse catalog without executing any asset."
+    },
+    "native_find": {
+      "entrypoint": "scripts/reusify.py",
+      "prefix": [
+        "find"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "default": ".",
+          "path": true
+        },
+        "query": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--query"
+          ]
+        },
+        "limit": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "flags": [
+            "--limit"
+          ],
+          "default": 10
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "find"
+      ],
+      "description": "Find suitable canonical code assets in the existing catalog."
+    },
+    "native_assess": {
+      "entrypoint": "scripts/reusify.py",
+      "prefix": [
+        "assess"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "default": ".",
+          "path": true
+        },
+        "input": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--input"
+          ],
+          "path": true
+        },
+        "jobs": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "flags": [
+            "--jobs"
+          ],
+          "default": 4
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "assess"
+      ],
+      "description": "Read actual source observations and assess reuse evidence without generating or changing code."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Use native assess for actual independent source occurrences and real native engine/consumer checks for an extracted asset; semantic equivalence remains reviewed."
+  ]
+}

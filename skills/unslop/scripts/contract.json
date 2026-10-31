@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "name": "unslop",
+  "purpose": "Inspect actual artifacts against scoped evolving criteria without inferring authorship or grading missing evidence as pass.",
+  "criteria": [
+    {
+      "id": "artifact-inspection",
+      "description": "Inspect the actual artifact at the relevant revision and surface."
+    },
+    {
+      "id": "criteria",
+      "description": "Use the current scoped catalog with evidence-backed reasoning rather than authorship guesses."
+    },
+    {
+      "id": "exceptions",
+      "description": "Preserve legitimate exceptions and objective correctness/accessibility floors."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "actual_artifact_inspected": {
+        "type": "boolean",
+        "const": true
+      },
+      "missing_evidence_graded_pass": {
+        "type": "boolean",
+        "const": false
+      },
+      "exceptions_preserved": {
+        "type": "boolean",
+        "const": true
+      },
+      "catalog_current": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "actual_artifact_inspected",
+      "missing_evidence_graded_pass",
+      "exceptions_preserved",
+      "catalog_current"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_show": {
+      "entrypoint": "scripts/unslop.py",
+      "prefix": [
+        "show"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "show"
+      ],
+      "description": "Use the actual scoped anti-slop show; recorded observations do not replace artifact inspection."
+    },
+    "native_grade": {
+      "entrypoint": "scripts/unslop.py",
+      "prefix": [
+        "grade"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        },
+        "input": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--input"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "grade"
+      ],
+      "description": "Use the actual scoped anti-slop grade; recorded observations do not replace artifact inspection."
+    },
+    "native_check": {
+      "entrypoint": "scripts/unslop.py",
+      "prefix": [
+        "check"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "check"
+      ],
+      "description": "Use the actual scoped anti-slop check; recorded observations do not replace artifact inspection."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Use the native catalog/grade path and actual artifact inspection. This shared gate does not produce or authenticate an anti-slop quality score."
+  ]
+}

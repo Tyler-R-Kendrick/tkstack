@@ -1,0 +1,10 @@
+let meta = #{
+    name: "@WORKFLOW_NAME@",
+    description: "Deterministically fingerprint an explicit text input in Grok's workflow host.",
+    when_to_use: "A reusable model-free text fingerprint step.",
+    phases: [#{ title: "Fingerprint" }]
+};
+
+phase("Fingerprint");
+let checksum = fingerprint(args.query);
+complete(#{ fingerprint: checksum });

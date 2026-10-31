@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "headroom",
+        "purpose": "Use actual reversible compression and exact retrieval while preserving provider/account routing.",
+        "criteria": [
+          {
+            "id": "runtime",
+            "description": "Verify an actual supported Headroom runtime rather than copied file presence."
+          },
+          {
+            "id": "reversibility",
+            "description": "Retain recoverable original context and explicit retrieval identity."
+          },
+          {
+            "id": "fidelity",
+            "description": "Retrieve exact content where required and preserve provider/account routing."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "original_recoverable": {
+              "type": "boolean",
+              "const": true
+            },
+            "provider_preserved": {
+              "type": "boolean",
+              "const": true
+            },
+            "exact_content_needed": {
+              "type": "boolean"
+            },
+            "exact_content_retrieved": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "original_recoverable",
+            "provider_preserved",
+            "exact_content_needed",
+            "exact_content_retrieved"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "exact_content_needed": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "exact_content_retrieved": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Actual provider/runtime access is required for execution. Verification does not start a provider job, proxy or account session.",
+          "The deterministic core does not start a proxy/compressor or authenticate reversibility. Exercise the actual runtime and original-context retrieval."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

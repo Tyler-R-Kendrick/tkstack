@@ -1,0 +1,18 @@
+name: @WORKFLOW_NAME@
+description: Fingerprint explicit project files with bounded concurrent code and no agent calls.
+inputs:
+  paths:
+    type: array
+    description: Project-relative files whose current bytes should be fingerprinted.
+actions:
+  - kind: InvokeFunctionTool
+    id: fingerprint_files
+    functionName: hash_files
+    arguments:
+      paths: =Workflow.Inputs.paths
+    output:
+      result: Local.receipt
+      autoSend: false
+  - kind: SendActivity
+    id: emit_receipt
+    activity: =Local.receipt

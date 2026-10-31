@@ -1,0 +1,8 @@
+{
+  "id": "I-001",
+  "kind": "architecture",
+  "observation": "Describe the unexpected finding and why it invalidates the current plan.",
+  "tasks": ["contract"],
+  "requirements": ["R-001"],
+  "evidence": ["/repo/.tkstack/sdlc/example/discovery.txt"]
+}

@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "normalize",
+      "input": {
+        "labels": [
+          " b ",
+          "a",
+          "a"
+        ]
+      },
+      "exit": 0,
+      "output": {
+        "labels": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "id": "empty",
+      "input": {
+        "labels": []
+      },
+      "exit": 0,
+      "output": {
+        "labels": []
+      }
+    },
+    {
+      "id": "unicode-and-whitespace",
+      "input": {
+        "labels": [
+          " 😀 ",
+          "é",
+          " x ",
+          "\t",
+          "A",
+          "a",
+          "é"
+        ]
+      },
+      "exit": 0,
+      "output": {
+        "labels": [
+          "",
+          "A",
+          "a",
+          "x",
+          "é",
+          "😀"
+        ]
+      }
+    },
+    {
+      "id": "reject-nontext",
+      "input": {
+        "labels": [
+          1
+        ]
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-extra-field",
+      "input": {
+        "labels": [],
+        "extra": true
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-nonarray",
+      "input": {
+        "labels": "a"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-missing",
+      "input": {},
+      "exit": 1
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "name": "learn",
+  "purpose": "Capture actual user evidence separately from procedural experiences; curate scoped rules and verified artifacts.",
+  "criteria": [
+    {
+      "id": "provenance",
+      "description": "Retain the exact visible user source; keep tool/assistant experiences distinct from user authority."
+    },
+    {
+      "id": "scoped-rule",
+      "description": "Select an explicit storage scope and generalize the reasoning rule with a legitimate counterexample."
+    },
+    {
+      "id": "promotion-boundary",
+      "description": "Promote only useful verified lessons; report/audit and help do not mutate state."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "provenance": {
+        "type": "string",
+        "enum": [
+          "user",
+          "experience"
+        ]
+      },
+      "source_retained": {
+        "type": "boolean",
+        "const": true
+      },
+      "evidence_as_instructions": {
+        "type": "boolean",
+        "const": false
+      },
+      "scope": {
+        "type": "string",
+        "enum": [
+          "workspace",
+          "user",
+          "global"
+        ]
+      }
+    },
+    "required": [
+      "provenance",
+      "source_retained",
+      "evidence_as_instructions",
+      "scope"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_capture": {
+      "entrypoint": "scripts/learn.py",
+      "prefix": [
+        "capture"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        },
+        "input": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--input"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "capture"
+      ],
+      "description": "Persist actual capture data in the explicitly selected learning store; retains native validation."
+    },
+    "native_rule": {
+      "entrypoint": "scripts/learn.py",
+      "prefix": [
+        "rule"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        },
+        "input": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--input"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "rule"
+      ],
+      "description": "Persist actual rule data in the explicitly selected learning store; retains native validation."
+    },
+    "native_experience": {
+      "entrypoint": "scripts/learn.py",
+      "prefix": [
+        "experience"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        },
+        "input": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--input"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "experience"
+      ],
+      "description": "Persist actual experience data in the explicitly selected learning store; retains native validation."
+    },
+    "native_show": {
+      "entrypoint": "scripts/learn.py",
+      "prefix": [
+        "show"
+      ],
+      "parameters": {
+        "store": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--store"
+          ],
+          "default": null,
+          "path": true,
+          "global": true
+        }
+      },
+      "suffix": [
+        "--json"
+      ],
+      "cli_path": [
+        "native",
+        "show"
+      ],
+      "description": "Read the learning ledger as JSON without initializing a missing store."
+    },
+    "native_sessions_review": {
+      "entrypoint": "scripts/learn.py",
+      "prefix": [
+        "sessions",
+        "review"
+      ],
+      "parameters": {
+        "session": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "flags": [
+            "--session"
+          ],
+          "default": [],
+          "repeat": true
+        },
+        "save": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--save"
+          ],
+          "default": false
+        },
+        "jobs": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "flags": [
+            "--jobs"
+          ],
+          "default": 4
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "sessions",
+        "review"
+      ],
+      "description": "Read and consolidate only selected session IDs; save is an explicit write."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Contract verification does not replace correction provenance, native ledger validation or semantic rule abstraction. Use the real native capture/rule/session tools."
+  ]
+}

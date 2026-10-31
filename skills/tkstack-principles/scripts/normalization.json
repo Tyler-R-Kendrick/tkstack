@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "files": {
+    "commands/help.md": "65e88557811f1365d267daa31632ae39d2c80f0143aea83124fc33eb7b2dfa6e",
+    "commands/model.md": "5bdbd9d174c7fac2370a605dea38479a90d2a537062e1ab01e9b890d3e7e4ec5",
+    "commands/verify.md": "b3c3c428763efa68ca4498003edde64597757fbfafd4bc0979a11e67c104827b",
+    "commands/version.md": "595602639cfea4933376dd7ce6c0cbc4236830c570a26412cca9ebe734b731c1",
+    "references/execution.md": "287ae5f6e742d305c710c85d7fd354ab0ee7fe03f902a091aa23dc8ece666d6f",
+    "scripts/contract.json": "5e91028cec2ad6b72c1f5ad72c948428c58a399b0fc15d65e6bbdc33c3326ef3",
+    "scripts/json_contract.py": "1ef7ae18e20f53fc2029cc5608c403f9fab4a3ee1d9df7789724211ad26fc155",
+    "scripts/package_runtime.py": "a1f8eea4ca9f46c4889c538ec50db36ae211c45f485968eef708188aa54ad624",
+    "scripts/run.py": "b4851e33d2a278de71e21bac36ec5da0685d2a1a372d5fa77162dfe98c50efd6"
+  }
+}

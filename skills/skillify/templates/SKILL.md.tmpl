@@ -1,0 +1,32 @@
+---
+name: @NAME@
+description: @DESCRIPTION@
+license: MIT
+metadata:
+  version: "0.1.0"
+---
+
+# @TITLE@
+
+TODO(SKILLIFY): State the observable outcome and explicit scope.
+
+From this skill directory, invoke `@COMMAND@`.
+[Executable entrypoint](@ENTRYPOINT@); full setup and parameters below.
+
+| Topic / operation | Read when needed |
+| --- | --- |
+| Invoke the executable workflow as a tool | [Tool interface](references/tool.md) |
+| Default command, deterministic console help, or man(1) source | [Reserved help](commands/help.md) |
+| Read the declared package version without execution | [Reserved version](commands/version.md) |
+| Invoke the compiled workflow | [Run command](commands/run.md) |
+| Command signatures, aliases, nested commands, flags, and tool calls | [Subcommand contract](references/subcommands.md) |
+| Inputs, parameters, defaults, and prerequisites | [Input contract](references/inputs.md) |
+| Main workflow and feature/subcommand routing | [Procedure](references/procedure.md) |
+| Checks, evidence, errors, and completion | [Verification and delivery](references/verification.md) |
+
+Use the executable workflow in `scripts/`; this skill is an intermediary
+code-mode prompt and discovery index, not the main executable. Read the tool
+interface, supply its inputs, run it, and inspect its output. Do not replay the
+procedure through inference when code can execute it.
+
+TODO(SKILLIFY): Keep essential scope/guardrails here; index each real feature or optional subcommand directly. Put full steps and parameter details in references.
