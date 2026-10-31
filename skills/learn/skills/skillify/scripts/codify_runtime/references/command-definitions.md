@@ -122,6 +122,23 @@ to a contained, nonsymlinked lock path. There is no shell command binding.
 Parser usage errors exit 2; invalid metadata/arguments or stale bindings exit 1.
 Real execution uses the existing bounded deadline and isolated session runner.
 
+## Mounted subskills
+
+A parent package can expose a packaged subskill as one subcommand with
+`run: {skill: <relative directory>}`. The directory must be a contained,
+nonsymlinked package with its own `SKILL.md`, `commands/`, and lock. The mount's
+only parameter is `argv: string[]` with CLI default `[]`; it takes no flags or
+positionals. The mount owns every route below its path, so the parent cannot
+define `skillify x` beside a `skillify` mount.
+
+`parent skillify native check skills/x` passes `native check skills/x` verbatim
+to the subskill's catalog, which types the flags, renders `--help`, and binds
+its own lock. A tool call `{name: parent_skillify, arguments: {argv: [...]}}`
+dispatches the same way. The parent's lock does not gate a mount; the subskill's
+lock does. Skillify generates mount files from a contract's `subskills` map
+(`name -> {path, description}`), and the name must equal the subskill's package
+name.
+
 ## Reserved help and version
 
 The runtime owns top-level names/routes/aliases `help` and `version`, plus

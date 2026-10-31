@@ -1,11 +1,11 @@
 # Reusable skill, code, lint, hook, instruction, and workflow authoring
 
-The canonical packages are [`codify`](../skills/codify/SKILL.md),
-[`skillify`](../skills/skillify/SKILL.md),
-[`reusify`](../skills/reusify/SKILL.md), [`lintify`](../skills/lintify/SKILL.md),
-[`hookify`](../skills/hookify/SKILL.md), and
-[`instructify`](../skills/instructify/SKILL.md), and
-[`flowify`](../skills/flowify/SKILL.md). All install in Codex, Claude Code, and
+The canonical packages are [`codify`](../skills/learn/skills/codify/SKILL.md),
+[`skillify`](../skills/learn/skills/skillify/SKILL.md),
+[`reusify`](../skills/learn/skills/reusify/SKILL.md), [`lintify`](../skills/learn/skills/lintify/SKILL.md),
+[`hookify`](../skills/learn/skills/hookify/SKILL.md), and
+[`instructify`](../skills/learn/skills/instructify/SKILL.md), and
+[`flowify`](../skills/learn/skills/flowify/SKILL.md). All install in Codex, Claude Code, and
 Cursor and are separate root marketplace entries. They follow the personal
 deterministic-first and concurrency principles.
 
@@ -30,11 +30,11 @@ tool usage/contracts/rationale in `references/` and load only the selected branc
 Run the tool rather than reconstructing its algorithm through inference.
 
 ```sh
-python3 skills/skillify/scripts/skillify.py scaffold \
+python3 skills/learn/skills/skillify/scripts/skillify.py scaffold \
   --target /repo/skills/inspect-contracts --name inspect-contracts \
   --description 'Inspect consumer/provider contracts when asked about compatibility.'
-python3 skills/skillify/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk --dry-run
-python3 skills/skillify/scripts/skillify.py check /repo/skills/inspect-contracts --require-tool
+python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk --dry-run
+python3 skills/learn/skills/skillify/scripts/skillify.py check /repo/skills/inspect-contracts --require-tool
 ```
 
 The scaffold creates that index, four linked topic/tool pages, a script-backed
@@ -45,7 +45,7 @@ locked Vercel AI SDK profiles for model providers, Decisions, and harnesses.
 See [conversion, configuration, and evidence](skillify.md).
 `check` reads metadata, resources, local inline links and Python syntax in a
 restricted portable profile. It neither executes scripts nor proves behavioral
-or trigger quality. See [the exact profile](../skills/skillify/references/validation.md).
+or trigger quality. See [the exact profile](../skills/learn/skills/skillify/references/validation.md).
 Use real behavior tests for observable helper contracts and actual artifact
 review for semantic quality. Existing `learn improve` and SkillOpt processes
 remain in place for evidence-backed automatic revision/adoption.
@@ -63,11 +63,11 @@ assets across a codebase, including snippets, templates, macros, generators,
 and shared code. Ordinary init implements eligible extractions and applicable
 migrations; explicit preview stays read-only. Later uses invoke native engines
 with validated inputs instead of asking a model to reconstruct the code.
-See the [init procedure and parameters](../skills/reusify/references/init.md).
+See the [init procedure and parameters](../skills/learn/skills/reusify/references/init.md).
 
 ```sh
-python3 skills/reusify/scripts/reusify.py find --project . --query "skill scaffold"
-python3 skills/reusify/scripts/reusify.py check --project .
+python3 skills/learn/skills/reusify/scripts/reusify.py find --project . --query "skill scaffold"
+python3 skills/learn/skills/reusify/scripts/reusify.py check --project .
 ```
 
 The project catalog links actual existing assets and their interfaces. The
@@ -86,7 +86,7 @@ The latter remains probabilistic and needs actual evaluation before a reliable
 gate can be claimed.
 
 ```sh
-python3 skills/lintify/scripts/lintify.py scaffold \
+python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend eslint --target /tmp/my-lint-example
 ```
 
@@ -108,10 +108,10 @@ calls, command execution, or transcript reads.
 These commands run the demonstration without activating it:
 
 ```sh
-python3 skills/hookify/scripts/hookify.py check --rules skills/hookify/examples/policy.json
-python3 skills/hookify/scripts/hookify.py replay \
-  --rules skills/hookify/examples/policy.json --cases skills/hookify/examples/cases.json --jobs 4
-python3 skills/hookify/scripts/hookify.py emit --rules skills/hookify/examples/policy.json
+python3 skills/learn/skills/hookify/scripts/hookify.py check --rules skills/learn/skills/hookify/examples/policy.json
+python3 skills/learn/skills/hookify/scripts/hookify.py replay \
+  --rules skills/learn/skills/hookify/examples/policy.json --cases skills/learn/skills/hookify/examples/cases.json --jobs 4
+python3 skills/learn/skills/hookify/scripts/hookify.py emit --rules skills/learn/skills/hookify/examples/policy.json
 ```
 
 Replay uses bounded workers and stable case order. The runtime itself has no
@@ -124,8 +124,8 @@ hooks. PreToolUse denial can prevent the operation; Stop continuation includes
 a reentry guard. PostToolUse is not claimed to undo completed effects. The
 portable evaluator can support other harnesses through verified adapters;
 native Codex/Cursor event/blocking compatibility is not implied by installing
-the skill. See [policy](../skills/hookify/references/policy.md) and
-[adapter contracts](../skills/hookify/references/adapters.md).
+the skill. See [policy](../skills/learn/skills/hookify/references/policy.md) and
+[adapter contracts](../skills/learn/skills/hookify/references/adapters.md).
 
 `emit` returns a settings fragment only. Merge an actual requested registration
 at its canonical configuration boundary, preserve unrelated entries, and verify
@@ -149,13 +149,13 @@ plus a Claude import avoids copying the same body. Native adapters use explicit
 scope/glob metadata; the helper does not guess file attachment from a description.
 
 ```sh
-python3 skills/instructify/scripts/instructify.py plan \
+python3 skills/learn/skills/instructify/scripts/instructify.py plan \
   --project /repo --input /repo/harnesses/instructions/expectations.json > /repo/.tkstack/instructify/plan.json
-python3 skills/instructify/scripts/instructify.py apply \
+python3 skills/learn/skills/instructify/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json --dry-run
-python3 skills/instructify/scripts/instructify.py apply \
+python3 skills/learn/skills/instructify/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json
-python3 skills/instructify/scripts/instructify.py check \
+python3 skills/learn/skills/instructify/scripts/instructify.py check \
   --project /repo --input /repo/harnesses/instructions/expectations.json
 ```
 
@@ -171,8 +171,8 @@ edits; crashes and nonparticipating writers remain explicit limits.
 bindings before changing a manifest's scope, targets, ID, or source location;
 the helper does not track historical destinations. It also refuses symlinked
 targets, dedicated native-file collisions, and nonempty Codex overrides that
-would shadow a new AGENTS file. See the [manifest contract](../skills/instructify/references/manifest.md)
-and [native discovery details and sources](../skills/instructify/references/harnesses.md).
+would shadow a new AGENTS file. See the [manifest contract](../skills/learn/skills/instructify/references/manifest.md)
+and [native discovery details and sources](../skills/learn/skills/instructify/references/harnesses.md).
 
 Within tkstack, existing installer-owned instruction pointers remain controlled
 by `scripts/steering_adapter.py` and `harnesses/cursor/tkstack-steering.mdc`.
@@ -207,8 +207,8 @@ and `hookify` plugin in `anthropics/claude-plugins-official`; older Claude Code
 repository plugin links returned 404. Pstack contributes its authoring playbook,
 `automate-me`/`reflect`, and structural/shared-state principles. Exact-name
 `skillify`/`hookify` skills were not found in the checked Pstack tree. See the
-bundled [skillify sources](../skills/skillify/references/sources.md) and
-[hookify sources](../skills/hookify/references/sources.md).
+bundled [skillify sources](../skills/learn/skills/skillify/references/sources.md) and
+[hookify sources](../skills/learn/skills/hookify/references/sources.md).
 
 These are independently written owned packages. Vendor snapshots remain
 unchanged. Local tests establish scaffold collision protection, portable copies,

@@ -260,7 +260,7 @@ class DurableSdlcTests(unittest.TestCase):
     def test_compiled_cli_and_openai_call_share_real_durable_state(self):
         self.initialize()
         environment = {**os.environ, "TKSTACK_WORKSPACE_DIR": str(self.repo / ".tkstack")}
-        command = [sys.executable, str(ROOT / "skills/codify/scripts/codify.py"),
+        command = [sys.executable, str(ROOT / "skills/learn/skills/codify/scripts/codify.py"),
                    "invoke", str(ROOT / "skills/sdlc")]
         result = subprocess.run([*command, "--", "claim", "--run", "run", "--actor", "worker",
                                  "--database", str(self.db), "--repo", str(self.repo), "--task", "a"],
@@ -286,7 +286,7 @@ class DurableSdlcTests(unittest.TestCase):
     def test_default_help_does_not_create_selected_workspace_state(self):
         target = self.root / "empty-project"
         target.mkdir()
-        result = subprocess.run([sys.executable, str(ROOT / "skills/codify/scripts/codify.py"),
+        result = subprocess.run([sys.executable, str(ROOT / "skills/learn/skills/codify/scripts/codify.py"),
                                  "invoke", str(ROOT / "skills/sdlc")], capture_output=True, text=True,
                                 env={**os.environ, "TKSTACK_WORKSPACE_DIR": str(target / ".tkstack")})
         self.assertEqual(result.returncode, 0, result.stderr)

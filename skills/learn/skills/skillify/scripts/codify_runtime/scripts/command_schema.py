@@ -15,6 +15,9 @@ SCHEMA_KEYS = {'type', 'description', 'title', 'properties', 'required', 'additi
     'exclusiveMaximum', 'multipleOf', 'minLength', 'maxLength', 'pattern',
     'minItems', 'maxItems'}
 RESERVED = ('help', 'version')
+# A mounted subskill receives the remaining CLI tokens verbatim; its own catalog types them.
+MOUNT = {'type': 'object', 'properties': {'argv': {'type': 'array', 'items': {'type': 'string'}}},
+         'required': ['argv'], 'additionalProperties': False}
 
 
 def builtin(name, legacy=False):
@@ -134,8 +137,14 @@ def validate_document(value):
             raise ValueError('Invalid CLI default: ' + name)
     if set(positionals) | set(flags) | set(defaults) != set(properties):
         raise ValueError('Every parameter needs a CLI binding or a default')
-    if not isinstance(run, dict) or (set(run) != {'artifact'} and run not in [{'builtin': name} for name in RESERVED]):
-        raise ValueError('Run binds one artifact or a reserved read-only builtin')
+    if not isinstance(run, dict) or (set(run) not in ({'artifact'}, {'skill'}) and run not in [{'builtin': name} for name in RESERVED]):
+        raise ValueError('Run binds one artifact, a mounted subskill, or a reserved read-only builtin')
+    if 'skill' in run:
+        argv = properties.get('argv', {})
+        if ({key: value for key, value in schema.items() if key != 'description'} !=
+                {**MOUNT, 'properties': {'argv': {**MOUNT['properties']['argv'], **({'description': argv['description']} if 'description' in argv else {})}}}
+                or set(cli) - {'path', 'aliases', 'defaults'} or cli.get('defaults') != {'argv': []}):
+            raise ValueError('A mounted subskill takes only argv, with CLI default []')
     if 'builtin' in run:
         name = run['builtin']
         expected = builtin(name, legacy=name == 'help' and set(properties) == {'topic'})
@@ -212,6 +221,14 @@ def package_identity(directory):
     return result
 
 
+def mounted(root, name):
+    path = regular(root, name, exists=False)
+    if path == root or not path.is_dir():
+        raise ValueError('Mounted subskill must be a contained package directory: ' + name)
+    regular(root, name + '/SKILL.md')
+    return path
+
+
 def catalog(directory):
     root = directory.resolve(strict=True)
     commands = root / 'commands'
@@ -227,6 +244,8 @@ def catalog(directory):
         item = {**read_command(path), 'file': relative}
         if 'artifact' in item['run']:
             regular(root, item['run']['artifact'], exists=False)
+        if 'skill' in item['run']:
+            mounted(root, item['run']['skill'])
         name = item['tool']['name']
         if name in names:
             raise ValueError('Duplicate tool name: ' + name)
@@ -237,6 +256,11 @@ def catalog(directory):
                 raise ValueError('Duplicate or reserved command route: ' + ' '.join(route))
             routes.add(route)
         result.append(item)
+    for item in result:
+        if 'skill' in item['run']:
+            for route in [item['cli']['path'], *item['cli'].get('aliases', [])]:
+                if any(other != route and other[:len(route)] == route for other in map(list, routes)):
+                    raise ValueError('A mounted subskill owns every route below ' + ' '.join(route))
     if paths or commands.is_dir():
         for name in RESERVED:
             if name not in names:
@@ -283,6 +307,8 @@ def cli_payload(items, argv, identity=None):
         raise ValueError('Unknown command: ' + ' '.join(argv))
     size, item, route = max(candidates, key=lambda candidate: candidate[0])
     tail = argv[size:]
+    if 'skill' in item['run']:
+        return item, {'argv': tail}
     options = tail[:tail.index('--')] if '--' in tail else tail
     if '--help' in options or '-h' in options:
         return None, help_text(items, identity, route)
@@ -351,6 +377,9 @@ def execute(engine, directory, argv=(), call=None, project=None, timeout=30, dep
         return 0, json.dumps(result, ensure_ascii=False, sort_keys=True) + '\n', ''
     if item['run'] == {'builtin': 'version'}:
         return 0, json.dumps({key: identity[key] for key in ('name', 'version')}, sort_keys=True) + '\n', ''
+    if 'skill' in item['run']:
+        # The subskill is a complete package: its own catalog, identity, and lock bind the call.
+        return execute(engine, mounted(root, item['run']['skill']), payload['argv'], None, project, timeout, dependencies, config)
     lock = bound_lock(engine, root, item)
     return engine.invoke(lock, payload, project or engine.project_root(), timeout, dependencies, config)
 

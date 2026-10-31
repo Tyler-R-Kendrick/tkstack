@@ -40,7 +40,7 @@ def main():
         return 2
     name, args = sys.argv[1], sys.argv[2:]
     if name in ('codify', 'skillify'):
-        args = ['-B', str(ROOT / 'skills' / name / 'scripts' / (name + '.py')), *args]
+        args = ['-B', str(ROOT / 'skills/learn/skills' / name / 'scripts' / (name + '.py')), *args]
         name = 'command-schema'
     if name == "wikiskill":
         sys.dont_write_bytecode = True

@@ -24,11 +24,13 @@ Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 ```
 
 Learn preserves the request, nested commands, parameters, evidence, and scope,
-then follows the named skill's index and actual tools. Preview/audit intent
+then follows the named subskill's index and actual tools. The seven ___ify
+skills are packaged inside Learn at `skills/learn/skills/<name>/`, so they ship
+and install with it rather than as separate skills. Preview/audit intent
 keeps the entire handoff read-only. Help and missing payloads show guidance
 without capturing feedback or reviewing sessions. A direct route does not
-start a full consolidation sweep. Missing sibling skills are reported as
-explicit dependencies; a standalone Learn package still provides their help.
+start a full consolidation sweep. A missing subskill is reported as an
+explicit dependency; the Learn helper still provides its help.
 See the [bundled command contract](../skills/learn/references/subcommands.md).
 
 The Python helper also supports `help [topic]`; no command prints help and

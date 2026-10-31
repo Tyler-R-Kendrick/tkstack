@@ -22,8 +22,8 @@ def load(name, path):
     return module
 
 
-flowify = load("flowify_helper", ROOT / "skills/flowify/scripts/flowify.py")
-bindings = load("flowify_bindings", ROOT / "skills/flowify/templates/maf/bindings.py")
+flowify = load("flowify_helper", ROOT / "skills/learn/skills/flowify/scripts/flowify.py")
+bindings = load("flowify_bindings", ROOT / "skills/learn/skills/flowify/templates/maf/bindings.py")
 
 
 class FlowifyTests(unittest.TestCase):
@@ -172,7 +172,7 @@ class FlowifyTests(unittest.TestCase):
 
     def test_standalone_scaffolding_keeps_plugin_cache_unchanged(self):
         cache = self.root / "plugin-cache/flowify"
-        shutil.copytree(ROOT / "skills/flowify", cache, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(ROOT / "skills/learn/skills/flowify", cache, ignore=shutil.ignore_patterns("__pycache__"))
         helper = load("copied_flowify", cache / "scripts/flowify.py")
         before = {p.relative_to(cache): p.read_bytes() for p in cache.rglob("*") if p.is_file()}
         target = self.project / "workflows/check-files"

@@ -60,6 +60,36 @@
           ],
           "additionalProperties": false
         },
+        "subskills": {
+          "codify": {
+            "path": "skills/codify",
+            "description": "Compile a prompt or Markdown procedure into a verified executable lock artifact and run it."
+          },
+          "flowify": {
+            "path": "skills/flowify",
+            "description": "Create and validate a reusable executable workflow in an existing DSL such as MAF YAML or Rhai."
+          },
+          "hookify": {
+            "path": "skills/hookify",
+            "description": "Author, replay, and emit mechanically enforceable tool-event policies as native hooks."
+          },
+          "instructify": {
+            "path": "skills/instructify",
+            "description": "Plan and apply owned, hashed changes to scoped agent instruction files."
+          },
+          "lintify": {
+            "path": "skills/lintify",
+            "description": "Create or configure a native CLI lint rule and validate it against real fixtures."
+          },
+          "reusify": {
+            "path": "skills/reusify",
+            "description": "Find, assess, and extract reusable code-production assets, including init bootstrapping."
+          },
+          "skillify": {
+            "path": "skills/skillify",
+            "description": "Create, convert, normalize, check, and compile owned portable skills."
+          }
+        },
         "limits": [
           "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
           "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",

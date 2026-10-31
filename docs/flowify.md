@@ -1,7 +1,7 @@
 # Executable workflow authoring
 
 Use `/flowify <procedure>` or `$flowify` to create a reusable executable workflow.
-The canonical package is [`skills/flowify`](../skills/flowify/SKILL.md), installed
+The canonical package is [`skills/learn/skills/flowify`](../skills/learn/skills/flowify/SKILL.md), installed
 in Codex, Claude Code, and Cursor and listed in the root marketplace.
 
 Flowify defaults to Microsoft Agent Framework declarative YAML for tool/code
@@ -17,9 +17,9 @@ concurrency, owned state and stable fan-in. Register an agent only for residual
 judgment; don't introduce agent calls merely to parallelize ordinary code.
 
 ```sh
-python3 skills/flowify/scripts/flowify.py scaffold \
+python3 skills/learn/skills/flowify/scripts/flowify.py scaffold \
   --backend maf --target /repo/workflows/check-contracts --name check-contracts
-python3 skills/flowify/scripts/flowify.py inspect \
+python3 skills/learn/skills/flowify/scripts/flowify.py inspect \
   --backend maf --file /repo/workflows/check-contracts/workflow.yaml
 ```
 
@@ -55,7 +55,7 @@ python /repo/workflows/check-contracts/run.py \
 For Grok/Rhai, use the actual host or explicit native source checkout:
 
 ```sh
-python3 skills/flowify/scripts/flowify.py check \
+python3 skills/learn/skills/flowify/scripts/flowify.py check \
   --backend rhai --file /repo/workflows/procedure/workflow.rhai \
   --grok-source /path/to/grok-build
 ```
@@ -70,9 +70,9 @@ Tool errors can be stored as error values, so the workflow/host must reject
 failed outcomes explicitly. YAML action lists are sequential, and the native
 graph uses superstep barriers. Use supported builders/executors or bounded async
 bindings rather than inventing a `Parallel` YAML action. See
-[backend contracts](../skills/flowify/references/backends.md),
-[validation levels](../skills/flowify/references/validation.md), and
-[exact primary sources](../skills/flowify/references/sources.md).
+[backend contracts](../skills/learn/skills/flowify/references/backends.md),
+[validation levels](../skills/learn/skills/flowify/references/validation.md), and
+[exact primary sources](../skills/learn/skills/flowify/references/sources.md).
 
 ## Verification performed here
 

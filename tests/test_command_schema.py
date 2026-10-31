@@ -12,7 +12,7 @@ import unittest
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPT = ROOT / 'skills/codify/scripts/codify.py'
+SCRIPT = ROOT / 'skills/learn/skills/codify/scripts/codify.py'
 spec = importlib.util.spec_from_file_location('command_contract_codify', SCRIPT)
 engine = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(engine)
@@ -289,12 +289,60 @@ class CommandSchemaTests(unittest.TestCase):
         self.cli('commands', self.root, expected=1)
         self.assertFalse((self.project / '.tkstack').exists())
 
+    def mount(self, route=('repeat-text',), skill='skills/repeat-text', parameters=None):
+        document = {'schema': 'tkstack.command/v1', 'tool': {'type': 'function', 'name': 'parent_repeat_text',
+            'description': 'Mount the packaged repeat-text subskill.', 'strict': True,
+            'parameters': parameters or json.loads(json.dumps(commands.MOUNT))},
+            'cli': {'path': list(route), 'defaults': {'argv': []}}, 'run': {'skill': skill}}
+        (self.parent / 'commands/repeat-text.md').write_text('---\n' + yaml.safe_dump(document, sort_keys=False) +
+            '---\n\n# Repeat text\n\nRoutes to the packaged subskill.\n')
+
+    def test_mounted_subskill_dispatches_cli_tool_calls_and_help_through_its_own_lock(self):
+        (self.root / 'SKILL.md').write_text('---\nname: repeat-text\ndescription: Repeat text.\n---\nRepeat.\n')
+        self.compile()
+        self.parent = self.project / 'parent'
+        (self.parent / 'commands').mkdir(parents=True)
+        (self.parent / 'SKILL.md').write_text('---\nname: parent\ndescription: Parent fixture.\nmetadata:\n  version: "1.0.0"\n---\nParent.\n')
+        shutil.copytree(self.root, self.parent / 'skills/repeat-text')
+        self.mount()
+        self.assertEqual(json.loads(self.cli('invoke', self.parent, '--', 'repeat-text', 'repeat', 'go', '-n', '2')), {'result': 'go|go'})
+        call = {'name': 'parent_repeat_text', 'arguments': {'argv': ['repeat', 'é', '--loud']}}
+        self.assertEqual(json.loads(self.cli('invoke', self.parent, '--call', '-', call=call)), {'result': 'É'})
+        self.assertIn('--count', self.cli('invoke', self.parent, '--', 'repeat-text', 'repeat', '--help'))
+        self.assertIn('repeat-text', self.cli('invoke', self.parent, '--', 'help'))
+        self.cli('invoke', self.parent, '--', 'repeat-text', 'repeat', 'x', '--invented', expected=2)
+        (self.parent / 'skills/repeat-text/scripts/workflow.py').write_text('raise SystemExit(9)\n')
+        self.cli('invoke', self.parent, '--', 'repeat-text', 'repeat', 'x', expected=1)
+        self.assertFalse((self.project / '.tkstack/sessions').exists() and any((self.project / '.tkstack/sessions').iterdir()))
+
+    def test_mounts_reject_escapes_symlinks_typed_signatures_and_shadowed_routes(self):
+        self.parent = self.project / 'parent'
+        (self.parent / 'commands').mkdir(parents=True)
+        (self.parent / 'SKILL.md').write_text('---\nname: parent\ndescription: Parent fixture.\n---\nParent.\n')
+        (self.parent / 'skills').mkdir()
+        (self.parent / 'skills/linked').symlink_to(self.root, target_is_directory=True)
+        for options in [{'skill': '../repeat-text'}, {'skill': 'skills/linked'}, {'skill': 'skills/absent'},
+                        {'parameters': {'type': 'object', 'properties': {'text': {'type': 'string'}}, 'required': ['text'], 'additionalProperties': False}}]:
+            with self.subTest(options=options):
+                self.mount(**options)
+                self.cli('commands', self.parent, expected=1)
+        shutil.copytree(self.root, self.parent / 'skills/repeat-text')
+        (self.parent / 'skills/repeat-text/SKILL.md').write_text('---\nname: repeat-text\ndescription: Repeat text.\n---\nRepeat.\n')
+        self.mount()
+        self.cli('commands', self.parent)
+        self.document['cli'] = {'path': ['repeat-text', 'extra']}
+        self.document['cli']['defaults'] = {'count': 1, 'loud': False}
+        self.document['cli']['positionals'] = ['text']
+        self.document['cli']['flags'] = {'count': ['--count'], 'loud': ['--loud']}
+        (self.parent / 'commands/extra.md').write_text('---\n' + yaml.safe_dump({**self.document, 'tool': {**self.document['tool'], 'name': 'extra'}}, sort_keys=False) + '---\n\nShadowed.\n')
+        self.assertIn('owns every route', self.cli_error('commands', self.parent))
+
     def test_standalone_generated_runner_and_skillify_frontend_share_dispatch(self):
         self.compile()
         script = self.root / 'scripts/codify.py'
         self.assertEqual(json.loads(self.cli('invoke', self.root, '--', 'repeat', 'é', '--loud', script=script)), {'result': 'É'})
         copied = self.project / 'plugin cache/skillify'
-        shutil.copytree(ROOT / 'skills/skillify', copied)
+        shutil.copytree(ROOT / 'skills/learn/skills/skillify', copied)
         frontend = copied / 'scripts/skillify.py'
         self.assertEqual(json.loads(self.cli('invoke', self.root, '--', 'repeat', 'go', script=frontend)), {'result': 'go'})
         self.assertEqual(json.loads(self.cli('commands', self.root, '--format', 'responses', script=frontend)), commands.export(self.root))

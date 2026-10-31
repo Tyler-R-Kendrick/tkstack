@@ -13,7 +13,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
-SPEC = importlib.util.spec_from_file_location('codify_test_engine', ROOT / 'skills/codify/scripts/codify.py')
+SPEC = importlib.util.spec_from_file_location('codify_test_engine', ROOT / 'skills/learn/skills/codify/scripts/codify.py')
 codify = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(codify)
 
@@ -28,9 +28,9 @@ class CodifyTests(unittest.TestCase):
         self.source.write_text('Trim labels, remove duplicates, and sort by Unicode code point. Reject non-text labels.\n')
         self.scripts = self.root / 'scripts'
         self.scripts.mkdir()
-        (self.scripts / 'json_contract.py').write_bytes((ROOT / 'skills/codify/scripts/json_contract.py').read_bytes())
+        (self.scripts / 'json_contract.py').write_bytes((ROOT / 'skills/learn/skills/codify/scripts/json_contract.py').read_bytes())
         self.entry = self.scripts / 'run.py'
-        self.entry.write_bytes((ROOT / 'skills/codify/templates/python/run.py').read_bytes())
+        self.entry.write_bytes((ROOT / 'skills/learn/skills/codify/templates/python/run.py').read_bytes())
         (self.scripts / 'workflow.py').write_text('''def execute(payload):
     if set(payload) != {'labels'} or not isinstance(payload['labels'], list) or any(not isinstance(x, str) for x in payload['labels']):
         raise ValueError('Expected text labels')
@@ -47,7 +47,7 @@ class CodifyTests(unittest.TestCase):
         return codify.compile_workflow(self.source, self.entry, self.cases, self.output, self.root, project=self.root, **kwargs)
 
     def cli(self, *args, payload=None, executable=None):
-        return subprocess.run([sys.executable, str(executable or ROOT / 'skills/codify/scripts/codify.py'), *map(str, args)],
+        return subprocess.run([sys.executable, str(executable or ROOT / 'skills/learn/skills/codify/scripts/codify.py'), *map(str, args)],
                               input=json.dumps(payload) if payload is not None else None, capture_output=True, text=True, cwd=self.root)
 
     def test_compilation_replays_cached_code_without_a_provider_and_is_byte_reproducible(self):
@@ -169,7 +169,7 @@ class CodifyTests(unittest.TestCase):
     def test_standalone_codify_and_skillify_copy_have_no_original_repository_dependency(self):
         for name in ('codify', 'skillify'):
             copy = self.root / 'plugin cache' / name
-            shutil.copytree(ROOT / 'skills' / name, copy)
+            shutil.copytree(ROOT / 'skills/learn/skills' / name, copy)
             command = copy / 'scripts' / (name + '.py')
             result = self.cli('--help', executable=command)
             self.assertEqual(result.returncode, 0, result.stderr)
@@ -222,14 +222,14 @@ class CodifyTests(unittest.TestCase):
             codify.check(self.output)
 
     def test_skillify_compilation_uses_the_same_engine_and_keeps_the_package_standalone(self):
-        spec = importlib.util.spec_from_file_location('codify_skillify_integration', ROOT / 'skills/skillify/scripts/skillify.py')
+        spec = importlib.util.spec_from_file_location('codify_skillify_integration', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
         skillify = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(skillify)
         target = self.root / 'skills/normalize-labels'
         skillify.scaffold(target, target.name, 'Normalize text labels.')
         shutil.copy2(self.scripts / 'workflow.py', target / 'scripts/workflow.py')
         shutil.copy2(self.cases, target / 'cases.json')
-        (target / 'commands/run.md').write_bytes((ROOT / 'skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
+        (target / 'commands/run.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
         for path in [target / 'SKILL.md', *(target / 'references').glob('*.md')]:
             path.write_text(path.read_text().replace('TODO(SKILLIFY):', 'Completed:'))
         compiled = skillify.compile_skill(target, target / 'cases.json')

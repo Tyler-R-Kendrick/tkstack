@@ -14,9 +14,10 @@ sys.dont_write_bytecode = True
 
 from runtime_environment import with_paths
 from tkstack_state import state_roots
+from skill_roots import owned
 
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location('tkstack_codify_runner', ROOT / 'skills/codify/scripts/codify.py')
+spec = importlib.util.spec_from_file_location('tkstack_codify_runner', ROOT / 'skills/learn/skills/codify/scripts/codify.py')
 codify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(codify)
 NAME = re.compile(r'[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}')
@@ -51,6 +52,9 @@ def discover(project=None):
     workspace = scopes['workspace'].parent
     import install
     entries = {'skills': install.collect(ROOT, 'skills'), 'workflows': {}}
+    # Packaged subskills stay directly addressable; harnesses see only their parent.
+    for name, path in owned(ROOT).items():
+        entries['skills'].setdefault(name, path.resolve())
     settings = {}
     source = ROOT / 'harnesses/runner.json'
     files = [(source, 'source'), *[(scopes[scope] / 'runner.json', scope) for scope in ('global', 'user', 'workspace')]]

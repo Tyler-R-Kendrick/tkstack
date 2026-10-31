@@ -5,8 +5,8 @@
       "id": "root-skill-package",
       "kind": "generator",
       "summary": "Scaffold or convert an owned skill into a script-backed executable tool, invocation index, referenced contracts, and license.",
-      "artifact": "skills/skillify/scripts/skillify.py",
-      "guide": "skills/skillify/SKILL.md",
+      "artifact": "skills/learn/skills/skillify/scripts/skillify.py",
+      "guide": "skills/learn/skills/skillify/SKILL.md",
       "tags": [
         "skill",
         "scaffold",
@@ -20,14 +20,14 @@
         "convert",
         "code-mode"
       ],
-      "usage": "python3 skills/skillify/scripts/skillify.py scaffold --target <absent-target> --name <kebab-name> --description <description> --backend <python|ai-sdk>; or convert <owned-skill> --dry-run. Complete and execute the actual workflow, then check --require-tool per guide."
+      "usage": "python3 skills/learn/skills/skillify/scripts/skillify.py scaffold --target <absent-target> --name <kebab-name> --description <description> --backend <python|ai-sdk>; or convert <owned-skill> --dry-run. Complete and execute the actual workflow, then check --require-tool per guide."
     },
     {
       "id": "native-lint-package",
       "kind": "generator",
       "summary": "Scaffold isolated native CLI lint rule examples with fixtures and dependency locks.",
-      "artifact": "skills/lintify/scripts/lintify.py",
-      "guide": "skills/lintify/SKILL.md",
+      "artifact": "skills/learn/skills/lintify/scripts/lintify.py",
+      "guide": "skills/learn/skills/lintify/SKILL.md",
       "tags": [
         "lint",
         "rule",
@@ -36,14 +36,14 @@
         "gptlint",
         "lintbook"
       ],
-      "usage": "python3 skills/lintify/scripts/lintify.py scaffold --backend <eslint|lintbook|gptlint> --target <absent-target>; adapt to the real rule and validate with the native engine."
+      "usage": "python3 skills/learn/skills/lintify/scripts/lintify.py scaffold --backend <eslint|lintbook|gptlint> --target <absent-target>; adapt to the real rule and validate with the native engine."
     },
     {
       "id": "native-workflow-package",
       "kind": "generator",
       "summary": "Scaffold a native executable workflow definition with code bindings and examples.",
-      "artifact": "skills/flowify/scripts/flowify.py",
-      "guide": "skills/flowify/SKILL.md",
+      "artifact": "skills/learn/skills/flowify/scripts/flowify.py",
+      "guide": "skills/learn/skills/flowify/SKILL.md",
       "tags": [
         "workflow",
         "scaffold",
@@ -51,14 +51,14 @@
         "rhai",
         "bindings"
       ],
-      "usage": "python3 skills/flowify/scripts/flowify.py scaffold --backend <maf|rhai> --target <absent-target> --name <name>; verify actual runtime and behavior per guide."
+      "usage": "python3 skills/learn/skills/flowify/scripts/flowify.py scaffold --backend <maf|rhai> --target <absent-target> --name <name>; verify actual runtime and behavior per guide."
     },
     {
       "id": "scoped-instruction-bindings",
       "kind": "generator",
       "summary": "Plan and apply owned scoped agent instructions with drift and ownership checks.",
-      "artifact": "skills/instructify/scripts/instructify.py",
-      "guide": "skills/instructify/SKILL.md",
+      "artifact": "skills/learn/skills/instructify/scripts/instructify.py",
+      "guide": "skills/learn/skills/instructify/SKILL.md",
       "tags": [
         "instruction",
         "manifest",
@@ -66,14 +66,14 @@
         "agent",
         "ownership"
       ],
-      "usage": "python3 skills/instructify/scripts/instructify.py plan --project <repo> --input <manifest>; inspect the plan before using the documented apply/check commands."
+      "usage": "python3 skills/learn/skills/instructify/scripts/instructify.py plan --project <repo> --input <manifest>; inspect the plan before using the documented apply/check commands."
     },
     {
       "id": "parameterized-configuration-module",
       "kind": "template",
       "summary": "Generate a Python configuration module from typed validated Copier inputs without model inference.",
-      "artifact": "skills/reusify/examples/copier",
-      "guide": "skills/reusify/references/templates.md",
+      "artifact": "skills/learn/skills/reusify/examples/copier",
+      "guide": "skills/learn/skills/reusify/references/templates.md",
       "tags": [
         "copier",
         "jinja",
@@ -82,14 +82,14 @@
         "configuration",
         "module"
       ],
-      "usage": "copier copy --defaults --data display_name=<label> --data worker_limit=<1..32> skills/reusify/examples/copier <absent-output>; use a compatible installed Copier and validate output."
+      "usage": "copier copy --defaults --data display_name=<label> --data worker_limit=<1..32> skills/learn/skills/reusify/examples/copier <absent-output>; use a compatible installed Copier and validate output."
     },
     {
       "id": "skill-inference-runtime",
       "kind": "library",
       "summary": "Version-pinned Vercel AI SDK boundary for explicit chat/Responses, native Decisions, and official harness profiles with bounded capacity.",
-      "artifact": "skills/codify/scripts/ai-runtime",
-      "guide": "skills/codify/references/inference.md",
+      "artifact": "skills/learn/skills/codify/scripts/ai-runtime",
+      "guide": "skills/learn/skills/codify/references/inference.md",
       "tags": [
         "ai-sdk",
         "model",
@@ -124,8 +124,8 @@
       "id": "prompt-workflow-compiler",
       "kind": "generator",
       "summary": "Compile once-lowered prompt/Markdown procedures into reproducible verified code-bearing lock artifacts; execute frozen code without reinterpreting source.",
-      "artifact": "skills/codify/scripts/codify.py",
-      "guide": "skills/codify/SKILL.md",
+      "artifact": "skills/learn/skills/codify/scripts/codify.py",
+      "guide": "skills/learn/skills/codify/SKILL.md",
       "tags": [
         "codify",
         "prompt",
@@ -190,8 +190,8 @@
       "id": "markdown-command-runtime",
       "kind": "library",
       "summary": "Validate Markdown/YAML command signatures and deterministically map nested CLI commands, aliases, typed flags, or OpenAI tool calls to the same verified compiled artifact.",
-      "artifact": "skills/codify/scripts/command_schema.py",
-      "guide": "skills/codify/references/command-definitions.md",
+      "artifact": "skills/learn/skills/codify/scripts/command_schema.py",
+      "guide": "skills/learn/skills/codify/references/command-definitions.md",
       "tags": [
         "command",
         "subcommand",
@@ -262,8 +262,8 @@
       "id": "deterministic-command-manual",
       "kind": "module",
       "summary": "One metadata/signature-derived man-page model with escaped man(1) source and fixed console rendering for shared reserved help.",
-      "artifact": "skills/codify/scripts/command_manual.py",
-      "guide": "skills/codify/references/command-definitions.md",
+      "artifact": "skills/learn/skills/codify/scripts/command_manual.py",
+      "guide": "skills/learn/skills/codify/references/command-definitions.md",
       "tags": [
         "help",
         "man",
@@ -278,7 +278,7 @@
       "id": "skill-contract-runtime",
       "kind": "module",
       "summary": "Canonical typed skill contract/report verification and bounded native helper transport.",
-      "artifact": "skills/codify/scripts/package_runtime.py",
+      "artifact": "skills/learn/skills/codify/scripts/package_runtime.py",
       "guide": "docs/normalization.md",
       "tags": [
         "skills",
@@ -292,7 +292,7 @@
       "id": "strict-json-contract",
       "kind": "module",
       "summary": "One strict duplicate/non-finite/overflow JSON parser for compiler, command protocol and packaged skill cores.",
-      "artifact": "skills/codify/scripts/json_contract.py",
+      "artifact": "skills/learn/skills/codify/scripts/json_contract.py",
       "guide": "docs/normalization.md",
       "tags": [
         "skills",
@@ -306,7 +306,7 @@
       "id": "owned-skill-normalizer",
       "kind": "generator",
       "summary": "Generate typed model/verify/native interfaces while preserving native code and source-generation ownership.",
-      "artifact": "skills/skillify/scripts/skill_normalize.py",
+      "artifact": "skills/learn/skills/skillify/scripts/skill_normalize.py",
       "guide": "docs/normalization.md",
       "tags": [
         "skills",

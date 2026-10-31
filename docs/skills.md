@@ -6,8 +6,8 @@ reviewed compiled artifacts. [Normalization coverage](normalization.md) describe
 what runs mechanically and what still requires actual semantic/provider work.
 
 
-Skills install by origin. The 15 skills under development in `skills/` join
-Codex, Claude Code, and Cursor. Harness-independent outside skills, including the
+Skills install by origin. The 8 skills under development in `skills/` join
+Codex, Claude Code, and Cursor; Learn's 7 subskills install inside it. Harness-independent outside skills, including the
 four third-party-derived packages in `.agents/skills/`, install only to the shared
 `.agents/skills/` directory. Pstack and its Cursor Team Kit dependency install
 only to `.cursor/skills/`. Graphify and Impeccable ship a distinct build for each
@@ -22,25 +22,34 @@ explicit report/audit and procedural skill-improvement modes. See
 [initial compatibility review](evaluation.md). Matt's TDD skill is `matt-tdd`;
 its internal calls are adapted while the pinned source stays unchanged.
 
-## Skills under development (15)
+## Skills under development (8)
 
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
-| [`codify`](../skills/codify/SKILL.md) | personal | User or model |
 | [`document`](../skills/document/SKILL.md) | personal | User or model |
-| [`flowify`](../skills/flowify/SKILL.md) | personal | User or model |
 | [`hill-climb`](../skills/hill-climb/SKILL.md) | personal | User only |
-| [`hookify`](../skills/hookify/SKILL.md) | personal | User or model |
-| [`instructify`](../skills/instructify/SKILL.md) | personal | User or model |
 | [`investigate`](../skills/investigate/SKILL.md) | personal | User or model |
 | [`learn`](../skills/learn/SKILL.md) | personal | User or model |
-| [`lintify`](../skills/lintify/SKILL.md) | personal | User or model |
-| [`reusify`](../skills/reusify/SKILL.md) | personal | User or model |
 | [`sdlc`](../skills/sdlc/SKILL.md) | personal | User only |
-| [`skillify`](../skills/skillify/SKILL.md) | personal | User or model |
 | [`tkstack-principles`](../skills/tkstack-principles/SKILL.md) | personal | User or model; native startup pointer |
 | [`unslop`](../skills/unslop/SKILL.md) | personal | User or model |
 | [`write`](../skills/write/SKILL.md) | personal | User or model |
+
+## Learn subskills (7)
+
+These complete packages live in `skills/learn/skills/` and install with Learn.
+Invoke them as Learn subcommands: `/learn <name> [request]`, or
+`.tkstack/tkstack skills learn -- <name> [command ...]` for compiled execution.
+
+| Subskill | Bucket | Invocation |
+| --- | --- | --- |
+| [`codify`](../skills/learn/skills/codify/SKILL.md) | personal | `/learn codify` |
+| [`flowify`](../skills/learn/skills/flowify/SKILL.md) | personal | `/learn flowify` |
+| [`hookify`](../skills/learn/skills/hookify/SKILL.md) | personal | `/learn hookify` |
+| [`instructify`](../skills/learn/skills/instructify/SKILL.md) | personal | `/learn instructify` |
+| [`lintify`](../skills/learn/skills/lintify/SKILL.md) | personal | `/learn lintify` |
+| [`reusify`](../skills/learn/skills/reusify/SKILL.md) | personal | `/learn reusify` |
+| [`skillify`](../skills/learn/skills/skillify/SKILL.md) | personal | `/learn skillify` |
 
 ## Third-party-derived packages (4)
 

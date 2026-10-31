@@ -13,6 +13,7 @@ import sys
 from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from tkstack_state import ensure_state
+from skill_roots import owned
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.dont_write_bytecode = True
@@ -54,9 +55,10 @@ def run_lock(directory):
 
 def prepare(skill, run_dir, backend):
     ensure_state(run_dir)
-    if not isinstance(skill, str) or skill not in {path.name for path in (ROOT / 'skills').iterdir() if (path / 'SKILL.md').is_file()}:
-        raise ValueError('Select an existing owned root skill')
-    target = ROOT / "skills" / skill / "SKILL.md"
+    packages = owned(ROOT)
+    if not isinstance(skill, str) or skill not in packages:
+        raise ValueError('Select an existing owned skill or subskill')
+    target = packages[skill] / "SKILL.md"
     source = ROOT / "evals" / skill / "tasks.json"
     tasks, meta = load_tasks_file(str(source))
     if meta.get("reviewed") is not True:
@@ -100,7 +102,7 @@ def prepare(skill, run_dir, backend):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("skill", choices=sorted(path.name for path in (ROOT / 'skills').iterdir() if (path / 'SKILL.md').is_file()))
+    parser.add_argument("skill", choices=sorted(owned(ROOT)))
     parser.add_argument("--backend", choices=["handoff", "mock", "codex"], default="handoff")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--run-dir", type=Path)

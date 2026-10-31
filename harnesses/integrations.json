@@ -124,7 +124,7 @@
       "version": "4.26.0",
       "bin": "python",
       "python_version": "3.12",
-      "recipe": "skills/codify/requirements"
+      "recipe": "skills/learn/skills/codify/requirements"
     }
   },
   "mcp": {

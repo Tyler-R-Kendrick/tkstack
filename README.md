@@ -99,8 +99,10 @@ retained-evidence checks, and `native ...` for its available existing helper.
 behavior checks, semantic/native boundaries, and all 19 SkillOpt trials.
 
 Common entrypoints include `sdlc`, `learn`, `unslop`, `hill-climb`, `investigate`,
-`document`, `write`, and the authoring skills `skillify`, `codify`, `hookify`,
-`lintify`, `instructify`, `flowify`, and `reusify`.
+`document`, and `write`. The authoring skills `skillify`, `codify`, `hookify`,
+`lintify`, `instructify`, `flowify`, and `reusify` are Learn subskills: they ship
+inside `skills/learn/skills/` and run as `/learn <name>` or
+`.tkstack/tkstack skills learn -- <name> ...`.
 
 ```text
 /learn help
@@ -129,7 +131,7 @@ an authored compiled package. Uncompiled skills require explicit Skillify/Codify
 authoring and compilation. Dispatch validates parameters and artifact freshness,
 then executes frozen code. It does not infer a skill's procedure. Declared model
 calls remain inference. See [runner usage](docs/runner.md),
-[Markdown command signatures](skills/codify/references/command-definitions.md),
+[Markdown command signatures](skills/learn/skills/codify/references/command-definitions.md),
 and [compilation](docs/codify.md).
 
 ## Configuration and local data
@@ -145,7 +147,7 @@ Workspace, user, and global state use `<repo>/.tkstack`, `~/.tkstack`, and
 
 Normal setup does not create the machine-wide root. Credentials, histories,
 runtimes, and generated launchers remain ignored. See [state conventions](docs/state-layout.md)
-and [model/provider configuration](skills/codify/references/inference.md).
+and [model/provider configuration](skills/learn/skills/codify/references/inference.md).
 
 ## Maintain this repository
 

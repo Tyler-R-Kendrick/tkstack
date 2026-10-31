@@ -5,6 +5,7 @@
 | Source | An upstream repository or package pinned in `sources.lock.json` |
 | Snapshot | The exact upstream files retained under `vendor/<source>/` |
 | Skill | A directory containing `SKILL.md` and its supporting files |
+| Subskill | A complete skill package nested at `<parent>/skills/<name>/` that ships inside its parent, installs only through it, and is exposed as the parent's `<name>` subcommand by a mount command (`run: {skill: skills/<name>}`) |
 | Code-mode prompt | A skill's thin discovery/invocation context that directs the agent to call an executable tool rather than reconstruct its procedure |
 | Executable skill workflow | The canonical workflow definition and bindings in a skill's `scripts/`, with validated inputs/outputs, gates, effects, and failure behavior |
 | Inference profile | Explicit provider/model/API or harness configuration for residual inference; separate from deterministic workflow control flow |

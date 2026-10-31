@@ -44,8 +44,8 @@
     },
     "authoring": {
       "inputs": [
-        "skills/codify/**",
-        "skills/skillify/**",
+        "skills/learn/skills/codify/**",
+        "skills/learn/skills/skillify/**",
         "scripts/sync_codify.py"
       ],
       "docs": [
@@ -80,8 +80,8 @@
         "scripts/evolve.py"
       ],
       "exclude": [
-        "skills/codify/**",
-        "skills/skillify/**"
+        "skills/learn/skills/codify/**",
+        "skills/learn/skills/skillify/**"
       ],
       "docs": [
         "README.md",

@@ -8,12 +8,12 @@ Markdown. A generated lock alone cannot make arbitrary natural language
 unambiguous or eliminate required semantic inference.
 
 ```sh
-python3 skills/codify/scripts/codify.py scaffold /repo/procedure.md --target /repo/workflow
+python3 skills/learn/skills/codify/scripts/codify.py scaffold /repo/procedure.md --target /repo/workflow
 # Implement scripts/workflow.py and author actual contract cases.
-python3 skills/codify/scripts/codify.py compile /repo/workflow/PROMPT.md \
+python3 skills/learn/skills/codify/scripts/codify.py compile /repo/workflow/PROMPT.md \
   --entrypoint /repo/workflow/scripts/run.py --cases /repo/workflow/cases.json \
   --output /repo/workflow/scripts/workflow.lock.json
-python3 skills/codify/scripts/codify.py run /repo/workflow/scripts/workflow.lock.json --input input.json
+python3 skills/learn/skills/codify/scripts/codify.py run /repo/workflow/scripts/workflow.lock.json --input input.json
 ```
 
 The executable lock contains exact code/resource bytes, hashes, source/case
@@ -40,36 +40,36 @@ standalone Skillify installations usable without sibling plugins:
 
 Markdown-defined nullable string CLI flags accept ordinary paths/text, explicit
 `null`, or a JSON-quoted string; other non-string parameters use JSON syntax.
-See [the shared command contract](../skills/codify/references/command-definitions.md).
+See [the shared command contract](../skills/learn/skills/codify/references/command-definitions.md).
 
 ```sh
 python3 scripts/sync_codify.py
 python3 scripts/sync_codify.py --check
-python3 skills/skillify/scripts/skillify.py compile /repo/skills/my-tool --cases /repo/skills/my-tool/cases.json
+python3 skills/learn/skills/skillify/scripts/skillify.py compile /repo/skills/my-tool --cases /repo/skills/my-tool/cases.json
 ```
 
 Doctor checks that release against canonical Codify source. There is no reverse
 Codify-to-Skillify dependency. Flowify still owns MAF/Rhai authoring/native host
 validation; its definitions and actual host bindings can be included in a lock.
 The version-pinned Vercel AI SDK runtime now lives at
-`skills/codify/scripts/ai-runtime/`. Providers/models, chat/Responses, native
+`skills/learn/skills/codify/scripts/ai-runtime/`. Providers/models, chat/Responses, native
 Decisions, and harness definitions remain explicit and configurable. Pure
 Python runs need no model or dependency installation. Node runs use explicitly
 supplied installed dependencies from `npm ci` against the frozen package lock;
 execution never downloads them. No-inference mode is a reviewed declaration,
 not a universal static/network isolation guarantee.
 
-The complete [normalization example](../skills/codify/examples/normalize-labels/PROMPT.md)
+The complete [normalization example](../skills/learn/skills/codify/examples/normalize-labels/PROMPT.md)
 has seven contract cases and a built
-[lock artifact](../skills/codify/examples/normalize-labels/scripts/workflow.lock.json).
+[lock artifact](../skills/learn/skills/codify/examples/normalize-labels/scripts/workflow.lock.json).
 Its transfer/boundary cases include Unicode, empty input, wrong types, missing
 fields, and extra fields. More complex conversions need their own domain cases
 and real output/effect review.
 
-See [the skill index](../skills/codify/SKILL.md),
-[tool interface](../skills/codify/references/commands.md),
-[artifact contract](../skills/codify/references/artifact.md), and
-[primary-source comparison](../skills/codify/references/sources.md).
+See [the skill index](../skills/learn/skills/codify/SKILL.md),
+[tool interface](../skills/learn/skills/codify/references/commands.md),
+[artifact contract](../skills/learn/skills/codify/references/artifact.md), and
+[primary-source comparison](../skills/learn/skills/codify/references/sources.md).
 
 ## Commands from Markdown tool signatures
 
@@ -80,9 +80,9 @@ Chat exports use the native nested function envelope. JSON Schema is preserved;
 aliases and flags never leak into API tool definitions.
 
 ```sh
-python3 scripts/tool.py codify commands skills/codify/examples/normalize-labels --format responses
-python3 scripts/tool.py codify invoke skills/codify/examples/normalize-labels -- labels normalize -l '[" b ","a","a"]'
-python3 scripts/tool.py codify invoke skills/codify/examples/normalize-labels --call /path/to/tool-call.json
+python3 scripts/tool.py codify commands skills/learn/skills/codify/examples/normalize-labels --format responses
+python3 scripts/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels -- labels normalize -l '[" b ","a","a"]'
+python3 scripts/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels --call /path/to/tool-call.json
 ```
 
 The real example returns `{"labels":["a","b"]}`. The same lock accepts Responses,
@@ -91,7 +91,7 @@ into the artifact automatically; edits require explicit recompilation. Default
 help and exports are read-only and work before compilation. The profile validates
 typed arguments before effects, refuses unsafe bindings and unsupported schema
 features, and executes no shell text or implicit inference. See
-[the full format, supported schema profile, and dependency setup](../skills/codify/references/command-definitions.md).
+[the full format, supported schema profile, and dependency setup](../skills/learn/skills/codify/references/command-definitions.md).
 
 Skillify supplies reserved help/version definitions from this runtime. Help is
 the default subcommand and generates a man-page model with deterministic console
@@ -99,7 +99,7 @@ rendering; `help --format man` emits escaped man(1) source. Version reads declar
 package metadata without running code. Both CLI and API work before compilation;
 older command packages receive missing defaults when their catalog is read.
 The legacy topic-only help tool remains supported. See
-[reserved commands and output contracts](../skills/codify/references/command-definitions.md#reserved-help-and-version).
+[reserved commands and output contracts](../skills/learn/skills/codify/references/command-definitions.md#reserved-help-and-version).
 
 ## Shared normalized skill runtime
 

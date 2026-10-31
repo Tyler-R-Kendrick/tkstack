@@ -1,7 +1,7 @@
 # Lintify
 
 Use `/lintify <standard>` or `$lintify` to create or configure a native CLI lint
-rule. The portable [package](../skills/lintify/SKILL.md) contains authoring and
+rule. The portable [package](../skills/learn/skills/lintify/SKILL.md) contains authoring and
 validation procedures, conditional Markdown references, and isolated examples.
 
 The result is a native rule/config, explicit scope/exceptions, meaningful good/
@@ -18,11 +18,11 @@ Prefer executable facts and narrow decision services before generative judgment.
 ## Scaffold examples
 
 ```sh
-python3 skills/lintify/scripts/lintify.py scaffold \
+python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend eslint --target /tmp/lintify-eslint-example
-python3 skills/lintify/scripts/lintify.py scaffold \
+python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend lintbook --target /tmp/lintify-lintbook-example
-python3 skills/lintify/scripts/lintify.py scaffold \
+python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend gptlint --target /tmp/lintify-gptlint-example
 ```
 

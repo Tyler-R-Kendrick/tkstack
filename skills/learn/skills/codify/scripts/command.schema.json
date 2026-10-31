@@ -113,6 +113,19 @@
             "builtin"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "skill": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "skill"
+          ],
+          "additionalProperties": false
         }
       ]
     }

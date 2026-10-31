@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown command interfaces require the bundled hash-locked PyYAML/jsonschema environment. Python 3.11+ and a POSIX host for the compiler/runner. Pure Python workflows need no models or package install. Optional AI SDK workflows require Node 24+, locked npm dependencies, and explicit profiles for inference. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Codify

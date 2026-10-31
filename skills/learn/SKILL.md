@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Requires Python 3.11 or newer for the bundled helper. The steering format has no harness dependency. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # Learn
@@ -24,9 +24,16 @@ Tool: `.tkstack/tkstack skills learn -- <command>`. Omit the command for determi
 | `native experience` | [Typed parameters](commands/native_experience.md) |
 | `native show` | [Typed parameters](commands/native_show.md) |
 | `native sessions review` | [Typed parameters](commands/native_sessions_review.md) |
+| `codify [command ...]` | [Mounted subskill](commands/codify.md) → [`skills/codify`](skills/codify/SKILL.md) |
+| `flowify [command ...]` | [Mounted subskill](commands/flowify.md) → [`skills/flowify`](skills/flowify/SKILL.md) |
+| `hookify [command ...]` | [Mounted subskill](commands/hookify.md) → [`skills/hookify`](skills/hookify/SKILL.md) |
+| `instructify [command ...]` | [Mounted subskill](commands/instructify.md) → [`skills/instructify`](skills/instructify/SKILL.md) |
+| `lintify [command ...]` | [Mounted subskill](commands/lintify.md) → [`skills/lintify`](skills/lintify/SKILL.md) |
+| `reusify [command ...]` | [Mounted subskill](commands/reusify.md) → [`skills/reusify`](skills/reusify/SKILL.md) |
+| `skillify [command ...]` | [Mounted subskill](commands/skillify.md) → [`skills/skillify`](skills/skillify/SKILL.md) |
 | Evidence, effects, native execution, and semantic boundaries | [Execution contract](references/execution.md) |
 
-`model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
+`model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Each ___ify subcommand passes its remaining arguments to the packaged subskill, whose own commands and lock type and bind them. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
 <!-- tkstack:execution:end -->
 
 
@@ -42,13 +49,13 @@ running the helper without a command shows help without initializing state.
 | Signal | Read before acting |
 | --- | --- |
 | Help, command syntax, parameters, or direct ___ify invocation | [Subcommands and handoff contract](references/subcommands.md) |
-| Package a reusable procedure | [`skillify`](references/subcommands.md#skillify) |
-| Enforce a tool-event policy | [`hookify`](references/subcommands.md#hookify) |
-| Maintain scoped agent instructions | [`instructify`](references/subcommands.md#instructify) |
-| Create a workflow in a native DSL | [`flowify`](references/subcommands.md#flowify) |
-| Create a CLI lint rule | [`lintify`](references/subcommands.md#lintify) |
-| Reuse code assets or bootstrap extraction with `init` | [`reusify`](references/subcommands.md#reusify) |
-| Compile a prompt/Markdown procedure to a lock artifact | [`codify`](references/subcommands.md#codify) |
+| Package a reusable procedure | [`skillify`](references/subcommands.md#skillify), [package](skills/skillify/SKILL.md) |
+| Enforce a tool-event policy | [`hookify`](references/subcommands.md#hookify), [package](skills/hookify/SKILL.md) |
+| Maintain scoped agent instructions | [`instructify`](references/subcommands.md#instructify), [package](skills/instructify/SKILL.md) |
+| Create a workflow in a native DSL | [`flowify`](references/subcommands.md#flowify), [package](skills/flowify/SKILL.md) |
+| Create a CLI lint rule | [`lintify`](references/subcommands.md#lintify), [package](skills/lintify/SKILL.md) |
+| Reuse code assets or bootstrap extraction with `init` | [`reusify`](references/subcommands.md#reusify), [package](skills/reusify/SKILL.md) |
+| Compile a prompt/Markdown procedure to a lock artifact | [`codify`](references/subcommands.md#codify), [package](skills/codify/SKILL.md) |
 | Correction, frustration, or explicit preference | [Capture, reason, curate, verify](references/operating-guide.md) |
 | Invoked /learn or consolidation of temporary sessions | [Session review, abstraction, mechanism selection, and execution](references/session-consolidation.md) |
 | Workspace/user/global storage or layered steering | [Storage scopes and paths](references/storage.md), [commands](references/records.md#scoped-stores-and-session-commands) |
@@ -69,10 +76,11 @@ actual user messages justify user correction records. Explicit report/audit is
 read-only, including the ledger. Apply current instructions over older rules.
 
 Handle help before feedback capture or session review. A direct ___ify command
-hands only its request to the named skill; preserve its scope, nested subcommands,
-parameters, and preview/audit intent. Read that installed skill's index and run
-its actual procedure. If unavailable, report the missing dependency. The native
-helper prints guidance; it does not execute a sibling skill.
+hands only its request to the subskill packaged at `skills/<name>/`; preserve its
+scope, nested subcommands, parameters, and preview/audit intent. Read that
+subskill's index and run its actual procedure. Each subskill is a complete
+package (`SKILL.md`, `commands/`, `scripts/`, `references/`, lock) and ships
+inside Learn. The native helper prints guidance; it does not execute a subskill.
 
 Bare Learn or `consolidate` reviews selected `.tkstack/sessions/<session>/`
 evidence, extracts scoped transferable principles, chooses the smallest set of

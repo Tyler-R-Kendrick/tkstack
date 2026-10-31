@@ -86,6 +86,12 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
 - Put personal skills in `skills/`, shared Markdown agents in `agents/`, and
   harness-specific configuration in `harnesses/`. Generated alias views in
   `.tkstack/` and installed links are ignored.
+- The ___ify skills (codify, flowify, hookify, instructify, lintify, reusify,
+  skillify) are Learn subskills at `skills/learn/skills/<name>/`. They ship and
+  install only with Learn; invoke them as `/learn <name>` or
+  `.tkstack/tkstack skills learn -- <name> ...`. Each stays a complete package
+  with its own lock, and Learn's `commands/<name>.md` mounts it. See
+  `skills/README.md`.
 - Verify changes with `.tkstack/runtime/command-schema/bin/python -m unittest discover -s tests -v`,
   `python3 scripts/install.py --target . --dry-run`, and
   `python3 scripts/doctor.py --target .`. Tests use temporary installation
