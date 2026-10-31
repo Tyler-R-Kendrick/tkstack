@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "document-train-contract",
+      "project": "tkstack",
+      "intent": "Repository knowledge is stale. A) Create a second conflicting wiki account. B) Invent missing implementation details. C) Update its canonical reader-oriented page using current code/tests and resolving sources. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "document-val-contract",
+      "project": "tkstack",
+      "intent": "OpenWiki tools are unavailable. A) Maintain ordinary Markdown transparently without fabricating Claims or lifecycle guarantees. B) Claim OpenWiki validated freshness. C) Manufacture sidecars. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "document-test-contract",
+      "project": "tkstack",
+      "intent": "Preparing a harness-independent handoff. A) Drop unresolved blockers. B) Retain the objective, current revision, evidence, decisions, remaining work and actual limits. C) Mine unrelated private session history. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "files": {
+    "commands/help.md": "65e88557811f1365d267daa31632ae39d2c80f0143aea83124fc33eb7b2dfa6e",
+    "commands/model.md": "cb354c0e76b30cd1f746e3ff4e98fd1ca38a7ab2d1a694d6069e612f3de36ae1",
+    "commands/native_apply.md": "ad3b7be2344f457c2014c1ebb6922990ee0a25536311d9a5a5e492037a504604",
+    "commands/native_check.md": "c1335bccbc5e66ddec4f28d9e58747170a0439ca561ea5f58b5fad8495c5fcde",
+    "commands/native_plan.md": "baded426244aa11cb6bcadf2d93f980f031a8f89997f5f14bbf61062f1b8b96c",
+    "commands/verify.md": "8e9e191d7694fb0b1d1c9eb5a885c01bdabc4d1fd10b853350f05f6ce67ece02",
+    "commands/version.md": "595602639cfea4933376dd7ce6c0cbc4236830c570a26412cca9ebe734b731c1",
+    "references/execution.md": "96f7d017a3641497e3f094e9f9340f57f44b8f84ad0a42e0dbab51275e999a2d",
+    "scripts/contract.json": "a8e77371cb02a79d03394d900010af85445838766f308bf4d21dc7e192c9afe8",
+    "scripts/json_contract.py": "1ef7ae18e20f53fc2029cc5608c403f9fab4a3ee1d9df7789724211ad26fc155",
+    "scripts/package_runtime.py": "a1f8eea4ca9f46c4889c538ec50db36ae211c45f485968eef708188aa54ad624",
+    "scripts/run.py": "b4851e33d2a278de71e21bac36ec5da0685d2a1a372d5fa77162dfe98c50efd6"
+  }
+}

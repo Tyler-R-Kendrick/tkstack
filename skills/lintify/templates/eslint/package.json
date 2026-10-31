@@ -1,0 +1,12 @@
+{
+  "name": "lintify-eslint-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node rule.test.mjs",
+    "lint:good": "eslint --no-config-lookup --config eslint.config.mjs fixtures/good.js --max-warnings 0",
+    "lint:bad": "eslint --no-config-lookup --config eslint.config.mjs fixtures/bad.js --max-warnings 0"
+  },
+  "devDependencies": { "eslint": "9.39.1" }
+}

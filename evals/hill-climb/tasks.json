@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "hill-climb-train-contract",
+      "project": "tkstack",
+      "intent": "A candidate gains one unit while measured unchanged noise and the actionable margin are both larger. A) Promote it as a win. B) Retain the baseline and record no attributable improvement. C) Lower the threshold after seeing the candidate. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "hill-climb-val-contract",
+      "project": "tkstack",
+      "intent": "Confirmation cases were repeatedly shown to the optimizer. A) Call them untouched holdout. B) Use a filename change as isolation proof. C) Treat confirmation as contaminated and obtain genuinely fresh confirmation before a generalization claim. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "hill-climb-test-contract",
+      "project": "tkstack",
+      "intent": "A candidate is faster because it skipped the real work and produced errors. A) Reject it under work-count/quality guardrails. B) Promote it on latency alone. C) Hide failures from measurement. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

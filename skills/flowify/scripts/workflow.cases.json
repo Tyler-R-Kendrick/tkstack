@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "flowify",
+        "purpose": "Author workflows in a real DSL with explicit deterministic bindings and native validation boundaries.",
+        "criteria": [
+          {
+            "id": "native-dialect",
+            "description": "Use a real supported MAF/Rhai/existing native workflow dialect."
+          },
+          {
+            "id": "dataflow",
+            "description": "Define bound code, inputs/outputs, dependency ordering, concurrency and failure ownership."
+          },
+          {
+            "id": "execution-boundary",
+            "description": "Distinguish source inspection, native validation and actual observed execution."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "dialect": {
+              "type": "string",
+              "enum": [
+                "maf",
+                "rhai",
+                "existing"
+              ]
+            },
+            "claim_executed": {
+              "type": "boolean"
+            },
+            "execution_observed": {
+              "type": "boolean"
+            },
+            "bindings_explicit": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "dialect",
+            "claim_executed",
+            "execution_observed",
+            "bindings_explicit"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "claim_executed": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "execution_observed": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "Use the actual native MAF/Rhai runtime to build and execute the workflow. Source inspection and report coverage do not establish execution."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

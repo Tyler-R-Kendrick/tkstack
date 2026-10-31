@@ -1,0 +1,2905 @@
+{
+  "version": 1,
+  "method": "Static suitability review, not usage telemetry or measured model-performance ranking.",
+  "scope": "154 resolved repository skills before adaptation; all entrypoints indexed by metadata and branches, selected procedure/reference detail reviewed. System/cloud plugin catalogs and unrelated histories are outside scope.",
+  "criteria": [
+    "reuse across the user's likely work",
+    "concrete actionable procedure",
+    "portability after adapting host-specific calls",
+    "fit with deterministic-first, concurrency, BDD/contracts and existing authority",
+    "smallest nonduplicated owner"
+  ],
+  "original_count": 154,
+  "dispositions": {
+    "distill": 128,
+    "retain-specialist": 13,
+    "incorporate-existing": 13
+  },
+  "source_inventory_unchanged": true,
+  "rows": [
+    {
+      "name": "architect",
+      "path": "vendor/pstack/skills/architect/SKILL.md",
+      "sha256": "385ce4a54ca9bcfc8f11a37010ae1c302fa44f9c562378f730ad6a6d4c827a02",
+      "lines": 79,
+      "bytes": 5437,
+      "canonical_source_path": "vendor/pstack/skills/architect/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/architect/SKILL.md",
+      "canonical_sha256": "385ce4a54ca9bcfc8f11a37010ae1c302fa44f9c562378f730ad6a6d4c827a02"
+    },
+    {
+      "name": "arena",
+      "path": "vendor/pstack/skills/arena/SKILL.md",
+      "sha256": "5d5cf19cf02c2737ef03bc1fc9e3d32766a9845a705e75a41f6f92df4c695f5d",
+      "lines": 71,
+      "bytes": 5046,
+      "canonical_source_path": "vendor/pstack/skills/arena/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "hill-climb",
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/arena/SKILL.md",
+      "canonical_sha256": "5d5cf19cf02c2737ef03bc1fc9e3d32766a9845a705e75a41f6f92df4c695f5d"
+    },
+    {
+      "name": "ask-matt",
+      "path": ".tkstack/matt-pocock/skills/engineering/ask-matt/SKILL.md",
+      "sha256": "86637e4ef85a2445b1b15f1cd00cbedbe400724ff664e7528a917376d8098234",
+      "lines": 97,
+      "bytes": 12614,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/ask-matt/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "skillify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/ask-matt/SKILL.md",
+      "canonical_sha256": "1371f5ce005de0992a44b137748bfb960a56948aa9871b405fe9d90b24332e3c"
+    },
+    {
+      "name": "automate-it",
+      "path": "vendor/lever/skills/automate-it/SKILL.md",
+      "sha256": "9cd86b6306595d1045398c0975ea99ce905837760ef29a8965efe7a3a50c3789",
+      "lines": 93,
+      "bytes": 10964,
+      "canonical_source_path": "vendor/lever/skills/automate-it/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "flowify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/automate-it/SKILL.md",
+      "canonical_sha256": "9cd86b6306595d1045398c0975ea99ce905837760ef29a8965efe7a3a50c3789"
+    },
+    {
+      "name": "automate-me",
+      "path": "vendor/pstack/skills/automate-me/SKILL.md",
+      "sha256": "a5999a0e1d1c242df77d2fbc3e8dae201228135b2c6c6409ef353c1b507df530",
+      "lines": 109,
+      "bytes": 7489,
+      "canonical_source_path": "vendor/pstack/skills/automate-me/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "instructify",
+        "learn",
+        "skillify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/automate-me/SKILL.md",
+      "canonical_sha256": "a5999a0e1d1c242df77d2fbc3e8dae201228135b2c6c6409ef353c1b507df530"
+    },
+    {
+      "name": "autonomous-delivery",
+      "path": "vendor/lever/skills/autonomous-delivery/SKILL.md",
+      "sha256": "6b9616775a27c1ddb36a5a5810b6d6a2abd126ca9090709b245a158ac1fcbe15",
+      "lines": 273,
+      "bytes": 26339,
+      "canonical_source_path": "vendor/lever/skills/autonomous-delivery/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/autonomous-delivery/SKILL.md",
+      "canonical_sha256": "6b9616775a27c1ddb36a5a5810b6d6a2abd126ca9090709b245a158ac1fcbe15"
+    },
+    {
+      "name": "autonomy-dial",
+      "path": "vendor/lever/skills/autonomy-dial/SKILL.md",
+      "sha256": "028e66eaa521d4c5bc2f384d51193b0e13b7a12d30ab80464792548d8a046ed7",
+      "lines": 130,
+      "bytes": 11888,
+      "canonical_source_path": "vendor/lever/skills/autonomy-dial/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/autonomy-dial/SKILL.md",
+      "canonical_sha256": "028e66eaa521d4c5bc2f384d51193b0e13b7a12d30ab80464792548d8a046ed7"
+    },
+    {
+      "name": "babysit-pr",
+      "path": "vendor/tstack/skills/babysit-pr/SKILL.md",
+      "sha256": "fbe43ba3ab76a466a88ef8b46dca1b41fb8101347d24a396903849865173a6ac",
+      "lines": 117,
+      "bytes": 5299,
+      "canonical_source_path": "vendor/tstack/skills/babysit-pr/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/babysit-pr/SKILL.md",
+      "canonical_sha256": "fbe43ba3ab76a466a88ef8b46dca1b41fb8101347d24a396903849865173a6ac"
+    },
+    {
+      "name": "brief",
+      "path": "vendor/lever/skills/brief/SKILL.md",
+      "sha256": "359e8f9dac80015a8e9ddcf367b6c007278bff1e768a004df1789968bdc501c0",
+      "lines": 112,
+      "bytes": 11827,
+      "canonical_source_path": "vendor/lever/skills/brief/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/brief/SKILL.md",
+      "canonical_sha256": "359e8f9dac80015a8e9ddcf367b6c007278bff1e768a004df1789968bdc501c0"
+    },
+    {
+      "name": "check-compiler-errors",
+      "path": "vendor/cursor-team-kit/skills/check-compiler-errors/SKILL.md",
+      "sha256": "1ad76beccd581fc285199334709e0a37cdc2f76e5d0d33c90e1dc21905518004",
+      "lines": 23,
+      "bytes": 535,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/check-compiler-errors/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/check-compiler-errors/SKILL.md",
+      "canonical_sha256": "1ad76beccd581fc285199334709e0a37cdc2f76e5d0d33c90e1dc21905518004"
+    },
+    {
+      "name": "chief-of-staff",
+      "path": ".tkstack/matt-pocock/skills/in-progress/chief-of-staff/SKILL.md",
+      "sha256": "d13f3a542a4664f27bf14977811ee9dcd83fae03655b20720b3441850a2008a4",
+      "lines": 68,
+      "bytes": 3866,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/chief-of-staff/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/chief-of-staff/SKILL.md",
+      "canonical_sha256": "d13f3a542a4664f27bf14977811ee9dcd83fae03655b20720b3441850a2008a4"
+    },
+    {
+      "name": "claude-handoff",
+      "path": ".tkstack/matt-pocock/skills/in-progress/claude-handoff/SKILL.md",
+      "sha256": "79357a18425d66d4c24048bedf83dceb79d3bba356f38014950f764a7fab4026",
+      "lines": 18,
+      "bytes": 1424,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/claude-handoff/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "document"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/claude-handoff/SKILL.md",
+      "canonical_sha256": "79357a18425d66d4c24048bedf83dceb79d3bba356f38014950f764a7fab4026"
+    },
+    {
+      "name": "code-review",
+      "path": ".tkstack/matt-pocock/skills/engineering/code-review/SKILL.md",
+      "sha256": "9c921a8d88138a41401d8897ca1bb852088ab1b7b605cdd04edc13e3e8aab6dd",
+      "lines": 89,
+      "bytes": 6721,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/code-review/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/code-review/SKILL.md",
+      "canonical_sha256": "9c921a8d88138a41401d8897ca1bb852088ab1b7b605cdd04edc13e3e8aab6dd"
+    },
+    {
+      "name": "codebase-design",
+      "path": ".tkstack/matt-pocock/skills/engineering/codebase-design/SKILL.md",
+      "sha256": "2c20617f87ec8af6a434859f381b2f061a69b530444e74eb39e78bb016a6d1e2",
+      "lines": 114,
+      "bytes": 6446,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/codebase-design/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc",
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/codebase-design/SKILL.md",
+      "canonical_sha256": "2c20617f87ec8af6a434859f381b2f061a69b530444e74eb39e78bb016a6d1e2"
+    },
+    {
+      "name": "control-cli",
+      "path": "vendor/cursor-team-kit/skills/control-cli/SKILL.md",
+      "sha256": "13ac93e595bbda2000849bdb815d5f2ca03f7c2ca63788c8335f9212b9b422a2",
+      "lines": 109,
+      "bytes": 4333,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/control-cli/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "investigate",
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/control-cli/SKILL.md",
+      "canonical_sha256": "13ac93e595bbda2000849bdb815d5f2ca03f7c2ca63788c8335f9212b9b422a2"
+    },
+    {
+      "name": "control-ui",
+      "path": "vendor/cursor-team-kit/skills/control-ui/SKILL.md",
+      "sha256": "410cae25bdb1e5d2323b126abc5047b0213be7fdb0195710213fa8de8a751871",
+      "lines": 109,
+      "bytes": 4802,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/control-ui/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "investigate",
+        "open-design",
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/control-ui/SKILL.md",
+      "canonical_sha256": "410cae25bdb1e5d2323b126abc5047b0213be7fdb0195710213fa8de8a751871"
+    },
+    {
+      "name": "council",
+      "path": "vendor/tstack/skills/council/SKILL.md",
+      "sha256": "598fb2c7cdd48ddd9643cb22999e1b624c357aa6579aa0af0e7268ae16a8a164",
+      "lines": 56,
+      "bytes": 2163,
+      "canonical_source_path": "vendor/tstack/skills/council/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/council/SKILL.md",
+      "canonical_sha256": "598fb2c7cdd48ddd9643cb22999e1b624c357aa6579aa0af0e7268ae16a8a164"
+    },
+    {
+      "name": "cross-model-review",
+      "path": "vendor/lever/skills/cross-model-review/SKILL.md",
+      "sha256": "066c36bb5f49c4c064e8d5cccbbc90cbcccb4d5554f0f055f7cae313bce7d53e",
+      "lines": 112,
+      "bytes": 9398,
+      "canonical_source_path": "vendor/lever/skills/cross-model-review/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/cross-model-review/SKILL.md",
+      "canonical_sha256": "066c36bb5f49c4c064e8d5cccbbc90cbcccb4d5554f0f055f7cae313bce7d53e"
+    },
+    {
+      "name": "design-md",
+      "path": "vendor/stitch-design-md/plugins/stitch-utilities/skills/design-md/SKILL.md",
+      "sha256": "eb15f44646528f3a087ce023329ae699c1b6e803662af68338e1eb1c0406b59b",
+      "lines": 172,
+      "bytes": 7654,
+      "canonical_source_path": "vendor/stitch-design-md/plugins/stitch-utilities/skills/design-md/SKILL.md",
+      "source": "stitch-design-md",
+      "disposition": "distill",
+      "destinations": [
+        "open-design"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "0337446dadde6f8c94210444e2aa9d546126480f",
+      "source_license": "Apache-2.0",
+      "source_url": "https://github.com/google-labs-code/stitch-skills/blob/0337446dadde6f8c94210444e2aa9d546126480f/plugins/stitch-utilities/skills/design-md/SKILL.md",
+      "canonical_sha256": "eb15f44646528f3a087ce023329ae699c1b6e803662af68338e1eb1c0406b59b"
+    },
+    {
+      "name": "deslop",
+      "path": "vendor/cursor-team-kit/skills/deslop/SKILL.md",
+      "sha256": "2f7b7def74af7ed11f5b44b4d32f0f91fca8c5d1f92bf2171e8d12fd33a0f810",
+      "lines": 22,
+      "bytes": 719,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/deslop/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/deslop/SKILL.md",
+      "canonical_sha256": "2f7b7def74af7ed11f5b44b4d32f0f91fca8c5d1f92bf2171e8d12fd33a0f810"
+    },
+    {
+      "name": "diagnosing-bugs",
+      "path": ".tkstack/matt-pocock/skills/engineering/diagnosing-bugs/SKILL.md",
+      "sha256": "849198df88cdb65fd0d97236604c1fca7ff2f22d2f705f9724a800d0266b118d",
+      "lines": 138,
+      "bytes": 8664,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/diagnosing-bugs/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/diagnosing-bugs/SKILL.md",
+      "canonical_sha256": "849198df88cdb65fd0d97236604c1fca7ff2f22d2f705f9724a800d0266b118d"
+    },
+    {
+      "name": "domain-modeling",
+      "path": ".tkstack/matt-pocock/skills/engineering/domain-modeling/SKILL.md",
+      "sha256": "7b925d7b1e341a2eeae33ad68a8a8c0ab889a38ddd22a7598e4c240e5a7556a3",
+      "lines": 74,
+      "bytes": 3346,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/domain-modeling/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "document",
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/domain-modeling/SKILL.md",
+      "canonical_sha256": "7b925d7b1e341a2eeae33ad68a8a8c0ab889a38ddd22a7598e4c240e5a7556a3"
+    },
+    {
+      "name": "experiment-arms",
+      "path": "vendor/lever/skills/experiment-arms/SKILL.md",
+      "sha256": "6819006650ac44fa74151627ad4ddaad5a12bf20a7e438f8dc6016c859e229f0",
+      "lines": 108,
+      "bytes": 11363,
+      "canonical_source_path": "vendor/lever/skills/experiment-arms/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "hill-climb"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/experiment-arms/SKILL.md",
+      "canonical_sha256": "6819006650ac44fa74151627ad4ddaad5a12bf20a7e438f8dc6016c859e229f0"
+    },
+    {
+      "name": "fal-ai",
+      "path": "skills/fal-ai/SKILL.md",
+      "sha256": "607c34a298284e348ad07de44df2bad2b636ebf3ead5213bf10c507ccfb86eb3",
+      "lines": 21,
+      "bytes": 1140,
+      "canonical_source_path": "skills/fal-ai/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "fal-ai"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "607c34a298284e348ad07de44df2bad2b636ebf3ead5213bf10c507ccfb86eb3"
+    },
+    {
+      "name": "figure-it-out",
+      "path": "vendor/pstack/skills/figure-it-out/SKILL.md",
+      "sha256": "548616d04909de854f36869af2af127ce321fc6aaf95ea5a626997709fd46a2a",
+      "lines": 55,
+      "bytes": 5161,
+      "canonical_source_path": "vendor/pstack/skills/figure-it-out/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/figure-it-out/SKILL.md",
+      "canonical_sha256": "548616d04909de854f36869af2af127ce321fc6aaf95ea5a626997709fd46a2a"
+    },
+    {
+      "name": "file-pr",
+      "path": "vendor/tstack/skills/file-pr/SKILL.md",
+      "sha256": "174a7ae52e3b9d17f2bd0eaf0a11a89d744d1249164ecbdb0e642359eee75b1b",
+      "lines": 50,
+      "bytes": 2269,
+      "canonical_source_path": "vendor/tstack/skills/file-pr/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/file-pr/SKILL.md",
+      "canonical_sha256": "174a7ae52e3b9d17f2bd0eaf0a11a89d744d1249164ecbdb0e642359eee75b1b"
+    },
+    {
+      "name": "find-the-loop",
+      "path": "vendor/lever/skills/find-the-loop/SKILL.md",
+      "sha256": "a556f21cf4ecb1862ba0dcee6bda037733a52ab58270cf828363d849c7903a89",
+      "lines": 115,
+      "bytes": 11957,
+      "canonical_source_path": "vendor/lever/skills/find-the-loop/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "hill-climb"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/find-the-loop/SKILL.md",
+      "canonical_sha256": "a556f21cf4ecb1862ba0dcee6bda037733a52ab58270cf828363d849c7903a89"
+    },
+    {
+      "name": "fix-ci",
+      "path": "vendor/cursor-team-kit/skills/fix-ci/SKILL.md",
+      "sha256": "925f8c3e11de8bcc0cd015ec907f4d00b12cde6714246554ed3a52e096536522",
+      "lines": 29,
+      "bytes": 901,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/fix-ci/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/fix-ci/SKILL.md",
+      "canonical_sha256": "925f8c3e11de8bcc0cd015ec907f4d00b12cde6714246554ed3a52e096536522"
+    },
+    {
+      "name": "fix-merge-conflicts",
+      "path": "vendor/cursor-team-kit/skills/fix-merge-conflicts/SKILL.md",
+      "sha256": "738b251281b30fd33e3892d0679cf94249e9c9e29e1bed40bcdde4a6aca98a76",
+      "lines": 32,
+      "bytes": 988,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/fix-merge-conflicts/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/fix-merge-conflicts/SKILL.md",
+      "canonical_sha256": "738b251281b30fd33e3892d0679cf94249e9c9e29e1bed40bcdde4a6aca98a76"
+    },
+    {
+      "name": "flowify",
+      "path": "skills/flowify/SKILL.md",
+      "sha256": "1a9cd97cc2afff9f7ddaf7183180815e4b71845ae43e1f670c94b69bc963ad0d",
+      "lines": 138,
+      "bytes": 8353,
+      "canonical_source_path": "skills/flowify/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "flowify"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "1a9cd97cc2afff9f7ddaf7183180815e4b71845ae43e1f670c94b69bc963ad0d"
+    },
+    {
+      "name": "full-send",
+      "path": "vendor/tstack/skills/full-send/SKILL.md",
+      "sha256": "ba585e47cd901506b0e2de13025b0e39bc02462c136cf27491ad3efbdfe66020",
+      "lines": 123,
+      "bytes": 5395,
+      "canonical_source_path": "vendor/tstack/skills/full-send/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/full-send/SKILL.md",
+      "canonical_sha256": "ba585e47cd901506b0e2de13025b0e39bc02462c136cf27491ad3efbdfe66020"
+    },
+    {
+      "name": "full-stop",
+      "path": "vendor/tstack/skills/full-stop/SKILL.md",
+      "sha256": "091dcabfcba73e009ddb8e32c498a993a6bb60f8c223d3e21e917f4e52ab9939",
+      "lines": 47,
+      "bytes": 2209,
+      "canonical_source_path": "vendor/tstack/skills/full-stop/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/full-stop/SKILL.md",
+      "canonical_sha256": "091dcabfcba73e009ddb8e32c498a993a6bb60f8c223d3e21e917f4e52ab9939"
+    },
+    {
+      "name": "get-pr-comments",
+      "path": "vendor/cursor-team-kit/skills/get-pr-comments/SKILL.md",
+      "sha256": "8bf292736cab922276feb4d8377edc2fc4102a7beb62bcd1f3f5cf72a79b16cc",
+      "lines": 23,
+      "bytes": 529,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/get-pr-comments/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/get-pr-comments/SKILL.md",
+      "canonical_sha256": "8bf292736cab922276feb4d8377edc2fc4102a7beb62bcd1f3f5cf72a79b16cc"
+    },
+    {
+      "name": "git-guardrails-claude-code",
+      "path": ".tkstack/matt-pocock/skills/misc/git-guardrails-claude-code/SKILL.md",
+      "sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764",
+      "lines": 95,
+      "bytes": 2313,
+      "canonical_source_path": "vendor/matt-pocock/skills/misc/git-guardrails-claude-code/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "hookify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/misc/git-guardrails-claude-code/SKILL.md",
+      "canonical_sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764"
+    },
+    {
+      "name": "grill-me",
+      "path": ".tkstack/matt-pocock/skills/productivity/grill-me/SKILL.md",
+      "sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "lines": 7,
+      "bytes": 157,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/grill-me/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/grill-me/SKILL.md",
+      "canonical_sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637"
+    },
+    {
+      "name": "grill-with-docs",
+      "path": ".tkstack/matt-pocock/skills/engineering/grill-with-docs/SKILL.md",
+      "sha256": "7de372c13488f1ee96cc11cd8907b56b6809cc93eef776eeddd37de6b6cbe3fe",
+      "lines": 7,
+      "bytes": 247,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/grill-with-docs/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/grill-with-docs/SKILL.md",
+      "canonical_sha256": "7de372c13488f1ee96cc11cd8907b56b6809cc93eef776eeddd37de6b6cbe3fe"
+    },
+    {
+      "name": "grilling",
+      "path": ".tkstack/matt-pocock/skills/productivity/grilling/SKILL.md",
+      "sha256": "a146842ed93ca43d833550fa9adf02e58cb63c83fea9d4b4522995b82242d4e2",
+      "lines": 30,
+      "bytes": 2077,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/grilling/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/grilling/SKILL.md",
+      "canonical_sha256": "a146842ed93ca43d833550fa9adf02e58cb63c83fea9d4b4522995b82242d4e2"
+    },
+    {
+      "name": "handoff",
+      "path": ".tkstack/matt-pocock/skills/productivity/handoff/SKILL.md",
+      "sha256": "4cbb043950dad2ffd3662ff1a5a0b51ae676004b5cae10e3787e8ee7a4ee69d3",
+      "lines": 16,
+      "bytes": 940,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/handoff/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "document"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/handoff/SKILL.md",
+      "canonical_sha256": "4cbb043950dad2ffd3662ff1a5a0b51ae676004b5cae10e3787e8ee7a4ee69d3"
+    },
+    {
+      "name": "headroom",
+      "path": "skills/headroom/SKILL.md",
+      "sha256": "ef5e99312323e3ff858373654fdac2621603b81b48564e125b5eef62a73a2aba",
+      "lines": 21,
+      "bytes": 1078,
+      "canonical_source_path": "skills/headroom/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "headroom"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "ef5e99312323e3ff858373654fdac2621603b81b48564e125b5eef62a73a2aba"
+    },
+    {
+      "name": "higgsfield-brandkit",
+      "path": "vendor/higgsfield/higgsfield-brandkit/SKILL.md",
+      "sha256": "103de17215ee9ae561d97f6418d6e00e061f1d5e16828426ac6886c956b6d179",
+      "lines": 202,
+      "bytes": 12693,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-brandkit/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai",
+        "open-design"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-brandkit/SKILL.md",
+      "canonical_sha256": "103de17215ee9ae561d97f6418d6e00e061f1d5e16828426ac6886c956b6d179"
+    },
+    {
+      "name": "higgsfield-faceless-video",
+      "path": "vendor/higgsfield/higgsfield-faceless-video/SKILL.md",
+      "sha256": "1ec7a771e5bf022134df37e1a9c1ac48e9cfb11d11d1a2b1db354b4d7971e715",
+      "lines": 24,
+      "bytes": 3577,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-faceless-video/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-faceless-video/SKILL.md",
+      "canonical_sha256": "1ec7a771e5bf022134df37e1a9c1ac48e9cfb11d11d1a2b1db354b4d7971e715"
+    },
+    {
+      "name": "higgsfield-generate",
+      "path": "vendor/higgsfield/higgsfield-generate/SKILL.md",
+      "sha256": "9e0f535769258a0f38ba5be964d29cd21a08f05405644861dffe2ae7a246b3c5",
+      "lines": 322,
+      "bytes": 24853,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-generate/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-generate/SKILL.md",
+      "canonical_sha256": "9e0f535769258a0f38ba5be964d29cd21a08f05405644861dffe2ae7a246b3c5"
+    },
+    {
+      "name": "higgsfield-marketplace-cards",
+      "path": "vendor/higgsfield/higgsfield-marketplace-cards/SKILL.md",
+      "sha256": "b7f075cefc8ada048cd2f38c6518d0b056fe7185dfe935c7c75b936a1f67e17f",
+      "lines": 88,
+      "bytes": 3754,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-marketplace-cards/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-marketplace-cards/SKILL.md",
+      "canonical_sha256": "b7f075cefc8ada048cd2f38c6518d0b056fe7185dfe935c7c75b936a1f67e17f"
+    },
+    {
+      "name": "higgsfield-product-photoshoot",
+      "path": "vendor/higgsfield/higgsfield-product-photoshoot/SKILL.md",
+      "sha256": "89c9e289318a8a6ede6b8bd61bb4b330353a97528aa3869bf51977220e88ae38",
+      "lines": 215,
+      "bytes": 9438,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-product-photoshoot/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-product-photoshoot/SKILL.md",
+      "canonical_sha256": "89c9e289318a8a6ede6b8bd61bb4b330353a97528aa3869bf51977220e88ae38"
+    },
+    {
+      "name": "higgsfield-soul-id",
+      "path": "vendor/higgsfield/higgsfield-soul-id/SKILL.md",
+      "sha256": "dd21b34df72490bb24e4386ae172839843cb8a637df4d1aa4cf3d03c05b08f43",
+      "lines": 85,
+      "bytes": 3621,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-soul-id/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Keep actual provider identity-training prerequisites and account workflow; do not imitate training with generic generation.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-soul-id/SKILL.md",
+      "canonical_sha256": "dd21b34df72490bb24e4386ae172839843cb8a637df4d1aa4cf3d03c05b08f43"
+    },
+    {
+      "name": "higgsfield-video-explainer",
+      "path": "vendor/higgsfield/higgsfield-video-explainer/SKILL.md",
+      "sha256": "72c440812a27852659155c63edef2e8585bfc414995a324bc02b64cb786e435d",
+      "lines": 12,
+      "bytes": 768,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-video-explainer/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Compatibility alias only; no additional portable procedure.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-video-explainer/SKILL.md",
+      "canonical_sha256": "72c440812a27852659155c63edef2e8585bfc414995a324bc02b64cb786e435d"
+    },
+    {
+      "name": "higgsfield-websites",
+      "path": "vendor/higgsfield/higgsfield-websites/SKILL.md",
+      "sha256": "6de160a62a0c0195c51174a97abf878d68404c354a19a411b441273a68aad19b",
+      "lines": 254,
+      "bytes": 14951,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-websites/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "open-design"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-websites/SKILL.md",
+      "canonical_sha256": "6de160a62a0c0195c51174a97abf878d68404c354a19a411b441273a68aad19b"
+    },
+    {
+      "name": "higgsfield-youtube-thumbnail",
+      "path": "vendor/higgsfield/higgsfield-youtube-thumbnail/SKILL.md",
+      "sha256": "71f04c88522c4b0ccf777eea2575096d086ebd86a24be756a5f1f582f371d546",
+      "lines": 180,
+      "bytes": 12011,
+      "canonical_source_path": "vendor/higgsfield/higgsfield-youtube-thumbnail/SKILL.md",
+      "source": "higgsfield",
+      "disposition": "distill",
+      "destinations": [
+        "fal-ai",
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "source_license": "MIT",
+      "source_url": "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-youtube-thumbnail/SKILL.md",
+      "canonical_sha256": "71f04c88522c4b0ccf777eea2575096d086ebd86a24be756a5f1f582f371d546"
+    },
+    {
+      "name": "hill-climb",
+      "path": "skills/hill-climb/SKILL.md",
+      "sha256": "bd54016cdb3e971d8a8ffbe7bb67e8138fdf37115486663911cddc08a8e9e1d1",
+      "lines": 174,
+      "bytes": 10489,
+      "canonical_source_path": "skills/hill-climb/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "hill-climb"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "bd54016cdb3e971d8a8ffbe7bb67e8138fdf37115486663911cddc08a8e9e1d1"
+    },
+    {
+      "name": "hookify",
+      "path": "skills/hookify/SKILL.md",
+      "sha256": "ee1e486a50f6f20a91d74f5667617d70647b23917706d24703c6b5222d9321e5",
+      "lines": 139,
+      "bytes": 7991,
+      "canonical_source_path": "skills/hookify/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "hookify"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "ee1e486a50f6f20a91d74f5667617d70647b23917706d24703c6b5222d9321e5"
+    },
+    {
+      "name": "how",
+      "path": "vendor/pstack/skills/how/SKILL.md",
+      "sha256": "d3f9b30a250c32672cf5e612c8d533907d4fd591a46874089d0cc1f3046d443f",
+      "lines": 134,
+      "bytes": 7260,
+      "canonical_source_path": "vendor/pstack/skills/how/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/how/SKILL.md",
+      "canonical_sha256": "d3f9b30a250c32672cf5e612c8d533907d4fd591a46874089d0cc1f3046d443f"
+    },
+    {
+      "name": "impeccable",
+      "path": "vendor/impeccable/.agents/skills/impeccable/SKILL.md",
+      "sha256": "fab04b31f946573b00a8559db1fc070f8ea5825254d491c2b13156e5661a86d7",
+      "lines": 86,
+      "bytes": 11762,
+      "canonical_source_path": "vendor/impeccable/.agents/skills/impeccable/SKILL.md",
+      "source": "impeccable",
+      "disposition": "distill",
+      "destinations": [
+        "open-design",
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "02523aec3e4c4580102d996d1b6a71fbe062e03f",
+      "source_license": "Apache-2.0",
+      "source_url": "https://github.com/pbakaus/impeccable/blob/02523aec3e4c4580102d996d1b6a71fbe062e03f/.agents/skills/impeccable/SKILL.md",
+      "canonical_sha256": "fab04b31f946573b00a8559db1fc070f8ea5825254d491c2b13156e5661a86d7"
+    },
+    {
+      "name": "implement",
+      "path": ".tkstack/matt-pocock/skills/engineering/implement/SKILL.md",
+      "sha256": "c432f13f22f6c91b828e0b2e14059838a86541444f8aac3f368b19b8ef19ea90",
+      "lines": 17,
+      "bytes": 627,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/implement/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement/SKILL.md",
+      "canonical_sha256": "483bdc4ccf4ac31d86ac7beeaa0d0db80313e71e120bb8c59b3196ae5decd53d"
+    },
+    {
+      "name": "implement-spec",
+      "path": ".tkstack/matt-pocock/skills/engineering/implement-spec/SKILL.md",
+      "sha256": "7fff7f9da69b766ddf29a492313661c11ed852620dc57be87f88c58e7f806d99",
+      "lines": 42,
+      "bytes": 2840,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/implement-spec/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/implement-spec/SKILL.md",
+      "canonical_sha256": "1993a473cec40ac85d081c112cdffdc63ec3267c2e412055ad09e013a2f623d1"
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "path": ".tkstack/matt-pocock/skills/engineering/improve-codebase-architecture/SKILL.md",
+      "sha256": "35b03a3db61e0f5aa333ea59b54963e45a3d2ace6649b2ef4f9576603e2582a6",
+      "lines": 71,
+      "bytes": 6028,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/improve-codebase-architecture/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/improve-codebase-architecture/SKILL.md",
+      "canonical_sha256": "35b03a3db61e0f5aa333ea59b54963e45a3d2ace6649b2ef4f9576603e2582a6"
+    },
+    {
+      "name": "instructify",
+      "path": "skills/instructify/SKILL.md",
+      "sha256": "4e93abe0468c05e7c9a021c815e32323f75deb0a3ec3ccca9e06956cbeddb09d",
+      "lines": 148,
+      "bytes": 8825,
+      "canonical_source_path": "skills/instructify/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "instructify"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "4e93abe0468c05e7c9a021c815e32323f75deb0a3ec3ccca9e06956cbeddb09d"
+    },
+    {
+      "name": "interrogate",
+      "path": "vendor/pstack/skills/interrogate/SKILL.md",
+      "sha256": "bdc06a96d5cc8ebf71955968b7750ad62cdb364d4b561e951e997b78f5e0e573",
+      "lines": 106,
+      "bytes": 5078,
+      "canonical_source_path": "vendor/pstack/skills/interrogate/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/interrogate/SKILL.md",
+      "canonical_sha256": "bdc06a96d5cc8ebf71955968b7750ad62cdb364d4b561e951e997b78f5e0e573"
+    },
+    {
+      "name": "keep-the-pool-full",
+      "path": "vendor/lever/skills/keep-the-pool-full/SKILL.md",
+      "sha256": "ff0e430bd4cb8e084b3fa670d5f992afcad1e0c52b91da2045121ea1ca26a093",
+      "lines": 91,
+      "bytes": 6963,
+      "canonical_source_path": "vendor/lever/skills/keep-the-pool-full/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/keep-the-pool-full/SKILL.md",
+      "canonical_sha256": "ff0e430bd4cb8e084b3fa670d5f992afcad1e0c52b91da2045121ea1ca26a093"
+    },
+    {
+      "name": "landing-plan",
+      "path": "vendor/lever/skills/landing-plan/SKILL.md",
+      "sha256": "2f3c05ba9668742dfc38c5de3bf5f3f0de47946400fef35dc93d7ef5717ef103",
+      "lines": 97,
+      "bytes": 8865,
+      "canonical_source_path": "vendor/lever/skills/landing-plan/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/landing-plan/SKILL.md",
+      "canonical_sha256": "2f3c05ba9668742dfc38c5de3bf5f3f0de47946400fef35dc93d7ef5717ef103"
+    },
+    {
+      "name": "learn",
+      "path": "skills/learn/SKILL.md",
+      "sha256": "6f04eaf761b03aac0cb6d200c00752141659e54fc18504f12ae721ae4f1b9fcb",
+      "lines": 156,
+      "bytes": 8750,
+      "canonical_source_path": "skills/learn/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "learn"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "6f04eaf761b03aac0cb6d200c00752141659e54fc18504f12ae721ae4f1b9fcb"
+    },
+    {
+      "name": "leaving-pr-comments",
+      "path": "vendor/tstack/skills/leaving-pr-comments/SKILL.md",
+      "sha256": "1d110343022d0514c101dd942286cce10d6b9f5bd5b899f5a0530620d34cd295",
+      "lines": 44,
+      "bytes": 1600,
+      "canonical_source_path": "vendor/tstack/skills/leaving-pr-comments/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/leaving-pr-comments/SKILL.md",
+      "canonical_sha256": "1d110343022d0514c101dd942286cce10d6b9f5bd5b899f5a0530620d34cd295"
+    },
+    {
+      "name": "lever",
+      "path": "vendor/lever/skills/lever/SKILL.md",
+      "sha256": "458b1be8283ac4792e2a47125f3af693e2febd245a4459e9cd33a477faf12fe7",
+      "lines": 131,
+      "bytes": 8703,
+      "canonical_source_path": "vendor/lever/skills/lever/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "skillify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/lever/SKILL.md",
+      "canonical_sha256": "458b1be8283ac4792e2a47125f3af693e2febd245a4459e9cd33a477faf12fe7"
+    },
+    {
+      "name": "loop-me",
+      "path": ".tkstack/matt-pocock/skills/in-progress/loop-me/SKILL.md",
+      "sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7",
+      "lines": 32,
+      "bytes": 2522,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/loop-me/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "hill-climb"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/loop-me/SKILL.md",
+      "canonical_sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7"
+    },
+    {
+      "name": "loop-on-ci",
+      "path": "vendor/cursor-team-kit/skills/loop-on-ci/SKILL.md",
+      "sha256": "66b85dbd2bc3700386283539292a55438652bbe227271fd90b73b74525b9b9de",
+      "lines": 50,
+      "bytes": 1611,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/loop-on-ci/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/loop-on-ci/SKILL.md",
+      "canonical_sha256": "66b85dbd2bc3700386283539292a55438652bbe227271fd90b73b74525b9b9de"
+    },
+    {
+      "name": "make-pr-easy-to-review",
+      "path": "vendor/cursor-team-kit/skills/make-pr-easy-to-review/SKILL.md",
+      "sha256": "e8da0d4a85b7c04823698f539251617389f827fd9137100ef7eaea5dcc992fe7",
+      "lines": 59,
+      "bytes": 2275,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/make-pr-easy-to-review/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/make-pr-easy-to-review/SKILL.md",
+      "canonical_sha256": "e8da0d4a85b7c04823698f539251617389f827fd9137100ef7eaea5dcc992fe7"
+    },
+    {
+      "name": "matt-tdd",
+      "path": ".tkstack/matt-pocock/skills/engineering/tdd/SKILL.md",
+      "sha256": "ec6cc4b324a8cb22a6ee6068f29459612f829f851c26df26b8cae07b29bea901",
+      "lines": 38,
+      "bytes": 3634,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/tdd/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/tdd/SKILL.md",
+      "canonical_sha256": "5505d25bbaa8fc14a79e4d20163936958992a2995b7f1dd1d6197edc9ed722e0"
+    },
+    {
+      "name": "migrate-to-shoehorn",
+      "path": ".tkstack/matt-pocock/skills/misc/migrate-to-shoehorn/SKILL.md",
+      "sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72",
+      "lines": 118,
+      "bytes": 2795,
+      "canonical_source_path": "vendor/matt-pocock/skills/misc/migrate-to-shoehorn/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Specialized dependency migration retained; do not mandate one TypeScript test-data library.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/misc/migrate-to-shoehorn/SKILL.md",
+      "canonical_sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72"
+    },
+    {
+      "name": "modernize",
+      "path": "vendor/tstack/skills/modernize/SKILL.md",
+      "sha256": "6172d774c46f535367086da90db1b0aaaaac969ed05ff040444f9afa9a6b1552",
+      "lines": 102,
+      "bytes": 4520,
+      "canonical_source_path": "vendor/tstack/skills/modernize/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/modernize/SKILL.md",
+      "canonical_sha256": "6172d774c46f535367086da90db1b0aaaaac969ed05ff040444f9afa9a6b1552"
+    },
+    {
+      "name": "new-branch-and-pr",
+      "path": "vendor/cursor-team-kit/skills/new-branch-and-pr/SKILL.md",
+      "sha256": "4e8f502fcf48553949387a9a7f58b21349e0ff87c24bf8ff5c0013e9da6819fd",
+      "lines": 29,
+      "bytes": 665,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/new-branch-and-pr/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/new-branch-and-pr/SKILL.md",
+      "canonical_sha256": "4e8f502fcf48553949387a9a7f58b21349e0ff87c24bf8ff5c0013e9da6819fd"
+    },
+    {
+      "name": "open-design",
+      "path": "skills/open-design/SKILL.md",
+      "sha256": "dedac7b89f9790bfbef6b6e4ec5fbc38ce36f34c0b9a0a10bf3eda9baf0f1af8",
+      "lines": 23,
+      "bytes": 1137,
+      "canonical_source_path": "skills/open-design/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "open-design"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "dedac7b89f9790bfbef6b6e4ec5fbc38ce36f34c0b9a0a10bf3eda9baf0f1af8"
+    },
+    {
+      "name": "openwiki",
+      "path": "vendor/openwiki/integrations/openwiki/SKILL.md",
+      "sha256": "37bdbb313de37998d85094ffe349e0c05dc05816299b1adf05bbd686c3b698ac",
+      "lines": 197,
+      "bytes": 10304,
+      "canonical_source_path": "vendor/openwiki/integrations/openwiki/SKILL.md",
+      "source": "openwiki",
+      "disposition": "distill",
+      "destinations": [
+        "document"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "305599f8e44203f9ca6b74bb6b38eebaf0b0405e",
+      "source_license": "MIT",
+      "source_url": "https://github.com/langchain-ai/openwiki/blob/305599f8e44203f9ca6b74bb6b38eebaf0b0405e/integrations/openwiki/SKILL.md",
+      "canonical_sha256": "37bdbb313de37998d85094ffe349e0c05dc05816299b1adf05bbd686c3b698ac"
+    },
+    {
+      "name": "ponytail",
+      "path": "vendor/ponytail/skills/ponytail/SKILL.md",
+      "sha256": "9badd22a32e19cb884e46dfa8d3aae82bb81dfa5484105b8b4f0262df823a509",
+      "lines": 52,
+      "bytes": 3496,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail/SKILL.md",
+      "source": "ponytail",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail/SKILL.md",
+      "canonical_sha256": "9badd22a32e19cb884e46dfa8d3aae82bb81dfa5484105b8b4f0262df823a509"
+    },
+    {
+      "name": "ponytail-audit",
+      "path": "vendor/ponytail/skills/ponytail-audit/SKILL.md",
+      "sha256": "2b3223a02c386d1263e1b08343cb8eb3a53e444cdafb1d79e26c8ec2a8fcad28",
+      "lines": 103,
+      "bytes": 5417,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail-audit/SKILL.md",
+      "source": "ponytail",
+      "disposition": "distill",
+      "destinations": [
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail-audit/SKILL.md",
+      "canonical_sha256": "2b3223a02c386d1263e1b08343cb8eb3a53e444cdafb1d79e26c8ec2a8fcad28"
+    },
+    {
+      "name": "ponytail-debt",
+      "path": "vendor/ponytail/skills/ponytail-debt/SKILL.md",
+      "sha256": "b5ec2762f6ba8c4af9ea7173aa6c9f91b88655a25e43f9de0264f6ce8722b25f",
+      "lines": 44,
+      "bytes": 1769,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail-debt/SKILL.md",
+      "source": "ponytail",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Marker-specific ledger remains available upstream; no duplicate debt scanner.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail-debt/SKILL.md",
+      "canonical_sha256": "b5ec2762f6ba8c4af9ea7173aa6c9f91b88655a25e43f9de0264f6ce8722b25f"
+    },
+    {
+      "name": "ponytail-gain",
+      "path": "vendor/ponytail/skills/ponytail-gain/SKILL.md",
+      "sha256": "231034a896d6762e4b5c8468287083422c56b499119976ec9f76821f7d083090",
+      "lines": 52,
+      "bytes": 2164,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail-gain/SKILL.md",
+      "source": "ponytail",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Upstream benchmark display does not establish this user's savings.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail-gain/SKILL.md",
+      "canonical_sha256": "231034a896d6762e4b5c8468287083422c56b499119976ec9f76821f7d083090"
+    },
+    {
+      "name": "ponytail-help",
+      "path": "vendor/ponytail/skills/ponytail-help/SKILL.md",
+      "sha256": "86ab0ce0af70cbeeeef499d5c884873b393f87f86401dcc45553662ce2c1eff9",
+      "lines": 76,
+      "bytes": 3188,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail-help/SKILL.md",
+      "source": "ponytail",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Package help and session-mode controls remain source specific.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail-help/SKILL.md",
+      "canonical_sha256": "86ab0ce0af70cbeeeef499d5c884873b393f87f86401dcc45553662ce2c1eff9"
+    },
+    {
+      "name": "ponytail-review",
+      "path": "vendor/ponytail/skills/ponytail-review/SKILL.md",
+      "sha256": "33fe4ebe22a460924e5d4a261e223df22e409cc94ab76182bee9fb91a3ef022e",
+      "lines": 101,
+      "bytes": 5143,
+      "canonical_source_path": "vendor/ponytail/skills/ponytail-review/SKILL.md",
+      "source": "ponytail",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles",
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "source_license": "MIT",
+      "source_url": "https://github.com/DietrichGebert/ponytail/blob/96608e078b2d5ea607c5c3b8b5a54d1c1fba6846/skills/ponytail-review/SKILL.md",
+      "canonical_sha256": "33fe4ebe22a460924e5d4a261e223df22e409cc94ab76182bee9fb91a3ef022e"
+    },
+    {
+      "name": "poteto-mode",
+      "path": "vendor/pstack/skills/poteto-mode/SKILL.md",
+      "sha256": "5544377c801af22207118ac3e69653064ceb5a26393b1d32d32291a73c5ee5e1",
+      "lines": 124,
+      "bytes": 14436,
+      "canonical_source_path": "vendor/pstack/skills/poteto-mode/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/poteto-mode/SKILL.md",
+      "canonical_sha256": "5544377c801af22207118ac3e69653064ceb5a26393b1d32d32291a73c5ee5e1"
+    },
+    {
+      "name": "pr",
+      "path": ".tkstack/matt-pocock/skills/engineering/pr/SKILL.md",
+      "sha256": "ab63f1cf78647389edcd386c9427c5dfca27ed2836930c24773ffee834c19bcd",
+      "lines": 170,
+      "bytes": 4169,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/pr/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/pr/SKILL.md",
+      "canonical_sha256": "ab63f1cf78647389edcd386c9427c5dfca27ed2836930c24773ffee834c19bcd"
+    },
+    {
+      "name": "pr-review-canvas",
+      "path": "vendor/cursor-team-kit/skills/pr-review-canvas/SKILL.md",
+      "sha256": "88a07a2459197acba3c5e06b7d695e35ad618a998442b72d05cdba4efc117ac6",
+      "lines": 176,
+      "bytes": 9088,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/pr-review-canvas/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Retain the supplied HTML renderer; portable review needs evidence and findings, not this particular viewer.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/pr-review-canvas/SKILL.md",
+      "canonical_sha256": "88a07a2459197acba3c5e06b7d695e35ad618a998442b72d05cdba4efc117ac6"
+    },
+    {
+      "name": "pr-shepherd",
+      "path": "vendor/lever/skills/pr-shepherd/SKILL.md",
+      "sha256": "4b26da190b5ff8e03100f7bcdd7058dc79fc3bf1776c9d4d16ca67425984fc0f",
+      "lines": 108,
+      "bytes": 11833,
+      "canonical_source_path": "vendor/lever/skills/pr-shepherd/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/pr-shepherd/SKILL.md",
+      "canonical_sha256": "4b26da190b5ff8e03100f7bcdd7058dc79fc3bf1776c9d4d16ca67425984fc0f"
+    },
+    {
+      "name": "principle-boundary-discipline",
+      "path": "vendor/pstack/skills/principle-boundary-discipline/SKILL.md",
+      "sha256": "82ef34cd29b9fb478bd810edc9a4623d232d6d19289a1390ea1bbd1bab952b36",
+      "lines": 32,
+      "bytes": 1662,
+      "canonical_source_path": "vendor/pstack/skills/principle-boundary-discipline/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-boundary-discipline/SKILL.md",
+      "canonical_sha256": "82ef34cd29b9fb478bd810edc9a4623d232d6d19289a1390ea1bbd1bab952b36"
+    },
+    {
+      "name": "principle-build-the-lever",
+      "path": "vendor/pstack/skills/principle-build-the-lever/SKILL.md",
+      "sha256": "3a0b02b1b890538810f27d00c525b2e677bb5d931f602fd7a774d5cd13b61c93",
+      "lines": 23,
+      "bytes": 2655,
+      "canonical_source_path": "vendor/pstack/skills/principle-build-the-lever/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-build-the-lever/SKILL.md",
+      "canonical_sha256": "3a0b02b1b890538810f27d00c525b2e677bb5d931f602fd7a774d5cd13b61c93"
+    },
+    {
+      "name": "principle-encode-lessons-in-structure",
+      "path": "vendor/pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+      "sha256": "4acdb3f466efd0a433899aafce3e0f100566228b63ccff43f363a83e80624d81",
+      "lines": 31,
+      "bytes": 2243,
+      "canonical_source_path": "vendor/pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+      "canonical_sha256": "4acdb3f466efd0a433899aafce3e0f100566228b63ccff43f363a83e80624d81"
+    },
+    {
+      "name": "principle-exhaust-the-design-space",
+      "path": "vendor/pstack/skills/principle-exhaust-the-design-space/SKILL.md",
+      "sha256": "87ae9bb040acc43c7116b715555ba5115bfe1dd00c2e1b8ec32ecf1fb877dce5",
+      "lines": 21,
+      "bytes": 1055,
+      "canonical_source_path": "vendor/pstack/skills/principle-exhaust-the-design-space/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-exhaust-the-design-space/SKILL.md",
+      "canonical_sha256": "87ae9bb040acc43c7116b715555ba5115bfe1dd00c2e1b8ec32ecf1fb877dce5"
+    },
+    {
+      "name": "principle-experience-first",
+      "path": "vendor/pstack/skills/principle-experience-first/SKILL.md",
+      "sha256": "f8d643ddf2f6aa91d9607d1bb340fd2baf227d702e9738848b85312a312bb971",
+      "lines": 19,
+      "bytes": 1308,
+      "canonical_source_path": "vendor/pstack/skills/principle-experience-first/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-experience-first/SKILL.md",
+      "canonical_sha256": "f8d643ddf2f6aa91d9607d1bb340fd2baf227d702e9738848b85312a312bb971"
+    },
+    {
+      "name": "principle-fix-root-causes",
+      "path": "vendor/pstack/skills/principle-fix-root-causes/SKILL.md",
+      "sha256": "9fdfd4b72413ece5e3666105208966a2ed049a6b28854698f3cfe0e5ab08193d",
+      "lines": 22,
+      "bytes": 1252,
+      "canonical_source_path": "vendor/pstack/skills/principle-fix-root-causes/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-fix-root-causes/SKILL.md",
+      "canonical_sha256": "9fdfd4b72413ece5e3666105208966a2ed049a6b28854698f3cfe0e5ab08193d"
+    },
+    {
+      "name": "principle-foundational-thinking",
+      "path": "vendor/pstack/skills/principle-foundational-thinking/SKILL.md",
+      "sha256": "03c7be245c88330730906ee77e72507bc4cfcd6574cfc0c9f7b22ed3bd16c7d2",
+      "lines": 19,
+      "bytes": 1626,
+      "canonical_source_path": "vendor/pstack/skills/principle-foundational-thinking/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-foundational-thinking/SKILL.md",
+      "canonical_sha256": "03c7be245c88330730906ee77e72507bc4cfcd6574cfc0c9f7b22ed3bd16c7d2"
+    },
+    {
+      "name": "principle-guard-the-context-window",
+      "path": "vendor/pstack/skills/principle-guard-the-context-window/SKILL.md",
+      "sha256": "291d0125125eabbc2109c880b1c1083aa95826187119a648b26c1c8ea6367179",
+      "lines": 17,
+      "bytes": 1152,
+      "canonical_source_path": "vendor/pstack/skills/principle-guard-the-context-window/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-guard-the-context-window/SKILL.md",
+      "canonical_sha256": "291d0125125eabbc2109c880b1c1083aa95826187119a648b26c1c8ea6367179"
+    },
+    {
+      "name": "principle-laziness-protocol",
+      "path": "vendor/pstack/skills/principle-laziness-protocol/SKILL.md",
+      "sha256": "4f55a878d6625d4928c0c42814ef3e3ffbed7a983b2d6e7627edcb4e202133d4",
+      "lines": 17,
+      "bytes": 1268,
+      "canonical_source_path": "vendor/pstack/skills/principle-laziness-protocol/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-laziness-protocol/SKILL.md",
+      "canonical_sha256": "4f55a878d6625d4928c0c42814ef3e3ffbed7a983b2d6e7627edcb4e202133d4"
+    },
+    {
+      "name": "principle-make-operations-idempotent",
+      "path": "vendor/pstack/skills/principle-make-operations-idempotent/SKILL.md",
+      "sha256": "540738217c3da7bf513b9886924ad6a2bc77e58be867f5bd2e1831c74bf2ce70",
+      "lines": 24,
+      "bytes": 1390,
+      "canonical_source_path": "vendor/pstack/skills/principle-make-operations-idempotent/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-make-operations-idempotent/SKILL.md",
+      "canonical_sha256": "540738217c3da7bf513b9886924ad6a2bc77e58be867f5bd2e1831c74bf2ce70"
+    },
+    {
+      "name": "principle-migrate-callers-then-delete-legacy-apis",
+      "path": "vendor/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "sha256": "e29b6b6534a23dcaf8c7e16fc25d6484000d7b6e289c48eb0a32a97280633c5d",
+      "lines": 22,
+      "bytes": 1152,
+      "canonical_source_path": "vendor/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "canonical_sha256": "e29b6b6534a23dcaf8c7e16fc25d6484000d7b6e289c48eb0a32a97280633c5d"
+    },
+    {
+      "name": "principle-minimize-reader-load",
+      "path": "vendor/pstack/skills/principle-minimize-reader-load/SKILL.md",
+      "sha256": "5af6ff6ede5071908edede1523df4f185cb8d0cee3e4a48ef79888d670ffa202",
+      "lines": 21,
+      "bytes": 1734,
+      "canonical_source_path": "vendor/pstack/skills/principle-minimize-reader-load/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-minimize-reader-load/SKILL.md",
+      "canonical_sha256": "5af6ff6ede5071908edede1523df4f185cb8d0cee3e4a48ef79888d670ffa202"
+    },
+    {
+      "name": "principle-never-block-on-the-human",
+      "path": "vendor/pstack/skills/principle-never-block-on-the-human/SKILL.md",
+      "sha256": "f656f3b7581df55e79f53cc47df93905c3a940b822c25071ba95f40e530d102a",
+      "lines": 23,
+      "bytes": 1596,
+      "canonical_source_path": "vendor/pstack/skills/principle-never-block-on-the-human/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-never-block-on-the-human/SKILL.md",
+      "canonical_sha256": "f656f3b7581df55e79f53cc47df93905c3a940b822c25071ba95f40e530d102a"
+    },
+    {
+      "name": "principle-outcome-oriented-execution",
+      "path": "vendor/pstack/skills/principle-outcome-oriented-execution/SKILL.md",
+      "sha256": "beedcaed75572a6a1662d47f16da203c2bd2c9dbffbbd678d4ba187d67b7e670",
+      "lines": 22,
+      "bytes": 1132,
+      "canonical_source_path": "vendor/pstack/skills/principle-outcome-oriented-execution/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-outcome-oriented-execution/SKILL.md",
+      "canonical_sha256": "beedcaed75572a6a1662d47f16da203c2bd2c9dbffbbd678d4ba187d67b7e670"
+    },
+    {
+      "name": "principle-prove-it-works",
+      "path": "vendor/pstack/skills/principle-prove-it-works/SKILL.md",
+      "sha256": "9bbe6138505be34d81e9395d95d3639b384f71d71d65cc1903075126e1da1508",
+      "lines": 33,
+      "bytes": 2068,
+      "canonical_source_path": "vendor/pstack/skills/principle-prove-it-works/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-prove-it-works/SKILL.md",
+      "canonical_sha256": "9bbe6138505be34d81e9395d95d3639b384f71d71d65cc1903075126e1da1508"
+    },
+    {
+      "name": "principle-redesign-from-first-principles",
+      "path": "vendor/pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+      "sha256": "9ae97b35d6338cc9e34c7023c995a39cb7afdaf4bfd41e1d3d665da04d7515d5",
+      "lines": 16,
+      "bytes": 943,
+      "canonical_source_path": "vendor/pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+      "canonical_sha256": "9ae97b35d6338cc9e34c7023c995a39cb7afdaf4bfd41e1d3d665da04d7515d5"
+    },
+    {
+      "name": "principle-separate-before-serializing-shared-state",
+      "path": "vendor/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "sha256": "5b14fd656441580061f760968c828f3f4ba034242d8fa06b544763efb25e89ee",
+      "lines": 16,
+      "bytes": 1631,
+      "canonical_source_path": "vendor/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "canonical_sha256": "5b14fd656441580061f760968c828f3f4ba034242d8fa06b544763efb25e89ee"
+    },
+    {
+      "name": "principle-sequence-verifiable-units",
+      "path": "vendor/pstack/skills/principle-sequence-verifiable-units/SKILL.md",
+      "sha256": "7478f8160ba5701ca40c742a81e90aff12d45f53ac9191e80ad79b9763e4489f",
+      "lines": 22,
+      "bytes": 2290,
+      "canonical_source_path": "vendor/pstack/skills/principle-sequence-verifiable-units/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-sequence-verifiable-units/SKILL.md",
+      "canonical_sha256": "7478f8160ba5701ca40c742a81e90aff12d45f53ac9191e80ad79b9763e4489f"
+    },
+    {
+      "name": "principle-subtract-before-you-add",
+      "path": "vendor/pstack/skills/principle-subtract-before-you-add/SKILL.md",
+      "sha256": "162e4dd99d56d8e225cb3041c56d97eb4f1ab281a885a7178414199b2ad44636",
+      "lines": 20,
+      "bytes": 1187,
+      "canonical_source_path": "vendor/pstack/skills/principle-subtract-before-you-add/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-subtract-before-you-add/SKILL.md",
+      "canonical_sha256": "162e4dd99d56d8e225cb3041c56d97eb4f1ab281a885a7178414199b2ad44636"
+    },
+    {
+      "name": "principle-type-system-discipline",
+      "path": "vendor/pstack/skills/principle-type-system-discipline/SKILL.md",
+      "sha256": "4a8aa0f02eb35acd6ea15e63184a5468eafd2c8b6b474aa3cd32b94359549cca",
+      "lines": 29,
+      "bytes": 3817,
+      "canonical_source_path": "vendor/pstack/skills/principle-type-system-discipline/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/principle-type-system-discipline/SKILL.md",
+      "canonical_sha256": "4a8aa0f02eb35acd6ea15e63184a5468eafd2c8b6b474aa3cd32b94359549cca"
+    },
+    {
+      "name": "progress-contract",
+      "path": "vendor/lever/skills/progress-contract/SKILL.md",
+      "sha256": "7e8fe6cbf52b537115711b19ea189414ab1683620f3e12b0cbbb7f17232a6f6a",
+      "lines": 125,
+      "bytes": 10476,
+      "canonical_source_path": "vendor/lever/skills/progress-contract/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/progress-contract/SKILL.md",
+      "canonical_sha256": "7e8fe6cbf52b537115711b19ea189414ab1683620f3e12b0cbbb7f17232a6f6a"
+    },
+    {
+      "name": "prompt-mirror",
+      "path": "vendor/lever/skills/prompt-mirror/SKILL.md",
+      "sha256": "5474a1d7229d40e2e8a94bd1dad29012ff0e0bcf99c0c598d42b36901e159af3",
+      "lines": 123,
+      "bytes": 11529,
+      "canonical_source_path": "vendor/lever/skills/prompt-mirror/SKILL.md",
+      "source": "lever",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Do not reproduce private Copilot history mining or invent prompt-quality scores.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/prompt-mirror/SKILL.md",
+      "canonical_sha256": "5474a1d7229d40e2e8a94bd1dad29012ff0e0bcf99c0c598d42b36901e159af3"
+    },
+    {
+      "name": "prototype",
+      "path": ".tkstack/matt-pocock/skills/engineering/prototype/SKILL.md",
+      "sha256": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3",
+      "lines": 26,
+      "bytes": 2931,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/prototype/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/prototype/SKILL.md",
+      "canonical_sha256": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3"
+    },
+    {
+      "name": "pstack-unslop",
+      "path": ".tkstack/pstack/skills/unslop/SKILL.md",
+      "sha256": "86ad07991c7aae4b784f3678d71267aafcb7a932b1ec03dc3d0de192a29965ca",
+      "lines": 80,
+      "bytes": 6393,
+      "canonical_source_path": "vendor/pstack/skills/unslop/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "unslop"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/unslop/SKILL.md",
+      "canonical_sha256": "4694d89007ffc0a00f3254f578433729d64af575ea77c00c028c71d57654d8ec"
+    },
+    {
+      "name": "refactor-pipeline",
+      "path": "vendor/lever/skills/refactor-pipeline/SKILL.md",
+      "sha256": "48a07ab5db9fd42bb1f60c79969ab6cd5f31ba67090e8f37fccc50d93b314a09",
+      "lines": 112,
+      "bytes": 9801,
+      "canonical_source_path": "vendor/lever/skills/refactor-pipeline/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "flowify",
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/refactor-pipeline/SKILL.md",
+      "canonical_sha256": "48a07ab5db9fd42bb1f60c79969ab6cd5f31ba67090e8f37fccc50d93b314a09"
+    },
+    {
+      "name": "reflect",
+      "path": "vendor/pstack/skills/reflect/SKILL.md",
+      "sha256": "2c642a72a733c9221eebffca626c9cfcdbde3081eed682d1c5840fd530340a9f",
+      "lines": 77,
+      "bytes": 5056,
+      "canonical_source_path": "vendor/pstack/skills/reflect/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "learn",
+        "skillify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/reflect/SKILL.md",
+      "canonical_sha256": "2c642a72a733c9221eebffca626c9cfcdbde3081eed682d1c5840fd530340a9f"
+    },
+    {
+      "name": "research",
+      "path": ".tkstack/matt-pocock/skills/engineering/research/SKILL.md",
+      "sha256": "1f629e18ab899412683bc6a1c4efb4339999e27c2fdac328f26ee10a8c031d33",
+      "lines": 12,
+      "bytes": 832,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/research/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/research/SKILL.md",
+      "canonical_sha256": "1f629e18ab899412683bc6a1c4efb4339999e27c2fdac328f26ee10a8c031d33"
+    },
+    {
+      "name": "retro",
+      "path": ".tkstack/matt-pocock/skills/engineering/retro/SKILL.md",
+      "sha256": "33fbc28568e3146f20fd908b12998bc0ab30aa4f4c87288199a40793efa94696",
+      "lines": 44,
+      "bytes": 4369,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/retro/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "learn"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/retro/SKILL.md",
+      "canonical_sha256": "33fbc28568e3146f20fd908b12998bc0ab30aa4f4c87288199a40793efa94696"
+    },
+    {
+      "name": "review-and-ship",
+      "path": "vendor/cursor-team-kit/skills/review-and-ship/SKILL.md",
+      "sha256": "5c8e88c91e726e024c824d2b02be6bfc7ad81ac5e67c104ef2b66840715373c1",
+      "lines": 41,
+      "bytes": 1398,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/review-and-ship/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/review-and-ship/SKILL.md",
+      "canonical_sha256": "5c8e88c91e726e024c824d2b02be6bfc7ad81ac5e67c104ef2b66840715373c1"
+    },
+    {
+      "name": "rtk",
+      "path": "skills/rtk/SKILL.md",
+      "sha256": "f394497b99c77645e38b5fa8f0f1579e38db341ef777df914eb391a67a80f352",
+      "lines": 19,
+      "bytes": 945,
+      "canonical_source_path": "skills/rtk/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "rtk"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "f394497b99c77645e38b5fa8f0f1579e38db341ef777df914eb391a67a80f352"
+    },
+    {
+      "name": "run-health-review",
+      "path": "vendor/lever/skills/run-health-review/SKILL.md",
+      "sha256": "b5a30d5f75bf41e8c2d010a53c119f8cb22bcded717af2451ac7f61bb4618c7b",
+      "lines": 117,
+      "bytes": 10510,
+      "canonical_source_path": "vendor/lever/skills/run-health-review/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "flowify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/run-health-review/SKILL.md",
+      "canonical_sha256": "b5a30d5f75bf41e8c2d010a53c119f8cb22bcded717af2451ac7f61bb4618c7b"
+    },
+    {
+      "name": "run-smoke-tests",
+      "path": "vendor/cursor-team-kit/skills/run-smoke-tests/SKILL.md",
+      "sha256": "848c9f34af50f8a0edecbdc239707b694f5f9ac497c61b5907f2bf0caa1372fb",
+      "lines": 42,
+      "bytes": 967,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/run-smoke-tests/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/run-smoke-tests/SKILL.md",
+      "canonical_sha256": "848c9f34af50f8a0edecbdc239707b694f5f9ac497c61b5907f2bf0caa1372fb"
+    },
+    {
+      "name": "scaffold-exercises",
+      "path": ".tkstack/matt-pocock/skills/misc/scaffold-exercises/SKILL.md",
+      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
+      "lines": 106,
+      "bytes": 3589,
+      "canonical_source_path": "vendor/matt-pocock/skills/misc/scaffold-exercises/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Course-specific scaffold retained; no general engineering duplicate.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/misc/scaffold-exercises/SKILL.md",
+      "canonical_sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9"
+    },
+    {
+      "name": "script-exec-blocked",
+      "path": "vendor/wikiskill/skills/script-exec-blocked/SKILL.md",
+      "sha256": "ccd062ff11daa6d1b8094a2014b751e6bf7dd6ac4323d49f629052983d2afe75",
+      "lines": 32,
+      "bytes": 1123,
+      "canonical_source_path": "vendor/wikiskill/skills/script-exec-blocked/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Do not import an interpreter-switch workaround for denied execution; hookify explicitly preserves the authorization boundary.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/script-exec-blocked/SKILL.md",
+      "canonical_sha256": "ccd062ff11daa6d1b8094a2014b751e6bf7dd6ac4323d49f629052983d2afe75"
+    },
+    {
+      "name": "sdlc",
+      "path": "skills/sdlc/SKILL.md",
+      "sha256": "2f8be559de5a74f1f5ce60b8a55f1863e2bf4504dc24dc6789667ce33d3617f0",
+      "lines": 214,
+      "bytes": 11736,
+      "canonical_source_path": "skills/sdlc/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "2f8be559de5a74f1f5ce60b8a55f1863e2bf4504dc24dc6789667ce33d3617f0"
+    },
+    {
+      "name": "search-miss-binary",
+      "path": "vendor/wikiskill/skills/search-miss-binary/SKILL.md",
+      "sha256": "caa784b6ea0093038c219527cbccd5e7f83764a393edfa48b9113e71b80f8f52",
+      "lines": 38,
+      "bytes": 1309,
+      "canonical_source_path": "vendor/wikiskill/skills/search-miss-binary/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/search-miss-binary/SKILL.md",
+      "canonical_sha256": "caa784b6ea0093038c219527cbccd5e7f83764a393edfa48b9113e71b80f8f52"
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "path": ".tkstack/matt-pocock/skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "sha256": "b01e05bfe8c323171275c6ceec78b12f1bd4c62dfd26c2cfe8be806d3883f1ed",
+      "lines": 120,
+      "bytes": 7526,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Tracker labels and setup interview remain repository-specific; no forced setup or new publication.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "canonical_sha256": "b01e05bfe8c323171275c6ceec78b12f1bd4c62dfd26c2cfe8be806d3883f1ed"
+    },
+    {
+      "name": "setup-pre-commit",
+      "path": ".tkstack/matt-pocock/skills/misc/setup-pre-commit/SKILL.md",
+      "sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98",
+      "lines": 91,
+      "bytes": 2258,
+      "canonical_source_path": "vendor/matt-pocock/skills/misc/setup-pre-commit/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "hookify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/misc/setup-pre-commit/SKILL.md",
+      "canonical_sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98"
+    },
+    {
+      "name": "setup-pstack",
+      "path": "vendor/pstack/skills/setup-pstack/SKILL.md",
+      "sha256": "6d9a66b2595e4f126b380ccd30f52c58740bfd5ca4337372124b8545ddddc65c",
+      "lines": 55,
+      "bytes": 3103,
+      "canonical_source_path": "vendor/pstack/skills/setup-pstack/SKILL.md",
+      "source": "pstack",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Named-model and Cursor setup remains a native adapter; portable procedures discover capabilities.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/setup-pstack/SKILL.md",
+      "canonical_sha256": "6d9a66b2595e4f126b380ccd30f52c58740bfd5ca4337372124b8545ddddc65c"
+    },
+    {
+      "name": "setup-ts-deep-modules",
+      "path": ".tkstack/matt-pocock/skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7",
+      "lines": 102,
+      "bytes": 7546,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/setup-ts-deep-modules/SKILL.md",
+      "canonical_sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7"
+    },
+    {
+      "name": "show-me-your-work",
+      "path": "vendor/pstack/skills/show-me-your-work/SKILL.md",
+      "sha256": "b99833c41a8781a6af191487f1af37711a3198b98f9373e3c02292b8a6e09aba",
+      "lines": 82,
+      "bytes": 6762,
+      "canonical_source_path": "vendor/pstack/skills/show-me-your-work/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc",
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/show-me-your-work/SKILL.md",
+      "canonical_sha256": "b99833c41a8781a6af191487f1af37711a3198b98f9373e3c02292b8a6e09aba"
+    },
+    {
+      "name": "skillify",
+      "path": "skills/skillify/SKILL.md",
+      "sha256": "6914d40b3c2427c5b979dfcdfc3d210830266cf1ea67ca2baf2190fabd291f8e",
+      "lines": 139,
+      "bytes": 7877,
+      "canonical_source_path": "skills/skillify/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "skillify"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "6914d40b3c2427c5b979dfcdfc3d210830266cf1ea67ca2baf2190fabd291f8e"
+    },
+    {
+      "name": "sol-loop",
+      "path": "vendor/tstack/skills/sol-loop/SKILL.md",
+      "sha256": "1db1eb4c4a156ee666070e9a12623d520cd1bd9b19c3fc21003fe5a440ba0b10",
+      "lines": 119,
+      "bytes": 5127,
+      "canonical_source_path": "vendor/tstack/skills/sol-loop/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/sol-loop/SKILL.md",
+      "canonical_sha256": "1db1eb4c4a156ee666070e9a12623d520cd1bd9b19c3fc21003fe5a440ba0b10"
+    },
+    {
+      "name": "spec-literal-execution",
+      "path": "vendor/wikiskill/skills/spec-literal-execution/SKILL.md",
+      "sha256": "19cb4871f5f2f1c4e1dd82dd5ea2c36815f0f026cd524a144a48794a078e3354",
+      "lines": 41,
+      "bytes": 1555,
+      "canonical_source_path": "vendor/wikiskill/skills/spec-literal-execution/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/spec-literal-execution/SKILL.md",
+      "canonical_sha256": "19cb4871f5f2f1c4e1dd82dd5ea2c36815f0f026cd524a144a48794a078e3354"
+    },
+    {
+      "name": "steer-once",
+      "path": "vendor/lever/skills/steer-once/SKILL.md",
+      "sha256": "f3822cf86844d6e9f2db8b979406181e668eae460d76f685dcf2ef06d1ce3566",
+      "lines": 134,
+      "bytes": 11309,
+      "canonical_source_path": "vendor/lever/skills/steer-once/SKILL.md",
+      "source": "lever",
+      "disposition": "distill",
+      "destinations": [
+        "hookify",
+        "instructify",
+        "learn"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "source_license": "MIT",
+      "source_url": "https://github.com/github/lever/blob/f859d0aa2be96981157ee0480655c84877e3cd98/skills/steer-once/SKILL.md",
+      "canonical_sha256": "f3822cf86844d6e9f2db8b979406181e668eae460d76f685dcf2ef06d1ce3566"
+    },
+    {
+      "name": "takeover",
+      "path": "vendor/tstack/skills/takeover/SKILL.md",
+      "sha256": "9f00a7c67bf82603af2e80f56e9ce63f1516a1b4339365b79cf786d9d9055465",
+      "lines": 42,
+      "bytes": 2064,
+      "canonical_source_path": "vendor/tstack/skills/takeover/SKILL.md",
+      "source": "tstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "source_license": "MIT",
+      "source_url": "https://github.com/t3dotgg/tstack/blob/1085050f3baed1ac724caa4a8166145fb2ac88af/skills/takeover/SKILL.md",
+      "canonical_sha256": "9f00a7c67bf82603af2e80f56e9ce63f1516a1b4339365b79cf786d9d9055465"
+    },
+    {
+      "name": "tdd",
+      "path": "vendor/pstack/skills/tdd/SKILL.md",
+      "sha256": "adad031f9e79d7f7389fa128f7af8e03344831270e282cf4e40bdacb8418c386",
+      "lines": 44,
+      "bytes": 3536,
+      "canonical_source_path": "vendor/pstack/skills/tdd/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/tdd/SKILL.md",
+      "canonical_sha256": "adad031f9e79d7f7389fa128f7af8e03344831270e282cf4e40bdacb8418c386"
+    },
+    {
+      "name": "teach",
+      "path": ".tkstack/matt-pocock/skills/productivity/teach/SKILL.md",
+      "sha256": "550482c2d674b085c9043b87bfdc14a8f2ec453c736119e7fcbb1e9332bffeba",
+      "lines": 140,
+      "bytes": 9733,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/teach/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "write"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/teach/SKILL.md",
+      "canonical_sha256": "550482c2d674b085c9043b87bfdc14a8f2ec453c736119e7fcbb1e9332bffeba"
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "path": "vendor/cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "sha256": "7faca08b51b643b2ddd0836f92af15574444024685dcc1e677dbbb39ae8c9e8f",
+      "lines": 192,
+      "bytes": 12437,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "canonical_sha256": "7faca08b51b643b2ddd0836f92af15574444024685dcc1e677dbbb39ae8c9e8f"
+    },
+    {
+      "name": "tkstack-principles",
+      "path": "skills/tkstack-principles/SKILL.md",
+      "sha256": "1e9c670b212cf3bcd48de1d59b8da622476642ac1556f23ac49d94aa99607ff1",
+      "lines": 88,
+      "bytes": 4891,
+      "canonical_source_path": "skills/tkstack-principles/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "tkstack-principles"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "1e9c670b212cf3bcd48de1d59b8da622476642ac1556f23ac49d94aa99607ff1"
+    },
+    {
+      "name": "to-questionnaire",
+      "path": ".tkstack/matt-pocock/skills/productivity/to-questionnaire/SKILL.md",
+      "sha256": "b5eb929842ee0e93d867c5e906d183d350f2f2d149eaeaa86967d94d8eda1d3b",
+      "lines": 54,
+      "bytes": 2904,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/to-questionnaire/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/to-questionnaire/SKILL.md",
+      "canonical_sha256": "b5eb929842ee0e93d867c5e906d183d350f2f2d149eaeaa86967d94d8eda1d3b"
+    },
+    {
+      "name": "to-spec",
+      "path": ".tkstack/matt-pocock/skills/engineering/to-spec/SKILL.md",
+      "sha256": "43ad9cf318e5e7d3d1fa360253a37021796dc87a0c2e595ad262661a10f85088",
+      "lines": 75,
+      "bytes": 3043,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/to-spec/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/to-spec/SKILL.md",
+      "canonical_sha256": "43ad9cf318e5e7d3d1fa360253a37021796dc87a0c2e595ad262661a10f85088"
+    },
+    {
+      "name": "to-tickets",
+      "path": ".tkstack/matt-pocock/skills/engineering/to-tickets/SKILL.md",
+      "sha256": "56ec23c5b2782785d4e65bff9e315b6d3aeb4ef977c174a219e99489fada1995",
+      "lines": 105,
+      "bytes": 5812,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/to-tickets/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/to-tickets/SKILL.md",
+      "canonical_sha256": "56ec23c5b2782785d4e65bff9e315b6d3aeb4ef977c174a219e99489fada1995"
+    },
+    {
+      "name": "trace-harness-launch-failure",
+      "path": "vendor/wikiskill/skills/trace-harness-launch-failure/SKILL.md",
+      "sha256": "95b06112310ece546412a8b4769972c1ef86933ce8441430b4cd8c9e42bca815",
+      "lines": 41,
+      "bytes": 1781,
+      "canonical_source_path": "vendor/wikiskill/skills/trace-harness-launch-failure/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "hill-climb",
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/trace-harness-launch-failure/SKILL.md",
+      "canonical_sha256": "95b06112310ece546412a8b4769972c1ef86933ce8441430b4cd8c9e42bca815"
+    },
+    {
+      "name": "triage",
+      "path": ".tkstack/matt-pocock/skills/engineering/triage/SKILL.md",
+      "sha256": "917b0baf74be583e74f110857ed45df2766617f75c00baf61fd136d7af515edf",
+      "lines": 112,
+      "bytes": 6558,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/triage/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/triage/SKILL.md",
+      "canonical_sha256": "917b0baf74be583e74f110857ed45df2766617f75c00baf61fd136d7af515edf"
+    },
+    {
+      "name": "typescript-best-practices",
+      "path": "vendor/pstack/skills/typescript-best-practices/SKILL.md",
+      "sha256": "b6c9af16c4accbe6385eec297a0dff9327c0a2cff27ae4b3b31e79deae6631a8",
+      "lines": 24,
+      "bytes": 1693,
+      "canonical_source_path": "vendor/pstack/skills/typescript-best-practices/SKILL.md",
+      "source": "pstack",
+      "disposition": "retain-specialist",
+      "destinations": [],
+      "reason": "Language-specific details remain upstream; portable interface guidance does not impose one language.",
+      "review_depth": "entrypoint metadata and branch map",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/typescript-best-practices/SKILL.md",
+      "canonical_sha256": "b6c9af16c4accbe6385eec297a0dff9327c0a2cff27ae4b3b31e79deae6631a8"
+    },
+    {
+      "name": "unslop",
+      "path": "skills/unslop/SKILL.md",
+      "sha256": "553195a378a49c9beaaa4eb3fc12c5771d3779ae4ccb0c856bc746da6c46a7e0",
+      "lines": 140,
+      "bytes": 8605,
+      "canonical_source_path": "skills/unslop/SKILL.md",
+      "source": "owned",
+      "disposition": "incorporate-existing",
+      "destinations": [
+        "unslop"
+      ],
+      "reason": "Preserve the owned procedure/helper contracts; add conditional references and selected source learnings at its existing owner.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "canonical_sha256": "553195a378a49c9beaaa4eb3fc12c5771d3779ae4ccb0c856bc746da6c46a7e0"
+    },
+    {
+      "name": "verify-output-readback",
+      "path": "vendor/wikiskill/skills/verify-output-readback/SKILL.md",
+      "sha256": "ab8d101558d4f828814b91a30ba16018a3a6602536457c48d1d14d30205a8942",
+      "lines": 27,
+      "bytes": 964,
+      "canonical_source_path": "vendor/wikiskill/skills/verify-output-readback/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/verify-output-readback/SKILL.md",
+      "canonical_sha256": "ab8d101558d4f828814b91a30ba16018a3a6602536457c48d1d14d30205a8942"
+    },
+    {
+      "name": "verify-this",
+      "path": "vendor/cursor-team-kit/skills/verify-this/SKILL.md",
+      "sha256": "c1c7b27c1133085bd3409c601ea12b6e6f61b4b23debcd52bc248fc01907e7de",
+      "lines": 74,
+      "bytes": 2805,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/verify-this/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc",
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/verify-this/SKILL.md",
+      "canonical_sha256": "c1c7b27c1133085bd3409c601ea12b6e6f61b4b23debcd52bc248fc01907e7de"
+    },
+    {
+      "name": "wait-what",
+      "path": ".tkstack/matt-pocock/skills/productivity/wait-what/SKILL.md",
+      "sha256": "d961bb37defd975c539427edb8f450cdbccdcdd552e213c1ece46676a7970905",
+      "lines": 7,
+      "bytes": 396,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/wait-what/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "write"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/wait-what/SKILL.md",
+      "canonical_sha256": "d961bb37defd975c539427edb8f450cdbccdcdd552e213c1ece46676a7970905"
+    },
+    {
+      "name": "wayfinder",
+      "path": ".tkstack/matt-pocock/skills/engineering/wayfinder/SKILL.md",
+      "sha256": "0c9fa96791aebf3b7d654cf35c6aadde97d81f57c17b07d13b27c14d9c46561f",
+      "lines": 128,
+      "bytes": 12408,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/wayfinder/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "sdlc"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wayfinder/SKILL.md",
+      "canonical_sha256": "0c9fa96791aebf3b7d654cf35c6aadde97d81f57c17b07d13b27c14d9c46561f"
+    },
+    {
+      "name": "weekly-review",
+      "path": "vendor/cursor-team-kit/skills/weekly-review/SKILL.md",
+      "sha256": "b56a2c283916b4551aeb322398ab99a19b4b5d7678ffd7f9c9f3df9fa05f4712",
+      "lines": 32,
+      "bytes": 902,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/weekly-review/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "document"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/weekly-review/SKILL.md",
+      "canonical_sha256": "b56a2c283916b4551aeb322398ab99a19b4b5d7678ffd7f9c9f3df9fa05f4712"
+    },
+    {
+      "name": "what-did-i-get-done",
+      "path": "vendor/cursor-team-kit/skills/what-did-i-get-done/SKILL.md",
+      "sha256": "479813c9abaacb5b6b0531f1de7dc5eb2f3bd9673707a992d1073335836e82f8",
+      "lines": 31,
+      "bytes": 1012,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/what-did-i-get-done/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "document"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/what-did-i-get-done/SKILL.md",
+      "canonical_sha256": "479813c9abaacb5b6b0531f1de7dc5eb2f3bd9673707a992d1073335836e82f8"
+    },
+    {
+      "name": "why",
+      "path": "vendor/pstack/skills/why/SKILL.md",
+      "sha256": "0d52542dd598fcb1986474c897d613f137a8489e8dce73d07bc35c8c11dc4d65",
+      "lines": 229,
+      "bytes": 21344,
+      "canonical_source_path": "vendor/pstack/skills/why/SKILL.md",
+      "source": "pstack",
+      "disposition": "distill",
+      "destinations": [
+        "investigate"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/pstack/skills/why/SKILL.md",
+      "canonical_sha256": "0d52542dd598fcb1986474c897d613f137a8489e8dce73d07bc35c8c11dc4d65"
+    },
+    {
+      "name": "wikiskill-evolve",
+      "path": "vendor/wikiskill/skills/wikiskill-evolve/SKILL.md",
+      "sha256": "521054c5993df2c99e00b3f2f2d91bec7595dc353b2529df7675921b28603f0e",
+      "lines": 68,
+      "bytes": 2660,
+      "canonical_source_path": "vendor/wikiskill/skills/wikiskill-evolve/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "learn"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/wikiskill-evolve/SKILL.md",
+      "canonical_sha256": "521054c5993df2c99e00b3f2f2d91bec7595dc353b2529df7675921b28603f0e"
+    },
+    {
+      "name": "wikiskill-maintainer",
+      "path": "vendor/wikiskill/skills/wikiskill-maintainer/SKILL.md",
+      "sha256": "8bf50e2032c9c9dc62500cab66c9e0a73b7bb199e436034a80b5c914a712fddc",
+      "lines": 40,
+      "bytes": 1930,
+      "canonical_source_path": "vendor/wikiskill/skills/wikiskill-maintainer/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "learn"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/wikiskill-maintainer/SKILL.md",
+      "canonical_sha256": "8bf50e2032c9c9dc62500cab66c9e0a73b7bb199e436034a80b5c914a712fddc"
+    },
+    {
+      "name": "wikiskill-proposer",
+      "path": "vendor/wikiskill/skills/wikiskill-proposer/SKILL.md",
+      "sha256": "321b48633edd623c88f2ed999961724b65ed85c0734cb639378264bd28f9f863",
+      "lines": 76,
+      "bytes": 2679,
+      "canonical_source_path": "vendor/wikiskill/skills/wikiskill-proposer/SKILL.md",
+      "source": "wikiskill",
+      "disposition": "distill",
+      "destinations": [
+        "learn",
+        "skillify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "source_license": "MIT",
+      "source_url": "https://github.com/ashutoshsinghpr7/wikiskill/blob/cdc291c4296e30488a5922860dc596763704ede4/skills/wikiskill-proposer/SKILL.md",
+      "canonical_sha256": "321b48633edd623c88f2ed999961724b65ed85c0734cb639378264bd28f9f863"
+    },
+    {
+      "name": "wizard",
+      "path": ".tkstack/matt-pocock/skills/engineering/wizard/SKILL.md",
+      "sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1",
+      "lines": 44,
+      "bytes": 4123,
+      "canonical_source_path": "vendor/matt-pocock/skills/engineering/wizard/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "flowify"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/engineering/wizard/SKILL.md",
+      "canonical_sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1"
+    },
+    {
+      "name": "workflow-from-chats",
+      "path": "vendor/cursor-team-kit/skills/workflow-from-chats/SKILL.md",
+      "sha256": "b568176390165921c5e351cc73b553e3e997f92c9f85dfb1c5a220c943fbaa16",
+      "lines": 50,
+      "bytes": 2685,
+      "canonical_source_path": "vendor/cursor-team-kit/skills/workflow-from-chats/SKILL.md",
+      "source": "cursor-team-kit",
+      "disposition": "distill",
+      "destinations": [
+        "learn"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "source_license": "MIT",
+      "source_url": "https://github.com/poteto/plugins/blob/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12/cursor-team-kit/skills/workflow-from-chats/SKILL.md",
+      "canonical_sha256": "b568176390165921c5e351cc73b553e3e997f92c9f85dfb1c5a220c943fbaa16"
+    },
+    {
+      "name": "writing-beats",
+      "path": ".tkstack/matt-pocock/skills/in-progress/writing-beats/SKILL.md",
+      "sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e",
+      "lines": 67,
+      "bytes": 4855,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/writing-beats/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "write"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/writing-beats/SKILL.md",
+      "canonical_sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e"
+    },
+    {
+      "name": "writing-for-agents",
+      "path": ".tkstack/matt-pocock/skills/productivity/writing-for-agents/SKILL.md",
+      "sha256": "551adca942227b44192edba88acd4e8db911f0121ce58ad16944ccf6a896a74a",
+      "lines": 81,
+      "bytes": 10886,
+      "canonical_source_path": "vendor/matt-pocock/skills/productivity/writing-for-agents/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "document",
+        "instructify",
+        "skillify",
+        "tkstack-principles"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/productivity/writing-for-agents/SKILL.md",
+      "canonical_sha256": "551adca942227b44192edba88acd4e8db911f0121ce58ad16944ccf6a896a74a"
+    },
+    {
+      "name": "writing-fragments",
+      "path": ".tkstack/matt-pocock/skills/in-progress/writing-fragments/SKILL.md",
+      "sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea",
+      "lines": 79,
+      "bytes": 3558,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/writing-fragments/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "write"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/writing-fragments/SKILL.md",
+      "canonical_sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea"
+    },
+    {
+      "name": "writing-shape",
+      "path": ".tkstack/matt-pocock/skills/in-progress/writing-shape/SKILL.md",
+      "sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72",
+      "lines": 79,
+      "bytes": 5922,
+      "canonical_source_path": "vendor/matt-pocock/skills/in-progress/writing-shape/SKILL.md",
+      "source": "matt-pocock",
+      "disposition": "distill",
+      "destinations": [
+        "write"
+      ],
+      "reason": "Reuse the general procedure in the named owner; keep native APIs, model rosters, tool installation, and special authority out of the portable core.",
+      "review_depth": "entrypoint metadata and branch map; selected procedure details",
+      "source_revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "source_license": "MIT",
+      "source_url": "https://github.com/mattpocock/skills/blob/a496f5513d4a4cf889bc48e189e579f4b0bdf6aa/skills/in-progress/writing-shape/SKILL.md",
+      "canonical_sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72"
+    }
+  ]
+}

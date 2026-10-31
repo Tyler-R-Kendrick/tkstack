@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "skillify-train-contract",
+      "project": "tkstack",
+      "intent": "Creating a reusable skill from a demonstrated procedure: A) Copy the entire algorithm into a long main SKILL.md. B) Implement the executable workflow with typed commands and a progressive index. C) Forward every invocation to a model without a code contract. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "skillify-val-contract",
+      "project": "tkstack",
+      "intent": "A command needs aliases and flags. A) Add aliases as custom fields in the OpenAI function object. B) Infer its flags from prose at every invocation. C) Keep standard OpenAI parameters separate from local CLI bindings, using shared help/version. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "skillify-test-contract",
+      "project": "tkstack",
+      "intent": "A scaffold has all expected files but its workflow raises NotImplementedError. A) Keep it a draft until actual native outcomes and negative cases are verified. B) Declare it compiled because headings pass. C) Skip the runtime check. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

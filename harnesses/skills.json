@@ -1,0 +1,11 @@
+{
+  "aliases": {
+    "pstack": {
+      "unslop": "pstack-unslop"
+    },
+    "matt-pocock": {
+      "tdd": "matt-tdd"
+    }
+  },
+  "rewrite_callers": {"pstack": false}
+}

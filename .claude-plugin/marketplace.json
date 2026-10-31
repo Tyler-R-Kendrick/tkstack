@@ -1,0 +1,220 @@
+{
+  "name": "tkstack",
+  "owner": {
+    "name": "Tyler Kendrick"
+  },
+  "metadata": {
+    "description": "Portable personal learning, quality review, development lifecycle, and measured improvement skills."
+  },
+  "plugins": [
+    {
+      "name": "codify",
+      "source": "./skills/codify",
+      "description": "Compile a prompt, Markdown procedure, or skill into a verified executable workflow lock artifact. Use for /codify, transpile this prompt, compile Markdown to code, or cache a procedure so subsequent runs execute code with minimal inference. Owns the shared workflow templates and Vercel AI SDK runtime used by skillify. Lower meaning once, freeze code and provenance, reject stale inputs, and run the artifact without reinterpreting its Markdown.",
+      "version": "0.4.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "document",
+      "source": "./skills/document",
+      "description": "Create or maintain source-grounded repository documentation, a knowledge wiki, a glossary, an ADR, or a resumable task handoff. Use for documentation maintenance and knowledge capture. Agent policy belongs in instructify; UI design-system capture belongs in open-design; ordinary articles belong in write.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "fal-ai",
+      "source": "./skills/fal-ai",
+      "description": "Plan and produce images, video, audio, brand assets, and product media with explicit deliverables and actual output inspection. Use for fal.ai or a provider-neutral media production brief. Preserve explicit Higgsfield or other provider selections and use their real adapters.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "flowify",
+      "source": "./skills/flowify",
+      "description": "Turn a demonstrated procedure or explicit request into a reusable executable workflow using an existing DSL. Use for /flowify, automate this workflow, MAF declarative YAML, or Grok-style Rhai definitions. Prefer deterministic code bindings, explicit dataflow and failure gates, bounded concurrency, real native validation, and reproducible execution evidence.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "headroom",
+      "source": "./skills/headroom",
+      "description": "Use Headroom for explicit reversible context compression, CCR retrieval, or agent wrapping. Verify original-context fidelity and actual runtime readiness while preserving provider and account routing.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "hill-climb",
+      "source": "./skills/hill-climb",
+      "description": "Run a bounded, evidence-driven improvement loop for code, prompts, skills, websites, or generated media. Use for /hill-climb, sustained metric optimization, or iterative quality/cost/latency improvement. Freeze a sensitive evaluation, measure baseline noise, change one hypothesis at a time, keep or revert from evidence, and confirm the winner on untouched cases.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "hookify",
+      "source": "./skills/hookify",
+      "description": "Turn an explicit rule or confirmed recurring correction into a deterministic tool-event hook or workflow gate. Use for /hookify, create a command hook, or prevent this tool behavior. Route native CLI lint-rule authoring to lintify when available. Define precise predicates, replay cases, preserve configuration, and distinguish evaluation from native activation.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "instructify",
+      "source": "./skills/instructify",
+      "description": "Create, adapt, audit, and update scoped agent instructions from explicit preferences or verified workflows. Use for /instructify, turn this into agent instructions, maintain AGENTS.md or CLAUDE.md, and generate native instruction rules. Preserve existing content, choose the right durable layer, and preview deterministic managed updates.",
+      "version": "0.4.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "investigate",
+      "source": "./skills/investigate",
+      "description": "Investigate how a system works, why a decision was made, an unfamiliar API, or the cause of a bug or performance regression. Use for source-grounded explanations, research, diagnosis, and captured-trace analysis. Produces cited findings and explicit unknowns; a diagnosis request alone does not authorize fixes.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "learn",
+      "source": "./skills/learn",
+      "description": "Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.",
+      "version": "0.7.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "lintify",
+      "source": "./skills/lintify",
+      "description": "Create, adapt, or configure a rule for a real CLI linter from an explicit standard or correction. Use for /lintify, turn this into a lint rule, enforce this with a linter, or author a Markdown prompt rule. Reuse native checks first, compile Markdown intent into deterministic rules when possible, and use semantic model-based linting only for residual judgment.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "open-design",
+      "source": "./skills/open-design",
+      "description": "Design or refine interfaces, prototypes, slides, and design systems using a portable brief and artifact-review workflow. Use for UI/UX creation, redesign, critique, or OpenDesign work. Explicit OpenDesign requests retain that provider and its actual runtime.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "reusify",
+      "source": "./skills/reusify",
+      "description": "Turn repeated code into reusable snippets, templates, macros, code generators, modules, libraries, or components. Use /reusify init to bootstrap deterministic code production from an existing codebase, or /reusify for a targeted pattern, repeated boilerplate, T4-style templates, Roslyn incremental generators, or shared components. Find and use existing assets before deriving another implementation; three occurrences or an upcoming third normally trigger extraction.",
+      "version": "0.4.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "rtk",
+      "source": "./skills/rtk",
+      "description": "Use Rust Token Killer to filter shell output, inspect measured token savings, or configure RTK integration. Preserve command semantics, native permissions, and an unfiltered route for exact evidence.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "sdlc",
+      "source": "./skills/sdlc",
+      "description": "Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.",
+      "version": "0.5.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "skillify",
+      "source": "./skills/skillify",
+      "description": "Compile a skill or demonstrated procedure into an executable workflow in the skill's scripts folder. Use for /skillify, convert a skill to a tool, capture a workflow, or create/adapt/update an owned skill. Treat Markdown as an intermediary code-mode prompt and invocation index. Prefer deterministic execution; configure Vercel AI SDK model, Decisions, or harness profiles only for residual inference. Preserve provenance and validate actual tool behavior.",
+      "version": "0.9.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "tkstack-principles",
+      "source": "./skills/tkstack-principles",
+      "description": "Apply tkstack's personal engineering principles when designing, implementing, or reviewing code, skills, hooks, rules, workflows, and harness configuration. Prefer deterministic code and explicit rules, then narrowly scoped decision models or APIs, with LLMs and agents as the last resort. Design all code for safe bounded concurrency and parallel composition.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "unslop",
+      "source": "./skills/unslop",
+      "description": "Identify and correct AI slop in writing, code, tests, websites, images, video, and audio. Use for /unslop, output grading, anti-slop review, or whenever the user identifies a slop pattern. Record actual corrections in the shared steering ledger, extract a scoped reusable criterion, and grade against the evolving catalog with artifact evidence and legitimate exceptions.",
+      "version": "0.4.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
+      "name": "write",
+      "source": "./skills/write",
+      "description": "Develop a human-facing article, explanation, proposal, or narrative from supplied ideas or source material. Use for drafting, shaping an argument, or a collaborative writing session. Not for ordinary file writes, agent instructions, repository reference maintenance, or anti-slop grading alone.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    }
+  ]
+}

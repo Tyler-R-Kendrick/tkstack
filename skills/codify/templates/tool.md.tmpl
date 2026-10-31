@@ -1,0 +1,36 @@
+# Invoke as a tool
+
+The executable procedure lives in `scripts/`. `SKILL.md` is its discovery and
+code-mode prompt: select the tool, supply typed input, invoke it, and inspect
+the result. Do not reinterpret a prose checklist in place of running the tool.
+
+Keep session/repository/workspace records under `.tkstack/`, protected by that
+folder's `.gitignore`. The bundled `scripts/tkstack_state.py` computes (`path`)
+or initializes (`init`) private state namespaces. Read-only invocations do not
+initialize state. Authored deliverables retain their native/requested paths.
+
+```sh
+@SETUP@
+@INVOKE@
+```
+
+Command files in `commands/` define the same typed interface for CLI and OpenAI
+tool calls. Read [subcommands and dependencies](subcommands.md), replace the draft
+run signature with the real inputs, and compile before invocation. Use the
+bundled `python3 scripts/codify.py commands .` to validate/export signatures or
+`python3 scripts/codify.py invoke . -- help` for read-only discovery.
+Skillify/Codify supply reserved help/version commands. Omit the command for a
+deterministically rendered console manual; use `help --format man` for generated
+man(1) source and `version` for the declared package version. These commands
+work before compilation and never invoke the workflow. Do not reimplement or
+replace their names, routes, flags, or builtin signatures.
+
+| Interface | Contract |
+| --- | --- |
+| Entry point | [Executable tool](../@ENTRYPOINT@) |
+| Definition | [Workflow source](../@WORKFLOW@) |
+| Input | TODO(SKILLIFY): Document the actual input schema, defaults, and example JSON. |
+| Output | TODO(SKILLIFY): Document actual output schema, artifacts, and success conditions. |
+| Failure | Exit 1 for invalid input/runtime failure; exit 3 for an unimplemented draft. Parser usage errors may exit 2. Never treat a draft as success. |
+
+TODO(SKILLIFY): Implement the workflow; document optional subcommands/parameters and native dependencies. Validate reproducing, transfer, negative, and concurrency cases before marking it complete.

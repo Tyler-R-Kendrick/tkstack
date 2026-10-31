@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "date": "2026-10-29",
+  "timezone": "America/Chicago",
+  "method": "Author-created read-only decision regressions; not a full workflow effectiveness benchmark.",
+  "engine": {
+    "repository": "https://github.com/microsoft/SkillOpt",
+    "revision": "bc0a392ef0a7f92840ec673d80204d34ced169d0",
+    "component": "skillopt_sleep",
+    "backend": "handoff"
+  },
+  "fresh_context_model_calls": 8,
+  "automatic_adoption": false,
+  "skills": {
+    "learn": {
+      "skill_sha256": "95cd1cff695283f5815f1f5550fc1064951e106ba7518b4b65e788628af8876a",
+      "tasks_sha256": "9196ad484b886564f2ba2041159ab468c78b2bc93b4a14e3dcef3b8580b6a5e7",
+      "validation_baseline": 1.0,
+      "validation_retained_final": 1.0,
+      "final_test_score": 1.0,
+      "gate_action": "reject",
+      "accepted": false,
+      "accepted_edits": 0,
+      "gate_no_regression": true,
+      "holdout_leaked": false,
+      "responses": [
+        {
+          "id": "learn-train-scope",
+          "split": "train",
+          "origin": "authored",
+          "prompt_id": "d0dbf8748666b547",
+          "exported_prompt_sha256": "d0dbf8748666b547633a4c005f3005d9e2372b434772723cd4b2570601b1ca14",
+          "agent": "/root/evo_learn_train",
+          "fresh_context": true,
+          "response": "B",
+          "passed": true
+        },
+        {
+          "id": "learn-val-uncertainty",
+          "split": "val",
+          "origin": "authored",
+          "prompt_id": "8ad40e8a3d5aeb3d",
+          "exported_prompt_sha256": "8ad40e8a3d5aeb3dc3bd231a476ec496665f8b68619b7ab1c419076962f2a8bf",
+          "agent": "/root/evo_learn_val_uncertainty",
+          "fresh_context": true,
+          "response": "A",
+          "passed": true
+        },
+        {
+          "id": "learn-val-evidence-boundary",
+          "split": "val",
+          "origin": "authored",
+          "prompt_id": "95226e8619c15e33",
+          "exported_prompt_sha256": "95226e8619c15e33744e90926241297d3710d085aa0272dee2141ce7f7939f7d",
+          "agent": "/root/evo_learn_val_boundary",
+          "fresh_context": true,
+          "response": "C",
+          "passed": true
+        },
+        {
+          "id": "learn-test-reversal",
+          "split": "test",
+          "origin": "authored",
+          "prompt_id": "421c9da3d6d79eb6",
+          "exported_prompt_sha256": "421c9da3d6d79eb69ae9f04834c45306be26e6a359f9cf105f3c42e41aa11304",
+          "agent": "/root/evo_learn_test",
+          "fresh_context": true,
+          "response": "B",
+          "passed": true
+        }
+      ],
+      "evidence_sha256": "6ae585a0e6984ef88500784107969a8369643a12cba583e918426ba51f8e4a16",
+      "local_report": ".tkstack/evolution/learn-strict/.skillopt-sleep/staging/20261030-031232/report.md"
+    },
+    "sdlc": {
+      "skill_sha256": "2f8be559de5a74f1f5ce60b8a55f1863e2bf4504dc24dc6789667ce33d3617f0",
+      "tasks_sha256": "27bedaf6f78d86d59720020c44f14e8da344cf9c7a5d70f0b1b500c4b2b48f48",
+      "validation_baseline": 1.0,
+      "validation_retained_final": 1.0,
+      "final_test_score": 1.0,
+      "gate_action": "reject",
+      "accepted": false,
+      "accepted_edits": 0,
+      "gate_no_regression": true,
+      "holdout_leaked": false,
+      "responses": [
+        {
+          "id": "sdlc-train-contract",
+          "split": "train",
+          "origin": "authored",
+          "prompt_id": "fb0b6fee8aaadece",
+          "exported_prompt_sha256": "7a4ef3531a73247a7adc6e3c0835372176d23aa132633dc2a54f18af941f97ea",
+          "agent": "/root/evo_sdlc_train",
+          "fresh_context": true,
+          "response": "C",
+          "passed": true
+        },
+        {
+          "id": "sdlc-val-cow",
+          "split": "val",
+          "origin": "authored",
+          "prompt_id": "f6800c4f7cbf0f87",
+          "exported_prompt_sha256": "ef4a28006223fcbc877d3bdc7667260599bd57cf34d5a5433be3044f61d609cb",
+          "agent": "/root/evo_sdlc_val_cow",
+          "fresh_context": true,
+          "response": "B",
+          "passed": true
+        },
+        {
+          "id": "sdlc-val-original-workload",
+          "split": "val",
+          "origin": "authored",
+          "prompt_id": "a0cc60223e91736e",
+          "exported_prompt_sha256": "a6fabdb742be5d77bc5fd082d533c4a748db2b57e1ed7f6979d262ecbfbff8c9",
+          "agent": "/root/evo_sdlc_val_workload",
+          "fresh_context": true,
+          "response": "A",
+          "passed": true
+        },
+        {
+          "id": "sdlc-test-restack",
+          "split": "test",
+          "origin": "authored",
+          "prompt_id": "5de4acebe7f75868",
+          "exported_prompt_sha256": "2b35cf7d6508bd6f42d105fa346067e56ec609d788baa96c56633d44df9f1e19",
+          "agent": "/root/evo_sdlc_test",
+          "fresh_context": true,
+          "response": "C",
+          "passed": true
+        }
+      ],
+      "evidence_sha256": "4b20c27d9b0e4fa058426c5af95b17cc4bcfefdc77a72e8bba6b4339d67f9dfd",
+      "local_report": ".tkstack/evolution/sdlc-strict/.skillopt-sleep/staging/20261030-031232/report.md"
+    }
+  },
+  "limitations": [
+    "One trial per small authored scenario; no statistical or real-workflow improvement claim.",
+    "No training failure occurred, so the failure-driven reflector proposed no edits.",
+    "The earlier substring-scored probe is excluded; retained results use anchored action graders.",
+    "Strict regrading reused only byte-identical exported prompts and observed fresh-context replies.",
+    "No private transcript harvest, model API subprocess, background schedule, or live skill adoption.",
+    "Upstream redaction altered an illustrative SDLC branch placeholder; exercise choices were unchanged."
+  ]
+}

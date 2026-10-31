@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "lever",
+  "description": "Feedback loops for coding agents. Find the metric, let agents iterate against it, and move repeatable work into Copilot Automations, with an autonomy dial you control.",
+  "version": "0.1.0",
+  "author": { "name": "GitHub" },
+  "homepage": "https://github.com/github/lever",
+  "repository": "https://github.com/github/lever",
+  "license": "MIT",
+  "keywords": ["skills", "feedback-loops", "ci", "automations", "autonomy"]
+}

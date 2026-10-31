@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "reusify-train-contract",
+      "project": "tkstack",
+      "intent": "Three independently authored equivalent source patterns are confirmed. A) Let another LLM derive a fourth copy. B) Reuse a suitable asset or extract the smallest native template/module and verify behavior. C) Require five occurrences. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "reusify-val-contract",
+      "project": "tkstack",
+      "intent": "A suitable existing generator has only one current consumer. A) Use it when it fits; reuse does not wait for three consumers. B) Copy it until three occurrences exist. C) Replace its language with a model prompt. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "reusify-test-contract",
+      "project": "tkstack",
+      "intent": "Three search hits are generated copies of one implementation and include real semantic variation. A) Count them as three independent uses. B) Collapse variation into one universal abstraction without tests. C) Retain the distinction, inspect equivalence and preserve legitimate differences. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

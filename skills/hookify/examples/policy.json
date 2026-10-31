@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "failure_mode": "block",
+  "rules": [
+    {
+      "id": "demo-block-generated-edit",
+      "event": "before-tool",
+      "enabled": true,
+      "action": "block",
+      "conditions": [
+        {
+          "field": "tool_name",
+          "operator": "one_of",
+          "value": [
+            "Edit",
+            "Write"
+          ]
+        },
+        {
+          "field": "tool_input.file_path",
+          "operator": "ends_with",
+          "value": ".generated.ts"
+        }
+      ],
+      "message": "This demonstration policy requires changing the generator instead of this generated file."
+    },
+    {
+      "id": "demo-warn-debug-write",
+      "event": "before-tool",
+      "enabled": true,
+      "action": "warn",
+      "conditions": [
+        {
+          "field": "tool_name",
+          "operator": "equals",
+          "value": "Write"
+        },
+        {
+          "field": "tool_input.file_path",
+          "operator": "ends_with",
+          "value": ".ts"
+        },
+        {
+          "field": "tool_input.content",
+          "operator": "contains",
+          "value": "console.log("
+        }
+      ],
+      "message": "This demonstration policy asks you to check whether the debug log belongs in the source."
+    }
+  ]
+}

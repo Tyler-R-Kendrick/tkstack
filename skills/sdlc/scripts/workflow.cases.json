@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "sdlc",
+        "purpose": "Coordinate durable BDD/contract delivery with isolated worktrees, versioned requirements and evidence-bound review.",
+        "criteria": [
+          {
+            "id": "workload",
+            "description": "Preserve the frozen initial workload, authorized amendments, requirement IDs and ADR decisions."
+          },
+          {
+            "id": "contract-evidence",
+            "description": "Inspect real BDD and producer/consumer contract results plus applicable current-head artifacts."
+          },
+          {
+            "id": "isolated-ownership",
+            "description": "Verify sparse COW worktree ownership, pinned dependencies, bounded leases and quiescent recovery."
+          },
+          {
+            "id": "independent-review",
+            "description": "Use genuinely independent final requirement/evidence review and current native PR gates."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "original_workload_retained": {
+              "type": "boolean",
+              "const": true
+            },
+            "contracts_verified": {
+              "type": "boolean",
+              "const": true
+            },
+            "independent_review": {
+              "type": "boolean",
+              "const": true
+            },
+            "stale_evidence_accepted": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "original_workload_retained",
+            "contracts_verified",
+            "independent_review",
+            "stale_evidence_accepted"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "The shared report gate does not replace sdlc.py gate, tasks gate, independent original-workload compliance review or live PR checks."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    },
+    {
+      "id": "coordinator-capabilities",
+      "input": {
+        "operation": "help"
+      },
+      "exit": 0,
+      "output": {
+        "operations": [
+          "init",
+          "status",
+          "claim",
+          "heartbeat",
+          "finish",
+          "quiesce",
+          "recover",
+          "issue",
+          "revise",
+          "history",
+          "gate"
+        ],
+        "state": ".tkstack/sdlc/task-graph.sqlite3",
+        "engine": "sqlite-wal",
+        "inference": "none"
+      }
+    },
+    {
+      "id": "legacy-reject-unknown-operation",
+      "input": {
+        "operation": "guess"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-missing-operation",
+      "input": {},
+      "exit": 1
+    }
+  ]
+}

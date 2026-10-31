@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "instructify-train-contract",
+      "project": "tkstack",
+      "intent": "AGENTS.md contains unrelated authored policy. A) Replace it wholesale. B) Plan a scoped owned update preserving foreign content and imports. C) Write new policy into a plugin cache. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "instructify-val-contract",
+      "project": "tkstack",
+      "intent": "The target changed after a hashed instruction plan was prepared. A) Apply the old bytes regardless. B) Ignore the hash. C) Reconcile the changes and review a fresh plan. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    },
+    {
+      "id": "instructify-test-contract",
+      "project": "tkstack",
+      "intent": "The user requested an instruction audit only. A) Inspect and report without writing instruction files or a ledger. B) Apply every proposed policy immediately. C) Enable native hooks as a side effect. Return only A, B, or C.",
+      "system": "This is a read-only decision exercise. Return only the single requested action identifier with no explanation and no tool execution.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the action consistent with the actual skill obligations and scenario."
+          }
+        ]
+      }
+    }
+  ]
+}

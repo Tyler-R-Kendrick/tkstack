@@ -1,0 +1,4499 @@
+{
+  "version": 1,
+  "sources": {
+    "cursor-team-kit": {
+      "repository": "https://github.com/poteto/plugins",
+      "revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "path": "cursor-team-kit",
+      "version": "1.2.0",
+      "license": "MIT",
+      "required_by": [
+        "pstack"
+      ],
+      "evaluation": "reviewed-static-and-smoke-tested",
+      "evaluation_report": "docs/evaluation.md",
+      "files": {
+        ".cursor-plugin/plugin.json": {
+          "git_blob": "e7f0b52660b90ecba6235f8b34bb4a7a0471862d",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "ca2bba771cd39dbef6acf96b52481133983451f3",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "f25739dc9eb50f8177e1e93e87eaf32ea9c4a3d6",
+          "mode": "100644"
+        },
+        "agents/ci-watcher.md": {
+          "git_blob": "8246bf1a5b7c0ed195e5867ffb98aa79c08e5ece",
+          "mode": "100644"
+        },
+        "agents/thermo-nuclear-code-quality-review.md": {
+          "git_blob": "dc83d959306c41bb9a4b504608d9607be34e4297",
+          "mode": "100644"
+        },
+        "assets/avatar.png": {
+          "git_blob": "38e870c0fb4b4589280d31f5fb6144e09098f1ee",
+          "mode": "100644"
+        },
+        "rules/no-inline-imports.mdc": {
+          "git_blob": "ddcaf5701b4d4be7295aded799c360cad0a1cbe2",
+          "mode": "100644"
+        },
+        "rules/typescript-exhaustive-switch.mdc": {
+          "git_blob": "4011384a3fba02a16a758efbf79e531b3569666a",
+          "mode": "100644"
+        },
+        "skills/check-compiler-errors/SKILL.md": {
+          "git_blob": "585f4bb67ce55ee04a9a8f8e1b1e86d51b6fdb4b",
+          "mode": "100644"
+        },
+        "skills/control-cli/SKILL.md": {
+          "git_blob": "69289ac517e8a28380c8eca5c6692e8a601fa62c",
+          "mode": "100644"
+        },
+        "skills/control-ui/SKILL.md": {
+          "git_blob": "68484fd5418cc893a6bf40e0db45b3001dcf5947",
+          "mode": "100644"
+        },
+        "skills/deslop/SKILL.md": {
+          "git_blob": "1b3827c7f991182149a7abda696af43ff8f17a12",
+          "mode": "100644"
+        },
+        "skills/fix-ci/SKILL.md": {
+          "git_blob": "60adbdde5b63ee95cea8180df8080498680e338d",
+          "mode": "100644"
+        },
+        "skills/fix-merge-conflicts/SKILL.md": {
+          "git_blob": "2940fe4c7f2ada9c119b5726bf276b834e6754b6",
+          "mode": "100644"
+        },
+        "skills/get-pr-comments/SKILL.md": {
+          "git_blob": "396aad5ff7cbe981124e9540ae786a120af77149",
+          "mode": "100644"
+        },
+        "skills/loop-on-ci/SKILL.md": {
+          "git_blob": "23a3860ad9873408960b285739c2927e70ad49c4",
+          "mode": "100644"
+        },
+        "skills/make-pr-easy-to-review/SKILL.md": {
+          "git_blob": "f5343c095b6a2196b1474aa5013d82b8ceaa2120",
+          "mode": "100644"
+        },
+        "skills/new-branch-and-pr/SKILL.md": {
+          "git_blob": "860682f0154756f2225daccc6b84fb4360830fd9",
+          "mode": "100644"
+        },
+        "skills/pr-review-canvas/SKILL.md": {
+          "git_blob": "d88de04910e71537455eea8dd252631eea408475",
+          "mode": "100644"
+        },
+        "skills/pr-review-canvas/renderer.js": {
+          "git_blob": "8bdf1b71070267d2173af211367328bc57f0a800",
+          "mode": "100644"
+        },
+        "skills/pr-review-canvas/styles.css": {
+          "git_blob": "e616d7666a0ac0678f4bb6660b0258834c5d47ad",
+          "mode": "100644"
+        },
+        "skills/pr-review-canvas/template.html": {
+          "git_blob": "ab58d2977992e3a5d4115aa67382dc1fadbe1b94",
+          "mode": "100644"
+        },
+        "skills/review-and-ship/SKILL.md": {
+          "git_blob": "000e7537949adcbd60c49e1723e55cc700a5a62f",
+          "mode": "100644"
+        },
+        "skills/run-smoke-tests/SKILL.md": {
+          "git_blob": "fb0337f699926eb5835a82cf9de2b8c9078bd9f4",
+          "mode": "100644"
+        },
+        "skills/thermo-nuclear-code-quality-review/SKILL.md": {
+          "git_blob": "ac76a2bc88bb2d895e83ab1788aa584a82346cfc",
+          "mode": "100644"
+        },
+        "skills/verify-this/SKILL.md": {
+          "git_blob": "54bcf49ad0cc6256a90750fdbec7e27f79eb3d39",
+          "mode": "100644"
+        },
+        "skills/weekly-review/SKILL.md": {
+          "git_blob": "216e855f7831afacac92c46345fee2ea4ba14629",
+          "mode": "100644"
+        },
+        "skills/what-did-i-get-done/SKILL.md": {
+          "git_blob": "e6772b22b74998fc25cd8663981b6ac30cd91613",
+          "mode": "100644"
+        },
+        "skills/workflow-from-chats/SKILL.md": {
+          "git_blob": "a5170df9d84a937c210eb7739bff00451f9aa8cb",
+          "mode": "100644"
+        }
+      }
+    },
+    "tstack": {
+      "repository": "https://github.com/t3dotgg/tstack",
+      "revision": "1085050f3baed1ac724caa4a8166145fb2ac88af",
+      "path": ".",
+      "license": "MIT",
+      "evaluation": "reviewed-static-and-smoke-tested",
+      "evaluation_report": "docs/evaluation.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "eccbd9f1c676d8cbb191a5064c48118492b74125",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "b7ed4de2532e1c464f1352cf1b9adb5f61f5351e",
+          "mode": "100644"
+        },
+        "skills/babysit-pr/SKILL.md": {
+          "git_blob": "7afd153f2b918b8768c895fe9dff0390da8d7d29",
+          "mode": "100644"
+        },
+        "skills/babysit-pr/scripts/pr-wait": {
+          "git_blob": "33d45e5e3828e8dd9f159aee98b8974ebeb56098",
+          "mode": "100755"
+        },
+        "skills/council/SKILL.md": {
+          "git_blob": "764ccccd32c950d795c40ab7cd1d31a0bda49c1a",
+          "mode": "100644"
+        },
+        "skills/file-pr/SKILL.md": {
+          "git_blob": "c2dea189cec7e24131b7afea412fe445230c107a",
+          "mode": "100644"
+        },
+        "skills/full-send/SKILL.md": {
+          "git_blob": "d4f76065131ea57e288446a546b0e37c81847519",
+          "mode": "100644"
+        },
+        "skills/full-send/agents/openai.yaml": {
+          "git_blob": "93a19aae4e566b531b95b7aed37df7c3d5c8313e",
+          "mode": "100644"
+        },
+        "skills/full-stop/SKILL.md": {
+          "git_blob": "9ea773794a5667e83343fba1002ae5abf94c1878",
+          "mode": "100644"
+        },
+        "skills/full-stop/agents/openai.yaml": {
+          "git_blob": "fe4b5e7605ef9f69690fcaee2018b593de734a30",
+          "mode": "100644"
+        },
+        "skills/leaving-pr-comments/SKILL.md": {
+          "git_blob": "be310670461f49bab3dbdf427a1fba1a6380a380",
+          "mode": "100644"
+        },
+        "skills/leaving-pr-comments/agents/openai.yaml": {
+          "git_blob": "aea24ef867ffc43b64141740dc1a0e2afd74e17c",
+          "mode": "100644"
+        },
+        "skills/modernize/SKILL.md": {
+          "git_blob": "3ace16d4629f936a83a2ec359ac5dc7b0bf318c0",
+          "mode": "100644"
+        },
+        "skills/modernize/agents/openai.yaml": {
+          "git_blob": "c2e52704b2365490c491fdb023baec20aa7e9d36",
+          "mode": "100644"
+        },
+        "skills/sol-loop/SKILL.md": {
+          "git_blob": "6b6892db436c5dfc3443f06569aaca89d7d1f902",
+          "mode": "100644"
+        },
+        "skills/takeover/SKILL.md": {
+          "git_blob": "17805d62d097569feb33917afcacdb7207828672",
+          "mode": "100644"
+        }
+      }
+    },
+    "matt-pocock": {
+      "repository": "https://github.com/mattpocock/skills",
+      "revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "path": ".",
+      "version": "1.3.2",
+      "license": "MIT",
+      "evaluation": "reviewed-static-and-smoke-tested",
+      "evaluation_report": "docs/evaluation.md",
+      "files": {
+        ".agents/adr/0001-explicit-setup-pointer-only-for-hard-dependencies.md": {
+          "git_blob": "56b348d9fea2d7ee2e326fe1838215d0c94c413b",
+          "mode": "100644"
+        },
+        ".agents/adr/0002-ship-as-a-claude-code-plugin.md": {
+          "git_blob": "177405976b3474f0833b82d7a67f272f87564600",
+          "mode": "100644"
+        },
+        ".agents/install-block.md": {
+          "git_blob": "29e5fb1370973a341793a477d18d52f276873ce7",
+          "mode": "100644"
+        },
+        ".agents/invocation.md": {
+          "git_blob": "4877b32cd55bf708be61d90b95b720003f0ffdb5",
+          "mode": "100644"
+        },
+        ".agents/writing-docs.md": {
+          "git_blob": "1614ee71dccb1443a56f6c714c0204f7ffae808e",
+          "mode": "100644"
+        },
+        ".changeset/README.md": {
+          "git_blob": "654c6d4750dca19541bd9803371735943bb3fe4e",
+          "mode": "100644"
+        },
+        ".changeset/config.json": {
+          "git_blob": "06c7350518b33bdaedd0eae254f75fd887f16963",
+          "mode": "100644"
+        },
+        ".changeset/implementer-fresh-per-ticket.md": {
+          "git_blob": "ac08d503310bbecd29caa95b8cce05bd3f160b2d",
+          "mode": "100644"
+        },
+        ".claude-plugin/marketplace.json": {
+          "git_blob": "1f868cee17708d691ad71d963e847dad209d0c07",
+          "mode": "100644"
+        },
+        ".claude-plugin/plugin.json": {
+          "git_blob": "c4d506e7313e47a225263f8ea882f83b3dff1bf9",
+          "mode": "100644"
+        },
+        ".github/ISSUE_TEMPLATE/bug.yml": {
+          "git_blob": "4dc45eddb9232f96c3479157715cb1f23e6cf0ca",
+          "mode": "100644"
+        },
+        ".github/ISSUE_TEMPLATE/config.yml": {
+          "git_blob": "7dd35650309c7282d1502226d6b63f90873f1875",
+          "mode": "100644"
+        },
+        ".github/ISSUE_TEMPLATE/idea.yml": {
+          "git_blob": "27840c9acb81f91cc6b8d394a5b9273d668cc602",
+          "mode": "100644"
+        },
+        ".github/workflows/needs-info.yml": {
+          "git_blob": "02dc891d2e83f883838495647821cbf9924361c4",
+          "mode": "100644"
+        },
+        ".github/workflows/release.yml": {
+          "git_blob": "b503eff7b073afe8a08d0b25cc31efca78caea02",
+          "mode": "100644"
+        },
+        ".github/workflows/triage-label.yml": {
+          "git_blob": "3e88fae95bbac82f35704032fc8da5e875b49d89",
+          "mode": "100644"
+        },
+        ".gitignore": {
+          "git_blob": "98dd2d8dd55043ee7a28c5ecbf08cc6a18afacaf",
+          "mode": "100644"
+        },
+        ".out-of-scope/frozen-misc-skills.md": {
+          "git_blob": "18569548173d51dcad2bf9c1ebf3c614428313ff",
+          "mode": "100644"
+        },
+        ".out-of-scope/harness-name-collisions.md": {
+          "git_blob": "bf309722209b76e3c20b7cc530fc63ba3f684c57",
+          "mode": "100644"
+        },
+        ".out-of-scope/lazy-load-writing-for-agents.md": {
+          "git_blob": "eb5a7fbef98febfa0497137a508e148c7ed98651",
+          "mode": "100644"
+        },
+        ".out-of-scope/mainstream-issue-trackers-only.md": {
+          "git_blob": "74aa31a7428fce5f4ea1647a0bf361937c6d1162",
+          "mode": "100644"
+        },
+        ".out-of-scope/native-question-tool.md": {
+          "git_blob": "a6102b8a96dd67010b1d41200a9691c3df059a81",
+          "mode": "100644"
+        },
+        ".out-of-scope/new-skills.md": {
+          "git_blob": "e0829a22ebb51264a6676323c2c0d50487313283",
+          "mode": "100644"
+        },
+        ".out-of-scope/question-limits.md": {
+          "git_blob": "5a3a7f677027a48a9e2a08df7c6d601b322f38da",
+          "mode": "100644"
+        },
+        ".out-of-scope/setup-skill-verify-mode.md": {
+          "git_blob": "418dba12c17b2cd77e0b3161b107c624b7b2ee97",
+          "mode": "100644"
+        },
+        ".out-of-scope/subagent-recursion.md": {
+          "git_blob": "7363704e50f0ca0f8bdb742bce6bad756f83433b",
+          "mode": "100644"
+        },
+        "AGENTS.md": {
+          "git_blob": "681311eb9cf453d0faddf3aacaec7357e97ba8e9",
+          "mode": "120000"
+        },
+        "CHANGELOG.md": {
+          "git_blob": "9b5f3e1d011ec22c7039d20ffd33422b5acc0656",
+          "mode": "100644"
+        },
+        "CLAUDE.md": {
+          "git_blob": "cc3dbb34289bc045a896675bc71cca7bd8613c5b",
+          "mode": "100644"
+        },
+        "CONTRIBUTING.md": {
+          "git_blob": "5895f1e8ac654a9c477243b187cbe901cd614d72",
+          "mode": "100644"
+        },
+        "GLOSSARY.md": {
+          "git_blob": "76ebd23dbb8266dab9491425b39f3c4857fb4a52",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "f1dd2c09108dde1a5f56097cee8461b3ea834499",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "f7038f139299985eea6c3e18398dbafb379a0010",
+          "mode": "100644"
+        },
+        "SCOPE.md": {
+          "git_blob": "2f09e43ee39df11557aea4f23e613b163ec5f628",
+          "mode": "100644"
+        },
+        "docs/agents/triage-labels.md": {
+          "git_blob": "6f223d54f1e1a07056ddf09972a0704c6256d913",
+          "mode": "100644"
+        },
+        "docs/engineering/ask-matt.md": {
+          "git_blob": "d5e2830bd75078dd91754a0f7f426541e7a3ced8",
+          "mode": "100644"
+        },
+        "docs/engineering/code-review.md": {
+          "git_blob": "12283d7f86d73f91030f6ff6ffe1c5ad6c5831e8",
+          "mode": "100644"
+        },
+        "docs/engineering/codebase-design.md": {
+          "git_blob": "bf2fa9d0e31c63e5faf655c4b13f85f650c979d5",
+          "mode": "100644"
+        },
+        "docs/engineering/diagnosing-bugs.md": {
+          "git_blob": "a92bd56a0fcf7485e954958d46a5bf34573ca33d",
+          "mode": "100644"
+        },
+        "docs/engineering/domain-modeling.md": {
+          "git_blob": "35fba8e211ae704c4110c3ec26d81cd8d9fcf3f1",
+          "mode": "100644"
+        },
+        "docs/engineering/grill-with-docs.md": {
+          "git_blob": "9ba50958efc3928cde01662701c53b7935cdbb1e",
+          "mode": "100644"
+        },
+        "docs/engineering/implement-spec.md": {
+          "git_blob": "771a7ca285be1c474e91014d384b748b36f99709",
+          "mode": "100644"
+        },
+        "docs/engineering/implement.md": {
+          "git_blob": "b08985c7fcc951ad3ec0812914073852e2449210",
+          "mode": "100644"
+        },
+        "docs/engineering/improve-codebase-architecture.md": {
+          "git_blob": "974ae0aa708f66d90a7acd1ceed181836e276a04",
+          "mode": "100644"
+        },
+        "docs/engineering/pr.md": {
+          "git_blob": "368394b2dbbb0930a7fdf5c4ff3a19142dd54a76",
+          "mode": "100644"
+        },
+        "docs/engineering/prototype.md": {
+          "git_blob": "c6e23539b47ff40f8405e3163d5e42711f99d1b6",
+          "mode": "100644"
+        },
+        "docs/engineering/research.md": {
+          "git_blob": "29ab8d3dbd2ff838d50f3c637e5c32ceee3fe6ce",
+          "mode": "100644"
+        },
+        "docs/engineering/resolving-merge-conflicts.md": {
+          "git_blob": "4b277f95db47425b38a06c0f5b69c8e2a5795bfa",
+          "mode": "100644"
+        },
+        "docs/engineering/retro.md": {
+          "git_blob": "442599e9c42cc5fd86ea474eb800e9664eb902fd",
+          "mode": "100644"
+        },
+        "docs/engineering/setup-matt-pocock-skills.md": {
+          "git_blob": "4b255af85948cad4caab93484a186b0ed05edf4c",
+          "mode": "100644"
+        },
+        "docs/engineering/tdd.md": {
+          "git_blob": "6fd8a5c722c75de1207b30d66874e969b65b5a30",
+          "mode": "100644"
+        },
+        "docs/engineering/to-spec.md": {
+          "git_blob": "824cd18204f4a39c50ada128c27675b35bc59b7e",
+          "mode": "100644"
+        },
+        "docs/engineering/to-tickets.md": {
+          "git_blob": "8b93a6d4c56e4c398e6ab3defd6da1552c784599",
+          "mode": "100644"
+        },
+        "docs/engineering/triage.md": {
+          "git_blob": "0b20a8eee7f3472ef664f7f8a7569608dd5bc8e0",
+          "mode": "100644"
+        },
+        "docs/engineering/wayfinder.md": {
+          "git_blob": "607f6556d56bc1b96b86baba442cc9cda451ba93",
+          "mode": "100644"
+        },
+        "docs/engineering/wizard.md": {
+          "git_blob": "b4e76b686379507717f05caf41f3dfa73924bd79",
+          "mode": "100644"
+        },
+        "docs/productivity/grill-me.md": {
+          "git_blob": "65aec2448e4c27187455965336bd3b767b8ffa47",
+          "mode": "100644"
+        },
+        "docs/productivity/grilling.md": {
+          "git_blob": "eff7c56a3eb64285f17dd0759aadd27ca23ae82a",
+          "mode": "100644"
+        },
+        "docs/productivity/handoff.md": {
+          "git_blob": "d106b37e9fcb0ef9e7765be5a62f28451ac62fc8",
+          "mode": "100644"
+        },
+        "docs/productivity/teach.md": {
+          "git_blob": "dac7e1422c9342444e8b40e2757f81c569c69d48",
+          "mode": "100644"
+        },
+        "docs/productivity/to-questionnaire.md": {
+          "git_blob": "e4f40f4b2370d095fa6987325192eaa2cda2ac2e",
+          "mode": "100644"
+        },
+        "docs/productivity/wait-what.md": {
+          "git_blob": "38384d7918b151f41ecf5fd731066e2f7c3c6e75",
+          "mode": "100644"
+        },
+        "docs/productivity/writing-for-agents.md": {
+          "git_blob": "b8604e71aea05be04590690e46af13c620432437",
+          "mode": "100644"
+        },
+        "package-lock.json": {
+          "git_blob": "db12f086c92da55b5d724f0dd3afecfebd2d793f",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "c5b98049235efc00945e91aea1f8a971a8dc9ae5",
+          "mode": "100644"
+        },
+        "scripts/link-skills.sh": {
+          "git_blob": "558fae823c0e296ad0eff528f827142600a18135",
+          "mode": "100755"
+        },
+        "scripts/list-skills.sh": {
+          "git_blob": "f13da41774c8bffea798e64505a4c3adc528ee63",
+          "mode": "100755"
+        },
+        "scripts/sync-plugin-version.mjs": {
+          "git_blob": "44063fc0d14a78927caf3990882ea3809157bc21",
+          "mode": "100644"
+        },
+        "skills/deprecated/README.md": {
+          "git_blob": "aa1242c27b1f5e3f762bd5743affbd966811b5b4",
+          "mode": "100644"
+        },
+        "skills/engineering/README.md": {
+          "git_blob": "381c82ac4e54427ba73d0569fdf712187ddcc724",
+          "mode": "100644"
+        },
+        "skills/engineering/ask-matt/PHASE-BOUNDARIES.md": {
+          "git_blob": "fb58ef9febcfd558cdb4517e370f19034869ba26",
+          "mode": "100644"
+        },
+        "skills/engineering/ask-matt/SKILL.md": {
+          "git_blob": "4bfeeb61dae548b8b7754c4fba7bd40ab3926099",
+          "mode": "100644"
+        },
+        "skills/engineering/ask-matt/agents/openai.yaml": {
+          "git_blob": "5c60d51b5b1248d7210bff8c6b42a5a06524b8a4",
+          "mode": "100644"
+        },
+        "skills/engineering/code-review/SKILL.md": {
+          "git_blob": "83183e0ad36fd0eef25d37c7e483284b7e34c1f0",
+          "mode": "100644"
+        },
+        "skills/engineering/code-review/agents/openai.yaml": {
+          "git_blob": "9076774ba327f49068db9273feceda03bfe940fa",
+          "mode": "100644"
+        },
+        "skills/engineering/codebase-design/DEEPENING.md": {
+          "git_blob": "cd94075cfd754d147555c5d747a16431ed4c7dd8",
+          "mode": "100644"
+        },
+        "skills/engineering/codebase-design/DESIGN-IT-TWICE.md": {
+          "git_blob": "aebdc9f8c05b40d7832de38e2fd8380e1e5507ac",
+          "mode": "100644"
+        },
+        "skills/engineering/codebase-design/SKILL.md": {
+          "git_blob": "3f63c8146dd2604b419c929e9876b90c30d410e9",
+          "mode": "100644"
+        },
+        "skills/engineering/codebase-design/agents/openai.yaml": {
+          "git_blob": "3180715edb37f6e96bec42f92f00169faa8886ef",
+          "mode": "100644"
+        },
+        "skills/engineering/diagnosing-bugs/SKILL.md": {
+          "git_blob": "d039541ddd1c46e6ddbd662fe99d49b686fc5e12",
+          "mode": "100644"
+        },
+        "skills/engineering/diagnosing-bugs/agents/openai.yaml": {
+          "git_blob": "a13a755a77634ce61a649a3a0d905a66d3865b35",
+          "mode": "100644"
+        },
+        "skills/engineering/diagnosing-bugs/scripts/hitl-loop.template.sh": {
+          "git_blob": "243198464a8401a7ba1d63b3708fa43c3d067665",
+          "mode": "100644"
+        },
+        "skills/engineering/domain-modeling/ADR-FORMAT.md": {
+          "git_blob": "d7e61f30a9fd8ca70d9ee68f019c2a9ebf2d13f7",
+          "mode": "100644"
+        },
+        "skills/engineering/domain-modeling/GLOSSARY-FORMAT.md": {
+          "git_blob": "9c0b4c7a2e8507c23cbb5e0baa66d81699321cc6",
+          "mode": "100644"
+        },
+        "skills/engineering/domain-modeling/SKILL.md": {
+          "git_blob": "a4438c6879c517d1a08e2b5fbca049b632688dfe",
+          "mode": "100644"
+        },
+        "skills/engineering/domain-modeling/agents/openai.yaml": {
+          "git_blob": "7f1522d2f11506ee205275ab7c282aa52366ecf6",
+          "mode": "100644"
+        },
+        "skills/engineering/grill-with-docs/SKILL.md": {
+          "git_blob": "62b9efb6f991d1b229adee7506962f13ced0c499",
+          "mode": "100644"
+        },
+        "skills/engineering/grill-with-docs/agents/openai.yaml": {
+          "git_blob": "5dbe2780a51be3e9b118bd7758a73e54a9384e11",
+          "mode": "100644"
+        },
+        "skills/engineering/implement-spec/SKILL.md": {
+          "git_blob": "73d36c23958bd04423ba3ded1c90ff0d0b858b72",
+          "mode": "100644"
+        },
+        "skills/engineering/implement-spec/agents/openai.yaml": {
+          "git_blob": "f5e91af21e38eb1a167ea5aa93dfc7da3c4637b4",
+          "mode": "100644"
+        },
+        "skills/engineering/implement/SKILL.md": {
+          "git_blob": "bd49e472984c7b99aac40286fdae749bb955a842",
+          "mode": "100644"
+        },
+        "skills/engineering/implement/agents/openai.yaml": {
+          "git_blob": "f8794dc153b409052a9167baf10858cf01b36175",
+          "mode": "100644"
+        },
+        "skills/engineering/improve-codebase-architecture/HTML-REPORT.md": {
+          "git_blob": "e39e8255b8797cf8257d014fb6658fb533f3a399",
+          "mode": "100644"
+        },
+        "skills/engineering/improve-codebase-architecture/SKILL.md": {
+          "git_blob": "f1eabb568464f03ae79a3346fc1918fdde6d8285",
+          "mode": "100644"
+        },
+        "skills/engineering/improve-codebase-architecture/agents/openai.yaml": {
+          "git_blob": "706fdca096da5937fe57875a9154017d50668c42",
+          "mode": "100644"
+        },
+        "skills/engineering/pr/CREDITS.md": {
+          "git_blob": "5314bda2fa6005e264c9b5c1de7c425e719dc91f",
+          "mode": "100644"
+        },
+        "skills/engineering/pr/SKILL.md": {
+          "git_blob": "84dd4fb2f068e9f6282690235d20dd505b418119",
+          "mode": "100644"
+        },
+        "skills/engineering/pr/agents/openai.yaml": {
+          "git_blob": "48286f48f53b937cc19c0e39899b5f956271a98d",
+          "mode": "100644"
+        },
+        "skills/engineering/prototype/LOGIC.md": {
+          "git_blob": "32be86a0a5d9928db84b3988e55f9debe476ab40",
+          "mode": "100644"
+        },
+        "skills/engineering/prototype/SKILL.md": {
+          "git_blob": "a0044501fe0d385b4d8575b610188ede9b236ccf",
+          "mode": "100644"
+        },
+        "skills/engineering/prototype/UI.md": {
+          "git_blob": "3977951663490882c2632b40695d9f59a2fe2408",
+          "mode": "100644"
+        },
+        "skills/engineering/prototype/agents/openai.yaml": {
+          "git_blob": "1618b147965bc729b7bf3e8da5f130132067aadc",
+          "mode": "100644"
+        },
+        "skills/engineering/research/SKILL.md": {
+          "git_blob": "ffc9eb89849cc4cf74962ce93d786ffd17c6a5dc",
+          "mode": "100644"
+        },
+        "skills/engineering/research/agents/openai.yaml": {
+          "git_blob": "e18b96ca0ccc1003889d5d6991386207c2454bc2",
+          "mode": "100644"
+        },
+        "skills/engineering/retro/SKILL.md": {
+          "git_blob": "12149acf2dd23b4514dec57b04a6293eaa1352fa",
+          "mode": "100644"
+        },
+        "skills/engineering/retro/agents/openai.yaml": {
+          "git_blob": "a2f0bac3f9cebf29beee2e79960cb876e0adc65d",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/SKILL.md": {
+          "git_blob": "2df0b07981718fa5d9a51526dfbcaee87e3a543d",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/agents/openai.yaml": {
+          "git_blob": "65a0da8128c98051183235e490767a8065310868",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/domain.md": {
+          "git_blob": "4032de016c1e91119d33d477633e2b8f265f4195",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md": {
+          "git_blob": "dc806f5655ae34c1701170f98208e5fb5dba7045",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/issue-tracker-gitlab.md": {
+          "git_blob": "1aeb5d04fadd9b7240e3f70dff20a758a1c729ea",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/issue-tracker-local.md": {
+          "git_blob": "0209a19af92c9c485cf3acc3d9e253171517ea17",
+          "mode": "100644"
+        },
+        "skills/engineering/setup-matt-pocock-skills/triage-labels.md": {
+          "git_blob": "5276464244857a3cc29890ff4a978a197b21f3fc",
+          "mode": "100644"
+        },
+        "skills/engineering/tdd/SKILL.md": {
+          "git_blob": "01eadaa34e7c9a63a67d6dc3cce1cc81b0e49985",
+          "mode": "100644"
+        },
+        "skills/engineering/tdd/agents/openai.yaml": {
+          "git_blob": "651b838a7663e027b1b8884491e867f26bb9a021",
+          "mode": "100644"
+        },
+        "skills/engineering/tdd/mocking.md": {
+          "git_blob": "71cbfee674d93244ce81d1830b930ca9a69200bd",
+          "mode": "100644"
+        },
+        "skills/engineering/tdd/tests.md": {
+          "git_blob": "7ab86479f925a1f9e8ba680af33cb3b12e015381",
+          "mode": "100644"
+        },
+        "skills/engineering/to-spec/SKILL.md": {
+          "git_blob": "3f52599ae2a4347aee5a07432c2707518e691a7f",
+          "mode": "100644"
+        },
+        "skills/engineering/to-spec/agents/openai.yaml": {
+          "git_blob": "549e6f76f020a1b9ba65f52ccda336566ee6222a",
+          "mode": "100644"
+        },
+        "skills/engineering/to-tickets/SKILL.md": {
+          "git_blob": "9b77a01db9460c99c22d03c910c349f890f12c0e",
+          "mode": "100644"
+        },
+        "skills/engineering/to-tickets/agents/openai.yaml": {
+          "git_blob": "24605a5db64e4fc750b999aa94aea126bee814ee",
+          "mode": "100644"
+        },
+        "skills/engineering/triage/AGENT-BRIEF.md": {
+          "git_blob": "1462fcd9e8cc21921158c296149dc05d9be39d20",
+          "mode": "100644"
+        },
+        "skills/engineering/triage/OUT-OF-SCOPE.md": {
+          "git_blob": "c9fba2f77ee0619975ec8488c0d4861a0c7e3151",
+          "mode": "100644"
+        },
+        "skills/engineering/triage/SKILL.md": {
+          "git_blob": "3fd5617e906cf9b71a6b17424791adb905fc248b",
+          "mode": "100644"
+        },
+        "skills/engineering/triage/agents/openai.yaml": {
+          "git_blob": "acb366cf0f2527e8925ff1223b77610ac0b1be4c",
+          "mode": "100644"
+        },
+        "skills/engineering/wayfinder/SKILL.md": {
+          "git_blob": "975d6bf9c0a49d18a651f3335e0b4dcf8650fe31",
+          "mode": "100644"
+        },
+        "skills/engineering/wayfinder/agents/openai.yaml": {
+          "git_blob": "b37544751e0570f9df8de6c02aef238de8c3e1e0",
+          "mode": "100644"
+        },
+        "skills/engineering/wizard/SKILL.md": {
+          "git_blob": "c4294ad8298b9b95fc727496b1b802b1f7363fba",
+          "mode": "100644"
+        },
+        "skills/engineering/wizard/agents/openai.yaml": {
+          "git_blob": "b601bdf3a321e7d32d5714681540b811287d3988",
+          "mode": "100644"
+        },
+        "skills/engineering/wizard/template.sh": {
+          "git_blob": "081ed3da860729c5e6fb1e7126c86b07b0ed56f0",
+          "mode": "100644"
+        },
+        "skills/in-progress/README.md": {
+          "git_blob": "792ebaa0aecbc24bf02742558df8873c9df72af2",
+          "mode": "100644"
+        },
+        "skills/in-progress/chief-of-staff/SKILL.md": {
+          "git_blob": "8ea0f468c8c05fb14f0e4d0cfa282c78b92a3319",
+          "mode": "100644"
+        },
+        "skills/in-progress/chief-of-staff/agents/openai.yaml": {
+          "git_blob": "080598b44ad9c843dc3457b6e0e32368aaeec84d",
+          "mode": "100644"
+        },
+        "skills/in-progress/claude-handoff/SKILL.md": {
+          "git_blob": "77f82fc59c89c3a83ed5a92521dc2869f0533724",
+          "mode": "100644"
+        },
+        "skills/in-progress/claude-handoff/agents/openai.yaml": {
+          "git_blob": "0a7aa5da50d0e73248fc17fb8fe82409ec071eaf",
+          "mode": "100644"
+        },
+        "skills/in-progress/loop-me/SKILL.md": {
+          "git_blob": "e58a474ca80feffdeb28842bc3bdee37da6510e7",
+          "mode": "100644"
+        },
+        "skills/in-progress/loop-me/agents/openai.yaml": {
+          "git_blob": "1a4f4111192ff75b4771e8a248c603994d5eafdc",
+          "mode": "100644"
+        },
+        "skills/in-progress/setup-ts-deep-modules/SKILL.md": {
+          "git_blob": "7e30047eaeda175de5d93886596a37baf365bb90",
+          "mode": "100644"
+        },
+        "skills/in-progress/setup-ts-deep-modules/agents/openai.yaml": {
+          "git_blob": "5d0581bdd4f9337cfb1e13feb7e1e18f43ea9db1",
+          "mode": "100644"
+        },
+        "skills/in-progress/setup-ts-deep-modules/dependency-cruiser.config.cjs": {
+          "git_blob": "54030ede7d36b7f72fc0f645fa414efa9b6f63ed",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-beats/SKILL.md": {
+          "git_blob": "3d3b25b605491adc5c62ae5423127717a94b9632",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-beats/agents/openai.yaml": {
+          "git_blob": "e8eaa188d4c70b582eed2d1775fe4c4ea3562b25",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-fragments/SKILL.md": {
+          "git_blob": "c7c889b880cf9c8d289119dea5ff240641b615ca",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-fragments/agents/openai.yaml": {
+          "git_blob": "be3713e91e3ddc6c71e04e6b512b6ad6502d7cc8",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-shape/SKILL.md": {
+          "git_blob": "02f2866d13e72504e010f2ad3458eb9b36b876db",
+          "mode": "100644"
+        },
+        "skills/in-progress/writing-shape/agents/openai.yaml": {
+          "git_blob": "87e0c736be148002f9db275258cd2f405643ad7b",
+          "mode": "100644"
+        },
+        "skills/misc/README.md": {
+          "git_blob": "6b169d22be12c078f1e70763d367fe693de342e2",
+          "mode": "100644"
+        },
+        "skills/misc/git-guardrails-claude-code/SKILL.md": {
+          "git_blob": "58bcdd875b164093b95f436fa32a65c6cb5eb572",
+          "mode": "100644"
+        },
+        "skills/misc/git-guardrails-claude-code/agents/openai.yaml": {
+          "git_blob": "3f5d756f1b9b97d94cef1473fb480ccda5fdfbc1",
+          "mode": "100644"
+        },
+        "skills/misc/git-guardrails-claude-code/scripts/block-dangerous-git.sh": {
+          "git_blob": "c40b59cb47880fc9da8fe4179bd742f51f09d17d",
+          "mode": "100755"
+        },
+        "skills/misc/migrate-to-shoehorn/SKILL.md": {
+          "git_blob": "ae4f965e204fc93cedbc4e2c306e92829d93f800",
+          "mode": "100644"
+        },
+        "skills/misc/migrate-to-shoehorn/agents/openai.yaml": {
+          "git_blob": "3bd79ee2b502075c6d1fe40e6fe98f4fe3f3c5f5",
+          "mode": "100644"
+        },
+        "skills/misc/scaffold-exercises/SKILL.md": {
+          "git_blob": "d87df28e7d8abb4e57ecc6e47d71c274d16054c7",
+          "mode": "100644"
+        },
+        "skills/misc/scaffold-exercises/agents/openai.yaml": {
+          "git_blob": "963723a58973effa256cbfe0f23a7bcc03a374b8",
+          "mode": "100644"
+        },
+        "skills/misc/setup-pre-commit/SKILL.md": {
+          "git_blob": "1b9708168263067adb4684d06ebb8f4ccfe9682c",
+          "mode": "100644"
+        },
+        "skills/misc/setup-pre-commit/agents/openai.yaml": {
+          "git_blob": "e5a1c63df9e0703893cdad799bd5e2a6b5e6939d",
+          "mode": "100644"
+        },
+        "skills/productivity/README.md": {
+          "git_blob": "6fd3754541f59ef90b420f51603cc061f92f9b7e",
+          "mode": "100644"
+        },
+        "skills/productivity/grill-me/SKILL.md": {
+          "git_blob": "3947ff9c4ad980d14fc07fccbf659d47c114e81d",
+          "mode": "100644"
+        },
+        "skills/productivity/grill-me/agents/openai.yaml": {
+          "git_blob": "4d6fb0c746c5d21364dce5d0cf8c51eab9712e7b",
+          "mode": "100644"
+        },
+        "skills/productivity/grilling/SKILL.md": {
+          "git_blob": "d2f09a18e6a6c65c55f1271ba08dfeaf06f0bed3",
+          "mode": "100644"
+        },
+        "skills/productivity/grilling/agents/openai.yaml": {
+          "git_blob": "ddbdb96139c0c1dfe6bca698f39d0465674b8a39",
+          "mode": "100644"
+        },
+        "skills/productivity/handoff/SKILL.md": {
+          "git_blob": "a224edc643a20ddb989f9bca1547440169159810",
+          "mode": "100644"
+        },
+        "skills/productivity/handoff/agents/openai.yaml": {
+          "git_blob": "6e1d8da121beceddc2f9ec7fa8714c1d914dd11a",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/GLOSSARY-FORMAT.md": {
+          "git_blob": "fdd7e366ad9760588b28981e42b3d3b561e56aca",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/LEARNING-RECORD-FORMAT.md": {
+          "git_blob": "953c61422776b47612c3c945920358ad7b5daee7",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/MISSION-FORMAT.md": {
+          "git_blob": "45250bb1bad70988bf381625931df64645e10246",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/RESOURCES-FORMAT.md": {
+          "git_blob": "18b588c8b6f96a50ae2352f264928c643d2782e4",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/SKILL.md": {
+          "git_blob": "493fa3bae0dada971c4dfb965790e56920b1dced",
+          "mode": "100644"
+        },
+        "skills/productivity/teach/agents/openai.yaml": {
+          "git_blob": "3452a850e3b0c1f0a3d41b2bfd45164d2d38d7f6",
+          "mode": "100644"
+        },
+        "skills/productivity/to-questionnaire/SKILL.md": {
+          "git_blob": "dadd0c00d6a350acaa15bb9ca1b96b20ead684ca",
+          "mode": "100644"
+        },
+        "skills/productivity/to-questionnaire/agents/openai.yaml": {
+          "git_blob": "a58d14765beb4acb4c9708b516310558e1308a22",
+          "mode": "100644"
+        },
+        "skills/productivity/wait-what/SKILL.md": {
+          "git_blob": "9b15cd1a7dda0854ca093e29e3e0de57e241b2ac",
+          "mode": "100644"
+        },
+        "skills/productivity/wait-what/agents/openai.yaml": {
+          "git_blob": "6f7a9c33f99ec4ba70d986d6fc0de06c8b811bc3",
+          "mode": "100644"
+        },
+        "skills/productivity/writing-for-agents/SKILL-MECHANICS.md": {
+          "git_blob": "9cdbdb22aadc438755392216e75ad9a14cc9832e",
+          "mode": "100644"
+        },
+        "skills/productivity/writing-for-agents/SKILL.md": {
+          "git_blob": "a37608daf6e835e767deecfb498facecaaba82ba",
+          "mode": "100644"
+        },
+        "skills/productivity/writing-for-agents/agents/openai.yaml": {
+          "git_blob": "079c933b75743dec18b5d0c01006def20b6aad26",
+          "mode": "100644"
+        }
+      }
+    },
+    "pstack": {
+      "repository": "https://github.com/poteto/plugins",
+      "revision": "74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12",
+      "path": "pstack",
+      "version": "0.9.0",
+      "license": "MIT",
+      "evaluation": "reviewed-static-and-smoke-tested",
+      "evaluation_report": "docs/evaluation.md",
+      "files": {
+        ".cursor-plugin/plugin.json": {
+          "git_blob": "327afb44273631455eca0b6bfe32d1de4af10f80",
+          "mode": "100644"
+        },
+        ".gitignore": {
+          "git_blob": "aafcb345668bd80cbb256b066898d4df8988da0e",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "6b5400237fdf6545be0b8fae370d6f2fcff8fb25",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "f4b043bba429e62d3b7a2ae44325f74a97dbbfc1",
+          "mode": "100644"
+        },
+        "agents/poteto-agent.md": {
+          "git_blob": "444bc430781648def14e70ad3035ca966604a5c0",
+          "mode": "100644"
+        },
+        "skills/architect/SKILL.md": {
+          "git_blob": "bd23951252964398321becdf3410a8b8b1b10ce1",
+          "mode": "100644"
+        },
+        "skills/architect/references/rationale-template.md": {
+          "git_blob": "ba8dc76231588cbf8d29bbb42d7fd659b1290d9b",
+          "mode": "100644"
+        },
+        "skills/architect/references/runner-prompt.md": {
+          "git_blob": "75593cfcaca923b3c8e774e3b27d0799974d65d4",
+          "mode": "100644"
+        },
+        "skills/arena/SKILL.md": {
+          "git_blob": "4e59d39034aa198523e58338033bdd009b1c26c5",
+          "mode": "100644"
+        },
+        "skills/automate-me/SKILL.md": {
+          "git_blob": "c97ac9ddda941b2402b923b229c83edaf7886c5b",
+          "mode": "100644"
+        },
+        "skills/figure-it-out/SKILL.md": {
+          "git_blob": "6ffc04db212737584aac966c69c53836757fa545",
+          "mode": "100644"
+        },
+        "skills/how/SKILL.md": {
+          "git_blob": "7f897886ac64af5cdc7e7a661c93501dbfb4c70f",
+          "mode": "100644"
+        },
+        "skills/how/references/critic-prompt.md": {
+          "git_blob": "e17298e8499d919d7700d06334d0c3d1744c4bfb",
+          "mode": "100644"
+        },
+        "skills/how/references/critique-rubric.md": {
+          "git_blob": "b4d452f536de805107d3b96fc0772e9bbc1c1209",
+          "mode": "100644"
+        },
+        "skills/how/references/explainer-prompt.md": {
+          "git_blob": "868c737894352bc4f9a401eb0c3ab2051f2be37f",
+          "mode": "100644"
+        },
+        "skills/how/references/explorer-prompt.md": {
+          "git_blob": "80228270978dcd403bae34ed22b0f517fd38a6fc",
+          "mode": "100644"
+        },
+        "skills/interrogate/SKILL.md": {
+          "git_blob": "071e43f02c1e6645a68018f13a98c8807b4a853a",
+          "mode": "100644"
+        },
+        "skills/interrogate/references/code-quality-review.md": {
+          "git_blob": "569c9a4915dbbca8f02ede9359e1bad733fd7959",
+          "mode": "100644"
+        },
+        "skills/interrogate/references/lead-judgment.md": {
+          "git_blob": "99775115e9ce38672dc044d5245aec0b536368fe",
+          "mode": "100644"
+        },
+        "skills/interrogate/references/reviewer-prompt.md": {
+          "git_blob": "53ffa747ff6af72ed24cc00e2622b2c14dd564a9",
+          "mode": "100644"
+        },
+        "skills/interrogate/references/rubric.md": {
+          "git_blob": "0f63289b7138bd300ed302ebfb919f67c7f9cb83",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/SKILL.md": {
+          "git_blob": "86b08cc254275c9aa3e810658c718379f3d79a08",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/authoring-a-skill.md": {
+          "git_blob": "6eb1cb1ffd652e0ee5c2ca36a07d8a9872602cf0",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/autonomous-run.md": {
+          "git_blob": "a1dee39d1994e11c9479c3e4657cdba70d8141a0",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/bug-fix.md": {
+          "git_blob": "3af4a9b2056f4b870cd2e5ee26a7d33d39ea7ed7",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/eval.md": {
+          "git_blob": "fe18dd589045fe7400e1af3385f3e6dbe0d6e63a",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/feature.md": {
+          "git_blob": "d370d82e240d68dc9368d1a9f24f696f5b0e62e9",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/investigation.md": {
+          "git_blob": "2f1e9ec991597c1263a842517754e75d4f09f671",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/multi-phase-plan.md": {
+          "git_blob": "956eee23512e744e6e04b8846b7340de47f81344",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/opening-a-pr.md": {
+          "git_blob": "d7579bc8eb5e8cf2c449d71112b47b0fe7f4ac8e",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/pause-safely.md": {
+          "git_blob": "b125efb8072e35d34639835d5bffddfc823cbd0a",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/perf-issue.md": {
+          "git_blob": "07c3e6bde7734b790c947d64d5fe8a22cdb1042a",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/prototype.md": {
+          "git_blob": "0f0a888396f2ff1da11a56bb694ee65eb51529f8",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/refactoring.md": {
+          "git_blob": "599bef362a6f9f7d2fae2aba593952523b4d742d",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/runtime-forensics.md": {
+          "git_blob": "bc61541adc6796c8be066fa3fc25ed399e933acf",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/session-pickup.md": {
+          "git_blob": "3d03e583671be8a1c25d95b64bd56596992fc7d7",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/trace-forensics.md": {
+          "git_blob": "10f8209e3d9c0e6b50056c92a28d89d56f5a31e6",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/playbooks/visual-parity.md": {
+          "git_blob": "ec4a449efdf4f1a3d4b81dc19797d7866545db95",
+          "mode": "100644"
+        },
+        "skills/poteto-mode/references/plan.md": {
+          "git_blob": "37012f413b82c9074599ee1332d92c5923663cb9",
+          "mode": "100644"
+        },
+        "skills/principle-boundary-discipline/SKILL.md": {
+          "git_blob": "036fcfe81518427a62eb6b4559f5820680d71be8",
+          "mode": "100644"
+        },
+        "skills/principle-build-the-lever/SKILL.md": {
+          "git_blob": "8ba6740bd3bd9b2e582080bce0917cc4a7293d2f",
+          "mode": "100644"
+        },
+        "skills/principle-encode-lessons-in-structure/SKILL.md": {
+          "git_blob": "86a22f21146d358fc18afb2a0186da61470c3241",
+          "mode": "100644"
+        },
+        "skills/principle-exhaust-the-design-space/SKILL.md": {
+          "git_blob": "af48f6eaddd0d6aad447f7c9db41528664d2cd2e",
+          "mode": "100644"
+        },
+        "skills/principle-experience-first/SKILL.md": {
+          "git_blob": "be15f055d536721bbda859be3e3d202e78a2e001",
+          "mode": "100644"
+        },
+        "skills/principle-fix-root-causes/SKILL.md": {
+          "git_blob": "f61616097314d1276595b2cbe7dc867f37382d68",
+          "mode": "100644"
+        },
+        "skills/principle-foundational-thinking/SKILL.md": {
+          "git_blob": "4661891044fe9d0858510b34e382a7f608bb8d20",
+          "mode": "100644"
+        },
+        "skills/principle-guard-the-context-window/SKILL.md": {
+          "git_blob": "0862757bbb63e314f13f18528c25db85d0901078",
+          "mode": "100644"
+        },
+        "skills/principle-laziness-protocol/SKILL.md": {
+          "git_blob": "bde494ef2039f4af98c41483a856922103f96770",
+          "mode": "100644"
+        },
+        "skills/principle-make-operations-idempotent/SKILL.md": {
+          "git_blob": "a0834247ca99b09c11441747717a8034d4c22d7c",
+          "mode": "100644"
+        },
+        "skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md": {
+          "git_blob": "a0c6e65e1eaf58278fa6bac1a01c23f998759f5c",
+          "mode": "100644"
+        },
+        "skills/principle-minimize-reader-load/SKILL.md": {
+          "git_blob": "e4b7640565da24f12a08b82f9fea29db9cce84e5",
+          "mode": "100644"
+        },
+        "skills/principle-never-block-on-the-human/SKILL.md": {
+          "git_blob": "0c55555f85d6636cc26429cc18016ffdafaff576",
+          "mode": "100644"
+        },
+        "skills/principle-outcome-oriented-execution/SKILL.md": {
+          "git_blob": "4c2ed4695b4ca15ea5a98468c13bfe5de97f16df",
+          "mode": "100644"
+        },
+        "skills/principle-prove-it-works/SKILL.md": {
+          "git_blob": "088c412cc38eb37442914a71d9e05bc6ee430a1b",
+          "mode": "100644"
+        },
+        "skills/principle-redesign-from-first-principles/SKILL.md": {
+          "git_blob": "6a8cf256d69d0d5f2ce4b57795f2794c41c8e5a0",
+          "mode": "100644"
+        },
+        "skills/principle-separate-before-serializing-shared-state/SKILL.md": {
+          "git_blob": "523591e0a1bda493598292358bd2142277fdbd19",
+          "mode": "100644"
+        },
+        "skills/principle-sequence-verifiable-units/SKILL.md": {
+          "git_blob": "737480800564d634347afdcef25dd48851e9f2eb",
+          "mode": "100644"
+        },
+        "skills/principle-subtract-before-you-add/SKILL.md": {
+          "git_blob": "a78937170b83abebecb6b963fb8cfdd80507c01e",
+          "mode": "100644"
+        },
+        "skills/principle-type-system-discipline/SKILL.md": {
+          "git_blob": "666fedca89d4e1fbef96a5a04bdbaa5a2d078974",
+          "mode": "100644"
+        },
+        "skills/reflect/SKILL.md": {
+          "git_blob": "8decf61236656263f91d8d3d03884337df49c457",
+          "mode": "100644"
+        },
+        "skills/reflect/references/divergent-reviewer.md": {
+          "git_blob": "70cfdff377e793208f7daa581caf8a7fbdfb2dd1",
+          "mode": "100644"
+        },
+        "skills/reflect/references/judgment-reviewer.md": {
+          "git_blob": "76261f1690adc8b8f845113466dd9e80c40f7103",
+          "mode": "100644"
+        },
+        "skills/reflect/references/synthesizer.md": {
+          "git_blob": "11040b0f4dc639517b569b55460f4a128f503e2a",
+          "mode": "100644"
+        },
+        "skills/reflect/references/tooling-reviewer.md": {
+          "git_blob": "19f4aa48775da3409116cc05a2162dc3d361c839",
+          "mode": "100644"
+        },
+        "skills/setup-pstack/SKILL.md": {
+          "git_blob": "cc1de6d14f0b0809831ff1ef7d5fab37e8c3e76f",
+          "mode": "100644"
+        },
+        "skills/show-me-your-work/SKILL.md": {
+          "git_blob": "8a9c731acf5bb7ad789e10ec7c5af6970dce1176",
+          "mode": "100644"
+        },
+        "skills/show-me-your-work/references/decision-log-template.tsv": {
+          "git_blob": "db220376ecb8c582a6a4f6575a8f26469603a38d",
+          "mode": "100644"
+        },
+        "skills/show-me-your-work/scripts/log.sh": {
+          "git_blob": "523e2a74ee15bfe6528c795a347827f04ecc5e95",
+          "mode": "100755"
+        },
+        "skills/tdd/SKILL.md": {
+          "git_blob": "7d923bd705e4727b0bc9a378ca0928cc825035de",
+          "mode": "100644"
+        },
+        "skills/typescript-best-practices/SKILL.md": {
+          "git_blob": "9a5893c180618c2c86158bdd3ba8fb1751c72f35",
+          "mode": "100644"
+        },
+        "skills/typescript-best-practices/references/patterns.md": {
+          "git_blob": "aebd5d876283be1b9558c6bbe66b0976411be44f",
+          "mode": "100644"
+        },
+        "skills/unslop/SKILL.md": {
+          "git_blob": "d9bea6d198d673ed3aade778e45a328b76bd3ffd",
+          "mode": "100644"
+        },
+        "skills/why/SKILL.md": {
+          "git_blob": "def1710065dd9650516e528dd5c9a6a9fcfb199c",
+          "mode": "100644"
+        },
+        "skills/why/references/epistemics.md": {
+          "git_blob": "aca563ef9fe4ce27797a73027c6fb38b6d93e6f7",
+          "mode": "100644"
+        },
+        "skills/why/references/investigator-prompt.md": {
+          "git_blob": "1886b46deb20ef1f13d409a0ad7f6c3fb885eb6a",
+          "mode": "100644"
+        },
+        "skills/why/references/source-playbook.md": {
+          "git_blob": "bcf11e1315e7774651649dbf91b67213463c8073",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/code-archaeology.md": {
+          "git_blob": "32d5f97f8d2d3974c668f5f0392737b7e8e25afd",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/databricks.md": {
+          "git_blob": "a97696f4b4010d46e16cf4e9da60f2745b05c554",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/datadog.md": {
+          "git_blob": "039330e8491430a34167005c55a0baa29f7eeb67",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/incident-postmortem.md": {
+          "git_blob": "e5afc3204ba7e2b15b01e5abc538d26d8b1b3b53",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/linear.md": {
+          "git_blob": "c000efd5aad749a4483e2563a63d460903eae124",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/notion.md": {
+          "git_blob": "ea6ab335c40834ba79e0085ae2d7a94950502f49",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/sentry.md": {
+          "git_blob": "fe09d17254e7653a7c75f855cecc779d5512a02e",
+          "mode": "100644"
+        },
+        "skills/why/references/sources/slack.md": {
+          "git_blob": "d4a5f23646053516bb1235f06dcf697b49acda23",
+          "mode": "100644"
+        },
+        "skills/why/references/synthesizer-prompt.md": {
+          "git_blob": "dae7efc580f5bc8e63b2fd28a1462fe2b8445d07",
+          "mode": "100644"
+        }
+      }
+    },
+    "impeccable": {
+      "repository": "https://github.com/pbakaus/impeccable",
+      "revision": "02523aec3e4c4580102d996d1b6a71fbe062e03f",
+      "path": ".",
+      "version": "4.8.0",
+      "license": "Apache-2.0",
+      "paths": {
+        "skills": ".agents/skills",
+        "agents": ".claude/agents"
+      },
+      "harness_paths": {
+        "claude": {
+          "skills": ".claude/skills"
+        },
+        "cursor": {
+          "skills": ".cursor/skills",
+          "agents": ".cursor/agents"
+        }
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        ".agents/skills/impeccable/SKILL.md": {
+          "git_blob": "c0dd2530c9968963b1f63bf50b227c4a33996e3b",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/agents/impeccable_asset_producer.toml": {
+          "git_blob": "91eeca4cce0e62881149b094e758f814510649c3",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/agents/impeccable_documenter.toml": {
+          "git_blob": "45203ec73dc5d2509d0bd4f13e0eccbe51b4366e",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/agents/impeccable_finish_reviewer.toml": {
+          "git_blob": "124b0c4e4418308288b731f78d134e28093ade33",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/agents/impeccable_manual_edit_applier.toml": {
+          "git_blob": "ae18e0742b1d0a2ca0d950407e53c36294ce2af2",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/agents/openai.yaml": {
+          "git_blob": "e86d8a955ee9527dc9acfa70ded41f8c54aea435",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/adapt.md": {
+          "git_blob": "de4631d7e8f14b3c193175b87302b6ccc814e34c",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/adapt.native.md": {
+          "git_blob": "435c40a6f416809d88cef92c09f0331c65fddec8",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/android.md": {
+          "git_blob": "32a5cf7ccfd78afe659f10f80cca6bbb3ef7de69",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/animate.md": {
+          "git_blob": "c8fb9e038bb74a125646b64c49bc39711f63e8f4",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/audit.md": {
+          "git_blob": "13bf0d7c71802a48af4863c08ee3ed898f72c4b2",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/audit.native.md": {
+          "git_blob": "af725765fb65a02375815060fe825da390f2d051",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/bolder.md": {
+          "git_blob": "c11a146b502cb46f6d5ad3f11ba0f6ff75c0e4d7",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/clarify.md": {
+          "git_blob": "4506a31c95e02b2ad918367a0ef4461643d51532",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/colorize.md": {
+          "git_blob": "02fa661efac9229d6e869a20ef8ee928d4b986a0",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/component-review.md": {
+          "git_blob": "a3c35c92999ecde66f53c96fb287d8adaa0e17f3",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/craft-floor.md": {
+          "git_blob": "fd7280103f7ef4b009b38ce58f594c44c0f04caa",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/craft.md": {
+          "git_blob": "dbbc9402c07cdab21f2b6eb69279b8435fecfd7f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/critique.md": {
+          "git_blob": "07ae4a854ede894de3320f42e50743c1ab4681fb",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/degraded/asset-producer.md": {
+          "git_blob": "76f2357b8aaec59fcb77dbc87582e235c3fcb365",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/degraded/documenter.md": {
+          "git_blob": "e9dfb799bcece32233386bf9702bc3141d56d196",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/degraded/finish-reviewer.md": {
+          "git_blob": "06f257d4a97ec7a19726e9b8eea702592bc0fdf8",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/degraded/manual-edit-applier.md": {
+          "git_blob": "2bb6b4f309a8a7b11c2c9681f8f8c0718f6b74e7",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/delight.md": {
+          "git_blob": "60a8e83ee48d50901acfa886d3ec4bc72b40ec6f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/distill.md": {
+          "git_blob": "2537473ced43e94d5081b61fdced2a4ff602c885",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/doctor.md": {
+          "git_blob": "6d680a49f238e891fb0af054d0d1899104b3528f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/document.md": {
+          "git_blob": "45721a6f0aabedaa48a7b05a29c2025e6b52dbc2",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/extract.md": {
+          "git_blob": "7c9d009c5a573dd15332b4431f6f0044374d25b7",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/generate.md": {
+          "git_blob": "7fe7a49886003677fdecad79a528f368b13d7f0f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/harden.md": {
+          "git_blob": "894f06127525ae2d802e4d73c345031e6076a68f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/hooks.md": {
+          "git_blob": "6d6679153689ab3c7d08b2a9cac23c9b1a4c2917",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/init.md": {
+          "git_blob": "fe5422cc811fb8c93989dc9a4ec7b24afbc91a69",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/ios.md": {
+          "git_blob": "c6244dfe32176e5718d86211b7d1eb5601eb0860",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/layout.md": {
+          "git_blob": "aa547c742fc373bc459bdbb7977683441aa48ec0",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/live-setup.md": {
+          "git_blob": "6e10f00f7f2a789da582f38cdaef89de39ead266",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/live.md": {
+          "git_blob": "045a3fb385552c55805fec252ae73ddeba9fc15b",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/mode-operate.md": {
+          "git_blob": "833775ba85f03bf65a4c1b23e39192f7653414e6",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/mode-persuade.md": {
+          "git_blob": "9c152d67064fb8453a7eaa89de20c35fc115b085",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/mode-read.md": {
+          "git_blob": "b30c4c9139e3094bd35c60738decb6109326153f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/new-work.md": {
+          "git_blob": "e39cd6a358a40a7db28de36a52b6f27139d22be3",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/onboard.md": {
+          "git_blob": "f2e1c15af24976fbddb6770719fae66172268ff4",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/operate.md": {
+          "git_blob": "524f2c3ae9fa497284e9699f3ca5320cce5d05cf",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/optimize.md": {
+          "git_blob": "a4e55099ff738571c1fc46c66f27b015dc05339e",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/overdrive.md": {
+          "git_blob": "9f8fc8eec3b07156b670a2561d1f74c17ccdd9f2",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/polish.md": {
+          "git_blob": "f93170f773cac058f51e289603aed7575d62a6a2",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/quieter.md": {
+          "git_blob": "61ea5c7027b54ef7354f55d591b6df8e1fc11dd8",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/region-map.md": {
+          "git_blob": "7b7685cf59a7ee8fa9361d4f0b986ec0ba5b48ad",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/routing.md": {
+          "git_blob": "21c12a626e7ef084fa6ed5d03b93b91e3eb122ce",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/shape.md": {
+          "git_blob": "90a74ae813331cbce8fff6beb498ced77970fadf",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/typeset.md": {
+          "git_blob": "683175632928ab5566e517ad6128a07166e095e8",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/reference/visualize.md": {
+          "git_blob": "afb44acced4f2a39de7cbeb200b47d4dcf89486f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/VERSION": {
+          "git_blob": "f8bc4c6256ab7d4bb54c2ab7af94c4fa5e58ac56",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/command-metadata.json": {
+          "git_blob": "4686bb6deea643493198bff1369bc2958b3909a7",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/data/font-index-failures.json": {
+          "git_blob": "1aca67220413ef163570c75405b444d7a27a32be",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/data/font-index.json": {
+          "git_blob": "9d2029971df232a72ff6584d264c104490521742",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/engine-checksums.txt": {
+          "git_blob": "2e948006a8ac3cb811b775f88b131def849f2237",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/impeccable": {
+          "git_blob": "92d8cca299b95a1222885145c921842760ebd22c",
+          "mode": "100755"
+        },
+        ".agents/skills/impeccable/scripts/impeccable.cmd": {
+          "git_blob": "5f2039ec9ed66a899809b3becdc660089b68fa7f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/live-browser-dom.js": {
+          "git_blob": "ef1ca8928111080ddb923da14c7827b7396a9e62",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/live-browser-ignores.js": {
+          "git_blob": "1a2912e57a3b2b10a0d961b5dfe568253133fe53",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/live-browser-session.js": {
+          "git_blob": "6871770720d3dd7a284c545e20b97b613635f36f",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/live-browser.js": {
+          "git_blob": "1c140fa0ea49162c4e42c3c96a332f751e0667ca",
+          "mode": "100644"
+        },
+        ".agents/skills/impeccable/scripts/modern-screenshot.umd.js": {
+          "git_blob": "a9c5208f6b141d3bafdb8eb843d6fcbdcf23e370",
+          "mode": "100644"
+        },
+        ".claude/agents/impeccable-asset-producer.md": {
+          "git_blob": "9fa186e7ad8a99f90401d7821ac1f60c4823a29f",
+          "mode": "100644"
+        },
+        ".claude/agents/impeccable-documenter.md": {
+          "git_blob": "eb12233534675517c97b6ba526c6f8d7182d9f1a",
+          "mode": "100644"
+        },
+        ".claude/agents/impeccable-finish-reviewer.md": {
+          "git_blob": "58e5832efa52e45dad577451b4e9e7d1f09146dd",
+          "mode": "100644"
+        },
+        ".claude/agents/impeccable-manual-edit-applier.md": {
+          "git_blob": "888fd456974cdf03c1698d7b45f3a940273d38e0",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/SKILL.md": {
+          "git_blob": "ff0426b809d4d028b2183495665dd252f86a95e1",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/adapt.md": {
+          "git_blob": "cabc0fde53348f032a2fc6e26d526e90fa6c2ed2",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/adapt.native.md": {
+          "git_blob": "877871aa0314ab96814f5794ffabda43ac986fea",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/android.md": {
+          "git_blob": "32a5cf7ccfd78afe659f10f80cca6bbb3ef7de69",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/animate.md": {
+          "git_blob": "4ae4cc5fcd7ae4341f4f130ab67a7d9b03c00562",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/audit.md": {
+          "git_blob": "41033f119b6265176e1fdc34a6c2ad1e004c16ac",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/audit.native.md": {
+          "git_blob": "2f5ac5143c99dd93dfbc5871089a569ed3ee7223",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/bolder.md": {
+          "git_blob": "d90e62d0d90f6872b5895158017ac25644e15cb9",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/clarify.md": {
+          "git_blob": "3047a9d82b9cfa31b392e35c643d82bcdb50250a",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/colorize.md": {
+          "git_blob": "dc45f88c5f81c61355a915c6ea1391b1a36c9ba8",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/component-review.md": {
+          "git_blob": "0e96a9d2ceba25197ab8cb6b08dd62eb4b107d2a",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/craft-floor.md": {
+          "git_blob": "1f2bb82a2a58c3e90189efcb7884eb3c028bc6cc",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/craft.md": {
+          "git_blob": "dbbc9402c07cdab21f2b6eb69279b8435fecfd7f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/critique.md": {
+          "git_blob": "19feee5d5201ccee8e29e68f401b8bbeedab09d5",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/degraded/asset-producer.md": {
+          "git_blob": "ffdf8747e7ad410b4cddba9efb3d5c8b8ce77f0e",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/degraded/documenter.md": {
+          "git_blob": "e9dfb799bcece32233386bf9702bc3141d56d196",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/degraded/finish-reviewer.md": {
+          "git_blob": "06f257d4a97ec7a19726e9b8eea702592bc0fdf8",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/degraded/manual-edit-applier.md": {
+          "git_blob": "2bb6b4f309a8a7b11c2c9681f8f8c0718f6b74e7",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/delight.md": {
+          "git_blob": "798c43a5b735a5b75b67484c516821f1355dfbd6",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/distill.md": {
+          "git_blob": "d7c525d922900a051d0eacc8a50df70c693369f0",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/doctor.md": {
+          "git_blob": "438b8aac8d91430ae6ee7384c15a3fced3108b3b",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/document.md": {
+          "git_blob": "879ba4e86e3a8d37d0452d1c8053b49456f781b8",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/extract.md": {
+          "git_blob": "4c6255cf2430048b90391ade163ebd2dce88492a",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/generate.md": {
+          "git_blob": "447e8527d10ee37e3b0a1677d37d5b31efa81141",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/harden.md": {
+          "git_blob": "e7183cfab285807bfad71dfbf6409e00b6ce5da1",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/hooks.md": {
+          "git_blob": "7bf2a7d9c9b69e08c4a8d8b3e3a4c1dfe5603921",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/init.md": {
+          "git_blob": "d1b8f01cad65aef84aa28d985d76b9c8961f9c7f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/ios.md": {
+          "git_blob": "c6244dfe32176e5718d86211b7d1eb5601eb0860",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/layout.md": {
+          "git_blob": "7f3b30d80964a21776ec9dd7bb2a9d5db0075003",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/live-setup.md": {
+          "git_blob": "670ecc737035debe4783a7c15394ea14ac26c915",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/live.md": {
+          "git_blob": "6cc5a69139db11fb40b56b39be3d8966d73b2bb7",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/mode-operate.md": {
+          "git_blob": "833775ba85f03bf65a4c1b23e39192f7653414e6",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/mode-persuade.md": {
+          "git_blob": "9c152d67064fb8453a7eaa89de20c35fc115b085",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/mode-read.md": {
+          "git_blob": "b30c4c9139e3094bd35c60738decb6109326153f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/new-work.md": {
+          "git_blob": "46e62ac276b9525f94e5e364a1cd9df5a19fca9c",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/onboard.md": {
+          "git_blob": "464ae5516e2623ef4be8260a33968548b33ae697",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/operate.md": {
+          "git_blob": "524f2c3ae9fa497284e9699f3ca5320cce5d05cf",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/optimize.md": {
+          "git_blob": "3f3fc7c33e21b029d5888112a566a547f30a3520",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/overdrive.md": {
+          "git_blob": "01a1cb131f7bfda4e438dc7a8ff4b7530c07f7f9",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/polish.md": {
+          "git_blob": "d981459468a485dc3b3e8add112ea0f5e6b9e576",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/quieter.md": {
+          "git_blob": "bcd4f8a6948f741996777b156f3706955cc802ff",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/region-map.md": {
+          "git_blob": "1d33c7b4a61f6590484c42847499a10beb4b93ca",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/routing.md": {
+          "git_blob": "e41a143fdab06e4545640896a3f9b7516e6d1b2f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/shape.md": {
+          "git_blob": "90a74ae813331cbce8fff6beb498ced77970fadf",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/typeset.md": {
+          "git_blob": "87a33d3e119e001ac04174be0aaed0ed0a5f72ca",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/reference/visualize.md": {
+          "git_blob": "88c09cbbe5be3e301c8534a07be325271c6a1802",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/VERSION": {
+          "git_blob": "f8bc4c6256ab7d4bb54c2ab7af94c4fa5e58ac56",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/command-metadata.json": {
+          "git_blob": "4686bb6deea643493198bff1369bc2958b3909a7",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/data/font-index-failures.json": {
+          "git_blob": "1aca67220413ef163570c75405b444d7a27a32be",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/data/font-index.json": {
+          "git_blob": "9d2029971df232a72ff6584d264c104490521742",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/engine-checksums.txt": {
+          "git_blob": "2e948006a8ac3cb811b775f88b131def849f2237",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/impeccable": {
+          "git_blob": "92d8cca299b95a1222885145c921842760ebd22c",
+          "mode": "100755"
+        },
+        ".claude/skills/impeccable/scripts/impeccable.cmd": {
+          "git_blob": "5f2039ec9ed66a899809b3becdc660089b68fa7f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/live-browser-dom.js": {
+          "git_blob": "ef1ca8928111080ddb923da14c7827b7396a9e62",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/live-browser-ignores.js": {
+          "git_blob": "1a2912e57a3b2b10a0d961b5dfe568253133fe53",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/live-browser-session.js": {
+          "git_blob": "6871770720d3dd7a284c545e20b97b613635f36f",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/live-browser.js": {
+          "git_blob": "1c140fa0ea49162c4e42c3c96a332f751e0667ca",
+          "mode": "100644"
+        },
+        ".claude/skills/impeccable/scripts/modern-screenshot.umd.js": {
+          "git_blob": "a9c5208f6b141d3bafdb8eb843d6fcbdcf23e370",
+          "mode": "100644"
+        },
+        ".codex/hooks.json": {
+          "git_blob": "2163338c9f10228bcdf92633cf60479087c7d9f2",
+          "mode": "100644"
+        },
+        ".cursor/hooks.json": {
+          "git_blob": "7ce5e64e3662e1aa9e77d0c7e0c824755186c8f2",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/SKILL.md": {
+          "git_blob": "96aa029b81ff4c1dc1a5d4bd051f0eed6a8c7e8b",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/adapt.md": {
+          "git_blob": "cabc0fde53348f032a2fc6e26d526e90fa6c2ed2",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/adapt.native.md": {
+          "git_blob": "877871aa0314ab96814f5794ffabda43ac986fea",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/android.md": {
+          "git_blob": "32a5cf7ccfd78afe659f10f80cca6bbb3ef7de69",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/animate.md": {
+          "git_blob": "4ae4cc5fcd7ae4341f4f130ab67a7d9b03c00562",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/audit.md": {
+          "git_blob": "d8f79f2b41c373932e821317d1ea6f6a8e917084",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/audit.native.md": {
+          "git_blob": "2f5ac5143c99dd93dfbc5871089a569ed3ee7223",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/bolder.md": {
+          "git_blob": "78ceb8dfd8c8c5c636052d553f46d8942ec6aa76",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/clarify.md": {
+          "git_blob": "3047a9d82b9cfa31b392e35c643d82bcdb50250a",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/colorize.md": {
+          "git_blob": "dc45f88c5f81c61355a915c6ea1391b1a36c9ba8",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/component-review.md": {
+          "git_blob": "b9270789d87f7c012b1618a55dce2f3dc4092cba",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/craft-floor.md": {
+          "git_blob": "1f2bb82a2a58c3e90189efcb7884eb3c028bc6cc",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/craft.md": {
+          "git_blob": "dbbc9402c07cdab21f2b6eb69279b8435fecfd7f",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/critique.md": {
+          "git_blob": "61c8f6a3283d4f1c42a3f2ee56696af36d70da15",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/degraded/asset-producer.md": {
+          "git_blob": "ca75f0da26599983f115b59579ca17959b7ee8b1",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/degraded/documenter.md": {
+          "git_blob": "e9dfb799bcece32233386bf9702bc3141d56d196",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/degraded/finish-reviewer.md": {
+          "git_blob": "06f257d4a97ec7a19726e9b8eea702592bc0fdf8",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/degraded/manual-edit-applier.md": {
+          "git_blob": "2bb6b4f309a8a7b11c2c9681f8f8c0718f6b74e7",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/delight.md": {
+          "git_blob": "798c43a5b735a5b75b67484c516821f1355dfbd6",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/distill.md": {
+          "git_blob": "a4969713613a8d0167269a0125e09c6efc3db3da",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/doctor.md": {
+          "git_blob": "a09e34373a50d09ddc3259487fed59e517563477",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/document.md": {
+          "git_blob": "ec75b7cc767d2777edda5e08954a188d8f42ffe3",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/extract.md": {
+          "git_blob": "24718bc6f6651d4daac02d3ffc4218cc6f216f45",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/generate.md": {
+          "git_blob": "bedfa841bc3f5eb7ef781fefd2252fc4a13fd46f",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/harden.md": {
+          "git_blob": "e7183cfab285807bfad71dfbf6409e00b6ce5da1",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/hooks.md": {
+          "git_blob": "6da8632f1571f7657a646b3b4409d5be22a38189",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/init.md": {
+          "git_blob": "68a0f9a53d1956e4bdac73a6c5047d961e4bba66",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/ios.md": {
+          "git_blob": "c6244dfe32176e5718d86211b7d1eb5601eb0860",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/layout.md": {
+          "git_blob": "6662c40006e0304144dc048ae8d6e401d2f99529",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/live-setup.md": {
+          "git_blob": "1f3b5812e83cd74c39f077b585a9f83a346789cd",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/live.md": {
+          "git_blob": "93c766b00dfd92fdb26a461b0e79b24b68ac6036",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/mode-operate.md": {
+          "git_blob": "833775ba85f03bf65a4c1b23e39192f7653414e6",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/mode-persuade.md": {
+          "git_blob": "9c152d67064fb8453a7eaa89de20c35fc115b085",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/mode-read.md": {
+          "git_blob": "b30c4c9139e3094bd35c60738decb6109326153f",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/new-work.md": {
+          "git_blob": "46910b33fb26d3c8021d3d7eb4428711eb16b759",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/onboard.md": {
+          "git_blob": "464ae5516e2623ef4be8260a33968548b33ae697",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/operate.md": {
+          "git_blob": "524f2c3ae9fa497284e9699f3ca5320cce5d05cf",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/optimize.md": {
+          "git_blob": "3f3fc7c33e21b029d5888112a566a547f30a3520",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/overdrive.md": {
+          "git_blob": "b3dfb708c56451d1507a8aa7cc74b4932362d527",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/polish.md": {
+          "git_blob": "3d7125c5c5d6e2792b92e581e8e0df73c49bad2b",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/quieter.md": {
+          "git_blob": "cc614e281d1add36434f1fc80441e566727bd634",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/region-map.md": {
+          "git_blob": "ee49f9bf014286f209a6d8cdbb78da8fcf5e1dcf",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/routing.md": {
+          "git_blob": "1d52cb6fd7d63c40216f940fe4ab82dede947a1e",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/shape.md": {
+          "git_blob": "90a74ae813331cbce8fff6beb498ced77970fadf",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/typeset.md": {
+          "git_blob": "e03cb054777ce70374b6c68da12f87b98fa794fd",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/reference/visualize.md": {
+          "git_blob": "f628950a0841eee5320e31f6d5b91173ee2d5fe8",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/VERSION": {
+          "git_blob": "f8bc4c6256ab7d4bb54c2ab7af94c4fa5e58ac56",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/command-metadata.json": {
+          "git_blob": "4686bb6deea643493198bff1369bc2958b3909a7",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/data/font-index-failures.json": {
+          "git_blob": "1aca67220413ef163570c75405b444d7a27a32be",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/data/font-index.json": {
+          "git_blob": "9d2029971df232a72ff6584d264c104490521742",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/engine-checksums.txt": {
+          "git_blob": "2e948006a8ac3cb811b775f88b131def849f2237",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/impeccable": {
+          "git_blob": "92d8cca299b95a1222885145c921842760ebd22c",
+          "mode": "100755"
+        },
+        ".cursor/skills/impeccable/scripts/impeccable.cmd": {
+          "git_blob": "5f2039ec9ed66a899809b3becdc660089b68fa7f",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/live-browser-dom.js": {
+          "git_blob": "ef1ca8928111080ddb923da14c7827b7396a9e62",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/live-browser-ignores.js": {
+          "git_blob": "1a2912e57a3b2b10a0d961b5dfe568253133fe53",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/live-browser-session.js": {
+          "git_blob": "6871770720d3dd7a284c545e20b97b613635f36f",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/live-browser.js": {
+          "git_blob": "1c140fa0ea49162c4e42c3c96a332f751e0667ca",
+          "mode": "100644"
+        },
+        ".cursor/skills/impeccable/scripts/modern-screenshot.umd.js": {
+          "git_blob": "a9c5208f6b141d3bafdb8eb843d6fcbdcf23e370",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "bb3f6d23b1f8025514a62a12b51b47d73e3c9aa9",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "8f27aa965cb56ab578d637e53f0392ae4e2d06db",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "d59f1f8aafe711d2dfa330996d91545aecb7df5b",
+          "mode": "100644"
+        },
+        "plugin/hooks/hooks.json": {
+          "git_blob": "7d670ea6e489816b95a8ceb63901e7128b695dbf",
+          "mode": "100644"
+        },
+        ".cursor/agents/impeccable-asset-producer.md": {
+          "git_blob": "9229261f3d229819cca7c21483d1f398fee08a82",
+          "mode": "100644"
+        },
+        ".cursor/agents/impeccable-documenter.md": {
+          "git_blob": "17074168b94efe0eed14e8c2f0f3a16a40ef0095",
+          "mode": "100644"
+        },
+        ".cursor/agents/impeccable-finish-reviewer.md": {
+          "git_blob": "b8a62c39f146aea9e63c18ca5d7000c1f5072df6",
+          "mode": "100644"
+        },
+        ".cursor/agents/impeccable-manual-edit-applier.md": {
+          "git_blob": "b857b133fd656aed9817ecb3fb40c6e989bcaf05",
+          "mode": "100644"
+        }
+      }
+    },
+    "ponytail": {
+      "repository": "https://github.com/DietrichGebert/ponytail",
+      "revision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+      "path": ".",
+      "version": "5.3.3",
+      "license": "MIT",
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "AGENTS.md": {
+          "git_blob": "ee5d6f1d6c1e4ff197a41d3ff43fa6597dbc81d4",
+          "mode": "100644"
+        },
+        "INSTALL.md": {
+          "git_blob": "efb0deba75dbe947ebeab1a7bf480772e1c997bd",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "715d483338cea4365f0d91a27799cf61226d6bcf",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "ff6a92573ef6412495055d979cff1d7464e1fa65",
+          "mode": "100644"
+        },
+        "after-install.md": {
+          "git_blob": "d58644eca947b23d89547b8258e94cebade92618",
+          "mode": "100644"
+        },
+        "commands/ponytail-audit.toml": {
+          "git_blob": "40b544c58affd9a4a22609ba5952c17904a227f5",
+          "mode": "100644"
+        },
+        "commands/ponytail-debt.toml": {
+          "git_blob": "cbd0b171eaba26cc628dfbc0cb6a7ab8fa454f34",
+          "mode": "100644"
+        },
+        "commands/ponytail-gain.toml": {
+          "git_blob": "adcf9d1189accc512836f70b58d4a38330f509e7",
+          "mode": "100644"
+        },
+        "commands/ponytail-help.toml": {
+          "git_blob": "5e4197b988cbbcfc6dd0c6414ba818303494abd6",
+          "mode": "100644"
+        },
+        "commands/ponytail-review.toml": {
+          "git_blob": "834a5f3af707f16913c090cc1fef3167d1b2c3b6",
+          "mode": "100644"
+        },
+        "commands/ponytail.toml": {
+          "git_blob": "54e8f37fb494909d7014e284ec1ce2b36e8367cf",
+          "mode": "100644"
+        },
+        "docs/agent-portability.md": {
+          "git_blob": "8437f1cc4d7fecba8d0de7bde73f55906b4b591b",
+          "mode": "100644"
+        },
+        "docs/cursor-hooks.md": {
+          "git_blob": "6b9c2857b5ea091c1fcb8fa82710ec4e3bb74f52",
+          "mode": "100644"
+        },
+        "hooks/band/board.ts": {
+          "git_blob": "737c0965662be55c992aab50b1b9085c1630dc62",
+          "mode": "100644"
+        },
+        "hooks/band/logo.ts": {
+          "git_blob": "1250faa90d92762c96d7e73b23d8060bee9ca3b1",
+          "mode": "100644"
+        },
+        "hooks/band/metrics.ts": {
+          "git_blob": "f88eefff4c529a462feacdcdb1ac82242ffa5ece",
+          "mode": "100644"
+        },
+        "hooks/band/register.tsx": {
+          "git_blob": "b57bf830abee12acf0786f7e9e5c6d5400b6d6e3",
+          "mode": "100644"
+        },
+        "hooks/band/types.d.ts": {
+          "git_blob": "8583c48fd6a91b29f4882407424668432b963f3e",
+          "mode": "100644"
+        },
+        "hooks/claude-band.json": {
+          "git_blob": "1231467764480e9a2c67f7b190a1a95e35bf9462",
+          "mode": "100644"
+        },
+        "hooks/claude-codex-hooks.json": {
+          "git_blob": "4acacf0b01fb899f3130a55e87bc73ad8b03d52c",
+          "mode": "100644"
+        },
+        "hooks/copilot-hooks.json": {
+          "git_blob": "6e09e4182abb1b701642b65b46eb1625f239aaa4",
+          "mode": "100644"
+        },
+        "hooks/cursor-hooks.json": {
+          "git_blob": "0d89c4affc49428c099f3b22d6111f373e09e52f",
+          "mode": "100644"
+        },
+        "hooks/ponytail-activate.js": {
+          "git_blob": "ebfa077c9476d3e1dfeae855d107e94a684ae49d",
+          "mode": "100644"
+        },
+        "hooks/ponytail-band-import.js": {
+          "git_blob": "6879144bfd42e72a0ecbdab920cb5836beb73e9e",
+          "mode": "100644"
+        },
+        "hooks/ponytail-config.js": {
+          "git_blob": "c2864e500e5aaf7ab522e1e37897a9f736efa754",
+          "mode": "100644"
+        },
+        "hooks/ponytail-instructions.js": {
+          "git_blob": "1ac2f8ee7c5f5082847c8cc13616f7ae8577a372",
+          "mode": "100644"
+        },
+        "hooks/ponytail-map.js": {
+          "git_blob": "03ec4a87e0e3a0a11fdcd22430edac3fd78f9788",
+          "mode": "100644"
+        },
+        "hooks/ponytail-mode-tracker.js": {
+          "git_blob": "1f1f129c8dae4aa88cb51bd1f28f2bbc2224226a",
+          "mode": "100644"
+        },
+        "hooks/ponytail-runtime.js": {
+          "git_blob": "27e9ceee8e77a59dbd89a37efa64d73d546a9e25",
+          "mode": "100644"
+        },
+        "hooks/ponytail-statusline.ps1": {
+          "git_blob": "b75b142143b9a2df4180962b7e48c6ad5e855226",
+          "mode": "100644"
+        },
+        "hooks/ponytail-statusline.sh": {
+          "git_blob": "7d0616051b5a44de4710eeb13f1e8c5a5584fb3f",
+          "mode": "100644"
+        },
+        "hooks/ponytail-subagent.js": {
+          "git_blob": "f2d9fe259aea580345c025b12c781278f9a5c881",
+          "mode": "100644"
+        },
+        "hooks/qoder-hooks.json": {
+          "git_blob": "874d565145f4c0a11638744761a3d45ec89c84b8",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "5988fcafab928f81d1ac973c24c33d05f248b0a2",
+          "mode": "100644"
+        },
+        "plugin.json": {
+          "git_blob": "4eea40ee5baec7ea3d092f67f3c39a94c30ae9c2",
+          "mode": "100644"
+        },
+        "skills/plugin.json": {
+          "git_blob": "caa13e7a606251db6c7c0808c85b6a399d1c55fc",
+          "mode": "100644"
+        },
+        "skills/ponytail-audit/SKILL.md": {
+          "git_blob": "ff9a95480700600fe2664d2d0906a4d750b2da0b",
+          "mode": "100644"
+        },
+        "skills/ponytail-debt/SKILL.md": {
+          "git_blob": "3124f520a65d2a4fa75a2f5db6225c38ebdb8620",
+          "mode": "100644"
+        },
+        "skills/ponytail-gain/SKILL.md": {
+          "git_blob": "1edff0e461fad6b671733ea6796aea9e417e266b",
+          "mode": "100644"
+        },
+        "skills/ponytail-help/SKILL.md": {
+          "git_blob": "34fccb3ff542b3b8d4d131e6120a1812c9c4617a",
+          "mode": "100644"
+        },
+        "skills/ponytail-review/SKILL.md": {
+          "git_blob": "a50e3ac6ded6fccc9edae34ce37877bbce11e3fa",
+          "mode": "100644"
+        },
+        "skills/ponytail/SKILL.md": {
+          "git_blob": "d64edd32265ba21cbf5270158f04e97d96925f27",
+          "mode": "100644"
+        }
+      }
+    },
+    "higgsfield": {
+      "repository": "https://github.com/higgsfield-ai/skills",
+      "revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+      "path": ".",
+      "version": "0.14.0",
+      "license": "MIT",
+      "paths": {
+        "skills": "."
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "COOKBOOK.md": {
+          "git_blob": "d4be87e45973db68036affd395aac69b257b83a4",
+          "mode": "100644"
+        },
+        "INSTALL.md": {
+          "git_blob": "0ab2285235aa494da8269e059ec43367e9bd155d",
+          "mode": "100644"
+        },
+        "INSTALL_FOR_AGENTS.md": {
+          "git_blob": "84ece725c6a896bfa9c8f5d4588913d1d2318a29",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "54beb798b4f27237d27c03ba8c85d41d1ff15890",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "43e585007c2d34c09798524c2a9f29033966b9c8",
+          "mode": "100644"
+        },
+        "VERSION": {
+          "git_blob": "a803cc227fe6ff1fbb6dcfc2dde3e4ccc450257e",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/SKILL.md": {
+          "git_blob": "594a88c38c3ed79b3677be27a79b800f7f616b0a",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/agents/openai.yaml": {
+          "git_blob": "4e91e1cd9a20be93881062c4fa94a6e9b48ba63f",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/asset-analysis.md": {
+          "git_blob": "572f284029a4e5d0867ae37dacbf1c3fe736e043",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/brand-lock.md": {
+          "git_blob": "c803359f06145b43e24eab8b60814e2a5d17b9bb",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/brandbook.md": {
+          "git_blob": "c96ceed16740e837fc57adaf07598068b3582b3b",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/brandkit-design-brain.md": {
+          "git_blob": "836a5ec0ba0f496d95a303254861ebd43c3cca56",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/concept-boards.md": {
+          "git_blob": "dd9bd410d71fdbd25662dd383ebe135cef739c6f",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/handoff.md": {
+          "git_blob": "fccf8e07a7027028032c249992ceeae258b46396",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/inline-widgets.md": {
+          "git_blob": "3d9002c2010d7ef8851161618499b36d379ea5af",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/intake.md": {
+          "git_blob": "2473382f405f3d61315ddafd76a268a5b14cd68f",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/logo-export-payloads.md": {
+          "git_blob": "cdb391c5d5543f02e4b830b654653cbe428dab78",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/logo-prompt-enhancer.md": {
+          "git_blob": "13a95840bd3f195c74286f7e5cb89adab268544d",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/logo.md": {
+          "git_blob": "74a43883258cf04126f43a76f464a93fcbce1903",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/merchandise.md": {
+          "git_blob": "c41af1ff4d0e41536f243f40372e7bc21e28bf18",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/mockups.md": {
+          "git_blob": "d26a131896bc4d03f4fb15e29ec57944970617dd",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/packaging.md": {
+          "git_blob": "c37c3fe8f167103909fca2bfafb1d62e7184f17b",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/palette.md": {
+          "git_blob": "51e7962ca01840c2c2286d2bb929f42bfcf2512f",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/posters-banners.md": {
+          "git_blob": "e489b19713ef30605eb74327e849765a20993cf1",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/prerequisites.md": {
+          "git_blob": "a3699099abeaf3f12ae7e683aa6d331bd4d3797d",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/presentation-deck.md": {
+          "git_blob": "cb284035071a94f2a9671a81b1400a6bb60d4818",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/preview-payloads.md": {
+          "git_blob": "79b441daf6e32048e775f96b05e272ccef780943",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/qa-and-iteration.md": {
+          "git_blob": "81db4163f4ed16dc20ba84ddae707e98e1c2310f",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/signage.md": {
+          "git_blob": "4e541907126d6f14043ba89e62d13584035c4f84",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/social-templates.md": {
+          "git_blob": "669d1e3058c4cd04af88b29ed7b7b7e1649f9750",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/state-payloads.md": {
+          "git_blob": "aef980fba253248f3cba0ec039e4312ae7ce2cd9",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/references/typography.md": {
+          "git_blob": "48d7f718a2d9217744f41db001907bde1ba682d0",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/scripts/brandkit.py": {
+          "git_blob": "d0f5c9a0f2386d0b2593d1e04e53574289e367a5",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/scripts/build_brandbook.py": {
+          "git_blob": "bcef68db6f3125c7a5ee40b0b12275b0da74a955",
+          "mode": "100644"
+        },
+        "higgsfield-brandkit/scripts/render_brandbook_pdf.py": {
+          "git_blob": "de83cca10ae9d733cda45a4ed693804e36f3630e",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/SKILL.md": {
+          "git_blob": "c6863c475687a29440eb376c27ddba9adb7362dc",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/captions.md": {
+          "git_blob": "beff1b8cddae6fa20fce347c620894668b647443",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/channel-motion.md": {
+          "git_blob": "7fa36bade9a6c6bb83afdee41465102229f7eb48",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/creative.md": {
+          "git_blob": "aa4d8bcaea30814f4d5494c952106515411bb1f3",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/editing.md": {
+          "git_blob": "d2437b36a26e4974aa75f36f761c6bb8603660f3",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/picture-story.md": {
+          "git_blob": "71aa3c541008b87b85329f61c9c9d08717e3dc3e",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/presenter.md": {
+          "git_blob": "52f267d88f39631c8187ebd821e6ac04444ceec0",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/production.md": {
+          "git_blob": "b2878612166f2f36f201ff3f3529ef3a97ce5031",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/prompts.md": {
+          "git_blob": "2dbeec777361ec5854bffd0e98c66af24460088f",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/song.md": {
+          "git_blob": "d99cf7cc90a1adfe1611495a56d05d95f0602f3c",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/styles.md": {
+          "git_blob": "db20fd7ca9d3e35bb24fc7eb7a641a3a12e6b6fc",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/references/talking-characters.md": {
+          "git_blob": "3459375a93786335e5b8d58a0cecb7a6170d1efc",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/assemble_blocks.sh": {
+          "git_blob": "341f908c815bbcf31e886dfb11f3f9e11a0808bd",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/assemble_final.sh": {
+          "git_blob": "7689665685b6a245786e85f436e88a7164cc1425",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/assemble_partial_edit.sh": {
+          "git_blob": "a92d57a39239e44829c3fa76e14556bcd1d7c5cd",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/assemble_slides.sh": {
+          "git_blob": "8170936b412c852e3d908e3fc4b802e20020f14b",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/audio_to_captions.py": {
+          "git_blob": "d9ccf71f72fe74899db22b38ec5b9778a96d479a",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/bind_scene_frame_results.py": {
+          "git_blob": "bbb759dbaf381cce263a9c6f5c46bcb8eb837f9c",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/build_scene_timeline.py": {
+          "git_blob": "32d49a13e11d9a479c7ed9c50d3e22645a8ea0d7",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/burn_captions.sh": {
+          "git_blob": "4ac9e511c5069f4e6a0ed94830ba8303ee41b985",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/check_voice.sh": {
+          "git_blob": "c322712ef82b75848073d392852c82bd57c4bf04",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/measure_narration_takes.py": {
+          "git_blob": "10abc8f906eddc204536f23c83354b97192eff54",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/presenter_composite.sh": {
+          "git_blob": "86ea01800310ab2ae97711a7a6f077aadd90f39c",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/speech_metrics.sh": {
+          "git_blob": "fc02d0a6682524093e7c4ba1ce1607048b8fb31a",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_assembly.py": {
+          "git_blob": "713d6844cffe32d556eea73c06af6ea17f2d8b10",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_captions.py": {
+          "git_blob": "1490ae73af57356fa5e3e08fbb8d6518bc00d28b",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_channel.py": {
+          "git_blob": "32ab3953a24c9ee29c6962e48a852fb04b9ebb7f",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_modes.py": {
+          "git_blob": "8a45db4d3bf25b15e71d2ebd3c01d913a5b69c00",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_song.py": {
+          "git_blob": "47580411d4e203555fc889e2f36ad1c21a92fdd6",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/tests/test_timeline.py": {
+          "git_blob": "aa761761ff5f0bc85c93651222b3d1b069390244",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/trim_static_head.sh": {
+          "git_blob": "81204eb9395dbdf858ba8468aa5b7878464d4d4a",
+          "mode": "100755"
+        },
+        "higgsfield-faceless-video/scripts/validate_motion_script.py": {
+          "git_blob": "12a6e5d8b1813ae269152dcd5bec5d02b1bf598d",
+          "mode": "100644"
+        },
+        "higgsfield-faceless-video/scripts/validate_song_prompt.py": {
+          "git_blob": "a7dccc7f51718c7ac0d34cd4c6016437e3353770",
+          "mode": "100644"
+        },
+        "higgsfield-generate/SKILL.md": {
+          "git_blob": "dc285b2a323f63c193156841b457c10f88b8e93d",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-ad-references.md": {
+          "git_blob": "c935839b4c5bd97897c0c3282f04ec09e55fe54a",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-avatars.md": {
+          "git_blob": "1b5f2a4e1cb8cdfddd5858fe3ec41f63a183ef39",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-brand-kits.md": {
+          "git_blob": "f15206acfc988a9a846fc993c7c52a73fd4f7c77",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-dtc-ads.md": {
+          "git_blob": "683fcd0da4fbabfe2eb43b0a82b4f3f3a2dc4d38",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-modes.md": {
+          "git_blob": "0779ace978fa5a760e76a3559b8469182d4fd362",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-products.md": {
+          "git_blob": "2ef1624bfad5e48fe3ec6a76807a41752e778732",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/marketing-setup-items.md": {
+          "git_blob": "dee2c0fed982e008495f562a23109677c4b05952",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/media-inputs.md": {
+          "git_blob": "3a2812029e8300cef45b7ac949e31029dc9657bb",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/model-catalog.md": {
+          "git_blob": "edf1f6f8fc7cb11fbb6205b6b0084a88c5e559e7",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/prompt-engineering.md": {
+          "git_blob": "0948c67bf35cae8f98c26f693bb02e7362796a09",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/troubleshooting.md": {
+          "git_blob": "f65b007977eafc15876eabdc89948a55ed46d94e",
+          "mode": "100644"
+        },
+        "higgsfield-generate/references/workflows.md": {
+          "git_blob": "a09d2b644f1376930b2eb3b3f79f0c615f4982f3",
+          "mode": "100644"
+        },
+        "higgsfield-marketplace-cards/SKILL.md": {
+          "git_blob": "f6c2f27a587364388fbbdcfe0e2cf30342975fa0",
+          "mode": "100644"
+        },
+        "higgsfield-product-photoshoot/SKILL.md": {
+          "git_blob": "b5673d7fd76a0c422c6c54e32044261aee0767eb",
+          "mode": "100644"
+        },
+        "higgsfield-soul-id/SKILL.md": {
+          "git_blob": "d14cfc002f05e635a1c44600884a62592fdc0d0c",
+          "mode": "100644"
+        },
+        "higgsfield-soul-id/references/photo-guide.md": {
+          "git_blob": "90ce6ef523e233e9c0b90cac3fbe825e7f81da69",
+          "mode": "100644"
+        },
+        "higgsfield-soul-id/references/troubleshooting.md": {
+          "git_blob": "2b54433f04801869195d69a8beb468f0102d8797",
+          "mode": "100644"
+        },
+        "higgsfield-video-explainer/SKILL.md": {
+          "git_blob": "662c9b7f0d8b64a9dc1cfec5324dc481da461953",
+          "mode": "100644"
+        },
+        "higgsfield-websites/SKILL.md": {
+          "git_blob": "c47acd761506555fe77732e40a2b52ed681dc7b7",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/app-cover.md": {
+          "git_blob": "f604de5073dba257c73a146e78887f5208c09228",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/app-flow.md": {
+          "git_blob": "eed873ad5a44106fed9ab2d8d6f9285865534b78",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/app-layouts.md": {
+          "git_blob": "50eb45a4e8bb1bd3c57d9e743a8939fb485bb9f7",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/app-quickstart.md": {
+          "git_blob": "a50088147848d479365f0681c96fcdd2254586ed",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/asset-system.md": {
+          "git_blob": "f0af3bf858a90c279a2b3a2e45d3ed5d7bd3e873",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/auth.md": {
+          "git_blob": "ecf612d544dcd20b969672e8ff46b0697fccf055",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/containers.md": {
+          "git_blob": "5a6a5d69731f9f782c17da882be226a95d8f8b05",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/contest.md": {
+          "git_blob": "c5475a602e60341ec6d20d96d4fa2a98891ef21a",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/cover-animator.md": {
+          "git_blob": "4ac317c1b8de68af93cb7517a42552370e0ce93f",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/design-recipe.md": {
+          "git_blob": "09d79f6d17a3e0e7e9b2ef44df4731281320dba1",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/design-taste-frontend.md": {
+          "git_blob": "2bda89e264282c52f1ed1979929294c91e616185",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/fnf-react.md": {
+          "git_blob": "71a5ff83e05f1773ef55a559229d9a72591769e6",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/fnf-sdk.md": {
+          "git_blob": "6a54d7f98cffaf1f8939fcc4553c10e14a7cd056",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-2d-animation.md": {
+          "git_blob": "0db710586e1b40cfe7c926c1bf333cbc901c4d04",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-3d-animation.md": {
+          "git_blob": "bdd933d86d9f9e1c8e1ea43c0c8fed81393f52bb",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-audio.md": {
+          "git_blob": "fb66a98302a4da6f50cd7de287bfafcdaceb4fc6",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-design-system.md": {
+          "git_blob": "0df3e04f80d786767b7a93470f6199e054ca2b30",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-flow.md": {
+          "git_blob": "3eaab0bd8f2eda66c1d5e8308ce0beaef49ebdfd",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-meshy-api.md": {
+          "git_blob": "60e6c147b57ad218144543de2c2b0959493cafc0",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-meshy-input-rules.md": {
+          "git_blob": "1b5ad773917b47d59c09c86c0b9fd239b5610fb1",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-procedural-animation.md": {
+          "git_blob": "172a296a60a0c7f3432a6b8610aed1dada6f118a",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-stylization.md": {
+          "git_blob": "58a787c61db64496cbe1484f4940a92ab84c3813",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/game-textures.md": {
+          "git_blob": "7554bd4947b03e4189be29af6f5270098f064581",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/image-to-code.md": {
+          "git_blob": "57ca46cc517f9244c21a71992370dac821d76006",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/quanta-design.md": {
+          "git_blob": "3636e5b1f8d3a7d99124864c885ee26506b333f6",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/reference-boards.md": {
+          "git_blob": "24da1cd6007eee328d45575a534525101d1080f7",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/review-rubric.md": {
+          "git_blob": "cbfe475d7879f39a02c8cffa13116ae8d0073e18",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/runtime-and-infra.md": {
+          "git_blob": "4e0f3d2cb09a4f23d4f803b234800fb9bd382748",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/scroll-scrub-asset-css.md": {
+          "git_blob": "adda64f4533af143aa35871b1c16173ff5253bc6",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/scroll-scrub-asset-react.md": {
+          "git_blob": "622d71b26b22d4c1ed408feee43f55a928afa6b5",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/scroll-scrub-asset-video.md": {
+          "git_blob": "b0f26b36c971bd9fea5058109aa49ec469f19de1",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/scroll-scrub.md": {
+          "git_blob": "8fdfc5bd0aa86d54d91fc1e9370cfa22da7a6be4",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/security.md": {
+          "git_blob": "ebee091263ad1a04ef765707f7ada488fa1807ad",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/seo.md": {
+          "git_blob": "26737d22a95849e2c4031de476eaa381fe3839eb",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/website-flow.md": {
+          "git_blob": "ea8ae48fab9ea11b474c2dea9465a40d35e0e3bc",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/wow-catalog.md": {
+          "git_blob": "8e443d1ffa3971e6b45e3eb7f662951e5e0ff861",
+          "mode": "100644"
+        },
+        "higgsfield-websites/references/wow-maker.md": {
+          "git_blob": "7ecf7a1d7557eefc0aad0077aa223e7eae377d26",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/fbx2glb.py": {
+          "git_blob": "6ab4467100ecbc36b4f86f576155f52e01ba6985",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/glb_inspect.py": {
+          "git_blob": "f332d3d50e46afa28a27ac040d383de8c5637599",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/glb_merge_anims.py": {
+          "git_blob": "abb4e8034537782b0fd473739ae7a634fef557bd",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/glb_patch.py": {
+          "git_blob": "34d1d34f2e7fdbadb41a1c17ca552c88621fd17a",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/merge_anim_glbs.py": {
+          "git_blob": "93709e4ba8854a84396b03551f6077706d3399f0",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/pipeline.py": {
+          "git_blob": "dc673100e5c691ee3a7ca39d785fe3c89c22a80c",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/proc_anim_dragon.py": {
+          "git_blob": "6c7bb9cc0c9bd2c1a85721b11dba3f2ef8973fff",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/proc_rig_dragon.py": {
+          "git_blob": "fe429f10c3bd3630f8e76399fec33809c1298fe8",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/proc_weights.py": {
+          "git_blob": "610238fcb8f61525f60413ab62dbafbdb6b4f2ef",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/rig_transfer.py": {
+          "git_blob": "3390d7a78360f24ca6b9c879077833242bb2b71e",
+          "mode": "100644"
+        },
+        "higgsfield-websites/scripts/seamless.py": {
+          "git_blob": "5e1ab746aaeb2423d9dd324eae475d67c8f6b906",
+          "mode": "100644"
+        },
+        "higgsfield-youtube-thumbnail/SKILL.md": {
+          "git_blob": "c8ccbee4217c38517c14a05b42118c5fa0863287",
+          "mode": "100644"
+        },
+        "higgsfield-youtube-thumbnail/agents/openai.yaml": {
+          "git_blob": "bb40f59ae8e14acc98a706c773940f2d54d6c296",
+          "mode": "100644"
+        },
+        "higgsfield-youtube-thumbnail/references/text-overlay-bake.md": {
+          "git_blob": "0401e565ae54e25e1e6f3e886d2ce6dbec1d3c0f",
+          "mode": "100644"
+        },
+        "higgsfield-youtube-thumbnail/references/thumbnail-frameworks.md": {
+          "git_blob": "06170df5e607a70d5bc7733c1e005df7d65b6d7b",
+          "mode": "100644"
+        },
+        "scripts/update-check.sh": {
+          "git_blob": "1e6f2496e3fce4217ea2d7dd5c67e5af77d6ac4b",
+          "mode": "100755"
+        },
+        "setup": {
+          "git_blob": "b8ff4a0f658a99d524c4fe6b4d5a020b7b864934",
+          "mode": "100755"
+        }
+      }
+    },
+    "wikiskill": {
+      "repository": "https://github.com/ashutoshsinghpr7/wikiskill",
+      "revision": "cdc291c4296e30488a5922860dc596763704ede4",
+      "path": ".",
+      "version": "0.1.5",
+      "license": "MIT",
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "27e3e752db51ba690babca962704fa90aa87e865",
+          "mode": "100644"
+        },
+        "MANIFEST.in": {
+          "git_blob": "955d70a27dbe47af578fa1dcdcd2d231eb06509b",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "78f7bed975f365dde7bb73ebca8690f3b6963657",
+          "mode": "100644"
+        },
+        "docs/COMPARING.md": {
+          "git_blob": "613bfe8ee3c1c23bcf009acc0c7d1b01b7607853",
+          "mode": "100644"
+        },
+        "docs/CRON.md": {
+          "git_blob": "943708cf05799c953f33576996cc61bf248a6495",
+          "mode": "100644"
+        },
+        "docs/RUNS.md": {
+          "git_blob": "1aee7fad20ea9c37b4c36a5a35a2db0504a25532",
+          "mode": "100644"
+        },
+        "docs/index.md": {
+          "git_blob": "07797fa330627c2ae179ab3185d555b9ff2f6549",
+          "mode": "100644"
+        },
+        "pyproject.toml": {
+          "git_blob": "43888780748cf75468bfab632c02235e7f328ad8",
+          "mode": "100644"
+        },
+        "setup.py": {
+          "git_blob": "7df8ca54131d6cb03bd6effc01e3fe686df286b2",
+          "mode": "100644"
+        },
+        "skills/script-exec-blocked/SKILL.md": {
+          "git_blob": "8d4d7d664c61e799adb7183add0f2ca30a79d3f5",
+          "mode": "100644"
+        },
+        "skills/search-miss-binary/SKILL.md": {
+          "git_blob": "fd92acd00964a165506a510e674c7f18b0b862bd",
+          "mode": "100644"
+        },
+        "skills/spec-literal-execution/SKILL.md": {
+          "git_blob": "31356ff6b0321d840c28100b7f277e6965b94365",
+          "mode": "100644"
+        },
+        "skills/trace-harness-launch-failure/SKILL.md": {
+          "git_blob": "ee7c5e88e42eec6b3af531a778e247dcf44f46e7",
+          "mode": "100644"
+        },
+        "skills/verify-output-readback/SKILL.md": {
+          "git_blob": "81940b731b85115ccb5f8c622465a5ae47cedbc2",
+          "mode": "100644"
+        },
+        "skills/wikiskill-evolve/SKILL.md": {
+          "git_blob": "ae5c5507d1496017b24f8836fdd11468e0ad3ad3",
+          "mode": "100644"
+        },
+        "skills/wikiskill-maintainer/SKILL.md": {
+          "git_blob": "f1ba360cce5302e316f772db8580d9e1fbc5f7e5",
+          "mode": "100644"
+        },
+        "skills/wikiskill-proposer/SKILL.md": {
+          "git_blob": "faa4bbc01f34a5e6a6e3e8adf246ead495dfb7ed",
+          "mode": "100644"
+        },
+        "wikiskill/__init__.py": {
+          "git_blob": "c0464a4e8cb4294b7f94357b535f82177d144b5c",
+          "mode": "100644"
+        },
+        "wikiskill/agents.py": {
+          "git_blob": "ff7e148187d3581000454efb55a7354af5bfe16f",
+          "mode": "100644"
+        },
+        "wikiskill/backends/__init__.py": {
+          "git_blob": "efa37c5e90a521b85b48c4f7548ad7a8e42668c1",
+          "mode": "100644"
+        },
+        "wikiskill/backends/base.py": {
+          "git_blob": "4a69b070af67c0b7d8a379851b75e3caf3433dd1",
+          "mode": "100644"
+        },
+        "wikiskill/backends/claude.py": {
+          "git_blob": "4ec8757f03f6d16d2ac5617def604553bcb5c15f",
+          "mode": "100644"
+        },
+        "wikiskill/backends/codex.py": {
+          "git_blob": "1de1b6b956a4cea7a2f6cf99dea877683d6a40a9",
+          "mode": "100644"
+        },
+        "wikiskill/backends/copilot.py": {
+          "git_blob": "6652fbf6bae13a32d85f227ae19f08b60e31ecea",
+          "mode": "100644"
+        },
+        "wikiskill/backends/hermes.py": {
+          "git_blob": "e6ef0fe9988620611085fa2b6dd80fe143a69724",
+          "mode": "100644"
+        },
+        "wikiskill/backends/transcript.py": {
+          "git_blob": "79774c8bed974dacdaa2576a486060ed9a19ac09",
+          "mode": "100644"
+        },
+        "wikiskill/bench.py": {
+          "git_blob": "cfdb93ae12135555448a5b0ba915c5294e3b5ccf",
+          "mode": "100644"
+        },
+        "wikiskill/cli.py": {
+          "git_blob": "5cd40c8c166c5f16ef577e1cc8e8dc20a804eaa0",
+          "mode": "100644"
+        },
+        "wikiskill/compare.py": {
+          "git_blob": "2c45f95715cdc12f0f85a21ad13a59a1695e1f61",
+          "mode": "100644"
+        },
+        "wikiskill/gating.py": {
+          "git_blob": "0d1700c1332a749385fe3d30ee27185dbfb6f9b6",
+          "mode": "100644"
+        },
+        "wikiskill/harness.py": {
+          "git_blob": "fbaa6535e49b7270dc4ca9e9925be80bc9220044",
+          "mode": "100644"
+        },
+        "wikiskill/prompts.py": {
+          "git_blob": "b3759c4a4d6a614c4ca774226be4cfb5e8d24a0b",
+          "mode": "100644"
+        },
+        "wikiskill/scoring.py": {
+          "git_blob": "92cedf06353b45bf4660835b633a0327154b3b60",
+          "mode": "100644"
+        },
+        "wikiskill/tasks.py": {
+          "git_blob": "2c205993d86c4897028a3bfd613f0af1df9e2661",
+          "mode": "100644"
+        },
+        "wikiskill/traces.py": {
+          "git_blob": "8dfbbbf9b6a98c82c924ade92e3d756b3adafb92",
+          "mode": "100644"
+        },
+        "wikiskill/transfer.py": {
+          "git_blob": "fad0da9d7eba9052c4b7d821b3581d9d4456be78",
+          "mode": "100644"
+        },
+        "wikiskill/wiki.py": {
+          "git_blob": "c238c188ec4c5ea7d11bce9db70dca3bc257785a",
+          "mode": "100644"
+        }
+      }
+    },
+    "rtk": {
+      "repository": "https://github.com/rtk-ai/rtk",
+      "revision": "7e92da00a5cf737dc87850505aa3dea603454613",
+      "path": ".",
+      "version": "0.49.0-source",
+      "license": "Apache-2.0 and BUSL-1.1",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "Cargo.toml": {
+          "git_blob": "44624a8bcb26332b298c2078d0f68675aa1ed269",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "fb19f9923f93b788a02245f9a27f552aa7acb6ef",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "6c7f7de477856221d34f27053d882e969c896616",
+          "mode": "100644"
+        },
+        "docs/guide/getting-started/configuration.md": {
+          "git_blob": "23f44042d081a5752d11184350a5f0e76794e713",
+          "mode": "100644"
+        },
+        "docs/guide/getting-started/installation.md": {
+          "git_blob": "713314d8ea8dce48bb06879069ec95b4d302d696",
+          "mode": "100644"
+        },
+        "docs/guide/getting-started/quick-start.md": {
+          "git_blob": "c5e48ec0c0641d5509eb0d73f77b461cb20a0793",
+          "mode": "100644"
+        },
+        "docs/guide/getting-started/supported-agents.md": {
+          "git_blob": "270031a6bd7e5f5ae716ee6cb1189f664ca53251",
+          "mode": "100644"
+        },
+        "engine/LICENSE": {
+          "git_blob": "c0f904dccb82648ff0664c0a733b61a3ad55711e",
+          "mode": "100644"
+        },
+        "hooks/README.md": {
+          "git_blob": "af7ee465abbc0f35f331f6574be79a90ec181974",
+          "mode": "100644"
+        },
+        "hooks/claude/rtk-rewrite.sh": {
+          "git_blob": "1d4663ee82aee8e90378a6e6e7f71d02b251453e",
+          "mode": "100644"
+        },
+        "hooks/codex/README.md": {
+          "git_blob": "8deb10cb1768361685a404f691fa1b5be1cb43c9",
+          "mode": "100644"
+        },
+        "hooks/cursor/rtk-rewrite.sh": {
+          "git_blob": "b64886ee90dd08ecddbf8e99ad684ed915b8ff50",
+          "mode": "100644"
+        },
+        "hooks/rtk-awareness.md": {
+          "git_blob": "fca40c2174635de52280896956ce2b51a18be836",
+          "mode": "100644"
+        }
+      }
+    },
+    "headroom": {
+      "repository": "https://github.com/headroomlabs-ai/headroom",
+      "revision": "a2d4fe72381e186651466ee94e92ce9d8d1396cc",
+      "path": ".",
+      "version": "0.42.0",
+      "license": "Apache-2.0",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "6ee2620b190c4340d3f18e4ccc5ee111847b1ee3",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "85a37b3fa579c2b38186d35cad025bd104e6ce97",
+          "mode": "100644"
+        },
+        "docs/content/docs/mcp.mdx": {
+          "git_blob": "c4d7077e4bae64edff126bac126d589f7681e09d",
+          "mode": "100644"
+        },
+        "docs/content/docs/proxy.mdx": {
+          "git_blob": "819328dad788065ef6ee91a6240dc89108285007",
+          "mode": "100644"
+        },
+        "docs/content/docs/quickstart.mdx": {
+          "git_blob": "afa76b2b0da289e5de8bf6e7768e153e013bf72c",
+          "mode": "100644"
+        },
+        "headroom/cli/mcp.py": {
+          "git_blob": "80133029374051bff47296ea8c50a5eb49c97561",
+          "mode": "100644"
+        },
+        "plugins/headroom-agent-hooks/README.md": {
+          "git_blob": "bb5cd4796f24e0daac059f1b864b95f184465bf2",
+          "mode": "100644"
+        },
+        "plugins/headroom-agent-hooks/hooks/hooks.json": {
+          "git_blob": "ae7463cde45dfcfd7a132589dfa8d0801e64c95f",
+          "mode": "100644"
+        },
+        "pyproject.toml": {
+          "git_blob": "bc022cbf38ac76ac69ae955586bb6e7ae38c993a",
+          "mode": "100644"
+        }
+      }
+    },
+    "stitch-design-md": {
+      "repository": "https://github.com/google-labs-code/stitch-skills",
+      "revision": "0337446dadde6f8c94210444e2aa9d546126480f",
+      "path": ".",
+      "license": "Apache-2.0",
+      "paths": {
+        "skills": "plugins/stitch-utilities/skills"
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "b31ddffd7a087dcdf4d780019f9b6b8c6db7f7b1",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "baecaabfa0fc08d596e3d5921479321eaacac02a",
+          "mode": "100644"
+        },
+        "plugins/stitch-utilities/skills/design-md/README.md": {
+          "git_blob": "8f522077baf7a98f4d1516285394b532ff14c792",
+          "mode": "100644"
+        },
+        "plugins/stitch-utilities/skills/design-md/SKILL.md": {
+          "git_blob": "c29a0feb9c06c2fb48dc9114988382e06b1f9d9b",
+          "mode": "100644"
+        },
+        "plugins/stitch-utilities/skills/design-md/examples/DESIGN.md": {
+          "git_blob": "be0855f6c8285be2b1de3fff24f4f9ab9da79bd8",
+          "mode": "100644"
+        }
+      }
+    },
+    "open-design": {
+      "repository": "https://github.com/nexu-io/open-design",
+      "revision": "be0403e9ffc876fd5c706864d2be768f7010e9a5",
+      "path": ".",
+      "version": "1.0.0-plugin",
+      "license": "Apache-2.0",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "plugins/open-design/.claude-plugin/plugin.json": {
+          "git_blob": "e792c8b4e0da2e04bd46cad1d54f28004813cbc5",
+          "mode": "100644"
+        },
+        "plugins/open-design/.mcp.json": {
+          "git_blob": "f807e5c029aab934d6baff1b5479f39798875edd",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "eb79c35bd865477e525b18e56f35d56fbe0f7110",
+          "mode": "100644"
+        },
+        "QUICKSTART.md": {
+          "git_blob": "3b0941ab380c9c4cfe90e867fcfdba7e7d867e7e",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "bf8b42df35f25e6aa865928233d9bfe152b9ea04",
+          "mode": "100644"
+        }
+      }
+    },
+    "skillopt": {
+      "repository": "https://github.com/microsoft/SkillOpt",
+      "revision": "bc0a392ef0a7f92840ec673d80204d34ced169d0",
+      "path": ".",
+      "version": "post-0.2.0-source",
+      "license": "MIT",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "selection": "Complete skillopt_sleep package, license, project metadata, and handoff/Codex workflow references; research package and binary dependencies excluded.",
+      "evaluation": "custom-skill-evolution",
+      "evaluation_report": "docs/skill-evolution.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "cf7bcb2ba475e33648180599c0f83c425f1705d9",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "956767dc6d0d6c34704bd83536dcb2a91d6af76e",
+          "mode": "100644"
+        },
+        "docs/sleep/README.md": {
+          "git_blob": "3ed9d4568e5697c9cf03e2447659490a87037260",
+          "mode": "100644"
+        },
+        "docs/sleep/multi-skill-staging.md": {
+          "git_blob": "bb86b81699bfa77c094dde1bc81f4416182a46ba",
+          "mode": "100644"
+        },
+        "plugins/claude-code/commands/skillopt-sleep-handoff.md": {
+          "git_blob": "44673bbe615e653aaaa07dbd6e26f5b50c3e96de",
+          "mode": "100644"
+        },
+        "plugins/codex/skills/skillopt-sleep/SKILL.md": {
+          "git_blob": "ac4a2bccfc0c9fb4fafd8f524b677f680a43b94b",
+          "mode": "100644"
+        },
+        "pyproject.toml": {
+          "git_blob": "3808b69e32bfa28d7de56a8dd693b24578541447",
+          "mode": "100644"
+        },
+        "skillopt_sleep/__init__.py": {
+          "git_blob": "9c7581f9e386d4a8b0e7edb3a24eb575e9584ee9",
+          "mode": "100644"
+        },
+        "skillopt_sleep/__main__.py": {
+          "git_blob": "696b15ecc28cc81b935a6ebfba954677eb222ae6",
+          "mode": "100644"
+        },
+        "skillopt_sleep/adapters/__init__.py": {
+          "git_blob": "a2178ef398a5b207e2c5d030f4a6e4a9912b4b2d",
+          "mode": "100644"
+        },
+        "skillopt_sleep/adapters/superpowers.py": {
+          "git_blob": "504eea47495760b2dbd76bb10ac06de6bbeff397",
+          "mode": "100644"
+        },
+        "skillopt_sleep/backend.py": {
+          "git_blob": "7134ae46c0e4043346afef8d0a766da2a70fb37c",
+          "mode": "100644"
+        },
+        "skillopt_sleep/budget.py": {
+          "git_blob": "48875ca0f01cf099967ca2b5a45891e903645e36",
+          "mode": "100644"
+        },
+        "skillopt_sleep/config.py": {
+          "git_blob": "64814979d8a74b7fef4eb14cbd750c39cb4669f4",
+          "mode": "100644"
+        },
+        "skillopt_sleep/consolidate.py": {
+          "git_blob": "3b63520a7442e81674072975a1f722117fa775d9",
+          "mode": "100644"
+        },
+        "skillopt_sleep/cycle.py": {
+          "git_blob": "42a663628192e7998d61a73c51b4d348416b3712",
+          "mode": "100644"
+        },
+        "skillopt_sleep/dream.py": {
+          "git_blob": "cfb8fba975baa59794a4bbbe2c02b641c18560f4",
+          "mode": "100644"
+        },
+        "skillopt_sleep/evalkit.py": {
+          "git_blob": "1c3ba313ce2f960d65be10e67dd4416013daacff",
+          "mode": "100644"
+        },
+        "skillopt_sleep/evidence.py": {
+          "git_blob": "14dd367e63b3dc6da794e9b54cd75d33a04a10a0",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/__init__.py": {
+          "git_blob": "fa657fe050821744ba61437d595303523f10e1eb",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/gbrain_bench.py": {
+          "git_blob": "49261d655473424031172972e87b1efac1fdda0d",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/personas.py": {
+          "git_blob": "72eb6af5db4bed58747e43b4398d61c378ee33db",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/report.py": {
+          "git_blob": "767ea65a39ce63600e4607e2fd3c18dda1d13445",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/run_experiment.py": {
+          "git_blob": "1110f2605006b58aeb3b61b38ec5f836b9afc7b6",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/run_gbrain.py": {
+          "git_blob": "43c7acd74db355b010d6597f93356710becc0a00",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/run_transfer.py": {
+          "git_blob": "5b00ec8732cafa5f7806b7c957d47a11af1e549d",
+          "mode": "100644"
+        },
+        "skillopt_sleep/experiments/sweep.py": {
+          "git_blob": "ddd337c89c62f9b4e032f52da2af273b0452dc36",
+          "mode": "100644"
+        },
+        "skillopt_sleep/gate.py": {
+          "git_blob": "7eca3b430011ad20cf3cd01b5a4a0dc2f3040547",
+          "mode": "100644"
+        },
+        "skillopt_sleep/handoff_backend.py": {
+          "git_blob": "0e41ae2558746e4baac5ef4d165d788d86f304c1",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest.py": {
+          "git_blob": "61cb7044787f0f45e33963894a2a93a5609c8403",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_codex.py": {
+          "git_blob": "5c90a44c7eace7f3a6efddd249e2bbf5a04a5d03",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_copilot.py": {
+          "git_blob": "148b0486c57eeb1ee0fca7b7c77857a8a434ef82",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_copilot_cli.py": {
+          "git_blob": "13c081eeef68c729b395a34ec7a8ba64890acddd",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_cursor.py": {
+          "git_blob": "c4379a49fab9463b58704029220b3c028c38aa5c",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_opencode.py": {
+          "git_blob": "f68b9b9524d25eec6b250e501fafbaae9cb09260",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_pi.py": {
+          "git_blob": "e5ee8bee3c988883119813919935fd3d19f71561",
+          "mode": "100644"
+        },
+        "skillopt_sleep/harvest_sources.py": {
+          "git_blob": "e4d8905668cc1e0f53327c6bbf23553e23eafc9c",
+          "mode": "100644"
+        },
+        "skillopt_sleep/judges.py": {
+          "git_blob": "1ac68a033a8a9f7b6909bcbb7295363d201dbbd6",
+          "mode": "100644"
+        },
+        "skillopt_sleep/llm_miner.py": {
+          "git_blob": "e52028a2a89eb8cd6be2fdcb9e54e9c96d35557d",
+          "mode": "100644"
+        },
+        "skillopt_sleep/memory.py": {
+          "git_blob": "86d91a058257a82dc9f21b33d8e638d812c8c6f4",
+          "mode": "100644"
+        },
+        "skillopt_sleep/mine.py": {
+          "git_blob": "069d35f4f13e634669c8ac839c58a02ed4c1b6d5",
+          "mode": "100644"
+        },
+        "skillopt_sleep/multi_skill.py": {
+          "git_blob": "59aa0728fba7abb403bfbc03970f2d7862f1ab50",
+          "mode": "100644"
+        },
+        "skillopt_sleep/prompts.py": {
+          "git_blob": "3c297e5cc3fbf230db5ec02748ebc75b4583e680",
+          "mode": "100644"
+        },
+        "skillopt_sleep/replay.py": {
+          "git_blob": "6eba0b8612d06f64c8860af3cbd5cbdcbe44cf13",
+          "mode": "100644"
+        },
+        "skillopt_sleep/rollout.py": {
+          "git_blob": "d864c02f1eb5fbb79e0f2ea78958495b38554bc7",
+          "mode": "100644"
+        },
+        "skillopt_sleep/scheduler.py": {
+          "git_blob": "44dfa4b8958da6031adc09631ed04dc813ba528b",
+          "mode": "100644"
+        },
+        "skillopt_sleep/skill_resolver.py": {
+          "git_blob": "e9cedd3235b65d2b0b5ad647e54283c0d476f80a",
+          "mode": "100644"
+        },
+        "skillopt_sleep/slow_update.py": {
+          "git_blob": "ccb021bc7f7da4505cc99a0411e999788131be6f",
+          "mode": "100644"
+        },
+        "skillopt_sleep/staging.py": {
+          "git_blob": "e430f152a48cb6638e1b06a5752e0cdc2cd85f03",
+          "mode": "100644"
+        },
+        "skillopt_sleep/state.py": {
+          "git_blob": "ae8536be48f956f0cde5ad3af9e7d3b985595e97",
+          "mode": "100644"
+        },
+        "skillopt_sleep/tasks_file.py": {
+          "git_blob": "5f25f92976b64440874c15bca82fb167fbc908a9",
+          "mode": "100644"
+        },
+        "skillopt_sleep/types.py": {
+          "git_blob": "150a4f5817b9febf6380ad996bcca568b2d06145",
+          "mode": "100644"
+        }
+      }
+    },
+    "lever": {
+      "repository": "https://github.com/github/lever",
+      "revision": "f859d0aa2be96981157ee0480655c84877e3cd98",
+      "path": ".",
+      "version": "0.1.0",
+      "license": "MIT",
+      "selection": "All 16 skills and scripts, automation recipes, templates, config examples, text documentation, plugin and marketplace manifests; talk slides and gallery rendering/image assets omitted.",
+      "evaluation": "installed-and-helper-smoke-tested",
+      "evaluation_report": "docs/lever.md",
+      "files": {
+        ".github/plugin/marketplace.json": {
+          "git_blob": "37e7d660f40c3de76b7e1d353cfadcb07762b9bb",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "7d30d37a7ee6f1e1e64b6056f7cf031356366d65",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "5757d5decaf18254e64974008f9f264ec3bec03c",
+          "mode": "100644"
+        },
+        "automations/README.md": {
+          "git_blob": "54cb3b4af3a6edd44d576d879af1450e48446009",
+          "mode": "100644"
+        },
+        "automations/audit-lane/README.md": {
+          "git_blob": "18179582593a9984d5ca471a11e4a70baede0220",
+          "mode": "100644"
+        },
+        "automations/audit-lane/prompt.md": {
+          "git_blob": "dfb4b2e532be7d9fb09c5f627dc6ca7c30d9b72a",
+          "mode": "100644"
+        },
+        "automations/automation-health/README.md": {
+          "git_blob": "41672cdb31056a0fde674c8c58134c1ff3506960",
+          "mode": "100644"
+        },
+        "automations/automation-health/prompt.md": {
+          "git_blob": "86b47335bc4207a8bf20fffab5db6e876ca072b9",
+          "mode": "100644"
+        },
+        "automations/ci-speed/README.md": {
+          "git_blob": "3ea4d69fd8b2f6918076186861f60b127f715cb2",
+          "mode": "100644"
+        },
+        "automations/ci-speed/prompt.md": {
+          "git_blob": "440c071aa238aceb557886c10370bc6aee2a5c6d",
+          "mode": "100644"
+        },
+        "automations/improver/README.md": {
+          "git_blob": "ca9eb4cca320c34a1accefb0142e1dab08b6f4df",
+          "mode": "100644"
+        },
+        "automations/improver/prompt.md": {
+          "git_blob": "fad5fdbd036b594190289d72d90ae8a7724f7f27",
+          "mode": "100644"
+        },
+        "automations/main-red-triage/README.md": {
+          "git_blob": "332c844e059f667ac81fe3816e10deaefe7d1a88",
+          "mode": "100644"
+        },
+        "automations/main-red-triage/prompt.md": {
+          "git_blob": "bfecc81680612547a2d0803a22dd9387293dcd2d",
+          "mode": "100644"
+        },
+        "automations/morning-brief/README.md": {
+          "git_blob": "43e700c1627349e8eaf1a858e8c0c0a0aada73ac",
+          "mode": "100644"
+        },
+        "automations/morning-brief/prompt.md": {
+          "git_blob": "445fa7e50fb2c112e7f9804308d0b6269ea13b24",
+          "mode": "100644"
+        },
+        "automations/pr-shepherd/README.md": {
+          "git_blob": "508577d9ed96d51f5c7c103a4e91f2f20b60712b",
+          "mode": "100644"
+        },
+        "automations/pr-shepherd/prompt.md": {
+          "git_blob": "c5196bc6a279d62400dee7082d7407e6ce0d605c",
+          "mode": "100644"
+        },
+        "automations/precision-review/README.md": {
+          "git_blob": "6e434663c89560f21c44f81ae44ba2d5cf7eb224",
+          "mode": "100644"
+        },
+        "automations/precision-review/improver-prompt.md": {
+          "git_blob": "69cfbdc143388ecc8facb0b717e114a5f8ff68cb",
+          "mode": "100644"
+        },
+        "automations/precision-review/prompt.md": {
+          "git_blob": "169ac959470685bd0493caf7f4a12f7862a1a3ad",
+          "mode": "100644"
+        },
+        "automations/repro-gate/README.md": {
+          "git_blob": "92d32fddefd9537da37695dffb3f3686f8041b95",
+          "mode": "100644"
+        },
+        "automations/repro-gate/improver-prompt.md": {
+          "git_blob": "25531dfd87409152d1ecec5a1bc51649b770d5ea",
+          "mode": "100644"
+        },
+        "automations/repro-gate/prompt.md": {
+          "git_blob": "1c58b9175738144b22b10ef5e53dfb9be2d5299a",
+          "mode": "100644"
+        },
+        "automations/stall-watchdog/README.md": {
+          "git_blob": "36ff0345262320d2decadd3eaaa0fb1ab2ad4b9c",
+          "mode": "100644"
+        },
+        "automations/stall-watchdog/prompt.md": {
+          "git_blob": "da05fb2987fae68519c2f8ae74235814f5d05284",
+          "mode": "100644"
+        },
+        "config/autonomy.example.yml": {
+          "git_blob": "13ff1244573d4f86def0c522e5779ea1517a279a",
+          "mode": "100644"
+        },
+        "config/personal.example.yml": {
+          "git_blob": "1ca2740fdd16d40f021644706cbe4281622610ca",
+          "mode": "100644"
+        },
+        "docs/autonomy.md": {
+          "git_blob": "d9207229fd34b12ada78c31847689e1ed2bd2206",
+          "mode": "100644"
+        },
+        "docs/examples.md": {
+          "git_blob": "1728ee1498e94134f30de8e072ff2301b4edc796",
+          "mode": "100644"
+        },
+        "docs/modes.md": {
+          "git_blob": "55408b12046907260cc9af1509fb7c1ca2f5f20e",
+          "mode": "100644"
+        },
+        "docs/spend.md": {
+          "git_blob": "f254a51af5f240ec6595c0156bed249290459e89",
+          "mode": "100644"
+        },
+        "docs/tracking.md": {
+          "git_blob": "aa56f6782511719a7389d47b6bf5f71dc8dba58f",
+          "mode": "100644"
+        },
+        "plugin.json": {
+          "git_blob": "a604e52d15dd1b17b34174bcdfd6704ded2dbc10",
+          "mode": "100644"
+        },
+        "skills/automate-it/SKILL.md": {
+          "git_blob": "46b6408f6a9e87a120f1bc7eb79ab16f18cf82c2",
+          "mode": "100644"
+        },
+        "skills/automate-it/reference.md": {
+          "git_blob": "a247afa525f4b07878c6545b9d4b517760e3357c",
+          "mode": "100644"
+        },
+        "skills/autonomous-delivery/SKILL.md": {
+          "git_blob": "812965e9766a8a8bc3eb3d5f847105413d8ed026",
+          "mode": "100644"
+        },
+        "skills/autonomous-delivery/reference.md": {
+          "git_blob": "2e441cd6cb38140370f9a196015263c134e403d4",
+          "mode": "100644"
+        },
+        "skills/autonomy-dial/SKILL.md": {
+          "git_blob": "0289576dc917284b623f87708baf40f41e5ab852",
+          "mode": "100644"
+        },
+        "skills/brief/SKILL.md": {
+          "git_blob": "be55a99f550cb91df6feb859d30e7f5cf2f0786c",
+          "mode": "100644"
+        },
+        "skills/cross-model-review/SKILL.md": {
+          "git_blob": "d9b044766559bbdbb21c432198aac2d4a6046158",
+          "mode": "100644"
+        },
+        "skills/experiment-arms/SKILL.md": {
+          "git_blob": "8a37437631f2921797e917647162fcb31ac44f1d",
+          "mode": "100644"
+        },
+        "skills/experiment-arms/ci-adapter.md": {
+          "git_blob": "1e8cd9fe4cc05584db0049a27736a7323a29b4f7",
+          "mode": "100644"
+        },
+        "skills/experiment-arms/scripts/arm_stats.py": {
+          "git_blob": "c6be82761e0fd16a2951b51c840ecc4640eddc9b",
+          "mode": "100644"
+        },
+        "skills/experiment-arms/scripts/ci_arm_driver.py": {
+          "git_blob": "04ada291316747a5ddf1b369690c8dd761f7bbcd",
+          "mode": "100644"
+        },
+        "skills/experiment-arms/scripts/ci_arm_metrics.py": {
+          "git_blob": "de993e1a4fcaba1d6cb2454877c04775eb943f91",
+          "mode": "100644"
+        },
+        "skills/find-the-loop/SKILL.md": {
+          "git_blob": "693942214bb9ae0fbfc765ea87091a0bf2903fc0",
+          "mode": "100644"
+        },
+        "skills/find-the-loop/decision-tree.md": {
+          "git_blob": "ae7ee4922ecef45213c4dbe1187eca2fcd64af84",
+          "mode": "100644"
+        },
+        "skills/keep-the-pool-full/SKILL.md": {
+          "git_blob": "cf9119c2318b12555da2fae5af3beaae36895968",
+          "mode": "100644"
+        },
+        "skills/landing-plan/SKILL.md": {
+          "git_blob": "2470009fa44ea63ffbb9a386f13bb88f63bffa3f",
+          "mode": "100644"
+        },
+        "skills/landing-plan/scripts/landing_graph.py": {
+          "git_blob": "27310bef25e59f8b294ea2d60c0f7b4ccfb7b295",
+          "mode": "100644"
+        },
+        "skills/lever/SKILL.md": {
+          "git_blob": "a67a6d34e1ec48ad3aef07510178cb24606f077b",
+          "mode": "100644"
+        },
+        "skills/pr-shepherd/SKILL.md": {
+          "git_blob": "c388c9ddd99f6d660bd538743e2f20375d069dc3",
+          "mode": "100644"
+        },
+        "skills/pr-shepherd/pr-state.graphql": {
+          "git_blob": "f198ddae708e8a750da6d024f308cf3693a5bd78",
+          "mode": "100644"
+        },
+        "skills/progress-contract/SKILL.md": {
+          "git_blob": "a6deaded0b661fb431bfa9ae946f5c07f648a8d1",
+          "mode": "100644"
+        },
+        "skills/prompt-mirror/SKILL.md": {
+          "git_blob": "9ed26445305a9fc7570473a7b5a564842ea662b9",
+          "mode": "100644"
+        },
+        "skills/prompt-mirror/scripts/mine_sessions.py": {
+          "git_blob": "24ec51265f599e5e4f51ffd72939389f12c6d713",
+          "mode": "100755"
+        },
+        "skills/refactor-pipeline/SKILL.md": {
+          "git_blob": "a06cea8cfe5aa5f928f5004a50a3e2efc9c2eeed",
+          "mode": "100644"
+        },
+        "skills/run-health-review/SKILL.md": {
+          "git_blob": "64a4e106d22a0bc6ff6174d113daa2ed48d4dd80",
+          "mode": "100644"
+        },
+        "skills/steer-once/SKILL.md": {
+          "git_blob": "0daff77b5613a14baa6de905c61de9e98a111c50",
+          "mode": "100644"
+        },
+        "templates/brief.md": {
+          "git_blob": "5ebf6d9918d50ae598a6ac28c843ccc94c0efe91",
+          "mode": "100644"
+        },
+        "templates/handoff.md": {
+          "git_blob": "6d6ae3dec34c2882b706807de70f68c1819249c2",
+          "mode": "100644"
+        },
+        "templates/ledger.md": {
+          "git_blob": "de5f9dd2c99f95ac2893330044cb6c9c79d42133",
+          "mode": "100644"
+        },
+        "templates/loop-card.md": {
+          "git_blob": "df1265f095cfc77b5485148d5afa1bb8bcb52e4d",
+          "mode": "100644"
+        },
+        "templates/status-digest.md": {
+          "git_blob": "fca023ce2e71031f24b51095936aa11585968b96",
+          "mode": "100644"
+        }
+      }
+    },
+    "openwiki": {
+      "repository": "https://github.com/langchain-ai/openwiki",
+      "revision": "305599f8e44203f9ca6b74bb6b38eebaf0b0405e",
+      "path": ".",
+      "version": "0.7.2",
+      "license": "MIT",
+      "paths": {
+        "skills": "integrations",
+        "agents": null,
+        "rules": null
+      },
+      "evaluation": "installed-and-native-mcp-smoke-tested",
+      "evaluation_report": "docs/openwiki.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "14fac913ccf80234b1848540089a3bbcb6e5283d",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "5b72e0cae90c3a8c2810ee7c4d447164dd024eef",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "7383ea10673fd0982af3d4caa69b8f67362c6580",
+          "mode": "100644"
+        },
+        "integrations/openwiki/SKILL.md": {
+          "git_blob": "354a84c29e22f52105f0c2cb8ab747ff5473a77e",
+          "mode": "100644"
+        },
+        "integrations/openwiki/agents/bob.yaml": {
+          "git_blob": "2e423a5cf150bfe6d6b93e92449f9bfe775aef2b",
+          "mode": "100644"
+        },
+        "integrations/openwiki/agents/openai.yaml": {
+          "git_blob": "2e423a5cf150bfe6d6b93e92449f9bfe775aef2b",
+          "mode": "100644"
+        }
+      }
+    },
+    "caveman": {
+      "repository": "https://github.com/JuliusBrussee/caveman",
+      "revision": "9b68f7ed12b05e7efaff18e65c5a3fc2849fd0a4",
+      "path": ".",
+      "version": "4.0.1",
+      "license": "Apache-2.0",
+      "paths": {
+        "skills": "skills",
+        "agents": "agents",
+        "rules": null
+      },
+      "evaluation": "source-reviewed-and-hook-tested",
+      "evaluation_report": "docs/caveman.md",
+      "files": {
+        ".claude-plugin/marketplace.json": {
+          "git_blob": "982c1f6a8dec074cc67b1f210bb0dd4b44efbc37",
+          "mode": "100644"
+        },
+        ".claude-plugin/plugin.json": {
+          "git_blob": "124ef208dcf4a1079b93cbb41c6b0a49ea35ab60",
+          "mode": "100644"
+        },
+        ".codex/codex-sessionstart.js": {
+          "git_blob": "916cda15dde27badc596327988c92990b1b9a2ad",
+          "mode": "100644"
+        },
+        ".codex/config.toml": {
+          "git_blob": "146af7eb8e7c5ede8c551dba3b4fd0ccedc85b9a",
+          "mode": "100644"
+        },
+        ".codex/hooks.json": {
+          "git_blob": "32c9c23560b458da24f9665eceba1acb39b5d823",
+          "mode": "100644"
+        },
+        ".cursor-plugin/plugin.json": {
+          "git_blob": "5a22900ff84b9793f0c1a96bdca2adce8997f2e3",
+          "mode": "100644"
+        },
+        "GEMINI.md": {
+          "git_blob": "01a2738b6644d9fade2c06208363a3c07b43af4c",
+          "mode": "100644"
+        },
+        "INSTALL.md": {
+          "git_blob": "71112e26dfcc107e8cc13bf7900d1a267ae6f6aa",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "mode": "100644"
+        },
+        "LICENSE-MIT": {
+          "git_blob": "d8c0ee8a752aeb14ee42044c3238e191f7571ac6",
+          "mode": "100644"
+        },
+        "LICENSING.md": {
+          "git_blob": "e270852b0db7b031d9d47ee891023eb35ae166bd",
+          "mode": "100644"
+        },
+        "NOTICE": {
+          "git_blob": "5b6c03199300662964c1c27906d9bdff47349e26",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "12902ac5443fa6b951a46f119ce8808198b7db9f",
+          "mode": "100644"
+        },
+        "agents/agents.json": {
+          "git_blob": "cde32b448324851756f143ee5c3611c05378535c",
+          "mode": "100644"
+        },
+        "agents/cavecrew-builder.md": {
+          "git_blob": "5549ed6b20d8eb614f400dfb7f07b41588e7e0b1",
+          "mode": "100644"
+        },
+        "agents/cavecrew-investigator.md": {
+          "git_blob": "e26712522431e74507609dadcbe35c73c7ab1b7c",
+          "mode": "100644"
+        },
+        "agents/cavecrew-reviewer.md": {
+          "git_blob": "2d16f29405a8a54ed7b349590f69be6734844705",
+          "mode": "100644"
+        },
+        "agents/check-profile-scope.mjs": {
+          "git_blob": "596a7110c0556d84147df5859c391e7119f644c8",
+          "mode": "100644"
+        },
+        "agents/compile.mjs": {
+          "git_blob": "cedab3fb86d2271f85a218dbdfeeddb7ef5ed14d",
+          "mode": "100644"
+        },
+        "agents/delegate/caveman-delegate-mcp.mjs": {
+          "git_blob": "02577b670e1706596d2707b5ddda20dc131a7ff0",
+          "mode": "100644"
+        },
+        "agents/delegate/portable-process.mjs": {
+          "git_blob": "3fd9e8bd959bb69b4958d9bb6225c9b4a83e6cfb",
+          "mode": "100644"
+        },
+        "agents/delegate/portable-process.test.mjs": {
+          "git_blob": "9c2465d73a3c8cd3f473e23f23aabc46df7ad19a",
+          "mode": "100644"
+        },
+        "agents/drift-report.mjs": {
+          "git_blob": "5eb92b0cc5ea362b88eac9012fe5a3acd8ff1b7d",
+          "mode": "100644"
+        },
+        "agents/probe-installed.mjs": {
+          "git_blob": "19f7b5ac58112c00fcf7cc1a10826448a3067086",
+          "mode": "100644"
+        },
+        "agents/profiles/aider.json": {
+          "git_blob": "43055d3d166bb7823ae035985baee5a6429dcb78",
+          "mode": "100644"
+        },
+        "agents/profiles/claude.json": {
+          "git_blob": "27b91226189275dd4ce293b576bad2450edd2aba",
+          "mode": "100644"
+        },
+        "agents/profiles/codex.json": {
+          "git_blob": "f707dd50696730ae1d124ade1423afba52738c37",
+          "mode": "100644"
+        },
+        "agents/profiles/gemini.json": {
+          "git_blob": "4df17d16311445e008fef33c98de6886f70db12d",
+          "mode": "100644"
+        },
+        "agents/profiles/hermes.json": {
+          "git_blob": "697e5f77c48625b03a5a53c5de67525d1d7e4147",
+          "mode": "100644"
+        },
+        "agents/profiles/kilo.json": {
+          "git_blob": "938606d2cd0c03eb1d09cdc1666d062f23380d6a",
+          "mode": "100644"
+        },
+        "agents/profiles/openclaw.json": {
+          "git_blob": "42f62e235ef3152334cb8ae639b4ae0a25cae9a4",
+          "mode": "100644"
+        },
+        "agents/profiles/opencode.json": {
+          "git_blob": "63490054b2af71f4aec45fb1645f133055cd39ca",
+          "mode": "100644"
+        },
+        "agents/profiles/pi.json": {
+          "git_blob": "d07e3aba4e44cc8d27f5e792cf2f90d848bed80e",
+          "mode": "100644"
+        },
+        "agents/profiles/qwen.json": {
+          "git_blob": "3b003f1b762d905fa7e238ef5385ee13b2b897c8",
+          "mode": "100644"
+        },
+        "agents/profiles/schema.json": {
+          "git_blob": "642bc7632c480e0f0f9dfbec0e0264a93cfe6514",
+          "mode": "100644"
+        },
+        "agents/reserved-verbs.json": {
+          "git_blob": "49752f27db4dfe03df9b347037cc69ed2bfb913c",
+          "mode": "100644"
+        },
+        "agents/version.mjs": {
+          "git_blob": "a9937bf0ab0a0da2a868e05048d9acb05bf7f0e9",
+          "mode": "100644"
+        },
+        "commands/caveman-commit.toml": {
+          "git_blob": "2487bac80790ce12afc321ddd9662a000d84f535",
+          "mode": "100644"
+        },
+        "commands/caveman-init.md": {
+          "git_blob": "fb4da84aa44cab4e65a41bb6fffc824a04522886",
+          "mode": "100644"
+        },
+        "commands/caveman-init.toml": {
+          "git_blob": "6e572477b402cb038bd39b62db9cb8b3519b1993",
+          "mode": "100644"
+        },
+        "commands/caveman-review.toml": {
+          "git_blob": "6dccf3f30812de2f88623d954eb3ce540d2e77bc",
+          "mode": "100644"
+        },
+        "commands/caveman-stats.toml": {
+          "git_blob": "97a717dec754248d36beed7bde47b3f52293a30d",
+          "mode": "100644"
+        },
+        "commands/caveman.toml": {
+          "git_blob": "7108deb686fd2096b045f3d2b496608af4910dea",
+          "mode": "100644"
+        },
+        "commands/megacave.toml": {
+          "git_blob": "6ac1d715f06d1a6cdcd67376e1a5912a52262ef7",
+          "mode": "100644"
+        },
+        "commands/ultracave.toml": {
+          "git_blob": "364a2a94b7e2d7441d2c88ecce5ae019a32b6846",
+          "mode": "100644"
+        },
+        "gemini-extension.json": {
+          "git_blob": "1956bf53ebf75c7d54341c08447380b324e53d5f",
+          "mode": "100644"
+        },
+        "hooks/hooks-cursor.json": {
+          "git_blob": "1082915a2d0371ea6163d4f30f56d9cf91997812",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "25a74fded9239f5b89148f8a772ad6ecf8946c05",
+          "mode": "100644"
+        },
+        "plugins/caveman/.codex-plugin/plugin.json": {
+          "git_blob": "b477472dffa532fdfd6bfb1c059f37b1ad77dbdb",
+          "mode": "100644"
+        },
+        "plugins/caveman/agents/cavecrew-builder.md": {
+          "git_blob": "5549ed6b20d8eb614f400dfb7f07b41588e7e0b1",
+          "mode": "100644"
+        },
+        "plugins/caveman/agents/cavecrew-investigator.md": {
+          "git_blob": "e26712522431e74507609dadcbe35c73c7ab1b7c",
+          "mode": "100644"
+        },
+        "plugins/caveman/agents/cavecrew-reviewer.md": {
+          "git_blob": "2d16f29405a8a54ed7b349590f69be6734844705",
+          "mode": "100644"
+        },
+        "plugins/caveman/assets/caveman-small.svg": {
+          "git_blob": "d85603ea78707c58fda97e97af57486986959c6f",
+          "mode": "100644"
+        },
+        "plugins/caveman/assets/caveman.svg": {
+          "git_blob": "c19d09ba2b9882367d4bb987c2be64ab46caeef7",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/cavecrew/SKILL.md": {
+          "git_blob": "71cb6254e00f59e2f167b15d14f1450af2dbc251",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman/SKILL.md": {
+          "git_blob": "9a94044529e5ee1576361c891b4a271504518e6f",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman/agents/openai.yaml": {
+          "git_blob": "b7cda02191dfd56885a320ef82a77208acf0b0ab",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman/assets/caveman-small.svg": {
+          "git_blob": "d85603ea78707c58fda97e97af57486986959c6f",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman/assets/caveman.svg": {
+          "git_blob": "c19d09ba2b9882367d4bb987c2be64ab46caeef7",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/SKILL.md": {
+          "git_blob": "9110fa6eda6b674ba97e21efeea6c1300a20e06f",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/__init__.py": {
+          "git_blob": "16b8c53c2ca7f8c7c105a0f6c72a46acbd02fec4",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/__main__.py": {
+          "git_blob": "4e28416e104515e90fca4b69cc60d0c61fd15d61",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/benchmark.py": {
+          "git_blob": "97d081b5c60cc2aaaf1735a4deeea59f7fbffe49",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/cli.py": {
+          "git_blob": "330410bc6abd63df65afdcdc338ce101b27efffa",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/compress.py": {
+          "git_blob": "e34a975d4aed33d0871260bd0d4563e5603743f6",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/detect.py": {
+          "git_blob": "b7da1fa8528bf0c8dfad98fcb82c5eae52596794",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-compress/scripts/validate.py": {
+          "git_blob": "53eba1e265ebacec2ff4c88a7b2cbfb07ff9dcbe",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/caveman-stats/SKILL.md": {
+          "git_blob": "17f18f9d400631a4dcf0d47106d757a631ebf86b",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/megacave/SKILL.md": {
+          "git_blob": "e26ef7305706dbc4ae4fe8a1c14a6f9fdce574bc",
+          "mode": "100644"
+        },
+        "plugins/caveman/skills/ultracave/SKILL.md": {
+          "git_blob": "136db7e5c8804043c5329df8f767789b7d30228f",
+          "mode": "100644"
+        },
+        "skills/activation-rule.mjs": {
+          "git_blob": "568e372c0b42327fbff07fa78b8dd717a0a07994",
+          "mode": "100644"
+        },
+        "skills/cavecrew/README.md": {
+          "git_blob": "0801ba0d144100f22dc6f2f522aad7dfc6325b4f",
+          "mode": "100644"
+        },
+        "skills/cavecrew/SKILL.md": {
+          "git_blob": "71cb6254e00f59e2f167b15d14f1450af2dbc251",
+          "mode": "100644"
+        },
+        "skills/caveman/README.md": {
+          "git_blob": "d5eb2d5adfc5a0d4b8ab66af2f09cec1c1b4c7aa",
+          "mode": "100644"
+        },
+        "skills/caveman/SKILL.md": {
+          "git_blob": "9a94044529e5ee1576361c891b4a271504518e6f",
+          "mode": "100644"
+        },
+        "skills/caveman-commit/README.md": {
+          "git_blob": "d5aee01395009525d3b4f68e80764cbc3de6bf57",
+          "mode": "100644"
+        },
+        "skills/caveman-commit/SKILL.md": {
+          "git_blob": "e13d6afc293d3bdebbefe8b23a9d09144595e874",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/README.md": {
+          "git_blob": "cf3abbb663e737f8499bbb618510bec852900264",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/SECURITY.md": {
+          "git_blob": "23824a43ee9e6699ff8fa4b9e95d8b2bc3ad653e",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/SKILL.md": {
+          "git_blob": "9110fa6eda6b674ba97e21efeea6c1300a20e06f",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/__init__.py": {
+          "git_blob": "16b8c53c2ca7f8c7c105a0f6c72a46acbd02fec4",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/__main__.py": {
+          "git_blob": "4e28416e104515e90fca4b69cc60d0c61fd15d61",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/benchmark.py": {
+          "git_blob": "97d081b5c60cc2aaaf1735a4deeea59f7fbffe49",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/cli.py": {
+          "git_blob": "330410bc6abd63df65afdcdc338ce101b27efffa",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/compress.py": {
+          "git_blob": "e34a975d4aed33d0871260bd0d4563e5603743f6",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/detect.py": {
+          "git_blob": "b7da1fa8528bf0c8dfad98fcb82c5eae52596794",
+          "mode": "100644"
+        },
+        "skills/caveman-compress/scripts/validate.py": {
+          "git_blob": "53eba1e265ebacec2ff4c88a7b2cbfb07ff9dcbe",
+          "mode": "100644"
+        },
+        "skills/caveman-discover/SKILL.md": {
+          "git_blob": "22e7e27433b40dc811a34f94e5213a4941ef7dd2",
+          "mode": "100644"
+        },
+        "skills/caveman-evidence-review/SKILL.md": {
+          "git_blob": "451447e385bb7f4e0ce21d92d6e9827fa028e4c8",
+          "mode": "100644"
+        },
+        "skills/caveman-explore/SKILL.md": {
+          "git_blob": "5bc2aa79833d34c411b5680ed0e7c60496982426",
+          "mode": "100644"
+        },
+        "skills/caveman-explore/package.json": {
+          "git_blob": "8de8abf9b4fcd054f1ad97d81e0d7e15c0dd88a4",
+          "mode": "100644"
+        },
+        "skills/caveman-explore/tests/skill-file.test.mjs": {
+          "git_blob": "85b78e30025658748f783fec7a1b65f65e4c0a23",
+          "mode": "100644"
+        },
+        "skills/caveman-help/README.md": {
+          "git_blob": "1ee3b4e499c6ef0605aa28a94b80284b15ed4b95",
+          "mode": "100644"
+        },
+        "skills/caveman-help/SKILL.md": {
+          "git_blob": "7805b3748cb95baca18a8be324f8d8597216e947",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/CLAUDE.md": {
+          "git_blob": "44a1110753444879e942994450ef01d457de584b",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/README.md": {
+          "git_blob": "ccecb9abd3e60e04a203f56c6c1d17f63d59c0e3",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/SKILL.md": {
+          "git_blob": "8dc2c2d4a6cc9e4f3c5a1184af02a2f349477110",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/package.json": {
+          "git_blob": "9f03489b6b7b80fbe257e17de1f9e810c031cfb2",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/tests/index.js": {
+          "git_blob": "2c85b56e0d2901b7a6e1d3eb66cfbd981f4f21d9",
+          "mode": "100644"
+        },
+        "skills/caveman-learn/tests/skill-file.test.mjs": {
+          "git_blob": "838351b360e19a63627a97179b1e8d6c6aeeb4e9",
+          "mode": "100644"
+        },
+        "skills/caveman-manage/SKILL.md": {
+          "git_blob": "a1395b535fd9cb0a03dd3ce099a6b56a2f6a9076",
+          "mode": "100644"
+        },
+        "skills/caveman-optimize/SKILL.md": {
+          "git_blob": "93dc85f6b0af1aba49e81e8a51d6e55a249b2a0a",
+          "mode": "100644"
+        },
+        "skills/caveman-review/README.md": {
+          "git_blob": "acf519fe7a8c3970e6fd1d2557a3c741d63992b3",
+          "mode": "100644"
+        },
+        "skills/caveman-review/SKILL.md": {
+          "git_blob": "ed2bf49948c1514c147a699a484456a5ff7b27f7",
+          "mode": "100644"
+        },
+        "skills/caveman-setup/SKILL.md": {
+          "git_blob": "bf5f27c18fa31e10ef5245850bd40fe5847bfbdb",
+          "mode": "100644"
+        },
+        "skills/caveman-stats/README.md": {
+          "git_blob": "62c95569308a099accfa39e18d94c48c88bff50d",
+          "mode": "100644"
+        },
+        "skills/caveman-stats/SKILL.md": {
+          "git_blob": "681136b629ca275da2391c72a11bcf8bcbf6eca5",
+          "mode": "100644"
+        },
+        "skills/compile.mjs": {
+          "git_blob": "caec2ead12e8930ed14446d7a57fe3b5d8c16379",
+          "mode": "100644"
+        },
+        "skills/engine-mcp-tools.json": {
+          "git_blob": "ff5708d65691d9c56d00dfd36b5e2efed81bd128",
+          "mode": "100644"
+        },
+        "skills/generated/aider/pack.json": {
+          "git_blob": "a565153e5a37e6b4857794ea765cc5dd2ec296d3",
+          "mode": "100644"
+        },
+        "skills/generated/claude/pack.json": {
+          "git_blob": "1984a13b15adb293145a95b8e113f1a564769a52",
+          "mode": "100644"
+        },
+        "skills/generated/codex/pack.json": {
+          "git_blob": "761959832619a48e3f9f7565a7b3c22eefa6ca81",
+          "mode": "100644"
+        },
+        "skills/generated/gemini/pack.json": {
+          "git_blob": "11e0fbc131a8ff8790651be98092d6588014a429",
+          "mode": "100644"
+        },
+        "skills/generated/hermes/pack.json": {
+          "git_blob": "16fdbb5422d1ab83f9c4824c4b62e88f5cb17cab",
+          "mode": "100644"
+        },
+        "skills/generated/opencode/pack.json": {
+          "git_blob": "5e8b02645e03dfdbee6038246149340fe606dc88",
+          "mode": "100644"
+        },
+        "skills/investigate-first/SKILL.md": {
+          "git_blob": "83b2a9b35bea16e4d03439e44af367282e85c57c",
+          "mode": "100644"
+        },
+        "skills/investigate-first/agents/openai.yaml": {
+          "git_blob": "f30303a8407bd6529d1e9b52db7435979ac5f229",
+          "mode": "100644"
+        },
+        "skills/lean-build/SKILL.md": {
+          "git_blob": "2f7ff32e28ef1f7a426af75e270f10d1dc6b13dd",
+          "mode": "100644"
+        },
+        "skills/lean-build/agents/openai.yaml": {
+          "git_blob": "2dc1f0f0496807aa06cd3ad166b57289c75ea515",
+          "mode": "100644"
+        },
+        "skills/megacave/README.md": {
+          "git_blob": "c60e8d0713cf574fb34c2a6feeaab840c4b1d61f",
+          "mode": "100644"
+        },
+        "skills/megacave/SKILL.md": {
+          "git_blob": "e26ef7305706dbc4ae4fe8a1c14a6f9fdce574bc",
+          "mode": "100644"
+        },
+        "skills/migration/SKILL.md": {
+          "git_blob": "7d1f2dcb083dcd182f6df1a5333b6ff9c9d03fe7",
+          "mode": "100644"
+        },
+        "skills/migration/agents/openai.yaml": {
+          "git_blob": "d04b219ca2acd7fd4e83171067a6ef6136766247",
+          "mode": "100644"
+        },
+        "skills/native/native-core.md": {
+          "git_blob": "64cc8cfab8e12ea1614e1eec0d5003f7d4c34e8a",
+          "mode": "100644"
+        },
+        "skills/registry.json": {
+          "git_blob": "3937180721b9deca5f55051287b4487ef8d1cecc",
+          "mode": "100644"
+        },
+        "skills/safe-refactor/SKILL.md": {
+          "git_blob": "0d492db7d302e87f5bf01738fee6a7543984a787",
+          "mode": "100644"
+        },
+        "skills/safe-refactor/agents/openai.yaml": {
+          "git_blob": "19606d55eeba3c67ec0a25f5e0c20f6129ed479e",
+          "mode": "100644"
+        },
+        "skills/surgical-patch/SKILL.md": {
+          "git_blob": "1c06cb1436efd87f5641270cef3c2a27a71442ed",
+          "mode": "100644"
+        },
+        "skills/surgical-patch/agents/openai.yaml": {
+          "git_blob": "d539722c01c4f1c5d6468a30e6dcac64aa721a86",
+          "mode": "100644"
+        },
+        "skills/ultracave/README.md": {
+          "git_blob": "6813d00af0e2454b061223a6ecb414df4e4c9905",
+          "mode": "100644"
+        },
+        "skills/ultracave/SKILL.md": {
+          "git_blob": "136db7e5c8804043c5329df8f767789b7d30228f",
+          "mode": "100644"
+        },
+        "skills/verbs-gate.mjs": {
+          "git_blob": "c9ffd4894899dbebaa39f477eec649a7d577a6ca",
+          "mode": "100644"
+        },
+        "skills/verify-and-stop/SKILL.md": {
+          "git_blob": "58a9cd7bbf500bc2905260f908dbcd03f107fa93",
+          "mode": "100644"
+        },
+        "skills/verify-and-stop/agents/openai.yaml": {
+          "git_blob": "bf3a9261d09db5a01157643537519347dbf0f4ce",
+          "mode": "100644"
+        },
+        "src/hooks/README.md": {
+          "git_blob": "3b73d2837e2efb35477856a5cd88fe382ca200fe",
+          "mode": "100644"
+        },
+        "src/hooks/cavecrew-model-overrides.js": {
+          "git_blob": "f27f555546ec40c675bf4e9145183f8b6193b7ad",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-activate.js": {
+          "git_blob": "64fb5b6e708047451a11de8e31dc15f7b1236572",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-config.js": {
+          "git_blob": "ab49c0e6469bbcacf3f027cd6d79eca5c0f2dc69",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-host-session-start.js": {
+          "git_blob": "d56fbf850ca966d97519726b5099d09b0ebf5dfb",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-mode-tracker.js": {
+          "git_blob": "af99a7329d9a314eca78dca06dc61004f6887d2a",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-parse.js": {
+          "git_blob": "0dae2c36e8f5e79c742a64ef75cea4977d257873",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-stats.js": {
+          "git_blob": "c3e523f61c2905ffb0e974dfdb94f110f498a27c",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-statusline.ps1": {
+          "git_blob": "b3d91918543987e53387f9ca9b712723dae3c70e",
+          "mode": "100644"
+        },
+        "src/hooks/caveman-statusline.sh": {
+          "git_blob": "0e9a3ea52f5c1157ce6ff1d1dbea490138569912",
+          "mode": "100755"
+        },
+        "src/hooks/checksums.sha256": {
+          "git_blob": "9a20d8c13d88eaf458ae30625d4aa60d2024da82",
+          "mode": "100644"
+        },
+        "src/hooks/install.ps1": {
+          "git_blob": "33b10883f71cfa6b585e73ea0913daa07a71a49a",
+          "mode": "100644"
+        },
+        "src/hooks/install.sh": {
+          "git_blob": "896110b3f4359606cb4c4c3d1ccdf46c30bd6f02",
+          "mode": "100755"
+        },
+        "src/hooks/package.json": {
+          "git_blob": "5bbefffbabee392d1855491b84dc0a716b6a3bf2",
+          "mode": "100644"
+        },
+        "src/hooks/uninstall.ps1": {
+          "git_blob": "2d2d44446c5692291dccfbccae3debd03c948e2a",
+          "mode": "100644"
+        },
+        "src/hooks/uninstall.sh": {
+          "git_blob": "6905d0b8a7b1cfbab28e6f4b654e038a91a28532",
+          "mode": "100755"
+        },
+        "src/tools/caveman-init.js": {
+          "git_blob": "743e8b58b044cdba9105bb577459b728db70c773",
+          "mode": "100644"
+        }
+      }
+    },
+    "graphify": {
+      "repository": "https://github.com/Graphify-Labs/graphify",
+      "revision": "0a8cd4e1e342235fe53e881fb5d591bf0460071f",
+      "path": ".",
+      "version": "0.9.97",
+      "license": "Apache-2.0 with retained MIT notices",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "skill_templates": {
+        "default": {
+          "entrypoint": "graphify/skill-agents.md",
+          "references": "graphify/skills/agents/references"
+        },
+        "codex": {
+          "entrypoint": "graphify/skill-codex.md",
+          "references": "graphify/skills/codex/references"
+        },
+        "claude": {
+          "entrypoint": "graphify/skill.md",
+          "references": "graphify/skills/claude/references"
+        },
+        "cursor": {
+          "entrypoint": "graphify/skill-agents.md",
+          "references": "graphify/skills/agents/references"
+        }
+      },
+      "evaluation": "source-reviewed-and-runtime-verified",
+      "evaluation_report": "docs/graphify.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "mode": "100644"
+        },
+        "LICENSE-MIT": {
+          "git_blob": "b1d9746fb5c6c39fd502e2ebe432a12ad9a097f3",
+          "mode": "100644"
+        },
+        "NOTICE": {
+          "git_blob": "791bf88bb1e50572902dbbe9228153ea29846adf",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "a2240fea8f624fe86467911821cb9a55cede4e26",
+          "mode": "100644"
+        },
+        "graphify/skill-agents.md": {
+          "git_blob": "f4fee6921d8d66d7dcc5cfe7231782fc1a27c87d",
+          "mode": "100644"
+        },
+        "graphify/skill-codex.md": {
+          "git_blob": "7a3c0f3989768edf0b7fc9c2d6ec641ae0cfc368",
+          "mode": "100644"
+        },
+        "graphify/skill.md": {
+          "git_blob": "d09ad219b2c1f78f356a07dfbfcc24a57fe53c5b",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/add-watch.md": {
+          "git_blob": "349f8b409a30a2b53eacacdd390608b96a4d88a3",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/exports.md": {
+          "git_blob": "96e400fb48b2003bb8b3d370a64b3ade6bcb43a0",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/extraction-spec.md": {
+          "git_blob": "17c25da894a5b218597dc0aef59dd8e9273ea640",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/github-and-merge.md": {
+          "git_blob": "a41ea06e17c1676483356a2a06504a1bfb0870e4",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/hooks.md": {
+          "git_blob": "3fb74d1545394154c30ee052f24da8dd07dd9e9f",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/query.md": {
+          "git_blob": "8db31ffab052c32c5e48721fdcddc01a0c132eb2",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/transcribe.md": {
+          "git_blob": "b967f8379998b890945706b3c95fef23b2ec402f",
+          "mode": "100644"
+        },
+        "graphify/skills/agents/references/update.md": {
+          "git_blob": "b7644de12a85a435cc1abd29be210d6ed0b5bd27",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/add-watch.md": {
+          "git_blob": "349f8b409a30a2b53eacacdd390608b96a4d88a3",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/exports.md": {
+          "git_blob": "96e400fb48b2003bb8b3d370a64b3ade6bcb43a0",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/extraction-spec.md": {
+          "git_blob": "17c25da894a5b218597dc0aef59dd8e9273ea640",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/github-and-merge.md": {
+          "git_blob": "a41ea06e17c1676483356a2a06504a1bfb0870e4",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/hooks.md": {
+          "git_blob": "438b8b16be18480a1e77759b3e74fc8a9e97eae7",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/query.md": {
+          "git_blob": "8db31ffab052c32c5e48721fdcddc01a0c132eb2",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/transcribe.md": {
+          "git_blob": "b967f8379998b890945706b3c95fef23b2ec402f",
+          "mode": "100644"
+        },
+        "graphify/skills/claude/references/update.md": {
+          "git_blob": "b7644de12a85a435cc1abd29be210d6ed0b5bd27",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/add-watch.md": {
+          "git_blob": "349f8b409a30a2b53eacacdd390608b96a4d88a3",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/exports.md": {
+          "git_blob": "96e400fb48b2003bb8b3d370a64b3ade6bcb43a0",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/extraction-spec.md": {
+          "git_blob": "8a2aa6aa59ad25205f1315c7cb483e4c5cfc0633",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/github-and-merge.md": {
+          "git_blob": "a41ea06e17c1676483356a2a06504a1bfb0870e4",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/hooks.md": {
+          "git_blob": "438b8b16be18480a1e77759b3e74fc8a9e97eae7",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/query.md": {
+          "git_blob": "8db31ffab052c32c5e48721fdcddc01a0c132eb2",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/transcribe.md": {
+          "git_blob": "b967f8379998b890945706b3c95fef23b2ec402f",
+          "mode": "100644"
+        },
+        "graphify/skills/codex/references/update.md": {
+          "git_blob": "b7644de12a85a435cc1abd29be210d6ed0b5bd27",
+          "mode": "100644"
+        },
+        "pyproject.toml": {
+          "git_blob": "1e621911e2bdf71d93b0930c659c999fac24e010",
+          "mode": "100644"
+        }
+      }
+    }
+  }
+}

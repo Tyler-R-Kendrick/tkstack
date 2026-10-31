@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "snapshot_sha256": "REPLACE_WITH_ACTUAL_REVIEW_HASH",
+  "findings": [
+    {
+      "id": "example-mechanism",
+      "scope": "workspace",
+      "disposition": "generalize",
+      "observation": "Replace with the actual observed decision and consequence.",
+      "trigger": "Replace with the transferable triggering situation.",
+      "principle": "Replace with the reasoning rule behind the correction.",
+      "boundary": "State where the generalization must stop.",
+      "transfer": "Name a distinct situation and the expected behavior.",
+      "counterexample": "Name a legitimate case where this should not apply.",
+      "rationale": "Explain why these mechanisms are the smallest sufficient set.",
+      "scope_basis": "Identify the actual evidence supporting this scope.",
+      "evidence": [
+        {"scope": "workspace", "session": "ACTUAL_SESSION_ID", "path": "notes.md", "sha256": "ACTUAL_FILE_HASH"}
+      ],
+      "mechanisms": [
+        {"kind": "reusable-code", "target": "existing/canonical/module", "depends_on": []},
+        {"kind": "procedure", "target": "skills/existing-owner", "depends_on": ["example-mechanism.reusable-code"]},
+        {"kind": "compiled-workflow", "target": "skills/existing-owner/scripts/workflow.lock.json", "depends_on": ["example-mechanism.procedure"]}
+      ]
+    }
+  ]
+}

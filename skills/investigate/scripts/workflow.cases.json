@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-skill-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "investigate",
+        "purpose": "Resolve a falsifiable question from primary evidence and preserve diagnosis-only scope.",
+        "criteria": [
+          {
+            "id": "sources",
+            "description": "Ground consequential claims in authorized primary source evidence."
+          },
+          {
+            "id": "falsification",
+            "description": "Attempt to falsify the leading explanation and retain contradictions and unknowns."
+          },
+          {
+            "id": "scope",
+            "description": "A diagnosis-only request does not authorize product edits or unrelated private histories."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "claims_grounded": {
+              "type": "boolean",
+              "const": true
+            },
+            "empty_search_claims_absence": {
+              "type": "boolean",
+              "const": false
+            },
+            "diagnose_only": {
+              "type": "boolean"
+            },
+            "product_code_changed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "claims_grounded",
+            "empty_search_claims_absence",
+            "diagnose_only",
+            "product_code_changed"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "diagnose_only": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "product_code_changed": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "limits": [
+          "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+          "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+          "The deterministic core checks report facts/coverage. Source tracing, falsification and evidence interpretation remain explicit investigative work."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-operation",
+      "input": {
+        "operation": "not-a-command"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-unknown-model-parameter",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

@@ -1,0 +1,344 @@
+{
+  "version": 1,
+  "name": "skillify",
+  "purpose": "Package a verified executable procedure and typed progressive command index.",
+  "criteria": [
+    {
+      "id": "execution-contract",
+      "description": "Implement and verify the actual tool; a scaffold or prompt-forwarding wrapper is incomplete."
+    },
+    {
+      "id": "progressive-disclosure",
+      "description": "Keep the main skill as an index with typed commands and conditional referenced topics."
+    },
+    {
+      "id": "native-tool",
+      "description": "Check actual CLI/API outcomes, reserved discovery and native effect boundaries."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "workflow_implemented": {
+        "type": "boolean",
+        "const": true
+      },
+      "progressive_index": {
+        "type": "boolean",
+        "const": true
+      },
+      "real_tool_verified": {
+        "type": "boolean",
+        "const": true
+      },
+      "prompt_forwarding_only": {
+        "type": "boolean",
+        "const": false
+      }
+    },
+    "required": [
+      "workflow_implemented",
+      "progressive_index",
+      "real_tool_verified",
+      "prompt_forwarding_only"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_check": {
+      "entrypoint": "scripts/skillify.py",
+      "prefix": [
+        "check"
+      ],
+      "parameters": {
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "check"
+      ],
+      "description": "Read-only validation using the existing skillify helper."
+    },
+    "native_scaffold": {
+      "entrypoint": "scripts/skillify.py",
+      "prefix": [
+        "scaffold"
+      ],
+      "parameters": {
+        "name": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--name"
+          ]
+        },
+        "description": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--description"
+          ]
+        },
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--target"
+          ],
+          "path": true
+        },
+        "backend": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "python",
+              "ai-sdk"
+            ]
+          },
+          "flags": [
+            "--backend"
+          ],
+          "default": "python"
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "scaffold"
+      ],
+      "description": "Create a draft with the actual skillify generator; refuses an existing target."
+    },
+    "native_convert": {
+      "entrypoint": "scripts/skillify.py",
+      "prefix": [
+        "convert"
+      ],
+      "parameters": {
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [],
+          "path": true
+        },
+        "dry_run": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--dry-run"
+          ],
+          "default": false
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "convert"
+      ],
+      "description": "Plan or apply the existing owned-skill conversion without overwriting native helpers."
+    },
+    "native_normalize": {
+      "entrypoint": "scripts/skillify.py",
+      "prefix": [
+        "normalize"
+      ],
+      "parameters": {
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [],
+          "path": true
+        },
+        "profile": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--profile"
+          ],
+          "path": true
+        },
+        "dry_run": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--dry-run"
+          ],
+          "default": false
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "normalize"
+      ],
+      "description": "Normalize an existing owned skill using the shared explicit contract/profile; dry-run stays read-only."
+    },
+    "native_compile": {
+      "entrypoint": "scripts/skillify.py",
+      "prefix": [
+        "compile"
+      ],
+      "parameters": {
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [],
+          "path": true
+        },
+        "cases": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--cases"
+          ],
+          "path": true
+        },
+        "entrypoint": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--entrypoint"
+          ],
+          "default": null
+        },
+        "profile": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "flags": [
+            "--profile"
+          ],
+          "repeat": true,
+          "default": []
+        },
+        "dependencies": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--dependencies"
+          ],
+          "path": true,
+          "default": null
+        },
+        "jobs": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "flags": [
+            "--jobs"
+          ],
+          "default": 4
+        },
+        "dry_run": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--dry-run"
+          ],
+          "default": false
+        },
+        "config": {
+          "schema": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "flags": [
+            "--config"
+          ],
+          "path": true,
+          "default": null
+        },
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true,
+          "default": "."
+        },
+        "timeout": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          },
+          "flags": [
+            "--timeout"
+          ],
+          "default": 30
+        },
+        "include": {
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "flags": [
+            "--include"
+          ],
+          "path": true,
+          "repeat": true,
+          "default": []
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "compile"
+      ],
+      "description": "Compile supplied native code and actual contract cases with the existing skillify compiler. Cases can execute their declared effects/inference; retain actual authorization and explicit profiles."
+    }
+  },
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Contract verification does not finish a scaffold or prove an authored skill procedure effective; exercise its real executable outcome."
+  ]
+}

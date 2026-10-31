@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "workload": {
+    "path": "workloads/example/baseline/initial-workload.md",
+    "sha256": "REPLACE_WITH_FROZEN_WORKLOAD_SHA256"
+  },
+  "requirements": ["R-001", "R-002"],
+  "max_concurrency": 4,
+  "tasks": [
+    {
+      "id": "contract",
+      "kind": "deliverable",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": [],
+      "paths": ["contracts/example/", "tests/contracts/fixtures/"],
+      "sparse_paths": ["contracts/example", "tests/contracts/fixtures", "tooling"],
+      "branch": "sdlc/example/contract",
+      "base_ref": "REPLACE_WITH_INITIAL_BASE_SHA",
+      "pr_parent": null,
+      "deliverable": "Versioned request/response contract for one observable behavior, including its error response",
+      "acceptance": [
+        "Given the workload's success and error scenarios, the contract distinguishes both outcomes",
+        "The consumer contract can run and the current provider fails verification for the intended missing behavior"
+      ],
+      "evidence": ["contract diff", "scenario-to-contract mapping", "intended red provider verification log"]
+    },
+    {
+      "id": "consumer",
+      "kind": "deliverable",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["contract"],
+      "paths": ["src/consumer/", "tests/contracts/consumer/"],
+      "sparse_paths": ["src/consumer", "contracts/example", "tests/contracts/consumer", "tooling"],
+      "branch": "sdlc/example/consumer",
+      "base_ref": "sdlc/example/contract",
+      "pr_parent": "contract",
+      "deliverable": "Consumer handling for the contracted success and error responses",
+      "acceptance": [
+        "One scenario fails against the old consumer for the intended behavioral reason",
+        "The real consumer produces and consumes the versioned contract without a browser journey"
+      ],
+      "evidence": ["consumer red/green logs", "consumer-generated contract digest", "before/after screenshots when the workload's presentation changes"]
+    },
+    {
+      "id": "provider",
+      "kind": "deliverable",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["contract"],
+      "paths": ["src/provider/", "tests/contracts/provider/"],
+      "sparse_paths": ["src/provider", "contracts/example", "tests/contracts/provider", "tests/contracts/fixtures", "tooling"],
+      "branch": "sdlc/example/provider",
+      "base_ref": "sdlc/example/contract",
+      "pr_parent": "contract",
+      "deliverable": "Provider implementation of the contracted success and error responses",
+      "acceptance": [
+        "Provider verification first fails for the intended missing behavior",
+        "The actual provider then verifies the consumer contract, including the error case and compatibility expectations"
+      ],
+      "evidence": ["provider red/green logs", "verified consumer contract digest", "sanitized HAR or request/response capture when required by the workload"]
+    },
+    {
+      "id": "integration-verification",
+      "kind": "review",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["consumer", "provider"],
+      "paths": ["reports/example/integration/"],
+      "sparse_paths": ["src/consumer", "src/provider", "contracts/example", "tests/contracts", "tooling", "reports/example/integration"],
+      "branch": "sdlc/example/integration-verification",
+      "base_ref": "REPLACE_WITH_RECORDED_CONSUMER_PROVIDER_INTEGRATION_SHA",
+      "pr_parent": null,
+      "deliverable": "Verification report for the exact joined consumer and provider heads",
+      "acceptance": [
+        "The coordinator records an integration head containing both accepted dependency heads before dispatch",
+        "All workload scenarios and real provider/consumer contract checks pass at that integration head",
+        "Every applicable evidence artifact is associated with a requirement, head, command, and result"
+      ],
+      "evidence": ["integration head and input-head manifest", "contract verification report", "requirement evidence index"]
+    },
+    {
+      "id": "adversarial-review",
+      "kind": "review",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["consumer", "provider"],
+      "paths": ["reports/example/adversarial/"],
+      "sparse_paths": ["src/consumer", "src/provider", "contracts/example", "tests/contracts", "tooling", "reports/example/adversarial"],
+      "branch": "sdlc/example/adversarial-review",
+      "base_ref": "REPLACE_WITH_RECORDED_CONSUMER_PROVIDER_INTEGRATION_SHA",
+      "pr_parent": null,
+      "deliverable": "Independent attempts to falsify the behavior, compatibility, and evidence claims",
+      "acceptance": [
+        "The reviewer reads the frozen initial workload and inspects the exact joined heads independently",
+        "Each finding has a stable ID, affected requirement, severity, reproduction, and owning task",
+        "The report states the tested limits instead of treating missing evidence as approval"
+      ],
+      "evidence": ["adversarial finding ledger", "reproduction artifacts", "reviewed workload digest and input heads"]
+    },
+    {
+      "id": "provider-mitigation",
+      "kind": "mitigation",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["provider", "integration-verification", "adversarial-review"],
+      "paths": ["src/provider/", "tests/contracts/provider/", "reports/example/mitigation/"],
+      "sparse_paths": ["src/provider", "contracts/example", "tests/contracts/provider", "tests/contracts/fixtures", "tooling", "reports/example/mitigation"],
+      "branch": "sdlc/example/provider-mitigation",
+      "base_ref": "sdlc/example/provider",
+      "pr_parent": "provider",
+      "deliverable": "Disposition and bounded correction of findings assigned to the provider atom",
+      "acceptance": [
+        "An exclusive writer fixes assigned findings or records an evidence-backed dismissal",
+        "A behavioral fix has an intended red reproduction followed by green provider contract verification",
+        "If no provider finding applies, the task records a no-change result instead of manufacturing code or a PR",
+        "Findings assigned to another atom become separate mitigation nodes with that atom's ownership"
+      ],
+      "evidence": ["finding dispositions", "mitigation red/green logs", "new provider head and affected evidence replacements"]
+    },
+    {
+      "id": "final-compliance",
+      "kind": "review",
+      "requirements": ["R-001", "R-002"],
+      "depends_on": ["consumer", "provider-mitigation"],
+      "paths": ["reports/example/final/"],
+      "sparse_paths": ["src/consumer", "src/provider", "contracts/example", "tests/contracts", "tooling", "reports/example/final"],
+      "branch": "sdlc/example/final-compliance",
+      "base_ref": "REPLACE_WITH_FINAL_VERIFIED_INTEGRATION_SHA",
+      "pr_parent": null,
+      "deliverable": "Independent compliance decision against the frozen initial workload and all current branch inputs",
+      "acceptance": [
+        "The final integration head includes the accepted consumer and mitigated provider heads",
+        "Every initial requirement and scenario maps to current applicable evidence or an explicit unsatisfied result",
+        "All required comments, findings, checks, dependency gates, and evidence freshness checks have an accountable disposition"
+      ],
+      "evidence": ["final requirement-to-evidence matrix", "final reviewed head manifest", "compliance verdict and unresolved blockers"]
+    }
+  ]
+}

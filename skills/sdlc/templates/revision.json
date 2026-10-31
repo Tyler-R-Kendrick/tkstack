@@ -1,0 +1,12 @@
+{
+  "expected_revision": 1,
+  "graph": "/repo/task-graph-v2.json",
+  "rationale": "Describe the discovered constraint, revised scenarios, and replanning consequences.",
+  "authorization": "Reference the actual current user instruction or existing authorized implementation scope.",
+  "requirements": [
+    {"id": "R-001", "status": "changed", "reason": "Describe the authorized behavioral revision."},
+    {"id": "R-002", "status": "unchanged", "reason": "Explain why the existing acceptance and proof remain applicable."}
+  ],
+  "resolves": ["I-001"],
+  "adrs": [{"path": "/repo/docs/adr/0001-storage.md", "decision": "Record the actual accepted decision."}]
+}

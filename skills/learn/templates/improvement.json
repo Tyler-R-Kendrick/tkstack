@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "origin": "learn",
+  "mode": "report",
+  "status": "proposed",
+  "observation_window": "REPLACE_WITH_ACTUAL_AVAILABLE_CONTEXT",
+  "target": {
+    "skill": "example",
+    "path": "skills/example/SKILL.md",
+    "ownership": "REPLACE_WITH_VERIFIED_OWNERSHIP",
+    "baseline_sha256": null,
+    "new_target_absent": false
+  },
+  "evidence_ids": [],
+  "original_artifacts": [],
+  "observed_problem_or_success": "",
+  "reasoning_principle": "",
+  "why_this_belongs_in_a_skill": "",
+  "change": {
+    "kind": "update",
+    "summary": "",
+    "candidate": "candidate/SKILL.md",
+    "diff": "change.diff"
+  },
+  "validation": {
+    "reproduction": "",
+    "transfer_case": "",
+    "boundary_case": "",
+    "commands_and_artifacts": [],
+    "optimizer_result": "not-run",
+    "behavioral_result": "pending",
+    "limits": []
+  },
+  "apply_scope": "REPLACE_WITH_THE_ACTUAL_REQUESTED_SCOPE",
+  "rollback": "",
+  "disposition": "pending"
+}

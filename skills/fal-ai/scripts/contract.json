@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "name": "fal-ai",
+  "purpose": "Plan media and use the selected actual provider with retained job identity and inspected terminal outputs.",
+  "criteria": [
+    {
+      "id": "brief-and-budget",
+      "description": "Preserve requested provider/model, reference material, format and authorized budget."
+    },
+    {
+      "id": "job-identity",
+      "description": "Retain endpoint/request identity and recover unknown jobs before retrying."
+    },
+    {
+      "id": "terminal-output",
+      "description": "Only terminal completed jobs may be presented as completed outputs."
+    },
+    {
+      "id": "inspection",
+      "description": "Inspect actual retrieved output for quality/fidelity; a URL alone is insufficient."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "provider_requested": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "provider_used": {
+        "type": "string",
+        "minLength": 1
+      },
+      "claim_complete": {
+        "type": "boolean"
+      },
+      "terminal_completed": {
+        "type": "boolean"
+      },
+      "output_inspected": {
+        "type": "boolean"
+      },
+      "unknown_job_resubmitted": {
+        "type": "boolean",
+        "const": false
+      }
+    },
+    "required": [
+      "provider_requested",
+      "provider_used",
+      "claim_complete",
+      "terminal_completed",
+      "output_inspected",
+      "unknown_job_resubmitted"
+    ],
+    "additionalProperties": false,
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "claim_complete": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "terminal_completed": {
+              "const": true
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "claim_complete": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "output_inspected": {
+              "const": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  "native": {},
+  "limits": [
+    "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
+    "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
+    "Actual provider/runtime access is required for execution. Verification does not start a provider job, proxy or account session.",
+    "The deterministic core submits no media job and authenticates no remote status. Use the selected actual provider and inspect retrieved terminal output."
+  ]
+}

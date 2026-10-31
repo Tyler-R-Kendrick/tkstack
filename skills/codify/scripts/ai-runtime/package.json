@@ -1,0 +1,29 @@
+{
+  "name": "tkstack-skill-runtime",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ai-sdk/gateway": "4.0.131",
+    "@ai-sdk/harness": "1.0.169",
+    "@ai-sdk/harness-claude-code": "1.0.173",
+    "@ai-sdk/harness-codex": "1.0.171",
+    "@ai-sdk/openai": "4.0.106",
+    "@ai-sdk/sandbox-vercel": "1.0.169",
+    "@ai-sdk/typesafe-ai": "3.0.31",
+    "ai": "7.0.158",
+    "zod": "4.6.7"
+  },
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "node --test --test-isolation=none runtime.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "@types/node": "26.6.6"
+  },
+  "license": "MIT"
+}

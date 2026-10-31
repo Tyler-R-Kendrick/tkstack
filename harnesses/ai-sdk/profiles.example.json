@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "maxConcurrency": 4,
+  "maxPending": 32,
+  "providers": {
+    "direct": {"kind": "openai", "apiKeyEnv": "TKSTACK_OPENAI_KEY"},
+    "gateway": {"kind": "gateway", "apiKeyEnv": "TKSTACK_GATEWAY_KEY"},
+    "specialized": {"kind": "typesafe", "apiKeyEnv": "TKSTACK_TYPESAFE_KEY"}
+  },
+  "profiles": {
+    "chat": {"kind": "language", "provider": "direct", "api": "chat", "modelEnv": "TKSTACK_CHAT_MODEL"},
+    "responses": {"kind": "language", "provider": "direct", "api": "responses", "modelEnv": "TKSTACK_RESPONSES_MODEL"},
+    "generate": {"kind": "language", "provider": "gateway", "api": "gateway", "modelEnv": "TKSTACK_GENERATION_MODEL"},
+    "classify": {"kind": "decision", "provider": "specialized", "modelEnv": "TKSTACK_DECISION_MODEL"},
+    "openai-decision": {"kind": "decision", "provider": "direct", "modelEnv": "TKSTACK_OPENAI_DECISION_MODEL"},
+    "codex": {
+      "kind": "harness", "harness": "codex", "modelEnv": "TKSTACK_CODEX_MODEL",
+      "authEnv": {"CODEX_API_KEY": "TKSTACK_CODEX_KEY"},
+      "permissionMode": "allow-all", "activeTools": [], "maxSteps": 1, "timeoutMs": 120000,
+      "sandbox": {"provider": "vercel", "runtime": "node24", "ports": [4000]}
+    },
+    "claude": {
+      "kind": "harness", "harness": "claude-code", "modelEnv": "TKSTACK_CLAUDE_MODEL",
+      "authEnv": {"ANTHROPIC_API_KEY": "TKSTACK_CLAUDE_KEY"},
+      "permissionMode": "allow-reads", "activeTools": [], "maxSteps": 1, "timeoutMs": 120000,
+      "sandbox": {"provider": "vercel", "runtime": "node24", "ports": [4000]}
+    }
+  }
+}

@@ -1,0 +1,33 @@
+# Ignore generated/local state; keep explicit repository metadata.
+*
+!.gitignore
+!reuse/
+!reuse/catalog.json
+# tkstack:private-state:start
+/bin/
+/bootstrap/
+/build/
+/cache/
+/evidence/
+/evolution/
+/git-hooks/
+/graphify/
+/hill-climb/
+/instructify/
+/integration-installs/
+/learnings/
+/locks/
+/openwiki/
+/runs/
+/runtime/
+/sdlc/
+/sessions/
+/skillify/
+/state/
+/steering/
+/tmp/
+/wikiskill/
+/worktrees/
+/.state-policy.lock/
+/.state-policy-*
+# tkstack:private-state:end

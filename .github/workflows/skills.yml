@@ -1,0 +1,35 @@
+name: Skill contracts and documentation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install locked command dependencies
+        run: |
+          python -m venv .tkstack/runtime/command-schema
+          .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/codify/requirements/requirements.lock
+      - name: Check every owned skill and executable artifact
+        run: .tkstack/runtime/command-schema/bin/python -B scripts/check_skills.py
+      - name: Check reviewed documentation
+        run: python -B scripts/check_docs.py check
+      - name: Run compiler and contract behavior tests
+        run: |
+          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_codify.py -v
+          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_command_schema.py -v
+          .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -p test_skill_normalization.py -v

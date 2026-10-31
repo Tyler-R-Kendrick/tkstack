@@ -1,0 +1,5 @@
+[lintbook]
+languages = ["rust"]
+autofix = false
+
+[lints]

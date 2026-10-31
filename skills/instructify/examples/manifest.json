@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "id": "contract-evidence",
+  "title": "Contract evidence",
+  "scope": ".",
+  "targets": [
+    "agents",
+    "claude"
+  ],
+  "instructions": [
+    {
+      "id": "report-actual-results",
+      "when": "Reporting validation of an API-boundary change.",
+      "instruction": "State the actual consumer/provider checks and their observed results.",
+      "verification": "Link the recorded command output for the current revision.",
+      "boundary": "If a required check could not run, report that gap explicitly.",
+      "source": "Demonstration only; replace with the actual authoritative request or contract."
+    }
+  ]
+}
