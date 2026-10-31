@@ -45,8 +45,10 @@ class SkillEvolutionTests(unittest.TestCase):
         marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
         self.assertEqual({plugin["name"] for plugin in marketplace["plugins"]},
                          {"learn", "sdlc", "unslop", "hill-climb", "tkstack-principles", "skillify", "hookify", "instructify", "flowify", "investigate", "write", "document", "fal-ai", "headroom", "open-design", "rtk", "lintify", "reusify", "codify"})
+        adopted = {"fal-ai", "headroom", "open-design", "rtk"}
         for plugin in marketplace["plugins"]:
-            directory = ROOT / "skills" / plugin["name"]
+            root = ".agents/skills" if plugin["name"] in adopted else "skills"
+            directory = ROOT / root / plugin["name"]
             self.assertEqual((ROOT / plugin["source"]).resolve(), directory)
             self.assertEqual(plugin["skills"], ["./"])
             self.assertFalse(plugin["strict"])

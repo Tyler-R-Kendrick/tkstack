@@ -12,19 +12,21 @@ ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location('owned_skill_checker', ROOT / 'skills/skillify/scripts/skillify.py')
 skillify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(skillify)
+sys.path.insert(0, str(ROOT / 'scripts'))
+from skill_roots import all_packages  # noqa: E402
 
 
 def check(root=ROOT, jobs=4):
     root = Path(root).resolve(strict=True)
     plugins = skillify.codify.parse_json((root / '.claude-plugin/marketplace.json').read_text())['plugins']
-    owned = {path.name for path in (root / 'skills').iterdir() if (path / 'SKILL.md').is_file()}
-    if {plugin['name'] for plugin in plugins} != owned:
+    packages = all_packages(root)
+    if {plugin['name'] for plugin in plugins} != set(packages):
         raise ValueError('Marketplace and owned skill inventory disagree')
     runtime = (root / 'skills/codify/scripts/package_runtime.py').read_bytes()
     json_reader = (root / 'skills/codify/scripts/json_contract.py').read_bytes()
     state = (root / 'scripts/tkstack_state.py').read_bytes()
     def inspect(plugin):
-        directory = root / 'skills' / plugin['name']
+        directory = packages[plugin['name']]
         for name, expected in (('package_runtime.py', runtime), ('json_contract.py', json_reader), ('tkstack_state.py', state)):
             if (directory / 'scripts' / name).read_bytes() != expected:
                 raise ValueError('Shared source drift in ' + plugin['name'] + '/' + name)

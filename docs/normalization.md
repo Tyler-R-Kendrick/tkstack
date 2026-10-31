@@ -1,6 +1,6 @@
 # Owned skill normalization
 
-All 19 packages under `skills/` share the owned Skillify/Codify command protocol:
+All 19 packages under `skills/` and `.agents/skills/` share the owned Skillify/Codify command protocol:
 reserved default help and version, an explicit contract `model`, a retained-report
 `verify`, and a current compiled `scripts/workflow.lock.json`. Existing native
 helpers remain the owners of their actual algorithms. Their typed native

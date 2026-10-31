@@ -44,14 +44,16 @@ class LeverTests(unittest.TestCase):
         plan = install.link_plan(ROOT, self.target, ["codex", "claude", "cursor"])
         selected = [(source, destination) for source, destination in plan
                     if source.is_relative_to(ROOT / "vendor/lever")]
-        self.assertEqual(len(selected), 48)
+        # Lever is harness-independent, so it installs once into the shared directory.
+        self.assertEqual(len(selected), 16)
+        self.assertEqual({destination.parent for _, destination in selected},
+                         {self.target / ".agents/skills"})
         with redirect_stdout(StringIO()):
             install.apply(selected)
-        for prefix in install.SKILL_PATHS.values():
-            router = self.target / prefix / "lever"
-            self.assertTrue((router / "../find-the-loop/SKILL.md").is_file())
-            self.assertTrue((router / "../../docs/spend.md").is_file())
-            self.assertTrue((router / "../../config/personal.example.yml").is_file())
+        router = self.target / ".agents/skills/lever"
+        self.assertTrue((router / "../find-the-loop/SKILL.md").is_file())
+        self.assertTrue((router / "../../docs/spend.md").is_file())
+        self.assertTrue((router / "../../config/personal.example.yml").is_file())
 
     def test_foreign_resource_collision_stops_before_dials_or_links(self):
         collision = self.target / ".github/docs"

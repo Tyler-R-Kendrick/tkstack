@@ -20,6 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / 'skills/codify/scripts'))
 import package_runtime as runtime
+sys.path.insert(0, str(ROOT / 'scripts'))
+from skill_roots import all_packages  # noqa: E402
+PACKAGES = all_packages(ROOT)
 
 
 class SkillNormalizationTests(unittest.TestCase):
@@ -29,14 +32,14 @@ class SkillNormalizationTests(unittest.TestCase):
         self.project = Path(temporary.name)
         self.evidence = self.project / 'actual-evidence.txt'
         self.evidence.write_text('Synthetic contract fixture: actual retained bytes, not a production provider or semantic-quality claim.\n')
-        self.models = {path.parent.parent.name: json.loads(path.read_text()) for path in ROOT.glob('skills/*/scripts/contract.json')}
+        self.models = {name: json.loads((path / 'scripts/contract.json').read_text()) for name, path in PACKAGES.items()}
 
     def call(self, skill, command, args=(), expected=0, raw=None):
         if raw is not None:
-            entry = ROOT / 'skills' / skill / 'scripts/run.py'
+            entry = PACKAGES.get(skill, ROOT / 'skills' / skill) / 'scripts/run.py'
             argv = [sys.executable, '-B', str(entry), '--input', '-']
         else:
-            argv = [sys.executable, '-B', str(ROOT / 'skills/codify/scripts/codify.py'), 'invoke', str(ROOT / 'skills' / skill), '--', *command, *args]
+            argv = [sys.executable, '-B', str(ROOT / 'skills/codify/scripts/codify.py'), 'invoke', str(PACKAGES.get(skill, ROOT / 'skills' / skill)), '--', *command, *args]
         process = subprocess.run(argv, input=raw, capture_output=True, text=True, timeout=90,
             env={**os.environ, 'TKSTACK_WORKSPACE_DIR': str(self.project / '.tkstack')})
         self.assertEqual(process.returncode, expected, process.stdout + process.stderr)
@@ -72,8 +75,8 @@ class SkillNormalizationTests(unittest.TestCase):
                        'limitations': 'Authored schema/coverage fixture only; no production quality or service execution claim.'}}
 
     def test_every_owned_skill_runs_its_compiled_model_and_real_report_verifier(self):
-        expected = {p.name for p in (ROOT / 'skills').iterdir() if (p / 'SKILL.md').is_file()}
-        self.assertEqual(set(self.models), expected)
+        expected = set(PACKAGES)
+        self.assertEqual(len(expected), 19)
         for name in sorted(expected):
             with self.subTest(skill=name):
                 self.assertEqual(self.call(name, ['model'])['name'], name)

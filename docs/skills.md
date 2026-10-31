@@ -1,13 +1,18 @@
 # Installed skill inventory
 
-All 19 owned packages share reserved help/version, explicit contract models,
+All 19 repository packages share reserved help/version, explicit contract models,
 retained-report verification, native helper bindings where applicable, and
 reviewed compiled artifacts. [Normalization coverage](normalization.md) describes
 what runs mechanically and what still requires actual semantic/provider work.
 
 
-All 183 skills are installed in Codex, Claude Code, and Cursor. Links point to
-source instructions; Impeccable selects a distinct build for each harness.
+Skills install by origin. The 15 skills under development in `skills/` join
+Codex, Claude Code, and Cursor. Harness-independent outside skills, including the
+four third-party-derived packages in `.agents/skills/`, install only to the shared
+`.agents/skills/` directory. Pstack and its Cursor Team Kit dependency install
+only to `.cursor/skills/`. Graphify and Impeccable ship a distinct build for each
+harness, so each harness keeps its native copy. `harnesses/skills.json` records
+this placement. Links point to source instructions.
 Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
 preserve upstream `disable-model-invocation: true` policy.
 
@@ -17,29 +22,38 @@ explicit report/audit and procedural skill-improvement modes. See
 [initial compatibility review](evaluation.md). Matt's TDD skill is `matt-tdd`;
 its internal calls are adapted while the pinned source stays unchanged.
 
-## Personal skills (19)
+## Skills under development (15)
 
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
 | [`codify`](../skills/codify/SKILL.md) | personal | User or model |
 | [`document`](../skills/document/SKILL.md) | personal | User or model |
-| [`fal-ai`](../skills/fal-ai/SKILL.md) | personal | User or model |
 | [`flowify`](../skills/flowify/SKILL.md) | personal | User or model |
-| [`headroom`](../skills/headroom/SKILL.md) | personal | User or model |
 | [`hill-climb`](../skills/hill-climb/SKILL.md) | personal | User only |
 | [`hookify`](../skills/hookify/SKILL.md) | personal | User or model |
 | [`instructify`](../skills/instructify/SKILL.md) | personal | User or model |
 | [`investigate`](../skills/investigate/SKILL.md) | personal | User or model |
 | [`learn`](../skills/learn/SKILL.md) | personal | User or model |
 | [`lintify`](../skills/lintify/SKILL.md) | personal | User or model |
-| [`open-design`](../skills/open-design/SKILL.md) | personal | User or model |
 | [`reusify`](../skills/reusify/SKILL.md) | personal | User or model |
-| [`rtk`](../skills/rtk/SKILL.md) | personal | User or model |
 | [`sdlc`](../skills/sdlc/SKILL.md) | personal | User only |
 | [`skillify`](../skills/skillify/SKILL.md) | personal | User or model |
 | [`tkstack-principles`](../skills/tkstack-principles/SKILL.md) | personal | User or model; native startup pointer |
 | [`unslop`](../skills/unslop/SKILL.md) | personal | User or model |
 | [`write`](../skills/write/SKILL.md) | personal | User or model |
+
+## Third-party-derived packages (4)
+
+These wrap or distill outside tools and live in `.agents/skills/`, not in the
+root `skills/` directory reserved for skills under active development. They keep
+the shared typed contract and marketplace entries.
+
+| Skill | Bucket | Invocation |
+| --- | --- | --- |
+| [`fal-ai`](../.agents/skills/fal-ai/SKILL.md) | third-party-derived | User or model |
+| [`headroom`](../.agents/skills/headroom/SKILL.md) | third-party-derived | User or model |
+| [`open-design`](../.agents/skills/open-design/SKILL.md) | third-party-derived | User or model |
+| [`rtk`](../.agents/skills/rtk/SKILL.md) | third-party-derived | User or model |
 
 The [curation review](skill-distillation.md) explains the portable owners, source
 choices, conditional references, and retained native specialists.

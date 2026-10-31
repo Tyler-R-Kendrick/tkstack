@@ -62,6 +62,10 @@ def main():
                    if not source.exists() or not install.matches(destination, source)]
         if missing:
             raise ValueError("Missing or mismatched installation: " + ", ".join(missing))
+        stale = install.stale_links(install.ROOT, target, harnesses, plan)
+        if stale:
+            raise ValueError("Stale links outside their placement; rerun the installer: "
+                             + ", ".join(map(str, stale)))
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if instruction_plan(install.ROOT, target, harnesses, scope):
             raise ValueError("Native steering pointers are missing or stale; rerun the installer")

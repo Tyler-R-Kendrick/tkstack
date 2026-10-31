@@ -6,6 +6,15 @@ generates a copy of Matt's skill tree with declarations and invocation
 references rewritten; relative reference paths and invocation-policy metadata
 stay intact. Remove an existing installation before changing its alias names.
 
+`placement` decides which harness directories receive each upstream source.
+Personal skills in `skills/` join every selected harness. By default, upstream
+skills and the committed third-party-derived packages in `.agents/skills/` go
+only to the shared `.agents/skills/` directory (the `codex` slot, which other
+Agent Skills hosts also read). Pstack and Cursor Team Kit are Cursor packages
+and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
+ship per-harness builds and keep every harness. Reinstalling removes this
+checkout's links that fall outside their placement; doctor reports any left.
+
 Cursor Team Kit's two native rules are installed into Cursor's rules directory.
 Shared workflow and engineering defaults are documented in `docs/standards.md`
 and the root agent instructions. Keep additional native settings under a

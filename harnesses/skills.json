@@ -7,5 +7,14 @@
       "tdd": "matt-tdd"
     }
   },
-  "rewrite_callers": {"pstack": false}
+  "rewrite_callers": {"pstack": false},
+  "placement": {
+    "default": ["codex"],
+    "sources": {
+      "cursor-team-kit": ["cursor"],
+      "graphify": ["codex", "claude", "cursor"],
+      "impeccable": ["codex", "claude", "cursor"],
+      "pstack": ["cursor"]
+    }
+  }
 }

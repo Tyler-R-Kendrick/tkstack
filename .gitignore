@@ -1,5 +1,13 @@
 # Local installations; sources live in vendor/, skills/, and agents/.
-/.agents/
+/.agents/*
+# Third-party-derived packages are committed in the harness-independent path;
+# every other .agents/skills entry is an installed link.
+!/.agents/skills/
+/.agents/skills/*
+!/.agents/skills/fal-ai/
+!/.agents/skills/headroom/
+!/.agents/skills/open-design/
+!/.agents/skills/rtk/
 /.claude/
 /.cursor/
 /.codex/

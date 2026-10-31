@@ -464,11 +464,11 @@
     },
     {
       "name": "fal-ai",
-      "path": "skills/fal-ai/SKILL.md",
+      "path": ".agents/skills/fal-ai/SKILL.md",
       "sha256": "607c34a298284e348ad07de44df2bad2b636ebf3ead5213bf10c507ccfb86eb3",
       "lines": 21,
       "bytes": 1140,
-      "canonical_source_path": "skills/fal-ai/SKILL.md",
+      "canonical_source_path": ".agents/skills/fal-ai/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -743,11 +743,11 @@
     },
     {
       "name": "headroom",
-      "path": "skills/headroom/SKILL.md",
+      "path": ".agents/skills/headroom/SKILL.md",
       "sha256": "ef5e99312323e3ff858373654fdac2621603b81b48564e125b5eef62a73a2aba",
       "lines": 21,
       "bytes": 1078,
-      "canonical_source_path": "skills/headroom/SKILL.md",
+      "canonical_source_path": ".agents/skills/headroom/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -1314,11 +1314,11 @@
     },
     {
       "name": "open-design",
-      "path": "skills/open-design/SKILL.md",
+      "path": ".agents/skills/open-design/SKILL.md",
       "sha256": "dedac7b89f9790bfbef6b6e4ec5fbc38ce36f34c0b9a0a10bf3eda9baf0f1af8",
       "lines": 23,
       "bytes": 1137,
-      "canonical_source_path": "skills/open-design/SKILL.md",
+      "canonical_source_path": ".agents/skills/open-design/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [
@@ -2083,11 +2083,11 @@
     },
     {
       "name": "rtk",
-      "path": "skills/rtk/SKILL.md",
+      "path": ".agents/skills/rtk/SKILL.md",
       "sha256": "f394497b99c77645e38b5fa8f0f1579e38db341ef777df914eb391a67a80f352",
       "lines": 19,
       "bytes": 945,
-      "canonical_source_path": "skills/rtk/SKILL.md",
+      "canonical_source_path": ".agents/skills/rtk/SKILL.md",
       "source": "owned",
       "disposition": "incorporate-existing",
       "destinations": [

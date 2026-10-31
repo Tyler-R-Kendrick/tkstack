@@ -12,7 +12,8 @@ official Claude/Cursor/Codex manifests, commands, Node hook dependencies, and
 Apache-2.0/MIT notices. All 151 selected files are locked byte-for-byte with
 their upstream Git blob hashes and modes. The separate Codex plugin bundle
 is retained as published; the shared installer exposes the full root skill set
-in all three harnesses without loading a duplicate plugin bundle.
+once, in the harness-independent `.agents/skills/` directory, without loading a
+duplicate plugin bundle.
 
 ```sh
 python3 scripts/install.py --target .
