@@ -149,11 +149,15 @@ interpreter. Some tests rebuild ignored aliases or native views.
 `python3 scripts/install.py --target .` restores the normal source installation
 before `python3 src/tool.py command-schema -B src/check_skills.py` and doctor.
 Those generated views are not documentation inputs or versioned source. The
-README maintain section includes the dry-run preview, routing inventory check,
-docs check, tests, and that restore sequence.
+README Develop section has copy-paste commands for
+`python3 -m unittest discover -s tests`,
+`REPO_QUALITY_GATE=1 python3 -m unittest tests.test_repo_quality`,
+`RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v`,
+and `python3 src/check_docs.py check`. The maintain section includes the dry-run
+preview, routing inventory check, docs check, tests, and that restore sequence.
 `tests/test_repo_quality.py` always checks the repo-quality harness shape.
 Ceiling assertions run only with `REPO_QUALITY_GATE=1`, and the promptfoo judge
 only with `RUN_JUDGE=1`, so a checkout below those ceilings still passes the
 default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
 requires each metric score to be 1.0. The harness is Unix-only. Commands are
-in the README maintain section and [Repository quality](../evals/README.md).
+in the README Develop section and [Repository quality](../evals/README.md).

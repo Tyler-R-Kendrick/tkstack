@@ -1,6 +1,7 @@
 """Deterministic repo-quality checks and the promptfoo eval config."""
 
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -389,6 +391,57 @@ class RepoQualityTests(unittest.TestCase):
         self.assertNotIn("SECRET-GRADE", completed.stdout)
         self.assertNotIn("SECRET-GRADE", completed.stderr)
         self.assertIn("judge provider: REPO_QUALITY_JUDGE", completed.stderr)
+
+    def _judge_module(self, name):
+        path = ROOT / "evals" / "repo-quality" / "judge.py"
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_judge_timeout_is_900_seconds_and_retries_once(self):
+        module = self._judge_module("repo_quality_judge_timeout")
+        self.assertEqual(module.TIMEOUT_SECONDS, 900)
+        self.assertEqual(module.TIMEOUT_ATTEMPTS, 2)
+        saved = os.environ.copy()
+        try:
+            os.environ.pop("CURSOR_API_KEY", None)
+            os.environ["REPO_QUALITY_JUDGE"] = f"{sys.executable} -c \"import sys; sys.exit(0)\""
+            attempts = {"n": 0}
+
+            def once(command, **kwargs):
+                attempts["n"] += 1
+                self.assertEqual(kwargs["timeout"], 900)
+                if attempts["n"] == 1:
+                    raise subprocess.TimeoutExpired(command, 900)
+                return subprocess.CompletedProcess(command, 0, stdout="grade\n", stderr="")
+
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with mock.patch.object(module.subprocess, "run", once), \
+                    mock.patch.object(module.sys, "stdout", stdout), \
+                    mock.patch.object(module.sys, "stderr", stderr):
+                code = module.main(["judge.py", "GRADE-PROMPT"])
+            self.assertEqual(code, 0, stderr.getvalue())
+            self.assertEqual(attempts["n"], 2)
+            self.assertEqual(stdout.getvalue(), "grade\n")
+            self.assertIn("retrying once", stderr.getvalue())
+            self.assertNotIn("GRADE-PROMPT", stdout.getvalue() + stderr.getvalue())
+
+            def always(command, **kwargs):
+                raise subprocess.TimeoutExpired(command, kwargs.get("timeout"))
+
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with mock.patch.object(module.subprocess, "run", always), \
+                    mock.patch.object(module.sys, "stdout", stdout), \
+                    mock.patch.object(module.sys, "stderr", stderr):
+                code = module.main(["judge.py", "GRADE-PROMPT"])
+            self.assertEqual(code, 124)
+            self.assertEqual(stdout.getvalue(), "")
+            self.assertIn("judge timed out; retrying once\n", stderr.getvalue())
+            self.assertIn("judge timed out\n", stderr.getvalue())
+        finally:
+            os.environ.clear()
+            os.environ.update(saved)
 
     def test_default_grok_judge_uses_prompt_file(self):
         path = ROOT / "evals" / "repo-quality" / "judge.py"

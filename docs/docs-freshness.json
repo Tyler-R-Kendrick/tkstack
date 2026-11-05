@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,6 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
+      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -544,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -559,6 +560,7 @@
           "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
         }
       },
+      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -640,11 +642,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "d518fd740e61eddd5e133dd8de3e593213e6d15a"
+          "oid": "bf113af8db8cf326b0130ea828a1993010435946"
         }
       },
       "inputs": {
@@ -667,7 +669,7 @@
         },
         "src/check_docs.py": {
           "mode": "100755",
-          "oid": "061079c4cd06e27922c983fb8d7f89e42a3e5b55"
+          "oid": "6c3fb508968997fcf5c54fb6165e4d9c8b7ff567"
         },
         "src/docs_hook.py": {
           "mode": "100755",
@@ -715,7 +717,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "9d93f8d8cf1396a0515a5f5fa0b18e98703fc786"
+          "oid": "e7d1c183d16f04b5631262d28c823006e87ae053"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -747,7 +749,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "da586bc1d8c85e9a33a503130de2fb4f664fb638"
+          "oid": "6d72ebd87878e2d4fbfdf02aff5050163edc075a"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -795,13 +797,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -812,6 +814,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
+      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -841,11 +844,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "62e487c8a1193d9349169421739b4218d5512e64"
+          "oid": "d657e9eeb0e2aaf2c2de707dc73ce059528c7b01"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -887,7 +890,7 @@
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "cdd06ce47bf4ff032b816b856811c63d0c3b7058"
+          "oid": "3a37c564b146748ab99b3a6bd2358b157656b78d"
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
@@ -979,13 +982,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
+          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1059,7 +1062,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "496b7b4d73c0867c6d9e69a8903ba9787d3a6318"
+          "oid": "13de1170cecca0db21b18d7505134dbf77f78d69"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1119,7 +1122,7 @@
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
-          "oid": "407a9f4dcc8e09a1b11ffc409bf7cf1bee537a95"
+          "oid": "8898597a3304574ecbca7930576679bfd5f91222"
         },
         "evals/repo-quality/results/baseline-checks.json": {
           "mode": "100644",
@@ -2755,7 +2758,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
     }
   },
   "object_format": "sha1",

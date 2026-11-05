@@ -69,7 +69,8 @@ plain --disable-web-search`. When `CURSOR_API_KEY` is set, the judge is
 `cursor-agent -p --model composer-2.5` with the prompt on stdin.
 `REPO_QUALITY_CURSOR_MODEL` replaces that model id. `REPO_QUALITY_JUDGE`
 replaces the whole command; put `{prompt}` or `{prompt_file}` where that value
-belongs. The opt-in test requires every metric to score 1.0:
+belongs. The judge allows 900 seconds and retries once if that command times
+out. The opt-in test requires every metric to score 1.0:
 
 ```sh
 RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v

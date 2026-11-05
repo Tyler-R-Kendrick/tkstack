@@ -8,19 +8,40 @@ the design/media integrations listed in the [inventory](docs/skills.md).
 
 ## Install
 
-One command clones or updates `~/.local/share/tkstack` and installs it into your home:
+One command obtains `~/.local/share/tkstack` and installs it into your home.
+Bash and curl are the only host prerequisites. Git clones the checkout when it
+is on PATH; otherwise the installer downloads the GitHub tarball with curl.
+Python 3.11+ is used when it is already installed. Otherwise the installer
+bootstraps uv and installs Python 3.12 itself.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
 
 From a checkout of this repository, `./install.sh` installs that checkout instead
-of cloning. The command links skills, agents, rules, and hooks, initializes
-private state and launchers, installs this repository's Git docs hook, and
-verifies the result. Existing settings stay; a conflicting foreign path stops
-setup. Keep the checkout, because the links and launchers point at it.
-`SCOPE.md` is the supported baseline. `sources.lock.json` pins every upstream
+of downloading another copy. The command links skills, agents, rules, and hooks,
+initializes private state and launchers, installs this repository's Git docs
+hook, and verifies the result. Existing settings stay; a conflicting foreign
+path stops setup. Keep the checkout, because the links and launchers point at
+it. `SCOPE.md` is the supported baseline. `sources.lock.json` pins every upstream
 snapshot under `vendor/`.
+
+## Develop
+
+From a checkout, `./install.sh --dry-run` is the read-only preview. These
+commands run the suite, the repo-quality gate, the opt-in judge, and the
+documentation check:
+
+```sh
+python3 -m unittest discover -s tests
+REPO_QUALITY_GATE=1 python3 -m unittest tests.test_repo_quality
+RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v
+python3 src/check_docs.py check
+```
+
+`REPO_QUALITY_GATE=1` enforces the repo-quality ceilings. `RUN_JUDGE=1` runs the
+pinned promptfoo judge. The [maintain section](#maintain-this-repository) has
+the longer preview, routing, and doctor sequence.
 
 ## Install options
 
@@ -31,14 +52,22 @@ snapshot under `vendor/`.
 | `devcontainer` | Codex, Claude Code, Cursor | Selected workspace |
 | `codex-cloud` | Codex | Off |
 
-The installer runs with Bash, Git, and Python **3.11+** already on PATH.
+The host needs Bash and curl. Missing Python **3.11+** is installed with the official uv installer (`uv python install 3.12`). Missing Git is replaced by a curl tarball of the GitHub repository.
 Setup can provision private Node **24.19.0** and uv **0.12.23** when needed.
 <!-- tkstack:profiles:end -->
 
-`install.sh` finds Python 3.11+ from `TKSTACK_PYTHON`, then `python3`,
-`python3.13`, `python3.12`, or `python3.11`. It provisions private Node and uv
-when those tools are missing. Set `TKSTACK_HOME` to choose the clone directory
-and `TKSTACK_REPO` to choose the Git URL.
+`install.sh` uses `TKSTACK_PYTHON` when that executable is Python 3.11+.
+Otherwise it tries `python3`, `python3.13`, `python3.12`, and `python3.11`.
+If none of those is Python 3.11+, it installs uv with
+`curl -LsSf https://astral.sh/uv/install.sh | sh` and runs
+`uv python install 3.12`, then `uv run --python 3.12`. That uv only bootstraps
+the host interpreter. Setup still provisions private Node and the pinned uv
+when those tools are missing. Set `TKSTACK_HOME` to choose the checkout
+directory and `TKSTACK_REPO` to choose the Git URL. Without Git, a GitHub HTTPS
+remote is downloaded from codeload (`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main`
+for the default repository). Set `TKSTACK_TARBALL` to override that archive URL.
+A later run updates a Git checkout with `git pull --ff-only`. A checkout obtained
+without Git is reused as it is.
 
 ```sh
 ./install.sh --profile codex-cloud       # Codex-only host configuration

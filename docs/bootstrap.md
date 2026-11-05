@@ -1,9 +1,10 @@
 # Bootstrap agent dotfiles
 
-One command installs tkstack. Outside a checkout it clones or updates
-`~/.local/share/tkstack` and continues from there. Inside a checkout,
-`./install.sh` installs that checkout. It is noninteractive, works from another
-directory, preserves existing settings, and can run again on startup:
+One command installs tkstack. Outside a checkout it obtains
+`~/.local/share/tkstack` with Git, or with a curl tarball when Git is absent,
+and continues from there. Inside a checkout, `./install.sh` installs that
+checkout. Bash and curl are the host prerequisites. It is noninteractive, works
+from another directory, preserves existing settings, and can run again on startup:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
@@ -139,12 +140,24 @@ is part of bootstrap.
 
 ## Toolchains, commands, and state
 
-Python **3.11+**, Bash, and Git are base prerequisites (Python 3.12 preferred).
-When needed, bootstrap installs **uv 0.12.23** from a hash-locked Python wheel and
-**Node 24.19.0** from an official SHA-256-verified archive, privately under
-`.tkstack/runtime/toolchains/`. Existing Node 24+ can be reused. Node archive
-extraction needs Python 3.11.8+ or 3.12+ for the safe tar filter; an older 3.11
-host can provide Node beforehand. No sudo/system-package change is required.
+Bash and curl are the host prerequisites. `install.sh` uses Python 3.11+ when
+`TKSTACK_PYTHON`, `python3`, `python3.13`, `python3.12`, or `python3.11` is new
+enough (Python 3.12 preferred). Otherwise it installs uv with the official
+standalone installer (`curl -LsSf https://astral.sh/uv/install.sh | sh`, honoring
+`UV_INSTALL_DIR`, without editing shell startup files) and runs the bootstrap
+through `uv python install 3.12` and `uv run --python 3.12`. Outside a checkout,
+Git clones or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. When
+Git is absent, curl downloads
+`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` (or the
+codeload archive for another GitHub `TKSTACK_REPO`, or `TKSTACK_TARBALL`) and
+unpacks it with `tar`. A checkout obtained that way is reused on the next run;
+it is not rewritten in place. When needed, bootstrap installs **uv 0.12.23**
+from a hash-locked Python wheel and **Node 24.19.0** from an official
+SHA-256-verified archive, privately under `.tkstack/runtime/toolchains/`. That
+pinned uv is separate from the standalone uv used only to get a host Python.
+Existing Node 24+ can be reused. Node archive extraction needs Python 3.11.8+
+or 3.12+ for the safe tar filter; an older 3.11 host can provide Node
+beforehand. No sudo/system-package change is required.
 Linux x86-64/ARM64 and macOS x86-64/ARM64 Node assets are pinned. Host applications,
 Git itself, Docker, accounts, and optional GUI daemons are not installed.
 

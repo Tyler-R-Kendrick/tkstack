@@ -1,6 +1,7 @@
 """Exercise installation against temporary targets, never the user's home."""
 
 import importlib.util
+import os
 import re
 from contextlib import redirect_stdout
 from io import StringIO
@@ -342,6 +343,180 @@ class InstallTests(unittest.TestCase):
         self.assertIn("tkstack:steering:start", (target / "AGENTS.md").read_text())
         again = subprocess.run(command, check=True, capture_output=True, text=True)
         self.assertIn("0 link(s) changed.", again.stdout)
+
+
+def _stub_path(root, hide_prefixes, stubs):
+    """Build a PATH whose stub executables hide selected real commands."""
+    root.mkdir(parents=True, exist_ok=True)
+    bindir = root / "stubs"
+    system = root / "system-bin"
+    bindir.mkdir()
+    system.mkdir()
+    hidden = set()
+    for name, text in stubs.items():
+        path = bindir / name
+        path.write_text(text)
+        path.chmod(0o755)
+        hidden.add(name)
+    seen = set(hidden)
+    for directory in os.environ["PATH"].split(os.pathsep):
+        try:
+            entries = list(Path(directory).iterdir())
+        except OSError:
+            continue
+        for source in entries:
+            name = source.name
+            if name in seen or any(name == prefix or name.startswith(prefix) for prefix in hide_prefixes):
+                continue
+            if not source.is_file() or not os.access(source, os.X_OK):
+                continue
+            try:
+                (system / name).symlink_to(source)
+            except FileExistsError:
+                continue
+            seen.add(name)
+    return str(bindir) + os.pathsep + str(system)
+
+
+_UV_STUB = """#!/bin/sh
+printf '%s\\n' "$*" >> "$UV_LOG"
+exit 0
+"""
+
+_CURL_UV = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$CURL_LOG"
+url=
+for arg in "$@"; do
+  case "$arg" in
+    https://*|http://*) url=$arg ;;
+  esac
+done
+case "$url" in
+  https://astral.sh/uv/install.sh) ;;
+  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
+esac
+cat << 'INSTALLER'
+#!/bin/sh
+bindir="${UV_INSTALL_DIR:-$HOME/.local/bin}"
+mkdir -p "$bindir"
+cat > "$bindir/uv" << 'UV'
+#!/bin/sh
+printf '%s\n' "$*" >> "$UV_LOG"
+exit 0
+UV
+chmod +x "$bindir/uv"
+INSTALLER
+"""
+
+_CURL_TARBALL = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$CURL_LOG"
+out=
+url=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) out=$2; shift 2 ;;
+    -o*) out=${1#-o}; shift ;;
+    https://*|http://*) url=$1; shift ;;
+    *) shift ;;
+  esac
+done
+case "$url" in
+  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main) ;;
+  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
+esac
+[ -n "$out" ] || exit 1
+work=$(mktemp -d)
+mkdir -p "$work/tkstack-main/scripts"
+printf '%s\n' 'print(1)' > "$work/tkstack-main/scripts/bootstrap.py"
+cat > "$work/tkstack-main/install.sh" << 'END'
+#!/bin/sh
+printf '%s\n' "local-install $*" >> "$INSTALL_LOG"
+END
+chmod +x "$work/tkstack-main/install.sh"
+tar -czf "$out" -C "$work" tkstack-main
+rm -rf "$work"
+"""
+
+
+class InstallerPrerequisiteTests(unittest.TestCase):
+    """PATH stubs stand in for a host with no Python 3.11+ or no Git."""
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.base = Path(self.temporary.name)
+        self.home = self.base / "home with spaces"
+        self.home.mkdir()
+        self.uv_log = self.base / "uv.log"
+        self.curl_log = self.base / "curl.log"
+        self.install_log = self.base / "install.log"
+
+    def _env(self, path):
+        environment = os.environ.copy()
+        environment.update({
+            "HOME": str(self.home),
+            "PATH": path,
+            "UV_LOG": str(self.uv_log),
+            "CURL_LOG": str(self.curl_log),
+            "INSTALL_LOG": str(self.install_log),
+        })
+        environment.pop("TKSTACK_PYTHON", None)
+        environment.pop("UV_INSTALL_DIR", None)
+        environment.pop("TKSTACK_HOME", None)
+        environment.pop("TKSTACK_REPO", None)
+        environment.pop("TKSTACK_TARBALL", None)
+        return environment
+
+    def _run(self, script, path, *arguments):
+        return subprocess.run(
+            ["bash", str(script), *arguments],
+            cwd=self.base,
+            env=self._env(path),
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+        )
+
+    def test_missing_python_uses_uv_without_installing_uv(self):
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"uv": _UV_STUB, "curl": "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$CURL_LOG\"\nexit 1\n"})
+        target = self.base / "target"
+        result = self._run(ROOT / "install.sh", path, "--dry-run", "--offline", "--target", str(target))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        log = self.uv_log.read_text()
+        self.assertIn("python install 3.12", log)
+        self.assertIn("run --python 3.12 --no-project -- python -B ", log)
+        self.assertIn(str(ROOT / "scripts" / "bootstrap.py"), log)
+        self.assertIn("--dry-run", log)
+        self.assertIn("--offline", log)
+        self.assertNotIn("requires Python 3.11+", result.stderr)
+        self.assertFalse(self.curl_log.exists())
+
+    def test_missing_python_and_uv_bootstraps_the_official_uv_installer(self):
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV})
+        result = self._run(ROOT / "install.sh", path, "--dry-run", "--target", str(self.base / "target"))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("https://astral.sh/uv/install.sh", self.curl_log.read_text())
+        log = self.uv_log.read_text()
+        self.assertIn("python install 3.12", log)
+        self.assertIn("run --python 3.12", log)
+        self.assertTrue((self.home / ".local" / "bin" / "uv").is_file())
+        self.assertNotIn("requires Python 3.11+", result.stderr)
+
+    def test_missing_git_downloads_the_repository_tarball(self):
+        path = _stub_path(self.base / "bins", ("git",), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        result = self._run(script, path, "--offline")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main", self.curl_log.read_text())
+        self.assertIn("local-install --offline", self.install_log.read_text())
+        self.assertTrue((self.home / ".local" / "share" / "tkstack" / "install.sh").is_file())
+        again = self._run(script, path, "--check")
+        self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
+        self.assertEqual(self.curl_log.read_text().count("codeload.github.com"), 1)
+        self.assertIn("local-install --check", self.install_log.read_text())
 
 
 if __name__ == "__main__":

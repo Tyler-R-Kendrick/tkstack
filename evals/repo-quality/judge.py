@@ -11,7 +11,9 @@ checkout as parents[2] of its own file.
 The default command writes the prompt to a temp file and runs:
   grok --prompt-file <file> -m grok-4.7 --output-format plain --disable-web-search
 The prompt is not a grok argument. The child cwd is that temp directory and
-its environment is limited to path, home, locale, and temp variables.
+its environment is limited to path, home, locale, and temp variables. The
+child is allowed 900 seconds. A timeout is retried once; a second timeout
+exits 124 without printing child output.
 
 When CURSOR_API_KEY is set and REPO_QUALITY_JUDGE is unset, the judge is
 cursor-agent. That CLI has no prompt-file flag, so the prompt is its stdin,
@@ -34,7 +36,8 @@ import tempfile
 from pathlib import Path
 
 
-TIMEOUT_SECONDS = 300
+TIMEOUT_SECONDS = 900
+TIMEOUT_ATTEMPTS = 2
 _ENV_KEYS = (
     "PATH", "HOME", "USER", "LOGNAME", "LANG", "LC_ALL", "LC_CTYPE",
     "TMPDIR", "TMP", "TEMP", "SYSTEMROOT", "PATHEXT",
@@ -80,6 +83,18 @@ def _apply_prompt(parts, prompt, prompt_file):
     return [*parts, prompt]
 
 
+def run_judge(command, run, attempts=TIMEOUT_ATTEMPTS):
+    """Run the judge command. On timeout, try once more. Return None if every attempt times out."""
+    for attempt in range(attempts):
+        try:
+            return subprocess.run(command, **run)
+        except subprocess.TimeoutExpired:
+            if attempt + 1 >= attempts:
+                return None
+            sys.stderr.write("judge timed out; retrying once\n")
+    return None
+
+
 def main(argv):
     # Extra promptfoo arguments (options JSON, context JSON) stay unused.
     if len(argv) < 2 or argv[1] == "":
@@ -106,16 +121,16 @@ def main(argv):
         else:
             run["input"] = stdin_text
         try:
-            completed = subprocess.run(command, **run)
-        except subprocess.TimeoutExpired:
-            sys.stderr.write("judge timed out\n")
-            return 124
+            completed = run_judge(command, run)
         except OSError as error:
             if error.errno == errno.E2BIG:
                 sys.stderr.write("judge prompt exceeds the command-argument limit\n")
             else:
                 sys.stderr.write(f"judge executable not found: {command[0]}\n")
             return 127
+    if completed is None:
+        sys.stderr.write("judge timed out\n")
+        return 124
     if completed.returncode != 0:
         # Child stderr and a failed stdout can echo credentials or look like a grade.
         sys.stderr.write(f"judge exited {completed.returncode}\n")
