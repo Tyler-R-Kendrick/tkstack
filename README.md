@@ -104,7 +104,7 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
 | `docs/` | Focused install, skill, harness, and maintainer guides. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
-| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (profiles, Python locks, toolchains), `harnesses/copilot/` (`lever.yml`), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (reads a host's skills; no skills directory). |
+| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (profiles, Python locks, toolchains), `harnesses/copilot/` (`lever.yml`), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
 | `scripts/` | Installer tools. `install.sh` calls `scripts/bootstrap.py`. |
 | `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. |
 | `src/` | Shared command, state, documentation, and pinned-runtime programs. |

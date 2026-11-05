@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
+      "docs_refresh_reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -557,7 +557,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
+          "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
         }
       },
       "inputs": {
@@ -575,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "4e605bfc4840bb76aaa8bac0481e4d253b9af795"
+          "oid": "153a140b2579decb241112b4ad39fc6ee24b83cb"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -623,25 +623,25 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "802e70a70f8028ea3bdca92d3fff2cea15a0ada9"
+          "oid": "3066ebc8e05b6b7a5e61efbaa00aebf31fdfa3f9"
         },
         "harnesses/t3code/README.md": {
           "mode": "100644",
-          "oid": "41884bd05e775ea72ba807d7f6eb7f6208500fa7"
+          "oid": "198b42ba46b3e80f138fb3a56c699e919fe36718"
         },
         "sources.lock.json": {
           "mode": "100644",
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": true,
-      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
+      "no_doc_impact": false,
+      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -748,7 +748,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "db9246fc5ef5d4a39d669976e6a5df9f423919b4"
+          "oid": "440f5a24652ba6e9a27abc7cb887ff4d30ef4f84"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -795,14 +795,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
+      "no_doc_impact": false,
+      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -813,7 +813,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
+      "docs_refresh_reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -843,7 +843,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -917,7 +917,7 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "f56a01dc9ba328225dbad03904ca992498a1466d"
+          "oid": "4685605e7933a73618e1b16d387dd2f7d3ac3dae"
         },
         "scripts/install.py": {
           "mode": "100755",
@@ -980,14 +980,14 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
+      "no_doc_impact": false,
+      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
+          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1043,7 +1043,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
+          "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1113,7 +1113,7 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "96f192ad19de6e0f0a2be7535a8237ba0d50e21d"
+          "oid": "5aacf27b84ba167005cfb92d96bbc79d2ea2bd60"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -2397,7 +2397,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "c6a0a9ca8e7722b8dd735b7ce7b0ba610d075dca"
+          "oid": "fbb1217c96dfd09f0a919e96d204c9b8c99766d9"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2761,7 +2761,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Parse harness skill links without importing the checkout and name Copilot and Muse in placement."
+      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
     }
   },
   "object_format": "sha1",

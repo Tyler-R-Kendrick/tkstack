@@ -420,14 +420,16 @@ class RepoQualityTests(unittest.TestCase):
         import install
         covered = checks.harness_coverage(ROOT)
         counted = [line.split(":", 1)[0] for line in covered["evidence"] if "installer links " in line]
-        self.assertEqual(covered["value"], len(counted))
+        orchestrators = [line.split(":", 1)[0] for line in covered["evidence"] if "orchestrator; skills.json delegates" in line]
+        self.assertEqual(covered["value"], len(counted) + len(orchestrators))
         self.assertEqual(
             counted,
             ["claude", "codex", "cursor", "copilot", "grok", "kimi", "muse", "opencode"],
         )
-        self.assertEqual(covered["value"], 8)
-        self.assertFalse(covered["pass"])
-        self.assertIn("t3code: not counted; no skills directory of its own", covered["evidence"][-1])
+        self.assertEqual(covered["value"], 9)
+        self.assertTrue(covered["pass"], covered["evidence"])
+        self.assertIn("t3code: orchestrator; skills.json delegates to ", covered["evidence"][-1])
+        self.assertIn("which are linked", covered["evidence"][-1])
         self.assertFalse(any("experimental" in line for line in covered["evidence"]))
         target = Path("/tmp/tkstack-coverage-target")
         parents = {
@@ -464,6 +466,47 @@ class RepoQualityTests(unittest.TestCase):
             self.assertFalse(marker.exists())
             self.assertEqual(covered["value"], 0, covered["evidence"])
             self.assertIn("codex: no skills.json placement path the installer links", covered["evidence"])
+
+    def test_orchestrator_counts_only_when_every_delegate_is_linked(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-orchestrator-") as temporary:
+            root = Path(temporary)
+            (root / "harnesses").mkdir()
+            (root / "scripts").mkdir()
+            (root / "scripts" / "harness_paths.py").write_text(
+                "from pathlib import Path\n"
+                "SKILL_DIRECTORIES = {\n"
+                "    'claude': Path('.claude/skills'),\n"
+                "    'codex': Path('.agents/skills'),\n"
+                "}\n"
+                "def skill_directory(harness, scope='home'):\n"
+                "    if harness not in SKILL_DIRECTORIES:\n"
+                "        return None\n"
+                "    return SKILL_DIRECTORIES[harness]\n",
+                encoding="utf-8",
+            )
+            skills = root / "harnesses" / "skills.json"
+            skills.write_text(
+                '{"delegates": {"t3code": ["claude", "codex"]}, '
+                '"placement": {"default": ["claude", "codex"]}}\n',
+                encoding="utf-8",
+            )
+            covered = checks.harness_coverage(root)
+            t3 = next(line for line in covered["evidence"] if line.startswith("t3code:"))
+            self.assertIn("orchestrator", t3)
+            self.assertIn("which are linked", t3)
+            skills.write_text(
+                '{"delegates": {"t3code": ["claude", "grok"]}, '
+                '"placement": {"default": ["claude", "codex"]}}\n',
+                encoding="utf-8",
+            )
+            partial = checks.harness_coverage(root)
+            missed = next(line for line in partial["evidence"] if line.startswith("t3code:"))
+            self.assertIn("unlinked", missed)
+            self.assertNotIn("which are linked", missed)
+            skills.write_text('{"placement": {"default": ["claude", "codex"]}}\n', encoding="utf-8")
+            absent = checks.harness_coverage(root)
+            plain = next(line for line in absent["evidence"] if line.startswith("t3code:"))
+            self.assertIn("no skills.json placement path", plain)
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"

@@ -38,12 +38,11 @@ Pstack and Cursor Team Kit are Cursor packages and go only to `.cursor/`
 for Codex, Claude Code (`.claude/skills`), and Cursor (`.cursor/skills`).
 Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
-and Cursor views. t3code does not get a skills directory. It runs on Claude,
-Codex, Cursor, Copilot, or Grok and reads that host's skills.
-`scripts/harness_paths.py` records that delegation. See `t3code/README.md`.
-The repo-quality harness count stays 8 of 9 because of that: t3code is one of
-the nine hosts and has no native skills directory to link. The check still
-requires all nine; it is not rescoped to hide the missing directory.
+and Cursor views. t3code does not get a skills directory. It is an orchestrator
+that runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
+`harnesses/skills.json` records that with `delegates.t3code`. See
+`t3code/README.md`. Repo-quality counts t3code as covered when every harness
+named there is itself linked. The check still requires all nine hosts.
 `./install.sh --uninstall` removes this checkout's links for every harness,
 its launchers, and its owned git docs hook. Reinstalling also removes this checkout's links that fall
 outside their placement; doctor reports any left. `sources.lock.json` pins the

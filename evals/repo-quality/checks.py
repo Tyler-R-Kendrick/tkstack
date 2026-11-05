@@ -549,6 +549,20 @@ def _home_skill_directories(root):
     return linked
 
 
+def _delegates(skills):
+    """Orchestrators declared in skills.json. Targets must be harness names."""
+    raw = skills.get("delegates") if isinstance(skills, dict) else None
+    if not isinstance(raw, dict):
+        return {}
+    declared = {}
+    for name, targets in raw.items():
+        if isinstance(name, str) and isinstance(targets, list) and targets and all(
+            isinstance(item, str) and item for item in targets
+        ):
+            declared[name] = list(targets)
+    return declared
+
+
 def _linked_placements(root):
     """Harnesses skills.json lists and scripts/harness_paths.py actually links."""
     skills, _detail = _json_object(root / "harnesses" / "skills.json")
@@ -586,11 +600,14 @@ def _linked_placements(root):
 
 
 def harness_coverage(root):
-    """Count a harness only when skills.json placement is a directory the installer links."""
+    """Count a harness when the installer links it, or when it delegates to linked ones.
+
+    An orchestrator such as t3code has no skills directory. It counts when
+    skills.json `delegates` names that harness and every target is itself linked.
+    """
+    skills, _detail = _json_object(root / "harnesses" / "skills.json")
+    delegates = _delegates(skills if isinstance(skills, dict) else None)
     linked, experimental = _linked_placements(root)
-    notes = {
-        "t3code": "not counted; no skills directory of its own",
-    }
     evidence = []
     found = 0
     for name in HARNESSES:
@@ -601,12 +618,25 @@ def harness_coverage(root):
             found += 1
             evidence.append(f"{name}: {linked[name]}")
             continue
-        evidence.append(f"{name}: {notes.get(name, 'no skills.json placement path the installer links')}")
+        targets = delegates.get(name)
+        if targets and all(target in linked for target in targets):
+            found += 1
+            joined = ", ".join(targets)
+            evidence.append(
+                f"{name}: orchestrator; skills.json delegates to {joined}, which are linked"
+            )
+            continue
+        if targets:
+            missing = ", ".join(target for target in targets if target not in linked)
+            evidence.append(f"{name}: orchestrator delegates to unlinked harnesses ({missing})")
+            continue
+        evidence.append(f"{name}: no skills.json placement path the installer links")
     ok = found == len(HARNESSES)
     explanation = (
         f"{found} of {len(HARNESSES)} harnesses "
         "(claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) "
-        "have a skills.json placement path that scripts/harness_paths.py links. "
+        "are linked by scripts/harness_paths.py or are orchestrators whose "
+        "skills.json delegates all name linked harnesses. "
         "Experimental harnesses and bare directory names are not counted."
     )
     return result(
