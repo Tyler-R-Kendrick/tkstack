@@ -171,7 +171,7 @@ For repository development, apply its project configuration:
 ./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline
 python3 scripts/check_docs.py check
 python3 scripts/routing_inventory.py check
-python3 scripts/check_skills.py
+python3 scripts/tool.py command-schema -B scripts/check_skills.py
 .tkstack/runtime/command-schema/bin/python -m unittest discover -s tests -v
 python3 scripts/install.py --target .
 python3 scripts/doctor.py --target .

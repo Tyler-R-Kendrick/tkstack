@@ -205,6 +205,32 @@ class CodifyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Stale workflow input'):
             codify.check(self.output)
 
+    def test_check_rejects_a_file_added_inside_the_snapshotted_inventory(self):
+        self.compile()
+        extra = self.scripts / 'notes.md'
+        extra.write_text('added after compile\n')
+        with self.assertRaisesRegex(ValueError, 'Stale workflow inventory'):
+            codify.check(self.output)
+        extra.unlink()
+        outside = self.root / 'notes.md'
+        outside.write_text('not in the entrypoint directory\n')
+        codify.check(self.output)
+
+    def test_contract_package_inventory_includes_new_files_but_not_nested_skills(self):
+        (self.scripts / 'contract.json').write_text('{}\n')
+        self.compile(includes=[self.root])
+        added = self.root / 'references'
+        added.mkdir()
+        (added / 'routing.json').write_text('{}\n')
+        with self.assertRaisesRegex(ValueError, 'references/routing.json'):
+            codify.check(self.output)
+        (added / 'routing.json').unlink()
+        nested = self.root / 'skills' / 'child' / 'scripts'
+        nested.mkdir(parents=True)
+        (nested.parent / 'SKILL.md').write_text('---\nname: child\n---\n\nChild package.\n')
+        (nested / 'helper.py').write_text('def execute(payload):\n    return payload\n')
+        codify.check(self.output)
+
     def test_relocating_source_tree_preserves_freshness_and_executable_file_modes(self):
         helper = self.scripts / 'native-helper'
         helper.write_text('#!/bin/sh\nprintf native-helper')

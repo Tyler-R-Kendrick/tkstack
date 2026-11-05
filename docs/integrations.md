@@ -20,7 +20,7 @@ Runtime readiness is separate from those installed files. Use the root
 | Graphify | `Graphify-Labs/graphify` 0.9.97 | Native skills, hash-locked local CLI/MCP, Claude guidance hooks, Cursor rule | Installed; restart hosts. Code-only extraction needs no model key. See [setup](graphify.md). |
 | OpenWiki | `langchain-ai/openwiki` 0.7.2 | Official skill, locked local npm CLI, and working stdio MCP for Codex/Claude/Cursor | Restart the harness; host-driven generation uses its existing session. See [setup and native evidence](openwiki.md) |
 | Google Stitch `design-md` | `google-labs-code/stitch-skills` | The requested skill with its example and documentation | Stitch project access and `STITCH_API_KEY` for the staged MCP connection |
-| Emil Kowalski skills | `emilkowalski/skills` at `c8a79627` | 17 skills (`prototype` installed as `emil-prototype`), LICENSE, and README | Shared `.agents/skills` placement; no extra runtime |
+| Emil Kowalski skills | `emilkowalski/skills` at `c8a79627` | Complete 33-file tree, 17 skills (`prototype` installed as `emil-prototype`) | Shared `.agents/skills` placement; no extra runtime |
 | ub-mode | `unclebob/ub-mode` at `3da62bf3` | The root skill, LICENSE, and README (MIT) | Shared `.agents/skills`. Companion crapper, dryer, and mutator tools are not vendored |
 | SkillOpt-Sleep | `microsoft/SkillOpt` at `bc0a392` | Complete pinned Sleep package, handoff workflow, local evolution driver and decision regressions for learn/sdlc | Handoff uses fresh-context native agents; Codex CLI execution requires its normal network/model access |
 | Lever | `github/lever` 0.1.0 at `f859d0a` | 16 skills in Codex/Claude/Cursor, per-project Copilot layout, templates, helper scripts, automation recipes and repo dials | Copilot host for native plugin sessions, models and automation tools; see [Lever setup](lever.md) |
@@ -97,8 +97,8 @@ and `wrap` flows are explicit. No API account or provider URL was redirected.
 
 ## Checks performed
 
-- Verified all 1089 pinned source files across 19 sources, including modes and
-  symlink targets. Emil Kowalski is 28 files at
+- Verified all 1094 pinned source files across 19 sources, including modes and
+  symlink targets. Emil Kowalski is the complete 33-file tree at
   `c8a79627b59d72d764d6ab6f2c87c09a48169833`. ub-mode is 3 files at
   `3da62bf3fcfd2034de41f30d920d2739e566171f`.
 - Placement follows `harnesses/skills.json`. Harness-independent upstream skills,

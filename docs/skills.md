@@ -313,7 +313,8 @@ capabilities depend on the actual host. See [setup and dials](lever.md).
 ## Emil Kowalski (17)
 
 Design engineering, UI polish, and animation from `emilkowalski/skills`. The
-snapshot keeps the skill trees, LICENSE, and README (MIT) and installs only into
+snapshot is the complete upstream tree at the pinned revision, including the
+skill trees, both cheatsheets, LICENSE, and README (MIT). It installs only into
 shared `.agents/skills`. `emil-design-eng` is the default. The UI variant picker
 installs as `emil-prototype` so Matt's `prototype` keeps its name.
 

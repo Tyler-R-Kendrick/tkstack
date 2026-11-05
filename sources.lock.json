@@ -4503,12 +4503,28 @@
       "evaluation": "source-reviewed",
       "evaluation_report": "docs/integrations.md",
       "files": {
+        ".gitattributes": {
+          "git_blob": "a0652a605e6b418261a2b4fb1ad82576be0c3b53",
+          "mode": "100644"
+        },
+        ".gitignore": {
+          "git_blob": "e43b0f988953ae3a84b00331d0ccf5f7d51cb3cf",
+          "mode": "100644"
+        },
+        ".pl": {
+          "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "mode": "100644"
+        },
         "LICENSE": {
           "git_blob": "57b46f1fd11dc62351ea548104a88aa3f659c11b",
           "mode": "100644"
         },
         "README.md": {
           "git_blob": "e77e3dbb87c3349e323cbebd46d91fd7dbdc5b1b",
+          "mode": "100644"
+        },
+        "performance-cheatsheet.md": {
+          "git_blob": "15f73d24a3b0e8a44d96d16d996719565b3ab7d5",
           "mode": "100644"
         },
         "skills/animate-expo/RECIPES.md": {
@@ -4613,6 +4629,10 @@
         },
         "skills/write-swift/SKILL.md": {
           "git_blob": "a09a8f693304fe1c04ed56d61dde9833a516849e",
+          "mode": "100644"
+        },
+        "ui-cheatsheet.md": {
+          "git_blob": "a5c803280b82f72dd11ed2136caaf0ea8c139a5c",
           "mode": "100644"
         }
       }

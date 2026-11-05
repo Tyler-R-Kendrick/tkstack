@@ -28,7 +28,12 @@ are authored deliverables and can be checked in; private compile/run state is
 ignored by `.tkstack/.gitignore`.
 
 `check` and `run` fail on a stale source, case file, or included implementation.
-Snapshots retain Git-portable executable modes (0644/0755). Freshness compares
+`check` also rebuilds the snapshot from the entrypoint directory, `commands/`
+when that directory exists, and the package root when `scripts/contract.json`
+exists. A file in that inventory that the lock does not name is stale, so adding
+a reference after compilation fails until an explicit recompile. A nested
+directory with its own `SKILL.md` is a separate package and stays on its own
+lock. Snapshots retain Git-portable executable modes (0644/0755). Freshness compares
 the executable bit, so checkout umasks that change owner/group read/write bits
 do not invalidate identical code. Changing executable status still invalidates
 the artifact. Existing locks retain compatibility. This is source execution-mode
@@ -38,9 +43,10 @@ regenerates the artifact. Complete source trees are required for freshness;
 there is currently no detached-source or ignore-staleness execution mode.
 
 Inventory discovery excludes `.git`, `.tkstack`, `node_modules`, and
-`__pycache__`, and the selected output itself. Keep unrelated generated files
-out of the entrypoint directory. Include imported code, native workflow
-bindings, schemas, and other resources explicitly if outside that directory.
+`__pycache__`, and the selected output itself. A package with
+`scripts/contract.json` snapshots the whole package, so keep generated files
+out of that tree. Other workflows snapshot the entrypoint directory and
+`commands/`; include imported code outside those directories explicitly.
 Inventory limits: 512 files, 16 MiB base64 data; lock parsing also caps total
 file size at 16 MiB. This is not an import tracer or a hermetic build system.
 

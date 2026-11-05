@@ -4,11 +4,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "e202c618807c5158aa6671a612f1c5a011973776"
+          "oid": "700447724bfeefb833f3514995badb14ec9001b6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -19,7 +19,6 @@
           "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
         }
       },
-      "docs_refresh_reason": "The skill routing check is read-only and does not regenerate alias or Graphify views.",
       "inputs": {
         "scripts/sync_codify.py": {
           "mode": "100644",
@@ -99,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "cdc69f72b1aca8ba334d8ec80ac3fe4dc6dbd133"
+          "oid": "164ed1ed487564330f465253bb6f832daf096102"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -183,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "2680311acfa1a077157116427cf055d5480c5f08"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -227,7 +226,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "c9ed23fc7d5ac6a674015ef0998777bc68b40071"
+          "oid": "9070172f0e2f3107760dc5e4eabb02ff3974cc0a"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -415,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "2680311acfa1a077157116427cf055d5480c5f08"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -519,7 +518,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "1ce48c01e6ac8c91af3c8b2bb9a8acbea9a24ed9"
+          "oid": "cb25fa9a2fe51faddfe8d8d4d3af1b5ca43d5523"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -539,17 +538,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Codify check now rejects a contract package whose snapshot inventory is missing from the lock. Recompiled the codify and skillify artifacts."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "c3e78816d67e0593d6fc54e879558a2c276c5dd4"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -557,10 +556,9 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "bf3dd08a8d600e1aa5dbaa5f2df6d5c2fa425ccb"
+          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
         }
       },
-      "docs_refresh_reason": "The skill routing check is read-only and does not regenerate alias or Graphify views.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -624,17 +622,17 @@
         },
         "sources.lock.json": {
           "mode": "100644",
-          "oid": "07d1f6484a2a89eb616f40cf013aaa567b6599ce"
+          "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
       "no_doc_impact": false,
-      "reason": "Pinned emil-kowalski and ub-mode, added the SDLC skill routing inventory and its check, and updated the source catalogs and maintainer docs."
+      "reason": "Emil Kowalski is the complete 33-file upstream tree. The pin is 19 sources and 1094 files, with no selection field."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -681,11 +679,11 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "7256d2fe1b19eb8763e73ff1222c2be7e1a8dc09"
+          "oid": "721c5c1490fdede23628f89710a3ba87c583247a"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
-          "oid": "5ee7173583538fdf85d434948ab760f8402bfbbe"
+          "oid": "ae5fac132493f1287b1c7bcb302773e991c8409d"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -765,7 +763,7 @@
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
-          "oid": "35baf687b8b9dbff6c73b789ce5543760f833ccc"
+          "oid": "ab8999d27143a67765198ba523ddf02647b02ab8"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -784,14 +782,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Pinned emil-kowalski and ub-mode, added the SDLC skill routing inventory and its check, and updated the source catalogs and maintainer docs."
+      "no_doc_impact": true,
+      "reason": "Command-schema test now expects the inventory freshness error when command definitions reappear after a lock compiled without them."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -802,7 +800,6 @@
           "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
         }
       },
-      "docs_refresh_reason": "The skill routing check is read-only and does not regenerate alias or Graphify views.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -826,13 +823,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "README now runs check_skills through the managed command-schema runtime. Runner behavior is unchanged."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -840,7 +837,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "c3e78816d67e0593d6fc54e879558a2c276c5dd4"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -938,7 +935,7 @@
         },
         "scripts/routing_inventory.py": {
           "mode": "100644",
-          "oid": "29c9f1a14d8ccd21e8abc4d7ef445372f563804d"
+          "oid": "779d0c37e68d5080a0a43bf649f05eae16a50b28"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
@@ -966,13 +963,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The skill routing check is read-only and does not regenerate alias or Graphify views."
+      "reason": "Corrected the README skill check to the managed command-schema interpreter after the routing inventory script change."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ef451cf57a4e29c9de56445342f8ed859ebec49d"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -992,7 +989,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "c3e78816d67e0593d6fc54e879558a2c276c5dd4"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -1028,11 +1025,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "bf3dd08a8d600e1aa5dbaa5f2df6d5c2fa425ccb"
+          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "504c84a21af3e16822dc86af7610a8b68e1c2718"
+          "oid": "27ddd9b6058a41389ab39b3303e6cbb18558ce30"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1043,7 +1040,6 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
-      "docs_refresh_reason": "The skill routing check is read-only and does not regenerate alias or Graphify views.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -2355,11 +2351,11 @@
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
-          "oid": "60244321c2ca91ca5748b90185c075c0b2c1a829"
+          "oid": "c6db289b1638e09b92709827dcd00bc730c4b969"
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "7653a49992c1a03d7fa6c9f1e7af260af5f75ec0"
+          "oid": "bc6f41fdf6e8b1339b9e69793c7f54dddf9a9203"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2411,7 +2407,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "4227ac788393ecef6eb05e3e684d8ca6efb5692d"
+          "oid": "fdb9d131dd3591f71e72c9733781281f458a8b9d"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2719,7 +2715,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Pinned emil-kowalski and ub-mode, added the SDLC skill routing inventory and its check, and updated the source catalogs and maintainer docs."
+      "reason": "The SDLC routing guide contrasts every skill, rejects unlisted duplicate names, and notes that ub-mode does not authorize push-to-main."
     }
   },
   "object_format": "sha1",

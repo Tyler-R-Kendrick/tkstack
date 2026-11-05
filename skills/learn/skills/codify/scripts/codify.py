@@ -217,6 +217,42 @@ def validate_lock(lock):
     return decoded
 
 
+def nested_skill_prefixes(root):
+    """Child packages with their own SKILL.md keep a separate lock."""
+    prefixes = []
+    for skill in root.rglob('SKILL.md'):
+        if skill.is_symlink() or not skill.is_file() or skill.parent == root:
+            continue
+        prefixes.append(skill.parent.relative_to(root).as_posix())
+    return prefixes
+
+
+def _under_prefix(name, prefixes):
+    return any(name == prefix or name.startswith(prefix + '/') for prefix in prefixes)
+
+
+def expected_inventory(root, lock, output):
+    """Recompute the snapshot compile froze, then drop nested skill packages.
+
+    Codify always walks the entrypoint directory and `commands/` when that
+    directory exists. Skillify also walks the package root when
+    `scripts/contract.json` exists. A file in that inventory that the lock
+    does not name was added after compilation. Learn's subskills are nested
+    packages, so they stay out of the parent inventory.
+    """
+    paths = [root / PurePosixPath(lock['entrypoint']).parent]
+    commands = root / 'commands'
+    if commands.is_dir():
+        paths.append(commands)
+    if (root / 'scripts' / 'contract.json').is_file():
+        paths.append(root)
+    selected = snapshot(root, paths, output)
+    prefixes = nested_skill_prefixes(root)
+    if not prefixes:
+        return selected
+    return {name: item for name, item in selected.items() if not _under_prefix(name, prefixes)}
+
+
 def check(path):
     path = path.absolute()
     lock = parse_json(read_bytes(path))
@@ -236,6 +272,13 @@ def check(path):
     case_ids = [case['id'] for case in cases_from(observed[lock['cases']['path']])]
     if case_ids != lock['verification']['case_ids']:
         raise ValueError("Verification case inventory mismatch")
+    current = expected_inventory(root, lock, path)
+    missing = sorted(set(current) - set(lock['files']))
+    if missing:
+        shown = ", ".join(missing[:8])
+        if len(missing) > 8:
+            shown += f", and {len(missing) - 8} more"
+        raise ValueError("Stale workflow inventory; recompile explicitly: " + shown)
     return lock
 
 

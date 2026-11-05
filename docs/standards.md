@@ -46,6 +46,9 @@ See [installation, examples, and boundaries](principles.md).
   question is Matt's `prototype`.
 - For clean-code and TDD discipline beyond a named TDD skill, use `ub-mode`:
   make it work, make it right, then practice. It does not replace Pstack's `tdd`.
+  Upstream Practice says to commit often and push to the main line at the end.
+  That is not tkstack delivery. Commit only when asked, and ship stacked PRs
+  rather than pushing this checkout's main line.
 - The stack overview and a phase for every installed skill are in
   [the skill routing guide](../skills/sdlc/references/skill-routing.md).
   `python3 scripts/routing_inventory.py check` fails when a skill has no routing

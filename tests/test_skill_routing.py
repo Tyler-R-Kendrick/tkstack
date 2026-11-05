@@ -2,7 +2,11 @@
 
 import importlib.util
 import json
+import os
 from pathlib import Path
+import re
+import subprocess
+import sys
 import unittest
 
 
@@ -31,6 +35,41 @@ class RoutingInventoryTests(unittest.TestCase):
         catalog["skills"].pop("present")
         errors = routing.inventory_errors(skills, catalog, {"developed"})
         self.assertTrue(any("present" in error and "without a routing entry" in error for error in errors))
+
+    def test_double_quoted_descriptions_unescape_quotes_and_backslashes(self):
+        text = '---\ndescription: "say \\"automate me\\" and \\\\path"\n---\n'
+        self.assertEqual(routing.description(text), 'say "automate me" and \\path')
+        self.assertNotIn('\\"', routing.discover(ROOT)["automate-me"]["purpose"])
+
+    def test_unlisted_duplicate_declared_name_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "not an allowed duplicate"):
+            routing.reject_unlisted_duplicate("vendor/example/skills/animate/SKILL.md", "animate")
+        routing.reject_unlisted_duplicate("vendor/emil-kowalski/skills/animate/SKILL.md", "animate")
+
+    def test_strengths_contrast_with_the_generated_purpose(self):
+        skills = routing.discover(ROOT)
+        catalog = routing.load_catalog(ROOT)
+        weak = []
+        for name, record in skills.items():
+            purpose = re.sub(r"\s+", " ", record["purpose"]).strip()
+            strength = re.sub(r"\s+", " ", catalog["skills"][name]["strengths"]).strip()
+            if purpose.startswith(strength):
+                weak.append(name)
+        self.assertEqual(weak, [])
+
+    def test_module_imports_without_a_preseeded_scripts_path(self):
+        env = os.environ.copy()
+        env.pop("PYTHONPATH", None)
+        result = subprocess.run(
+            [sys.executable, "-c",
+             "import importlib.util; from pathlib import Path; "
+             "p = Path('scripts/routing_inventory.py'); "
+             "spec = importlib.util.spec_from_file_location('routing_inventory_fresh', p); "
+             "module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module); "
+             "print(module.install.sourced.__name__)"],
+            cwd=ROOT, capture_output=True, text=True, env=env)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("sourced", result.stdout)
 
     def test_unknown_phase_fails(self):
         skills = {"present": {"group": "developed"}}

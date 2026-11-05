@@ -14,7 +14,10 @@ import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True
-ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = Path(__file__).resolve().parent
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+ROOT = SCRIPTS.parent
 CATALOG = Path("skills/sdlc/references/routing.json")
 GUIDE = Path("skills/sdlc/references/skill-routing.md")
 START = "<!-- tkstack:routing-inventory:start -->"
@@ -31,6 +34,75 @@ PHASES = (
     "release/ops",
     "learning",
 )
+# Same declared name, different path, one skill. The installer view, Caveman's
+# plugin mirror, and Impeccable's per-harness builds are not extra skills.
+# Any other collision is an error so an unplaced skill cannot hide.
+DUPLICATE_SKILL_PATHS = frozenset({
+    "vendor/caveman/plugins/caveman/skills/cavecrew/SKILL.md",
+    "vendor/caveman/plugins/caveman/skills/caveman-compress/SKILL.md",
+    "vendor/caveman/plugins/caveman/skills/caveman-stats/SKILL.md",
+    "vendor/caveman/plugins/caveman/skills/caveman/SKILL.md",
+    "vendor/caveman/plugins/caveman/skills/megacave/SKILL.md",
+    "vendor/caveman/plugins/caveman/skills/ultracave/SKILL.md",
+    "vendor/emil-kowalski/skills/animate-expo/SKILL.md",
+    "vendor/emil-kowalski/skills/animate/SKILL.md",
+    "vendor/emil-kowalski/skills/animation-performance/SKILL.md",
+    "vendor/emil-kowalski/skills/animation-vocabulary/SKILL.md",
+    "vendor/emil-kowalski/skills/apple-design/SKILL.md",
+    "vendor/emil-kowalski/skills/ask-sonner/SKILL.md",
+    "vendor/emil-kowalski/skills/break-ui/SKILL.md",
+    "vendor/emil-kowalski/skills/choreograph/SKILL.md",
+    "vendor/emil-kowalski/skills/emil-design-eng/SKILL.md",
+    "vendor/emil-kowalski/skills/find-animation-opportunities/SKILL.md",
+    "vendor/emil-kowalski/skills/improve-animations/SKILL.md",
+    "vendor/emil-kowalski/skills/mobile-native/SKILL.md",
+    "vendor/emil-kowalski/skills/pick-ui-library/SKILL.md",
+    "vendor/emil-kowalski/skills/prototype/SKILL.md",
+    "vendor/emil-kowalski/skills/remove-animations/SKILL.md",
+    "vendor/emil-kowalski/skills/review-animations/SKILL.md",
+    "vendor/emil-kowalski/skills/write-swift/SKILL.md",
+    "vendor/impeccable/.claude/skills/impeccable/SKILL.md",
+    "vendor/impeccable/.cursor/skills/impeccable/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/ask-matt/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/code-review/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/codebase-design/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/diagnosing-bugs/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/domain-modeling/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/grill-with-docs/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/implement-spec/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/implement/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/improve-codebase-architecture/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/pr/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/prototype/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/research/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/retro/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/setup-matt-pocock-skills/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/tdd/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/to-spec/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/to-tickets/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/triage/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/wayfinder/SKILL.md",
+    "vendor/matt-pocock/skills/engineering/wizard/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/chief-of-staff/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/claude-handoff/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/loop-me/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/setup-ts-deep-modules/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/writing-beats/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/writing-fragments/SKILL.md",
+    "vendor/matt-pocock/skills/in-progress/writing-shape/SKILL.md",
+    "vendor/matt-pocock/skills/misc/git-guardrails-claude-code/SKILL.md",
+    "vendor/matt-pocock/skills/misc/migrate-to-shoehorn/SKILL.md",
+    "vendor/matt-pocock/skills/misc/scaffold-exercises/SKILL.md",
+    "vendor/matt-pocock/skills/misc/setup-pre-commit/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/grill-me/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/grilling/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/handoff/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/teach/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/to-questionnaire/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/wait-what/SKILL.md",
+    "vendor/matt-pocock/skills/productivity/writing-for-agents/SKILL.md",
+    "vendor/pstack/skills/unslop/SKILL.md",
+})
 
 
 def _load(name, filename):
@@ -42,6 +114,20 @@ def _load(name, filename):
 
 install = _load("tkstack_install", "install.py")
 skill_roots = _load("tkstack_skill_roots", "skill_roots.py")
+
+
+def _unescape_double_quoted(value):
+    """Undo YAML \\\\ and \\\" escapes. Other backslash sequences stay literal."""
+    out = []
+    index = 0
+    while index < len(value):
+        if value[index] == "\\" and index + 1 < len(value) and value[index + 1] in '\\"':
+            out.append(value[index + 1])
+            index += 2
+        else:
+            out.append(value[index])
+            index += 1
+    return "".join(out)
 
 
 def description(text):
@@ -65,9 +151,21 @@ def description(text):
                     break
             rest = " ".join(chunks)
         if len(rest) >= 2 and rest[0] == rest[-1] and rest[0] in {'"', "'"}:
-            rest = rest[1:-1]
+            inner = rest[1:-1]
+            if rest[0] == '"':
+                inner = _unescape_double_quoted(inner)
+            rest = inner
         return re.sub(r"\s+", " ", rest).strip()
     return ""
+
+
+def reject_unlisted_duplicate(relative, declared):
+    """Allow known repackaging. A distinct skill that reuses a name is an error."""
+    if relative in DUPLICATE_SKILL_PATHS:
+        return
+    raise ValueError(
+        "Vendored skill declares an existing name and is not an allowed duplicate: "
+        + relative + " (" + declared + ")")
 
 
 def _declared_name(path):
@@ -142,11 +240,15 @@ def discover(root=ROOT):
             })
     known_names = set(found)
     known_dirs = {record["path"].resolve() for record in found.values()}
+    seen_duplicates = set()
     for skill in sorted((root / "vendor").rglob("SKILL.md")):
         if skill.parent.resolve() in known_dirs:
             continue
         declared = _declared_name(skill)
         if declared in known_names or declared in found:
+            relative = skill.relative_to(root).as_posix()
+            reject_unlisted_duplicate(relative, declared)
+            seen_duplicates.add(relative)
             continue
         source = skill.relative_to(root / "vendor").parts[0]
         add(declared, {
@@ -169,6 +271,9 @@ def discover(root=ROOT):
                 "text": skill.read_text(errors="replace"),
                 "path": skill.parent,
             })
+    stale_allowance = sorted(DUPLICATE_SKILL_PATHS - seen_duplicates)
+    if stale_allowance:
+        raise ValueError("Duplicate skill allowlist is stale: " + ", ".join(stale_allowance))
     return found
 
 
