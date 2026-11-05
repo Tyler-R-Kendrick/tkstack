@@ -560,7 +560,6 @@
           "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
         }
       },
-      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -576,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "d57e22087711813245c85d4cafb4d0a9df3d3b95"
+          "oid": "e9819c9e407fc67148cd7275f06646e55ee4407f"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -635,8 +634,8 @@
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "no_doc_impact": true,
+      "reason": "Named installer skill destinations in harnesses/README.md: Claude Code uses .claude/skills (~/.claude/skills at home), and Copilot Lever skills use .github/skills. The other --harness directories were already listed. Mapped catalog pages were reviewed and left unchanged."
     },
     "documentation": {
       "docs": {

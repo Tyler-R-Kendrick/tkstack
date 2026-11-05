@@ -12,14 +12,19 @@ callers still resolve to the personal `unslop`. Remove an existing installation
 before changing its alias names.
 
 `placement` decides which harness directories receive each upstream source.
-Personal skills in `skills/` join every selected harness. `placement.default`
-is Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`),
-Muse (`.muse/skills`), and OpenCode (`.config/opencode/skills`). Emil Kowalski
-and ub-mode use that default, so a default profile install lands them in the
-shared Codex directory unless you also select the other harnesses. Pstack and
-Cursor Team Kit are Cursor packages and go only to `.cursor/` (skills, agents,
-and rules). Graphify and Impeccable ship per-harness builds for Codex, Claude
-Code, and Cursor. Graphify also keeps a generic agent-skills view at
+Personal skills in `skills/` join every selected harness.
+`scripts/harness_paths.py` places those skills in Codex (`.agents/skills`),
+Claude Code (`.claude/skills`), Cursor (`.cursor/skills`), Grok
+(`.grok/skills`), Kimi (`.kimi/skills`), Muse (`.muse/skills`), and OpenCode
+(`.config/opencode/skills`). Paths are relative to the install target, so a
+home install puts Claude Code in `~/.claude/skills`. `placement.default` is
+Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), Muse
+(`.muse/skills`), and OpenCode (`.config/opencode/skills`). Emil Kowalski and
+ub-mode use that default, so a default profile install lands them in the
+shared Codex directory unless you also select the other harnesses. Pstack and Cursor Team Kit are Cursor packages
+and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
+ship per-harness builds for Codex, Claude Code (`.claude/skills`), and Cursor
+(`.cursor/skills`). Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
 and Cursor views. t3code does not get a skills directory. It runs on Claude,
 Codex, Cursor, Copilot, or Grok and reads that host's skills. See
@@ -44,8 +49,9 @@ service specifications; `scripts/setup_integrations.py` manages native hook
 and MCP entries without embedding credentials. See `docs/integrations.md` for
 what is installed versus dependent on a host runtime or account sign-in.
 
-`copilot/lever.yml` supplies initial Lever repository defaults. The separate
-`src/setup_lever.py` installs Lever's documented project Copilot layout and
+`copilot/lever.yml` supplies initial Lever repository defaults. Copilot is not a
+`--harness` skills directory. The separate `src/setup_lever.py` installs Lever's
+documented project Copilot layout, linking its skills into `.github/skills`, and
 creates `.github/lever.yml` only when absent. It preserves existing dials and
 leaves personal `~/.copilot/lever.yml` alone. See `docs/lever.md`.
 
