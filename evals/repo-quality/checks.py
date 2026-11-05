@@ -877,6 +877,41 @@ def install_flags(root):
     )
 
 
+def agent_plugins_conformance(root):
+    """Root plugin.json, mcp.json, and skills/*/SKILL.md match Agent Plugins 1.0."""
+    directory = Path(__file__).resolve().parent
+    if str(directory) not in sys.path:
+        sys.path.insert(0, str(directory))
+    import agent_plugins
+
+    problems = agent_plugins.conformance_problems(root)
+    evidence = [
+        "schemas: evals/repo-quality/schemas/plugin.schema.json",
+        "schemas: evals/repo-quality/schemas/mcp.schema.json",
+        "discovery: immediate skills/*/SKILL.md only",
+    ]
+    if problems:
+        evidence.extend(problems[:30])
+    else:
+        evidence.append(
+            "plugin.json, mcp.json, and discovered skills match the 1.0.0 schemas and spec rules"
+        )
+    explanation = (
+        "A conforming package has root plugin.json and, when MCP servers ship, mcp.json. "
+        "Both documents match the vendored Agent Plugins 1.0.0 schemas. "
+        "stdio commands are single tokens, remote URLs are absolute https without secrets, "
+        "and only ${PLUGIN_ROOT} and ${PLUGIN_DATA} are placeholders. "
+        "Each immediate skills/*/SKILL.md follows the Agent Skills frontmatter rules. "
+        + ("The checkout conforms." if not problems else " ".join(problems[:8]) + ".")
+    )
+    return result(
+        "agent_plugins_conformance", "marketplace_install", not problems,
+        "ok" if not problems else "; ".join(problems),
+        "Agent Plugins 1.0.0 plugin.json, mcp.json, and skills/*/SKILL.md",
+        explanation, evidence,
+    )
+
+
 def no_harnesses_directory(root):
     """Fail when a top-level harnesses directory exists.
 
@@ -925,6 +960,7 @@ CHECKS = (
     scripts_loc,
     quickstart_commands,
     marketplace_manifests,
+    agent_plugins_conformance,
     harness_coverage,
     install_flags,
     no_harnesses_directory,

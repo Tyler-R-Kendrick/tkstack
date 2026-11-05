@@ -711,7 +711,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "c21a47f4a90d1cb8619fd9818dbc1efacc8f52bc"
+          "oid": "9220db56e1ae1d17c76d5cf3bb9dacbd34dfc818"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -758,8 +758,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
+      "no_doc_impact": true,
+      "reason": "Add the Agent Plugins schema check and its tests. docs/agent-plugins.md already names the check and the vendored schemas."
     },
     "execution": {
       "docs": {
@@ -993,9 +993,13 @@
           "mode": "100644",
           "oid": "6a900d9520b9796f7de5b64185b72c8fcdab9fa9"
         },
+        "evals/repo-quality/agent_plugins.py": {
+          "mode": "100644",
+          "oid": "e4765b7685f7ad7314b012897754f407ddfa0914"
+        },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "7166734b5f11c9dc85c83f3489aaa5f9bb24e756"
+          "oid": "ac671c0a4b26b08ffbf27a66d2abf3c34043eb5a"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -1016,6 +1020,14 @@
         "evals/repo-quality/results/archive/baseline-reasons.md": {
           "mode": "100644",
           "oid": "2b727b4eeb24d48a5d22199d7a4082a160b4df8d"
+        },
+        "evals/repo-quality/schemas/mcp.schema.json": {
+          "mode": "100644",
+          "oid": "a9139a4259b932c60b5351c8d9da6a5c60c97646"
+        },
+        "evals/repo-quality/schemas/plugin.schema.json": {
+          "mode": "100644",
+          "oid": "8fed0e1fe45d0464aee880d3fbab228b71ecfc1e"
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
@@ -2650,8 +2662,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
+      "no_doc_impact": true,
+      "reason": "Add the Agent Plugins schema check and its tests. docs/agent-plugins.md already names the check and the vendored schemas."
     }
   },
   "object_format": "sha1",

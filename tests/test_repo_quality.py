@@ -39,6 +39,14 @@ def load_checks():
     return module
 
 
+def _load_agent_plugins():
+    path = ROOT / "evals" / "repo-quality" / "agent_plugins.py"
+    spec = importlib.util.spec_from_file_location("repo_quality_agent_plugins", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_snapshot():
     path = ROOT / "evals" / "repo-quality" / "snapshot.py"
     spec = importlib.util.spec_from_file_location("repo_quality_snapshot", path)
@@ -377,6 +385,46 @@ class RepoQualityTests(unittest.TestCase):
     @GATE
     def test_marketplace_manifests(self):
         self.assert_check(checks.marketplace_manifests(ROOT))
+
+    def test_checkout_matches_agent_plugins(self):
+        self.assert_check(checks.agent_plugins_conformance(ROOT))
+
+    def test_agent_plugins_rejects_secret_env_and_unknown_skill_fields(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-") as temporary:
+            root = Path(temporary)
+            plugin = {
+                "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+                "name": "example.plugin",
+            }
+            (root / "plugin.json").write_text(json.dumps(plugin) + "\n", encoding="utf-8")
+            servers = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+            servers["mcpServers"]["firecrawl"]["env"] = {"FIRECRAWL_API_KEY": "fc-secretvalue"}
+            (root / "mcp.json").write_text(json.dumps(servers) + "\n", encoding="utf-8")
+            skill = root / "skills" / "demo"
+            skill.mkdir(parents=True)
+            (skill / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\ndisable-model-invocation: true\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            problems = plugins.conformance_problems(root)
+            text = "\n".join(problems)
+            self.assertIn("embeds a credential", text)
+            self.assertIn("disable-model-invocation", text)
+
+    def test_agent_plugins_leaves_foreign_placeholders_literal(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-env-") as temporary:
+            root = Path(temporary)
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            servers = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+            servers["mcpServers"]["firecrawl"]["env"] = {"FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"}
+            (root / "mcp.json").write_text(json.dumps(servers) + "\n", encoding="utf-8")
+            problems = plugins.conformance_problems(root)
+            self.assertTrue(any("FIRECRAWL_API_KEY" in item and "literal" in item for item in problems), problems)
+            self.assertTrue(any("would overlay" in item for item in problems), problems)
 
     @GATE
     def test_harness_coverage(self):
