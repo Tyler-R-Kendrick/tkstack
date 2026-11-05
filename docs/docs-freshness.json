@@ -646,7 +646,7 @@
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "bf113af8db8cf326b0130ea828a1993010435946"
+          "oid": "f2db7326883f54c2b49c30baca641da5f6c84ca8"
         }
       },
       "inputs": {
@@ -749,7 +749,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "6d72ebd87878e2d4fbfdf02aff5050163edc075a"
+          "oid": "721629741f6ace886a977bb74718777cca9d6911"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -797,7 +797,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
+      "reason": "The repo-quality snapshot test now requires the encoded snapshot to stay under 100 KiB so the promptfoo grader argument fits the operating-system limit."
     },
     "execution": {
       "docs": {
@@ -1062,7 +1062,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "13de1170cecca0db21b18d7505134dbf77f78d69"
+          "oid": "4abd27a4360089ace9af2e3570ad0d7e1a93ef25"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1134,7 +1134,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "d2ced9bc07cf4a1a2da4c43fe229887be47d62eb"
+          "oid": "751b9b86960d3ffd8294df899a265f48b4cd192b"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2757,8 +2757,8 @@
           "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
+      "no_doc_impact": true,
+      "reason": "Capped repo-quality snapshot excerpts and summarized generated lock JSON so the promptfoo grader argument stays under the OS limit. Skill docs do not describe that limit; evals/README.md does."
     }
   },
   "object_format": "sha1",

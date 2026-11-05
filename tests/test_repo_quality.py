@@ -285,7 +285,12 @@ class RepoQualityTests(unittest.TestCase):
         self.assertLess(text.index("## README.md"), text.index("## File tree"))
         self.assertIn("## SKILL.md frontmatter", text)
         self.assertIn("## docs/skill-marketplace.md", text)
+        self.assertIn("## install.sh", text)
+        self.assertIn("## LOC per top-level directory", text)
+        self.assertIn("## Docs", text)
+        self.assertIn("docs/unslop.md —", text)
         self.assertIn("npx skills add", text)
+        self.assertIn("[download record omitted]", text)
         for relative in (
             ".claude-plugin/marketplace.json",
             ".claude-plugin/plugin.json",
@@ -296,6 +301,42 @@ class RepoQualityTests(unittest.TestCase):
         home = str(Path.home())
         if len(home) > 1:
             self.assertNotIn(home, text)
+
+    def test_snapshot_encoded_size_fits_exec_argv(self):
+        text = snapshot.snapshot()
+        self.assertLess(len(text.encode()), 100_000)
+
+    def test_generated_lock_json_is_summarized(self):
+        self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/bootstrap/requirements.lock"))
+        self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
+        lockfile = json.dumps({
+            "name": "demo",
+            "lockfileVersion": 3,
+            "packages": {".": {"integrity": "sha512-abc"}},
+        })
+        summarized = snapshot._compact_json(lockfile)
+        self.assertIn("lockfile omitted", summarized)
+        self.assertNotIn("packages", summarized)
+        manifest = json.dumps({
+            "tools": {
+                "rtk": {
+                    "version": "1.1.0",
+                    "platforms": {
+                        "linux-x86_64": {
+                            "url": "https://example.invalid/rtk.tar.gz",
+                            "sha256": "ab" * 32,
+                            "archive_member": "rtk",
+                        }
+                    },
+                }
+            }
+        })
+        compacted = snapshot._compact_json(manifest)
+        self.assertIn("[download record omitted]", compacted)
+        self.assertNotIn("sha256", compacted)
+        self.assertIn("1.1.0", compacted)
 
     def test_quickstart_requires_exactly_one_command(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-readme-") as temporary:

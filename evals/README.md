@@ -45,7 +45,10 @@ than replacing full skill outcomes or creative/provider execution.
 bounded snapshot of git-tracked files (file tree, LOC, README, install.sh,
 AGENTS.md, manifests, owned SKILL.md frontmatter, `docs/skill-marketplace.md`,
 harness docs, and the docs list) with home paths and secret-like values
-redacted. README.md is placed before the file tree. Without git, the walk
+redacted. File excerpts are capped and generated lock JSON is summarized so
+the snapshot stays under 100 KiB. Promptfoo passes that text inside one
+grader argument, and a larger snapshot exceeds Linux's per-argument limit.
+README.md is placed before the file tree. Without git, the walk
 skips `.git`, `__pycache__`, `node_modules`, `.tkstack`, `.venv`, and `venv`.
 `judge.py` is the
 headless grader. `checks.py` applies deterministic limits and prints a JSON

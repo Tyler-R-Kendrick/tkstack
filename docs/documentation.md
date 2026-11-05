@@ -155,9 +155,10 @@ README Develop section has copy-paste commands for
 `RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v`,
 and `python3 src/check_docs.py check`. The maintain section includes the dry-run
 preview, routing inventory check, docs check, tests, and that restore sequence.
-`tests/test_repo_quality.py` always checks the repo-quality harness shape.
-Ceiling assertions run only with `REPO_QUALITY_GATE=1`, and the promptfoo judge
-only with `RUN_JUDGE=1`, so a checkout below those ceilings still passes the
-default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
+`tests/test_repo_quality.py` always checks the repo-quality harness shape,
+including that the encoded snapshot stays under 100 KiB so the promptfoo grader
+argument fits the operating-system limit. Ceiling assertions run only with
+`REPO_QUALITY_GATE=1`, and the promptfoo judge only with `RUN_JUDGE=1`, so a
+checkout below those ceilings still passes the default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
 requires each metric score to be 1.0. The harness is Unix-only. Commands are
 in the README Develop section and [Repository quality](../evals/README.md).
