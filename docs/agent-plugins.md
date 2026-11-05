@@ -21,9 +21,11 @@ skills/<name>/SKILL.md
 
 ## Skills
 
-Agent Plugins discovers only an immediate child of `skills/` whose `SKILL.md`
-is a regular file. Learn's subskills stay inside `skills/learn/skills/` and
-are not separate plugins. `skills/skills.json` is the placement registry the
+Agent Plugins discovers an immediate child of `skills/` whose `SKILL.md`
+resolves to a file inside the plugin root. An in-root symlink is included
+(§4.1). A link that resolves outside the root is rejected. Learn's subskills
+stay inside `skills/learn/skills/` and are not separate plugins.
+`skills/skills.json` is the placement registry the
 installer reads. It is a file, so discovery ignores it. `src/runner.json` is
 the workflow runner registry. Runners are outside the v1 component types, so
 it stays next to `src/tkstack.py`.
@@ -87,14 +89,17 @@ the client chooses another working directory. The installer still registers
 and indexes a project directory; see [Install](bootstrap.md).
 
 Playwright needs Node.js and downloads a browser on first use. Serena's uvx
-command needs `uv` and network access the first time it resolves the git URL.
+command needs `uvx` on `PATH` and network access the first time it resolves
+the git URL.
 
 ## Client files that stay where the host reads them
 
 The spec puts client-specific plugin data under a reverse-domain `extensions`
-key and a top-level directory of that same name (§8). No client this repo
-targets publishes a namespace it loads today. `plugin.json` therefore has no
-`extensions` object.
+key and a top-level directory of that same name (§8). A namespace is at least
+two dot-separated lowercase labels, such as `com.example.client`. The
+conformance check rejects any other key. The published schema only requires
+each value to be an object. No client this repo targets publishes a namespace
+it loads today. `plugin.json` therefore has no `extensions` object.
 
 `.claude-plugin/`, `.cursor/rules/`, and `.agents/` sit outside those
 reverse-domain directories. That is not a conformance violation. §4.2's

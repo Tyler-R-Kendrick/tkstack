@@ -417,9 +417,6 @@ def initialize_serena(root, target, scope, dry_run=False, runner=None, which=Non
             print("Would run" + where + ": " + " ".join(argv))
         return 0
     which = shutil.which if which is None else which
-    if which("uv") is None and which("uvx") is None:
-        print("skip serena: uv is not on PATH")
-        return 0
     if which("uvx") is None:
         print("skip serena: uvx is not on PATH")
         return 0
@@ -526,12 +523,37 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
     return changes
 
 
+def _delegates(root):
+    """Orchestrators in skills.json. Each value is a list of harness names."""
+    raw = _placement_doc(root).get("delegates")
+    if not isinstance(raw, dict):
+        return {}
+    return {name: targets for name, targets in raw.items()
+            if isinstance(name, str) and name not in SKILL_DIRECTORIES and isinstance(targets, list)}
+
+
+def expand_harnesses(root, names):
+    """Swap an orchestrator for the harnesses skills.json says it runs."""
+    declared = _delegates(root)
+    expanded = []
+    for name in names:
+        targets = declared.get(name)
+        if targets is None:
+            expanded.append(name)
+            continue
+        if not targets or any(not isinstance(item, str) or item not in SKILL_DIRECTORIES for item in targets):
+            raise ValueError(f"{name} delegates must name harnesses this installer links")
+        expanded.extend(targets)
+    return list(dict.fromkeys(expanded))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", type=Path, default=Path.home(),
                         help="Home or project root to install into (default: your home)")
-    parser.add_argument("--harness", action="append", choices=tuple(SKILL_PATHS),
-                        help="Harness to install; repeat to select several (default: codex, claude, cursor)")
+    parser.add_argument("--harness", action="append",
+                        choices=tuple(dict.fromkeys((*SKILL_PATHS, *_delegates(ROOT)))),
+                        help="Harness to install; t3code installs delegates.t3code (default: codex, claude, cursor)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without changing files")
     parser.add_argument("--uninstall", action="store_true",
                         help="Remove this checkout's links for every harness and its docs hook")
@@ -541,11 +563,11 @@ def main():
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        selected = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
+        selected = expand_harnesses(ROOT, list(dict.fromkeys(args.harness or DEFAULT_HARNESSES)))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if args.uninstall:
-            harnesses = list(SKILL_PATHS)
+            harnesses = expand_harnesses(ROOT, [*SKILL_PATHS, *_delegates(ROOT)])
             link_scope = None
             if args.harness:
                 print("tkstack: --uninstall removes this checkout's links for every harness; --harness does not limit it.",

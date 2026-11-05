@@ -3,8 +3,8 @@
 The vendored schemas are the published 1.0.0 documents from
 agentplugins/agent-plugins-spec (schemas/1.0.0/). The checker applies the
 subset of JSON Schema those files use, then the specification rules the
-schema does not express: command tokens, remote URLs, cwd containment, and
-Agent Skills frontmatter for skills discovered at skills/*/SKILL.md.
+schema does not express: command tokens, remote URLs, cwd containment,
+extension namespaces, and Agent Skills frontmatter for skills/*/SKILL.md.
 
 This module does not pin the servers this repository ships. That policy
 lives in repo_mcp_policy.py. An absent mcp.json is not a spec error (§6.2).
@@ -40,6 +40,11 @@ SKILL_FIELDS = {
     "allowed-tools",
 }
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+# §8.1 names are reverse-domain namespaces (com.example.client). The schema
+# only requires each extensions value to be an object.
+EXTENSION_NAMESPACE = re.compile(
+    r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)+$"
+)
 PLACEHOLDER = re.compile(r"\$\{([^{}]+)\}")
 # Known token shapes only. A miss does not prove the file embeds no credential.
 SECRET = re.compile(
@@ -124,7 +129,20 @@ def validate_instance(instance, schema, root=None, path="$"):
     return errors
 
 
-def _json_object(path):
+def extension_namespace_errors(plugin):
+    """§8.1 member names. The schema does not constrain these keys."""
+    extensions = plugin.get("extensions") if isinstance(plugin, dict) else None
+    if not isinstance(extensions, dict):
+        return []
+    return [
+        f"extensions key {key!r} is not a reverse-domain namespace"
+        for key in extensions
+        if EXTENSION_NAMESPACE.fullmatch(key) is None
+    ]
+
+
+def json_object(path):
+    """Load one JSON object. Other modules use this instead of a private helper."""
     try:
         loaded = json.loads(path.read_text(encoding="utf-8"))
     except UnicodeDecodeError:
@@ -400,17 +418,20 @@ def conformance_problems(root):
     if not plugin_path.is_file():
         problems.append("missing plugin.json")
     else:
-        plugin, errors = _json_object(plugin_path)
+        plugin, errors = json_object(plugin_path)
         problems.extend(f"plugin.json: {item}" for item in errors)
         if plugin is not None:
             problems.extend(
                 f"plugin.json: {item}"
                 for item in validate_instance(plugin, load_schema(PLUGIN_SCHEMA_NAME))
             )
+            problems.extend(
+                f"plugin.json: {item}" for item in extension_namespace_errors(plugin)
+            )
     mcp_path = root / "mcp.json"
     # §6.2: an absent fixed location is not an error. A present file still has to parse.
     if mcp_path.is_file():
-        document, errors = _json_object(mcp_path)
+        document, errors = json_object(mcp_path)
         problems.extend(f"mcp.json: {item}" for item in errors)
         if document is not None:
             problems.extend(

@@ -34,8 +34,7 @@ COPILOT_PROJECT = Path(".github/skills")
 MUSE_PROJECT = Path(".agents/skills")
 # Hosts that receive native hook and MCP files. Other skill hosts are links only.
 HOOK_HARNESSES = ("codex", "claude", "cursor")
-# t3code is an orchestrator with no skills directory. skills.json delegates
-# names the hosts it runs. It is intentionally absent from SKILL_DIRECTORIES.
+# t3code has no directory here. install.py expands skills.json delegates.t3code.
 
 
 def skill_directory(harness, scope="home"):

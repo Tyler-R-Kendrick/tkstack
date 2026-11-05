@@ -16,9 +16,10 @@ launchers, or rewrite `AGENTS.md` / `CLAUDE.md`. Portable servers stay in
 root `mcp.json`. See [Agent Plugins](agent-plugins.md).
 
 The default links Codex, Claude Code, and Cursor. Repeat `--harness` for
-Copilot, Grok, Kimi, Muse, or OpenCode. t3code is an orchestrator and is never
-linked. `--scope project` uses each host's project skill directory; the default
-for a home target is home scope. Keep the checkout: the links point at it.
+Copilot, Grok, Kimi, Muse, or OpenCode. `--harness t3code` installs the
+`delegates.t3code` hosts and creates no t3code directory. `--scope project`
+uses each host's project skill directory; the default for a home target is
+home scope. Keep the checkout: the links point at it.
 
 ```sh
 ./install.sh --dry-run

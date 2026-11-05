@@ -121,6 +121,16 @@ class InstallTests(unittest.TestCase):
             self.assertNotIn("architect", hosted)
             self.assertNotIn("graphify", hosted)
         self.assertIsNone(install.skill_directory("t3code"))
+        self.assertEqual(install.expand_harnesses(ROOT, ["t3code"]),
+                         ["claude", "codex", "cursor", "copilot", "grok"])
+        self.assertEqual(
+            install.expand_harnesses(ROOT, ["t3code", "claude", "muse"]),
+            ["claude", "codex", "cursor", "copilot", "grok", "muse"],
+        )
+        self.assertEqual(
+            install.expand_harnesses(ROOT, [*install.SKILL_PATHS, "t3code"]),
+            list(install.SKILL_PATHS),
+        )
         self.assertEqual(install.skill_directory("copilot"), Path(".copilot/skills"))
         self.assertEqual(install.skill_directory("copilot", "project"), Path(".github/skills"))
         self.assertEqual(install.skill_directory("muse"), Path(".config/muse/skills"))
@@ -161,6 +171,48 @@ class InstallTests(unittest.TestCase):
     def test_preview_has_no_side_effects(self):
         self.assertEqual(install.apply(self.plan, dry_run=True), self.expected_links)
         self.assertEqual(list(self.target.iterdir()), [])
+
+    def test_t3code_installs_delegate_placements_and_uninstalls_them(self):
+        holding = tempfile.TemporaryDirectory()
+        self.addCleanup(holding.cleanup)
+        broken = Path(holding.name)
+        (broken / "skills").mkdir()
+        (broken / "skills" / "skills.json").write_text(
+            '{"delegates": {"t3code": ["claude", "nope"]}}\n', encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "delegates must name"):
+            install.expand_harnesses(broken, ["t3code"])
+        env = _env_without_uv()
+        base = [sys.executable, str(ROOT / "scripts/install.py"), "--target", str(self.target), "--harness", "t3code"]
+        preview = subprocess.run(base + ["--dry-run", "--scope", "project"],
+                                 capture_output=True, text=True, env=env)
+        self.assertEqual(preview.returncode, 0, preview.stdout + preview.stderr)
+        for relative in (".github/skills", ".claude/skills", ".agents/skills", ".cursor/skills", ".grok/skills", ".cursor/rules"):
+            self.assertIn(str(self.target / relative), preview.stdout)
+        self.assertNotIn(str(self.target / ".copilot/skills"), preview.stdout)
+        self.assertNotIn(".kimi/skills", preview.stdout)
+        self.assertNotIn("t3code", preview.stdout)
+        self.assertEqual(list(self.target.iterdir()), [])
+        installed = subprocess.run(base + ["--scope", "home"], capture_output=True, text=True, env=env)
+        self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
+        self.assertTrue((self.target / ".copilot/skills/learn").is_symlink())
+        self.assertTrue((self.target / ".claude/skills/graphify").is_symlink())
+        self.assertFalse((self.target / ".grok/skills/graphify").exists())
+        self.assertFalse((self.target / ".github/skills").exists())
+        self.assertNotIn("t3code", {path.name for path in self.target.iterdir()})
+        dry_remove = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--dry-run", "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, env=env)
+        self.assertEqual(dry_remove.returncode, 0, dry_remove.stdout + dry_remove.stderr)
+        self.assertIn(f"Would remove: {self.target / '.copilot/skills/learn'}", dry_remove.stdout)
+        self.assertTrue((self.target / ".copilot/skills/learn").is_symlink())
+        removed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, env=env)
+        self.assertEqual(removed.returncode, 0, removed.stdout + removed.stderr)
+        self.assertIn("skip serena: uninstall", removed.stdout)
+        self.assertFalse((self.target / ".copilot/skills/learn").exists())
+        self.assertFalse((self.target / ".claude/skills/learn").exists())
 
     def test_invalid_parent_stops_before_creating_other_links(self):
         parent = self.plan[-1][1].parent
@@ -374,7 +426,7 @@ class InstallTests(unittest.TestCase):
                    '--harness', 'codex', '--harness', 'claude']
         installed = subprocess.run(command, capture_output=True, text=True, timeout=60, env=_env_without_uv())
         self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
-        self.assertIn("skip serena: uv is not on PATH", installed.stdout)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
         for name, data in before.items():
             self.assertEqual((checkout / name).read_bytes(), data)
         self.assertTrue((checkout / '.agents/principles').is_symlink())
@@ -415,12 +467,12 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((checkout / ".tkstack").exists())
         self.assertFalse(target.exists())
         installed = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
-        self.assertIn("skip serena: uv is not on PATH", installed.stdout)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
         self.assertTrue((target / ".agents/skills/matt-tdd/SKILL.md").is_file())
         self.assertTrue((target / ".agents/steering").is_symlink())
         again = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
         self.assertIn("0 link(s) changed.", again.stdout)
-        self.assertIn("skip serena: uv is not on PATH", again.stdout)
+        self.assertIn("skip serena: uvx is not on PATH", again.stdout)
 
 
 
@@ -859,7 +911,7 @@ class SerenaInstallTests(unittest.TestCase):
                 which=lambda name: None,
             )
         self.assertEqual(calls, [])
-        self.assertIn("skip serena: uv is not on PATH", stdout.getvalue())
+        self.assertIn("skip serena: uvx is not on PATH", stdout.getvalue())
 
     def test_uv_without_uvx_skips(self):
         stdout = io.StringIO()

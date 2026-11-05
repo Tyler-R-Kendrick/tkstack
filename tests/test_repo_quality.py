@@ -507,6 +507,23 @@ class RepoQualityTests(unittest.TestCase):
             escaped = plugins.conformance_problems(root)
             self.assertTrue(any("outside the plugin root" in item for item in escaped), escaped)
 
+    def test_extension_keys_must_be_reverse_domain_namespaces(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-ext-") as temporary:
+            root = Path(temporary)
+            plugin = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
+            plugin["extensions"] = {"com.example.client": {"setting": True}}
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            self.assertFalse(any("extensions" in item for item in plugins.conformance_problems(root)))
+            plugin["extensions"] = {"claude": {}, "Com.Example": {}}
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            bad = plugins.conformance_problems(root)
+            self.assertTrue(any("claude" in item and "reverse-domain" in item for item in bad), bad)
+            self.assertTrue(any("Com.Example" in item for item in bad), bad)
+            plugin.pop("extensions")
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            self.assertFalse(any("extensions" in item for item in plugins.conformance_problems(root)))
+
     @GATE
     def test_harness_coverage(self):
         self.assert_check(checks.harness_coverage(ROOT))
@@ -608,10 +625,14 @@ class RepoQualityTests(unittest.TestCase):
             self.assertIn(relative, text)
         harnesses = text.split("## docs/harnesses.md\n", 1)[1].split("\n## ", 1)[0]
         self.assertIn("delegate harnesses' placements", harnesses)
+        self.assertIn("./install.sh --harness t3code", harnesses)
         self.assertIn("| t3code |", harnesses)
         t3code = text.split("## docs/t3code.md\n", 1)[1].split("\n## ", 1)[0]
         self.assertIn("T3 Code is an orchestrator", t3code)
         self.assertIn("delegate", t3code)
+        self.assertIn("./install.sh --harness t3code", t3code)
+        readme = text.split("## README.md\n", 1)[1].split("\n## install.sh\n", 1)[0]
+        self.assertIn("--harness t3code", readme)
         self.assertNotIn("[truncated docs/t3code.md]", t3code)
         home = str(Path.home())
         if len(home) > 1:

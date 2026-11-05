@@ -18,10 +18,9 @@ and Cursor, so that default set lands in the shared Codex directory unless you
 pass `--harness`. Pstack and Cursor Team Kit install only to `.cursor/skills/`.
 Graphify and Impeccable keep Codex, Claude Code, and Cursor, including the
 generic view at `.tkstack/skill-views/graphify/default/`. t3code has no skills
-directory. It is an orchestrator that runs Claude, Codex, Cursor, Copilot, or
-Grok and reads that host's skills. `skills/skills.json` `delegates.t3code`
-names those hosts. Repo-quality counts t3code when each of them is linked.
-See [t3code](t3code.md). Links point to source instructions.
+directory. `./install.sh --harness t3code` installs the placements of the hosts
+in `delegates.t3code` (Claude, Codex, Cursor, Copilot, and Grok). See
+[t3code](t3code.md). Links point to source instructions.
 Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
 preserve upstream `disable-model-invocation: true` policy. Owned `hill-climb`
 and `sdlc` store that flag under `metadata` so their `SKILL.md` files stay
@@ -88,8 +87,9 @@ choices, conditional references, and retained native specialists.
 
 The official Graphify Labs skill uses matching native Codex/Claude variants and
 its generic Agent Skills variant for Cursor. All eight reference sidecars are
-bundled in each generated view. The pinned local runtime, MCP connection, hooks,
-state conventions, and native validation are described in [Graphify setup](graphify.md).
+bundled in each generated view. This repository does not commit a PyPI lock for
+the host `graphifyy` package. MCP, hooks, state conventions, and native
+validation are described in [Graphify setup](graphify.md).
 
 ## Official Caveman (22)
 

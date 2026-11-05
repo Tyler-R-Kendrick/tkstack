@@ -10,7 +10,7 @@
 | Kimi | `.kimi/skills` |
 | Muse | `~/.config/muse/skills` at home, `.agents/skills` in a project |
 | OpenCode | `.config/opencode/skills` at home, `.opencode/skills` in a project |
-| t3code | No skills directory. T3 Code is an orchestrator, so its skills come from the delegate harnesses' placements (`delegates.t3code`: Claude, Codex, Cursor, Copilot, and Grok). |
+| t3code | No skills directory. `./install.sh --harness t3code` installs the delegate harnesses' placements (`delegates.t3code`): `.claude/skills`, `.agents/skills`, `.cursor/skills` and `.cursor/rules`, `~/.copilot/skills` or `.github/skills`, and `.grok/skills`. |
 
 `skills/skills.json` maps source-local skill names to installed aliases. Matt Pocock's
 `tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. Emil Kowalski's
@@ -50,9 +50,8 @@ Pstack and Cursor Team Kit are Cursor packages and go only to `.cursor/`
 for Codex, Claude Code (`.claude/skills`), and Cursor (`.cursor/skills`).
 Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
-and Cursor views. t3code does not get a skills directory. It is an orchestrator
-that runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
-`skills/skills.json` records that with `delegates.t3code`. See
+and Cursor views. t3code does not get a skills directory. `./install.sh --harness t3code`
+installs the hosts in `delegates.t3code` and no t3code directory. See
 [t3code](t3code.md). Repo-quality counts t3code as covered when every harness
 named there is itself linked. The check still requires all nine hosts.
 `./install.sh --uninstall` removes this checkout's links for every harness

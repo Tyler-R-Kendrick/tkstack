@@ -7,7 +7,7 @@ pins are this repository's choice. Spec conformance stays in agent_plugins.py.
 
 from pathlib import Path
 
-from agent_plugins import _json_object
+from agent_plugins import json_object
 
 
 EXPECTED_SERVERS = {
@@ -73,7 +73,7 @@ def policy_problems(root):
     path = Path(root) / "mcp.json"
     if not path.is_file():
         return ["missing mcp.json"]
-    document, errors = _json_object(path)
+    document, errors = json_object(path)
     if document is None:
         return []
     del errors

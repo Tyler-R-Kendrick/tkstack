@@ -39,11 +39,11 @@ ROOT = Path(__file__).resolve().parents[2]
 # under 100_000 bytes.
 LIMIT = 52_000
 READ_CAP = 5_000
-# Head includes ## Install options through --uninstall and the verify-first
-# alternative. The file's later ## Maintain section does not fit this cap;
+# Head includes ## Install options through the harness list (--harness t3code)
+# and the verify-first alternative. The later ## Maintain section does not fit;
 # ## Develop, which is inside the head, already shows preview, test, and docs.
-README_CAP = 10_800
-README_HEAD = 10_800
+README_CAP = 11_600
+README_HEAD = 11_600
 README_TAIL = 0
 # Head keeps the uv pin and archive checks. Tail keeps main() and the call
 # on the last line, inside the same encoded budget as a flat 5_000 excerpt.

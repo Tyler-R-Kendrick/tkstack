@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "0f8974bba2492c45134c40ccb2b278322c9f6db5"
         }
       },
-      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc.",
+      "docs_refresh_reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,15 +545,15 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
+          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
         },
         "docs/harnesses.md": {
           "mode": "100644",
-          "oid": "7069934406d258657d6e6e6fa79a31b3f27a3d98"
+          "oid": "bb0a4a96888df1d4492cda8ef760f3d89892d656"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -565,11 +565,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "98e29b248eb16eb03ecbd40a0ec302fc73886fee"
+          "oid": "c161af3a5e17ce09c52b7e36edd5cacf1b1e1c06"
         },
         "docs/t3code.md": {
           "mode": "100644",
-          "oid": "eccf8e6df0484a974ae797454de10d4a09e593f9"
+          "oid": "9411acdc5aa81d526e88e52f44f42caaee0c9d67"
         }
       },
       "inputs": {
@@ -615,13 +615,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc, including the marketplace descriptions."
+      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -688,7 +688,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "22c8b18a080f0491331a03438f8d15285ae96e17"
+          "oid": "b50d83b7eac7c1c774a76b2bb183a87afb950bc9"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -712,7 +712,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "8a59a5b2dd6959ba510708219204b5a6938bdb80"
+          "oid": "05149fe7c6ea8edfeacc11639394089030f59092"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -760,13 +760,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
+      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -777,7 +777,7 @@
           "oid": "5a465d857d99c69f6b0a5b9bd9b8a504a2b217db"
         }
       },
-      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc.",
+      "docs_refresh_reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys.",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -795,15 +795,15 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
+          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "538208c64e23bba3adf363ac2b03c8f95cfcb2f4"
+          "oid": "f79ca564ca1788a5fc90c306c0fd585f765ec137"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -833,11 +833,11 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "4685605e7933a73618e1b16d387dd2f7d3ac3dae"
+          "oid": "e93153c2fa913bc190dfed1b5bcff28e744235ee"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "c923bf54c70dcc4d8661b78c7a72c11584e005ce"
+          "oid": "0616a15cf346fca80aede4e3fde9f921d13969e9"
         },
         "src/README.md": {
           "mode": "100644",
@@ -861,17 +861,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
+      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
+          "oid": "8ed7bf6b8b92b8383f5976fb157dff67dd12be80"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
+          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -927,7 +927,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "98e29b248eb16eb03ecbd40a0ec302fc73886fee"
+          "oid": "c161af3a5e17ce09c52b7e36edd5cacf1b1e1c06"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -942,7 +942,6 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
-      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc, including the marketplace descriptions.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -998,7 +997,7 @@
         },
         "evals/repo-quality/agent_plugins.py": {
           "mode": "100644",
-          "oid": "106d1acd55d3623bb7dc5ba00235819d3b701903"
+          "oid": "813cb320bef1ec153284897f920b649a3e29c7d2"
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
@@ -1014,7 +1013,7 @@
         },
         "evals/repo-quality/repo_mcp_policy.py": {
           "mode": "100644",
-          "oid": "3b8cb95f58e6d66d551df2a912efe7325cc66d62"
+          "oid": "a0ca9d792858c6762e7db4d592a514fd8e8a33b2"
         },
         "evals/repo-quality/results/archive/README.md": {
           "mode": "100644",
@@ -1038,7 +1037,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "273d43bd3662ed219131da02a31226517488dd6f"
+          "oid": "1b94d50047e8ab792c7c2c619bc2b8818e1cf161"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2670,7 +2669,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
+      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
     }
   },
   "object_format": "sha1",

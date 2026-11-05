@@ -190,8 +190,10 @@ bash /tmp/tkstack-install.sh
 `core.hooksPath` when that value is `.githooks`. `--harness` does not limit it.
 It leaves foreign links in place. `--dry-run --uninstall` prints that plan and
 writes nothing. Repeat `--harness` with `codex`, `claude`, `cursor`, `grok`,
-`kimi`, `opencode`, `copilot`, or `muse` to select hosts. t3code is not a
-choice: it reads the other hosts' skills. Copilot links `~/.copilot/skills` at
+`kimi`, `opencode`, `copilot`, `muse`, or `t3code`. `--harness t3code` installs
+every host in `skills/skills.json` `delegates.t3code` (Claude, Codex, Cursor,
+Copilot, and Grok) into that host's skill directory. There is no t3code
+directory. Copilot links `~/.copilot/skills` at
 home and `.github/skills` in a project. Muse links `~/.config/muse/skills` at
 home and does not follow `XDG_CONFIG_HOME`; a project install uses
 `.agents/skills`. The default selection is Codex, Claude Code, and Cursor.
