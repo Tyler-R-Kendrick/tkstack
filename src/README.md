@@ -3,7 +3,7 @@
 `scripts/install.py` is the linker `install.sh` execs. This directory holds the
 programs the repository runs directly:
 
-- `tkstack.py` runs compiled skills and workflows.
+- `tkstack.py` runs compiled skills and workflows. Source registry defaults are `src/runner.json`.
 - `check_docs.py` checks the documentation ledger. `check_skills.py` checks owned skill contracts.
 - `tkstack_state.py` is the canonical state helper copied into each skill.
 - `skill_roots.py` lists owned skill packages.

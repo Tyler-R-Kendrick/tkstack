@@ -390,6 +390,38 @@ class RepoQualityTests(unittest.TestCase):
     def test_top_level_files(self):
         self.assert_check(checks.top_level_files(ROOT))
 
+    def test_no_harnesses_directory_fails_when_the_directory_exists(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-harnesses-") as temporary:
+            root = Path(temporary)
+            nested = root / "harnesses"
+            nested.mkdir()
+            (nested / "skills.json").write_text("{}\n", encoding="utf-8")
+            found = checks.no_harnesses_directory(root)
+            self.assertFalse(found["pass"])
+            self.assertEqual(found["metric"], "conventions")
+            self.assertEqual(found["value"], 1)
+            self.assertEqual(found["limit"], 0)
+            self.assertIn("harnesses/ exists", found["evidence"])
+            self.assertIn("harnesses/skills.json", found["evidence"])
+            for child in nested.iterdir():
+                child.unlink()
+            nested.rmdir()
+            elsewhere = root / "notes"
+            elsewhere.mkdir()
+            (root / "harnesses").symlink_to(elsewhere, target_is_directory=True)
+            via_link = checks.no_harnesses_directory(root)
+            self.assertFalse(via_link["pass"])
+            self.assertIn("harnesses/ exists", via_link["evidence"])
+            (root / "harnesses").unlink()
+            absent = checks.no_harnesses_directory(root)
+            self.assertTrue(absent["pass"], absent["evidence"])
+            self.assertEqual(absent["value"], 0)
+            self.assertEqual(absent["evidence"], ["absent: harnesses/"])
+
+    @GATE
+    def test_no_harnesses_directory(self):
+        self.assert_check(checks.no_harnesses_directory(ROOT))
+
     def test_snapshot_ignores_extra_args_from_any_directory(self):
         script = ROOT / "evals" / "repo-quality" / "snapshot.py"
         outputs = []
@@ -438,12 +470,11 @@ class RepoQualityTests(unittest.TestCase):
         self.assertIn("skills/learn/skills/codify/SKILL.md", text)
         self.assertIn('main "$@"', text)
         self.assertIn("npx skills add", text)
-        self.assertIn("[download record omitted]", text)
         for relative in (
             ".claude-plugin/marketplace.json",
             ".claude-plugin/plugin.json",
-            "harnesses/skills.json",
-            "harnesses/integrations.json",
+            "skills/skills.json",
+            "docs/harnesses.md",
         ):
             self.assertIn(relative, text)
         home = str(Path.home())
@@ -456,9 +487,9 @@ class RepoQualityTests(unittest.TestCase):
 
     def test_generated_lock_json_is_summarized(self):
         self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/graphify/requirements.lock"))
-        self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
+        self.assertTrue(snapshot._is_lockfile("package-lock.json"))
+        self.assertTrue(snapshot._is_lockfile("requirements.lock"))
+        self.assertFalse(snapshot._is_lockfile("skills/skills.json"))
         lockfile = json.dumps({
             "name": "demo",
             "lockfileVersion": 3,
@@ -532,10 +563,10 @@ class RepoQualityTests(unittest.TestCase):
                 "The muse and kimi and grok and opencode and t3code are named here.\n",
                 encoding="utf-8",
             )
-            (root / "harnesses").mkdir()
-            (root / "harnesses" / "muse").mkdir()
-            (root / "harnesses" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
-            (root / "harnesses" / "skills.json").write_text(
+            (root / "notes" / "muse").mkdir(parents=True)
+            (root / "notes" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
+            (root / "skills").mkdir()
+            (root / "skills" / "skills.json").write_text(
                 '{"placement": {"default": ["codex"], "experimental": ["muse"]}}\n',
                 encoding="utf-8",
             )
@@ -554,7 +585,7 @@ class RepoQualityTests(unittest.TestCase):
             self.assertEqual(covered["value"], 1, covered["evidence"])
             self.assertFalse(covered["pass"])
             self.assertIn("muse: experimental, not counted", covered["evidence"])
-            self.assertFalse(any("harnesses/muse" in line for line in covered["evidence"]))
+            self.assertFalse(any("notes/muse" in line for line in covered["evidence"]))
 
     def test_counted_harnesses_are_directories_the_installer_links(self):
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -586,8 +617,8 @@ class RepoQualityTests(unittest.TestCase):
     def test_harness_coverage_parses_installer_code_and_does_not_execute_it(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-parse-") as temporary:
             root = Path(temporary)
-            (root / "harnesses").mkdir()
-            (root / "harnesses" / "skills.json").write_text(
+            (root / "skills").mkdir()
+            (root / "skills" / "skills.json").write_text(
                 '{"placement": {"default": ["codex"]}}\n',
                 encoding="utf-8",
             )
@@ -611,7 +642,7 @@ class RepoQualityTests(unittest.TestCase):
     def test_orchestrator_counts_only_when_every_delegate_is_linked(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-orchestrator-") as temporary:
             root = Path(temporary)
-            (root / "harnesses").mkdir()
+            (root / "skills").mkdir()
             (root / "scripts").mkdir()
             (root / "scripts" / "harness_paths.py").write_text(
                 "from pathlib import Path\n"
@@ -625,7 +656,7 @@ class RepoQualityTests(unittest.TestCase):
                 "    return SKILL_DIRECTORIES[harness]\n",
                 encoding="utf-8",
             )
-            skills = root / "harnesses" / "skills.json"
+            skills = root / "skills" / "skills.json"
             skills.write_text(
                 '{"delegates": {"t3code": ["claude", "codex"]}, '
                 '"placement": {"default": ["claude", "codex"]}}\n',

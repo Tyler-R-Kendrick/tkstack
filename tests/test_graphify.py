@@ -20,11 +20,6 @@ class GraphifyInstallTests(unittest.TestCase):
         self.assertEqual(source['version'], '0.9.97')
         for name in ('LICENSE', 'LICENSE-MIT', 'NOTICE'):
             self.assertIn(name, source['files'])
-        recipe = (ROOT / 'harnesses/graphify/requirements.in').read_text().strip()
-        self.assertEqual(recipe, 'graphifyy[mcp]==0.9.97')
-        lock = (ROOT / 'harnesses/graphify/requirements.lock').read_text()
-        self.assertIn('graphifyy==0.9.97', lock)
-        self.assertIn('--hash=sha256:', lock)
         install.verify_vendor(ROOT)
 
     def test_first_install_plans_all_native_skill_links_before_generated_views_exist(self):

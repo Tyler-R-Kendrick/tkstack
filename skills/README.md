@@ -18,7 +18,7 @@ ___ify skills this way (`/learn skillify ...`, or
 `python3 src/tkstack.py skills learn -- skillify ...`).
 
 Keep upstream edits out of this directory and out of `vendor/`. Configure a
-name collision in `harnesses/skills.json`; the installer generates the adapted
+name collision in `skills/skills.json`; the installer generates the adapted
 view under `.tkstack/`. Personal skills join all selected harnesses on install.
 
 These 8 root packages and Learn's 7 subskills, plus the four

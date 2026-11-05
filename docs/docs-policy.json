@@ -24,7 +24,7 @@
     "execution": {
       "inputs": [
         "src/tkstack.py",
-        "harnesses/runner.json"
+        "src/runner.json"
       ],
       "docs": [
         "README.md",
@@ -48,17 +48,18 @@
       "inputs": [
         "sources.lock.json",
         ".claude-plugin/**",
-        "harnesses/**",
+        "skills/skills.json",
+        ".cursor/rules/*.mdc",
+        ".github/lever.yml",
         "agents/**"
-      ],
-      "exclude": [
-        "harnesses/runner.json"
       ],
       "docs": [
         "README.md",
         "docs/skills.md",
         "docs/integrations.md",
-        "docs/normalization.md"
+        "docs/normalization.md",
+        "docs/harnesses.md",
+        "docs/t3code.md"
       ]
     },
     "skills": {

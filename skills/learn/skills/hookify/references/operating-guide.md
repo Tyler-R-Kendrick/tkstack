@@ -53,8 +53,8 @@ completion. A mandatory invariant may belong in CI rather than a stop reminder.
 ## 3. Write the portable policy and fixtures
 
 Read [the policy contract](../references/policy.md). Store owned policies in the
-project's established source/config directory, such as `harnesses/hooks/` in
-this dotfiles repository, or `.agents/hookify/` in another project. Never write
+project's source directory, such as `.agents/hookify/` when that path is
+tracked. Never write
 user rules into a skill/plugin cache. Preserve an existing policy's scope and
 baseline, and publish complete JSON atomically so concurrent hooks cannot read
 a half-written file.
@@ -72,9 +72,9 @@ For input with semantic structure, use an actual parser/custom deterministic
 check rather than claiming substring matching understands it.
 
 ```sh
-python3 <hookify-directory>/scripts/hookify.py check --rules /repo/harnesses/hooks/policy.json
+python3 <hookify-directory>/scripts/hookify.py check --rules /repo/.agents/hookify/policy.json
 python3 <hookify-directory>/scripts/hookify.py replay \
-  --rules /repo/harnesses/hooks/policy.json --cases /repo/harnesses/hooks/cases.json --jobs 4
+  --rules /repo/.agents/hookify/policy.json --cases /repo/.agents/hookify/cases.json --jobs 4
 ```
 
 The bundled [example policy](../examples/policy.json) and [cases](../examples/cases.json)
@@ -87,7 +87,7 @@ The bundled emitter produces a Claude Code settings fragment for enabled
 PreToolUse/Stop command hooks:
 
 ```sh
-python3 <hookify-directory>/scripts/hookify.py emit --rules /repo/harnesses/hooks/policy.json
+python3 <hookify-directory>/scripts/hookify.py emit --rules /repo/.agents/hookify/policy.json
 ```
 
 Merge the reviewed entries into the requested project scope, preserving unrelated

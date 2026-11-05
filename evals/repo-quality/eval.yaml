@@ -21,7 +21,7 @@ tests:
         metric: conventions
         threshold: 1.0
         value: |
-          Grade conventions. The repository follows its documented expectations, idioms, and conventions. Penalize surprises a reader would not predict from README.md, AGENTS.md, harnesses/README.md, or the manifests.
+          Grade conventions. The repository follows its documented expectations, idioms, and conventions. Penalize surprises a reader would not predict from README.md, AGENTS.md, docs/harnesses.md, or the manifests.
           10: Layout, names, and install paths match those documents. Root files, skill paths, and harness placement are the ones the docs describe.
           7: One small surprise remains, and a specific file documents it.
           5: A parallel layout, naming scheme, or install path appears that those documents do not predict.
@@ -63,7 +63,7 @@ tests:
         metric: cross_harness
         threshold: 1.0
         value: |
-          Grade cross-harness support for all nine harnesses: claude, codex, cursor, copilot, grok, kimi, muse, opencode, and t3code. A mention in harnesses/README.md or docs/ counts only when the snapshot also shows a placement, config, or install path for that harness.
+          Grade cross-harness support for all nine harnesses: claude, codex, cursor, copilot, grok, kimi, muse, opencode, and t3code. A mention in docs/harnesses.md or docs/ counts only when the snapshot also shows a placement, config, or install path for that harness.
           10: All nine are documented and have a real path in the tree, manifests, or harness docs.
           7: Seven or eight are documented with a real path, and the snapshot names the omitted harnesses as out of scope.
           5: Four, five, or six are actually supported.
@@ -119,7 +119,7 @@ tests:
         metric: documentation
         threshold: 1.0
         value: |
-          Grade documentation. README.md, AGENTS.md, harnesses/README.md, and the docs list follow one repo convention and describe the files in the snapshot.
+          Grade documentation. README.md, AGENTS.md, docs/harnesses.md, and the docs list follow one repo convention and describe the files in the snapshot.
           10: Install, scope, harness placement, and limits are accurate, linked, and matched by the tree and manifests.
           7: Those docs are accurate, with one command or path left undocumented.
           5: Useful docs exist, and they omit or contradict a path the tree clearly contains.

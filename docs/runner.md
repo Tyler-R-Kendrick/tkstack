@@ -64,7 +64,7 @@ binding or implicit workflow/indexing/model job at startup.
 
 ## Names and scoped registry
 
-Source defaults come from `harnesses/runner.json` plus the installer's canonical
+Source defaults come from `src/runner.json` plus the installer's canonical
 skill catalog, preserving owned/upstream aliases. Packaged subskills, such as
 Learn's ___ify skills, also register under their own names, so
 `.tkstack/tkstack skills codify -- help` and

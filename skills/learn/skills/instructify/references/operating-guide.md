@@ -80,17 +80,17 @@ The optional helper takes the [manifest contract](../references/manifest.md) and
 generates owned sections with source-based ownership and content hashes.
 The [example manifest](../examples/manifest.json) is a demonstration, not an
 automatically enabled preference. Copy/adapt it into an owned source directory
-such as `harnesses/instructions/` here; never write into a plugin cache.
+such as `instructions/expectations.json` in the project; never write into a plugin cache.
 
 ```sh
 python3 <instructify-directory>/scripts/instructify.py plan \
-  --project /repo --input /repo/harnesses/instructions/expectations.json > /repo/.tkstack/instructify/plan.json
+  --project /repo --input /repo/instructions/expectations.json > /repo/.tkstack/instructify/plan.json
 python3 <instructify-directory>/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json --dry-run
 python3 <instructify-directory>/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json
 python3 <instructify-directory>/scripts/instructify.py check \
-  --project /repo --input /repo/harnesses/instructions/expectations.json
+  --project /repo --input /repo/instructions/expectations.json
 ```
 
 Inspect the actual plan/diff before applying it. This is a review step the agent
@@ -108,9 +108,10 @@ with dedicated native rule files. Follow [operational limits](../references/mani
 for external writers, crash recovery, and rollback; do not describe a batch as
 a filesystem transaction.
 
-In tkstack, the installer links skills and the Cursor rules under
-`harnesses/`. It does not apply instruction files or own startup blocks.
-Change `harnesses/cursor/tkstack-steering.mdc` for that standing rule, and
+In tkstack, the installer links skills and the Cursor rules
+`.cursor/rules/graphify.mdc` and `.cursor/rules/tkstack-steering.mdc`.
+It does not apply instruction files or own startup blocks.
+Change `.cursor/rules/tkstack-steering.mdc` for that standing rule, and
 author other guidance here, rather than adding a competing generated
 section or patching ignored installation outputs. Never edit vendor snapshots.
 

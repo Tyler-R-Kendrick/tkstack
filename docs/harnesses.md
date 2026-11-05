@@ -1,6 +1,6 @@
 # Harness preferences
 
-`skills.json` maps source-local skill names to installed aliases. Matt Pocock's
+`skills/skills.json` maps source-local skill names to installed aliases. Matt Pocock's
 `tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. Emil Kowalski's
 `prototype` is installed as `emil-prototype`, preserving Matt's `prototype`.
 The installer generates a copy of each aliased source's skill tree with
@@ -40,18 +40,20 @@ Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
 and Cursor views. t3code does not get a skills directory. It is an orchestrator
 that runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
-`harnesses/skills.json` records that with `delegates.t3code`. See
-`t3code/README.md`. Repo-quality counts t3code as covered when every harness
+`skills/skills.json` records that with `delegates.t3code`. See
+[t3code](t3code.md). Repo-quality counts t3code as covered when every harness
 named there is itself linked. The check still requires all nine hosts.
 `./install.sh --uninstall` removes this checkout's links for every harness
 and unsets `core.hooksPath` when it is `.githooks`. Reinstalling also removes
 this checkout's links that fall outside their placement. `sources.lock.json` pins the
 upstream bytes, and `SCOPE.md` names the supported baseline.
 
-Cursor Team Kit's two native rules are installed into Cursor's rules directory.
-Shared workflow and engineering defaults are documented in `docs/standards.md`
-and the root agent instructions. Keep additional native settings under a
-directory per harness, such as `codex/`, `claude/`, or `cursor/`.
+Cursor rules this repository owns are `.cursor/rules/graphify.mdc` and
+`.cursor/rules/tkstack-steering.mdc`. The installer links those tracked files
+into the selected target and leaves them as files when the target is this
+checkout. Cursor Team Kit's two native rules are installed from the vendored
+package into the same rules directory. Shared workflow and engineering defaults
+are documented in `docs/standards.md` and the root agent instructions.
 
 Model selection follows capabilities in the active harness. A package install
 does not establish access to a provider's models, so no entitled model IDs are
@@ -59,21 +61,20 @@ invented here. Credentials and machine-specific state belong outside this repo.
 
 The installer links `.agents/steering` and `.agents/principles`. It does not
 rewrite `AGENTS.md` or `CLAUDE.md`. See `docs/learning.md` for the portable
-evidence format. `integrations.json` records runtime versions, verified release
-digests, and service specifications. Install does not register native hooks or
-MCP entries from that file. See `docs/integrations.md` for what a host still
-has to provide.
+evidence format. Install does not register native hooks or MCP entries, and it
+does not download tool runtimes. Source versions live in `sources.lock.json`.
+See `docs/integrations.md` for what a host still has to provide.
 `vendor/ponytail/` is the pinned DietrichGebert/ponytail 5.3.3 snapshot: six
 skills and Node lifecycle-hook adapters. It is vendored so setup links the
 bytes locked in `sources.lock.json` instead of cloning upstream. It is not a
 harness directory.
 
-`copilot/lever.yml` is an example of Lever repository dials. `--harness
-copilot` links skills into `~/.copilot/skills` or `.github/skills`, the same
-way it links every other skill. Install does not write `.github/lever.yml` or
-a separate Copilot project layout. See `docs/lever.md`.
+`.github/lever.yml` is this repository's Lever dial file. `--harness copilot`
+links skills into `~/.copilot/skills` or `.github/skills`, the same way it
+links every other skill. Install does not write `.github/lever.yml` or a
+separate Copilot project layout. See `docs/lever.md`.
 
 The root `install.sh` links the selected hosts and sets `core.hooksPath`. It
-does not select a profile or provision a toolchain. See [install](../docs/bootstrap.md).
+does not select a profile or provision a toolchain. See [install](bootstrap.md).
 Home-scope Codex configuration honors CODEX_HOME for the actual current home;
 explicit isolated/project targets stay contained in their selected directory.

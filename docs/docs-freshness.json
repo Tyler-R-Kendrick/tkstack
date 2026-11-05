@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -16,7 +16,7 @@
         },
         "docs/skillify.md": {
           "mode": "100644",
-          "oid": "6211bd6ef566b8f68942a05346063629f6b78577"
+          "oid": "0f8974bba2492c45134c40ccb2b278322c9f6db5"
         }
       },
       "inputs": {
@@ -538,17 +538,21 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
+      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+        },
+        "docs/harnesses.md": {
+          "mode": "100644",
+          "oid": "5a8ac459e7a5ecda50a0ddcff997b14cd088e19e"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "7104446061273acd093e31244792221f059ef1d0"
+          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -556,7 +560,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
+          "oid": "60a8e124eed96457b2ecdf68c389d53539d752b4"
+        },
+        "docs/t3code.md": {
+          "mode": "100644",
+          "oid": "faa85c3afaf3df724f7c8fda7f4341d8cc73296c"
         }
       },
       "inputs": {
@@ -568,65 +576,25 @@
           "mode": "100644",
           "oid": "1c76ca53518176e714b0bb8a301157d52ad282fb"
         },
-        "agents/README.md": {
-          "mode": "100644",
-          "oid": "0c546b9194aa8e15a7c0496c2f895c574f1c2bb3"
-        },
-        "harnesses/README.md": {
-          "mode": "100644",
-          "oid": "242e93c276e7774b2715ac4253425c6b0546ea4c"
-        },
-        "harnesses/ai-sdk/profiles.example.json": {
-          "mode": "100644",
-          "oid": "816a5170d963110c308844c947a2a50ab0b56428"
-        },
-        "harnesses/copilot/lever.yml": {
-          "mode": "100644",
-          "oid": "94dfa33e6668f67a0c388d3bf74033859c2b9510"
-        },
-        "harnesses/cursor/graphify.mdc": {
+        ".cursor/rules/graphify.mdc": {
           "mode": "100644",
           "oid": "832be8d5dec976d0c8f1f1b44596a4bef47f8117"
         },
-        "harnesses/cursor/tkstack-steering.mdc": {
+        ".cursor/rules/tkstack-steering.mdc": {
           "mode": "100644",
           "oid": "ba9e2fd7e9604018392a38a88ad30db48779e7ce"
         },
-        "harnesses/graphify/requirements.in": {
+        ".github/lever.yml": {
           "mode": "100644",
-          "oid": "14d381c755efa20ecc0de6fe6a1231980bb278ee"
+          "oid": "94dfa33e6668f67a0c388d3bf74033859c2b9510"
         },
-        "harnesses/graphify/requirements.lock": {
+        "agents/README.md": {
           "mode": "100644",
-          "oid": "31df8f2c52e9bc5028f2635d19bd685b1ae7f836"
+          "oid": "294de2a868bc1dbd051ef975b446c6a5e96bdc8f"
         },
-        "harnesses/headroom/requirements.in": {
-          "mode": "100644",
-          "oid": "9ebc739933d6c2da69971ec5e0fbbc2482a3b56c"
-        },
-        "harnesses/headroom/requirements.lock": {
-          "mode": "100644",
-          "oid": "d6dc1f940f951456ece6e041e193f7d35f600f2d"
-        },
-        "harnesses/integrations.json": {
-          "mode": "100644",
-          "oid": "4fd5f81a175bc8b9e712d80f5a6747e1f371b59d"
-        },
-        "harnesses/openwiki/package-lock.json": {
-          "mode": "100644",
-          "oid": "d2967373a295121177ce0ac15968d1dc198a237a"
-        },
-        "harnesses/openwiki/package.json": {
-          "mode": "100644",
-          "oid": "ba4b76a5062aebce26380051470243fd80b68f91"
-        },
-        "harnesses/skills.json": {
+        "skills/skills.json": {
           "mode": "100644",
           "oid": "3066ebc8e05b6b7a5e61efbaa00aebf31fdfa3f9"
-        },
-        "harnesses/t3code/README.md": {
-          "mode": "100644",
-          "oid": "198b42ba46b3e80f138fb3a56c699e919fe36718"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -634,17 +602,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
+      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "ee9c3f3ddcdcb6d294d32fa2668f061655a496ba"
+          "oid": "0793b9027f6d63d727b169faf85d497f03e9fb76"
         }
       },
       "inputs": {
@@ -655,11 +623,11 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "1f1b97c09e5c7364699f029637ea23dcdeaf1384"
+          "oid": "c6b8d257dd847d131120888966f350492e8f6171"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "f61ecca7f01ed110832fc2e1de66583b99043e1e"
+          "oid": "a8cb8840b5fbf0567bdabc9dce4bf0b201175aaa"
         },
         "src/check_docs.py": {
           "mode": "100755",
@@ -695,7 +663,7 @@
         },
         "tests/test_graphify.py": {
           "mode": "100644",
-          "oid": "4a970c5dc67a972b2d184090bf3a01aa82326612"
+          "oid": "2b770d21892825ee778c539553707efe127bcd81"
         },
         "tests/test_grok_learn.py": {
           "mode": "100644",
@@ -707,15 +675,11 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "c8c5ebaf0b53e555f4befc5085481d0c96199200"
+          "oid": "93125b71d203e3a1202f9e8ae0b6c302d4823bb2"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
-          "oid": "397af8ab24b54bff2cbde4920e930621c6f69115"
-        },
-        "tests/test_integrations.py": {
-          "mode": "100644",
-          "oid": "9686c5701e96a88c5f741045455d6c9a3b11a130"
+          "oid": "4f4b0aa3b73a3d097a9d21ce1b915616c4fa924e"
         },
         "tests/test_learn.py": {
           "mode": "100644",
@@ -735,7 +699,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "3bf92de710fb751c710070e7fdeb1e0879db52fe"
+          "oid": "c21a47f4a90d1cb8619fd9818dbc1efacc8f52bc"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -783,13 +747,13 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "scripts_loc resolves its root once so a relative root counts the same glue as the absolute path, and its evidence lists reached skill scripts excluded because the skill mentions them. Tests cover both. The ceiling and mapped docs are unchanged."
+      "reason": "The owned Cursor rule test checks link_plan only. Fixing it does not change documented install behavior."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -797,27 +761,27 @@
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "f8db6b3e08365f9d1093d037400bee0211f55505"
+          "oid": "5a465d857d99c69f6b0a5b9bd9b8a504a2b217db"
         }
       },
       "inputs": {
-        "harnesses/runner.json": {
+        "src/runner.json": {
           "mode": "100644",
           "oid": "8c6960e1878beeb3d50ef59f9b93e4deda40772a"
         },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "a8a196fd8e8782fa4ec7b467fd5065bb63033000"
+          "oid": "7027ba035b5d3fd4fa028baecf0c6ad28f68a60e"
         }
       },
       "no_doc_impact": false,
-      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
+      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -825,7 +789,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "7104446061273acd093e31244792221f059ef1d0"
+          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -855,15 +819,19 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "ebbb78938ec464f6f8369f3da9091efe1df4e461"
+          "oid": "4319222f3a2371bf8df4e6080545d41c6dde56d2"
         },
         "src/README.md": {
           "mode": "100644",
-          "oid": "1208636aee574530447a8183997f0270da38ec73"
+          "oid": "4b2fb287f2f0744c053fceace7cdc76435d7b9bf"
         },
         "src/check_skills.py": {
           "mode": "100644",
           "oid": "1eade15d28971d7e5582b1e0e98bc473902c8773"
+        },
+        "src/runner.json": {
+          "mode": "100644",
+          "oid": "8c6960e1878beeb3d50ef59f9b93e4deda40772a"
         },
         "src/skill_roots.py": {
           "mode": "100644",
@@ -875,17 +843,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
+      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
+          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "1407938d2815baab9b0e17d347f704d7fc5e0aa6"
+          "oid": "9704f2357a5c9e595295cd278646b8893858ba83"
         },
         "docs/flowify.md": {
           "mode": "100644",
@@ -901,7 +869,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "7104446061273acd093e31244792221f059ef1d0"
+          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -937,11 +905,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
+          "oid": "60a8e124eed96457b2ecdf68c389d53539d752b4"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "00336fdc1d1925de37c57ef8c956108b2aeb6870"
+          "oid": "e8bba830f233c8e4c6e76c62cca20da0a9f44798"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1007,11 +975,11 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "f03451d4ec73d903b964aed1a23a1f4a1a3a7ab8"
+          "oid": "7166734b5f11c9dc85c83f3489aaa5f9bb24e756"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
-          "oid": "f7a54a6afba41af6b0abed7d4a9e3429906170c1"
+          "oid": "9e04e4a4c64af9e16cf343d98fac8471fcb5e932"
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
@@ -1031,7 +999,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "097e790bc5be0965fd2a9c4b92c2952d355037e0"
+          "oid": "9d2e09943940cba27dc41511a23283cbb98e6263"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -1071,7 +1039,7 @@
         },
         "skills/README.md": {
           "mode": "100644",
-          "oid": "1866288a99b03deb215e3fb3c6bc0af860436421"
+          "oid": "34c84fccd944f6dc2d280db4f2bf636cf50157d7"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1691,7 +1659,7 @@
         },
         "skills/learn/skills/hookify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "a708ab13537c28443b2f9b10bb343bc196c7aca8"
+          "oid": "a9380cda34172108d4bbb0d04fa9290ae1252aa9"
         },
         "skills/learn/skills/hookify/references/policy.md": {
           "mode": "100644",
@@ -1739,7 +1707,7 @@
         },
         "skills/learn/skills/hookify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ddc0b48bd56ef0755f972e8e088c655ec4a5dd4c"
+          "oid": "9b45cf5aeec47fd1410d9ada8df7a9fd82c121b4"
         },
         "skills/learn/skills/instructify/LICENSE": {
           "mode": "100644",
@@ -1795,7 +1763,7 @@
         },
         "skills/learn/skills/instructify/references/harnesses.md": {
           "mode": "100644",
-          "oid": "034b553267a1ef7a054fcdd70ab561fb62affe90"
+          "oid": "6702fc45e44aa18c61abf2dea71a4ef29ff6820c"
         },
         "skills/learn/skills/instructify/references/manifest.md": {
           "mode": "100644",
@@ -1803,7 +1771,7 @@
         },
         "skills/learn/skills/instructify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "65799ba71985ad51a9526b7a5543ce4b6929e117"
+          "oid": "1f531d99154e6d2b0196aa1a5023b38bf81a7115"
         },
         "skills/learn/skills/instructify/references/storage.md": {
           "mode": "100644",
@@ -1843,7 +1811,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "03e120ef4fcc7c520081637f1af321d6b52a9a26"
+          "oid": "391815a9d5381403ed3c03dfc6da5bcc01196ef9"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2295,7 +2263,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "97ef74a961b3e85091b2a3989a66d650fac05900"
+          "oid": "5cd1bc12a6efee6fec73f80cfeed47237040b30b"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2323,7 +2291,7 @@
         },
         "skills/sdlc/scripts/routing_inventory.py": {
           "mode": "100644",
-          "oid": "56855d03478dd67df236fa2e109e95a16a666e3f"
+          "oid": "1705a843d08f0bdc50e353fb895cecc1ea545f23"
         },
         "skills/sdlc/scripts/run.py": {
           "mode": "100644",
@@ -2351,7 +2319,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "be22e068aa28a59d4bc4247492855e63995e05a5"
+          "oid": "69361a67637b1d5d4763f980acef527175381522"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2384,6 +2352,10 @@
         "skills/sdlc/templates/workload.md": {
           "mode": "100644",
           "oid": "77ab9b1ecd5b51fec9641d60b6df672441921244"
+        },
+        "skills/skills.json": {
+          "mode": "100644",
+          "oid": "3066ebc8e05b6b7a5e61efbaa00aebf31fdfa3f9"
         },
         "skills/tkstack-principles/LICENSE": {
           "mode": "100644",
@@ -2658,14 +2630,14 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": true,
-      "reason": "scripts_loc resolves its root once so a relative root counts the same glue as the absolute path, and its evidence lists reached skill scripts excluded because the skill mentions them. Tests cover both. The ceiling and mapped docs are unchanged."
+      "no_doc_impact": false,
+      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "f61ecca7f01ed110832fc2e1de66583b99043e1e"
+    "oid": "a8cb8840b5fbf0567bdabc9dce4bf0b201175aaa"
   },
   "version": 1
 }

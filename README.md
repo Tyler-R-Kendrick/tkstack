@@ -98,15 +98,15 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `.claude-plugin/` | Claude marketplace and plugin manifests (`marketplace.json`, `plugin.json`). |
 | `.devcontainer/` | Devcontainer: project-scope link on create and on later starts. |
 | `.githooks/` | Versioned `pre-commit` that checks the staged docs ledger. |
+| `.cursor/` | Tracked rules `.cursor/rules/graphify.mdc` and `.cursor/rules/tkstack-steering.mdc`. The installer links them. Other `.cursor/` paths are local install links and stay ignored. |
 | `.github/` | CI workflow `workflows/skills.yml` and Lever dials `lever.yml`. |
 | `.tkstack/` | Versioned state seed: `.gitignore` and `reuse/catalog.json`. |
 | `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
-| `docs/` | Focused install, skill, harness, and maintainer guides. |
+| `docs/` | Focused install, skill, harness, and maintainer guides, including `docs/harnesses.md` and `docs/t3code.md`. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
-| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/copilot/` (`lever.yml` example dials), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
 | `scripts/` | The linker. `install.sh` calls `scripts/install.py`. |
-| `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
-| `src/` | Shared command, state, and documentation programs. See `src/README.md`. |
+| `skills/` | Owned skills and the placement registry `skills/skills.json`. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
+| `src/` | Shared command, state, and documentation programs, plus the runner source registry `src/runner.json`. See `src/README.md`. |
 | `tests/` | Unittest suite. |
 | `vendor/` | Pinned upstream snapshots named in `sources.lock.json`. |
 | `vendor/ponytail/` | DietrichGebert/ponytail 5.3.3 (MIT): six skills and Node lifecycle-hook adapters. Vendored so setup uses those locked bytes instead of cloning upstream. |
@@ -284,14 +284,15 @@ and [model/provider configuration](skills/learn/skills/codify/references/inferen
 `scripts/` is the dotfiles linker (`install.sh` calls `scripts/install.py`).
 Shared command, state, and documentation programs live in `src/`. Skills under
 active development live in `skills/`; third-party-derived packages live in
-`.agents/skills/`; shared agents live in `agents/`; host settings live in
-`harnesses/`. Personal skills join every selected harness. Upstream skills in
-`placement.default`, including Emil Kowalski and ub-mode, go to Codex, Grok,
-Kimi, OpenCode, Copilot, and Muse. Pstack and
+`.agents/skills/`; shared agents live in `agents/`. Placement is
+`skills/skills.json`. Owned Cursor rules live in `.cursor/rules/`. Copilot
+dials live in `.github/lever.yml`. Personal skills join every selected harness.
+Upstream skills in `placement.default`, including Emil Kowalski and ub-mode,
+go to Codex, Grok, Kimi, OpenCode, Copilot, and Muse. Pstack and
 Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
-`.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
-`harnesses/README.md`. Reinstalling removes this checkout's links that no
+`.tkstack/skill-views/graphify/default/`. See `skills/skills.json` and
+`docs/harnesses.md`. Reinstalling removes this checkout's links that no
 longer match that placement. `./install.sh --uninstall` removes this
 checkout's links for every harness and unsets `core.hooksPath` when it is
 `.githooks`. Preserve `vendor/` snapshots and update

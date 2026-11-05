@@ -149,13 +149,13 @@ scope/glob metadata; the helper does not guess file attachment from a descriptio
 
 ```sh
 python3 skills/learn/skills/instructify/scripts/instructify.py plan \
-  --project /repo --input /repo/harnesses/instructions/expectations.json > /repo/.tkstack/instructify/plan.json
+  --project /repo --input /repo/instructions/expectations.json > /repo/.tkstack/instructify/plan.json
 python3 skills/learn/skills/instructify/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json --dry-run
 python3 skills/learn/skills/instructify/scripts/instructify.py apply \
   --project /repo --plan /repo/.tkstack/instructify/plan.json
 python3 skills/learn/skills/instructify/scripts/instructify.py check \
-  --project /repo --input /repo/harnesses/instructions/expectations.json
+  --project /repo --input /repo/instructions/expectations.json
 ```
 
 The manifest must be an actual owned source in the chosen project; the bundled
@@ -174,7 +174,7 @@ would shadow a new AGENTS file. See the [manifest contract](../skills/learn/skil
 and [native discovery details and sources](../skills/learn/skills/instructify/references/harnesses.md).
 
 Within tkstack, install links `.agents/steering` and `.agents/principles` and
-Cursor's committed `harnesses/cursor/tkstack-steering.mdc`. It does not rewrite
+Cursor's committed `.cursor/rules/tkstack-steering.mdc`. It does not rewrite
 `AGENTS.md` or `CLAUDE.md`. Creating this skill registers no demonstration
 instructions and rewrites no unrelated project or home instruction files. Local tests establish file-level
 behavior, not native loading or model compliance.

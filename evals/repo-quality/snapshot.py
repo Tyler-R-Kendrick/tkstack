@@ -72,8 +72,7 @@ INTERESTING_FILES = {
 MANIFESTS = (
     ".claude-plugin/marketplace.json",
     ".claude-plugin/plugin.json",
-    "harnesses/skills.json",
-    "harnesses/integrations.json",
+    "skills/skills.json",
 )
 OWNED_SKILL_ROOTS = ("skills", ".agents/skills")
 # Used only when `git ls-files` cannot be run. `.tkstack` is skipped whole
@@ -532,7 +531,7 @@ def snapshot():
         "Owned skills under skills/ and .agents/skills/. "
         "Each block is that file's name and description.\n" + _skill_frontmatter(paths),
         "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked, DOC_CAP),
-        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked, HARNESS_README_CAP),
+        "## docs/harnesses.md\n" + _read("docs/harnesses.md", tracked, HARNESS_README_CAP),
     ])
     extras = [
         "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked, AGENTS_CAP, AGENTS_HEAD, AGENTS_TAIL),

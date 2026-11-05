@@ -293,10 +293,22 @@ class InstallTests(unittest.TestCase):
             self.assertFalse(shared.is_symlink())
             self.assertTrue((ROOT / "skills/tkstack-principles/SKILL.md").is_file())
 
+    def test_owned_cursor_rules_link_elsewhere_and_stay_files_in_the_checkout(self):
+        rules = sorted((ROOT / ".cursor/rules").glob("*.mdc"))
+        owned = [path for path in rules if not path.is_symlink()]
+        self.assertEqual(sorted(path.name for path in owned), ["graphify.mdc", "tkstack-steering.mdc"])
+        plan = install.link_plan(ROOT, self.target, ["cursor"])
+        for rule in owned:
+            matches = [destination for source, destination in plan if source == rule.resolve()]
+            self.assertEqual(matches, [self.target / ".cursor/rules" / rule.name])
+        destinations = {destination.resolve() for _, destination in install.link_plan(ROOT, ROOT, ["cursor"])}
+        for rule in owned:
+            self.assertNotIn(rule.resolve(), destinations)
+
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
         checkout.mkdir()
-        for directory in ('vendor', 'scripts', 'src', 'harnesses', 'skills'):
+        for directory in ('vendor', 'scripts', 'src', 'skills'):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
         for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
@@ -334,7 +346,7 @@ class InstallTests(unittest.TestCase):
     def test_fresh_checkout_installs_without_a_preexisting_alias_view(self):
         checkout = self.target / "checkout"
         checkout.mkdir()
-        for directory in ("vendor", "scripts", "src", "harnesses", "skills"):
+        for directory in ("vendor", "scripts", "src", "skills"):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copy2(ROOT / "sources.lock.json", checkout / "sources.lock.json")

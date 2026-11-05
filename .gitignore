@@ -9,8 +9,13 @@
 !/.agents/skills/open-design/
 !/.agents/skills/rtk/
 /.claude/
-/.cursor/
 /.codex/
+# Local Cursor install. Track only the rules this repo owns.
+/.cursor/*
+!/.cursor/rules/
+/.cursor/rules/*
+!/.cursor/rules/graphify.mdc
+!/.cursor/rules/tkstack-steering.mdc
 /.mcp.json
 # Generated Lever Copilot layout; canonical files stay in vendor/lever.
 /.github/skills/

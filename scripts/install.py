@@ -17,6 +17,7 @@ from harness_paths import SKILL_DIRECTORIES, skill_directory
 
 
 ROOT = Path(__file__).resolve().parent.parent
+PLACEMENT = Path("skills/skills.json")
 SKILL_PATHS = SKILL_DIRECTORIES
 DEFAULT_HARNESSES = ("codex", "claude", "cursor")
 # Releases before Muse moved to ~/.config/muse/skills linked .muse/skills.
@@ -62,12 +63,12 @@ def verify_vendor(root):
 
 
 def skill_aliases(root):
-    config = root / "harnesses/skills.json"
+    config = root / PLACEMENT
     return json.loads(config.read_text()).get("aliases", {}) if config.exists() else {}
 
 
 def rewrite_callers(root, source):
-    config = root / "harnesses/skills.json"
+    config = root / PLACEMENT
     return (json.loads(config.read_text()).get("rewrite_callers", {}).get(source, True)
             if config.exists() else True)
 
@@ -237,7 +238,7 @@ def sourced(root, kind, harness=None):
 
 def placed(root, kind, harness):
     """Collected items that belong in one harness's native directory."""
-    config = root / "harnesses/skills.json"
+    config = root / PLACEMENT
     rules = json.loads(config.read_text()).get("placement", {}) if config.exists() else {}
     return {name: path for name, (source, path) in sourced(root, kind, harness).items()
             if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
@@ -283,8 +284,15 @@ def link_plan(root, target, harnesses, scope="home"):
         if harness == "cursor":
             plan.extend((source, target / ".cursor/rules" / name)
                         for name, source in placed(root, "rules", harness).items())
-            for rule in sorted((root / "harnesses/cursor").glob("*.mdc")):
-                plan.append((rule.resolve(), target / ".cursor/rules" / rule.name))
+            rules = root / ".cursor/rules"
+            if rules.is_dir():
+                for rule in sorted(rules.glob("*.mdc")):
+                    if rule.is_symlink():
+                        continue
+                    destination = target / ".cursor/rules" / rule.name
+                    if destination.resolve() == rule.resolve():
+                        continue
+                    plan.append((rule.resolve(), destination))
     # Project Muse shares Codex's .agents/skills, so the same link can be planned twice.
     unique = []
     seen = set()

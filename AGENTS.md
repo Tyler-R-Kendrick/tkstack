@@ -28,7 +28,7 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   `learn` as the correction evidence store and honor an explicit `sdlc` workflow.
 - Pstack owns `tdd`; Matt's workflows use `matt-tdd`. Emil Kowalski's UI
   prototype is `emil-prototype` so Matt's `prototype` keeps its name. Alias rules
-  live in `harnesses/skills.json`; the installer adapts declarations and calls.
+  live in `skills/skills.json`; the installer adapts declarations and calls.
 - Personal `unslop` owns cross-artifact anti-slop review and the evolving pattern
   catalog. Preserve Pstack's prose skill as `pstack-unslop`; its other callers
   intentionally use the personal `unslop`. See `docs/unslop.md`.
@@ -54,11 +54,10 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   intermediary code-mode prompt. Put usage/contracts/design/evidence in
   `references/` through progressive disclosure. Prefer the locked Vercel AI SDK
   adapter for explicit chat/Responses, Decisions, or harness inference boundaries.
-  Shared profile examples live in `harnesses/ai-sdk/`
-  (`harnesses/ai-sdk/profiles.example.json`).
+  Configuration is a version 1 providers/profiles document passed with
+  `--config`. See `docs/skillify.md`.
   A scaffold is a draft until its actual workflow and native outcomes are verified.
-  See `docs/skillify.md`. Use
-  `hookify` for explicit mechanically enforceable rules and hook authoring.
+  Use `hookify` for explicit mechanically enforceable rules and hook authoring.
   Prefer an existing linter/contract/CI boundary when it directly establishes
   the invariant. Keep policy replay, native registration, and observed activation
   distinct; do not enable demonstration policies. See `docs/authoring.md`.
@@ -89,9 +88,10 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   install uses those locked bytes instead of cloning upstream. Upstream
   instructions under `vendor/` describe those packages and are not additional
   mandatory policy for maintaining this repo.
-- Put personal skills in `skills/`, shared Markdown agents in `agents/`, and
-  harness-specific configuration in `harnesses/`. Generated alias views in
-  `.tkstack/` and installed links are ignored.
+- Put personal skills in `skills/`, shared Markdown agents in `agents/`,
+  owned Cursor rules in `.cursor/rules/`, and Copilot dials in
+  `.github/lever.yml`. Generated alias views in `.tkstack/` and installed
+  links are ignored. Do not add a top-level harnesses directory.
 - The ___ify skills (codify, flowify, hookify, instructify, lintify, reusify,
   skillify) are Learn subskills at `skills/learn/skills/<name>/`. They ship and
   install only with Learn; invoke them as `/learn <name>` or
@@ -120,9 +120,9 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   skills have no prompt/inference fallback. Keep registry and model/provider
   configuration scoped, preserve named Vercel AI SDK profiles, and leave
   help/list/export/check read-only. See `docs/runner.md`.
-- `harnesses/integrations.json` records runtime versions and service
-  specifications. Install does not apply that file. A host still needs its own
-  hook and MCP configuration.
+- Install does not download tool runtimes or apply a separate integrations
+  pin. Source versions live in `sources.lock.json`. A host still needs its own
+  hook and MCP configuration. See `docs/integrations.md`.
 - Graphify's installed skill is a byte copy of the upstream skill text. Use the
   upstream `graphify` command when that package is installed. Installation
   starts no indexing, watcher, model, or delegated extraction. See
