@@ -38,8 +38,23 @@ ROOT = Path(__file__).resolve().parents[2]
 # under 100_000 bytes.
 LIMIT = 52_000
 READ_CAP = 5_000
-README_CAP = 6_400
-AGENTS_CAP = 7_200
+# Head includes ## Install options through --uninstall and the verify-first
+# alternative. The file's later ## Maintain section does not fit this cap;
+# ## Develop, which is inside the head, already shows preview, test, and docs.
+README_CAP = 10_800
+README_HEAD = 10_800
+README_TAIL = 0
+# Head keeps the uv pin and archive checks. Tail keeps main() and the call
+# on the last line, inside the same encoded budget as a flat 5_000 excerpt.
+INSTALL_CAP = 5_000
+INSTALL_HEAD = 4_550
+INSTALL_TAIL = 400
+AGENTS_CAP = 4_200
+AGENTS_HEAD = 1_700
+AGENTS_TAIL = 2_300
+MANIFEST_CAP = 1_600
+DOC_CAP = 1_800
+HARNESS_README_CAP = 2_000
 JSON_STRING_CAP = 180
 _LOCK_NAMES = {
     "package-lock.json",
@@ -223,9 +238,9 @@ def _tree(paths):
                         )
                     continue
                 lines.append(f"{relative}/ ({counts.get(relative, 0)} files)")
-                # Deep package internals (generated runtimes, nested examples)
-                # are counts only. Skill paths and SKILL.md stay in shallower lines.
-                if relative.count("/") >= 3:
+                # Deep package internals are counts only. Every SKILL.md path is
+                # listed in its own section, including paths below this cutoff.
+                if relative.count("/") >= 2:
                     continue
                 walk(relative)
             elif name in INTERESTING_FILES or directory == "":
@@ -297,6 +312,56 @@ def _read(relative, tracked, cap=READ_CAP):
     return text
 
 
+def _read_ends(relative, tracked, cap, head, tail):
+    """Keep the start and end of a long file inside cap."""
+    if relative not in tracked:
+        return f"ABSENT: {relative}"
+    text, error = _load_text(relative)
+    if error:
+        return error
+    if len(text) <= cap:
+        return text
+    marker = f"\n[truncated middle of {relative}]\n"
+    if head + len(marker) + tail > cap:
+        tail = max(0, cap - head - len(marker))
+    if tail <= 0:
+        return text[:cap] + f"\n[truncated {relative}]\n"
+    return text[:head] + marker + text[-tail:]
+
+
+def _skill_paths(paths):
+    """Every tracked SKILL.md, including paths the file tree collapses."""
+    names = sorted(
+        relative for relative in paths
+        if relative == "SKILL.md" or relative.endswith("/SKILL.md")
+    )
+    return "\n".join(names) if names else "none"
+
+
+def _source_pins():
+    """name, version, and revision for each sources.lock.json source."""
+    relative = "sources.lock.json"
+    text, error = _load_text(relative)
+    if error:
+        return error
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        return f"UNREADABLE: {relative}"
+    sources = value.get("sources") if isinstance(value, dict) else None
+    if not isinstance(sources, dict):
+        return "ABSENT: sources.lock.json sources"
+    lines = ["name version revision"]
+    for name in sorted(sources):
+        source = sources[name]
+        if not isinstance(source, dict):
+            continue
+        version = source.get("version") or "-"
+        revision = source.get("revision") or "-"
+        lines.append(f"{name} {version} {revision}")
+    return "\n".join(lines)
+
+
 def _frontmatter_fields(text):
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
@@ -343,7 +408,7 @@ def _skill_frontmatter(paths):
                 blocks.append(f"### {relative}\nno frontmatter")
                 continue
             name = fields.get("name", "")
-            description = fields.get("description", "")[:240]
+            description = fields.get("description", "")[:80]
             blocks.append(f"### {relative}\nname: {name}\ndescription: {description}")
     return "\n\n".join(blocks)
 
@@ -373,7 +438,8 @@ def _docs(paths):
 def _manifests(tracked):
     parts = []
     for relative in MANIFESTS:
-        parts.append(f"### {relative}\n{_read(relative, tracked)}")
+        cap = READ_CAP if relative.endswith("skills.json") or relative.endswith("plugin.json") else MANIFEST_CAP
+        parts.append(f"### {relative}\n{_read(relative, tracked, cap)}")
     return "\n\n".join(parts)
 
 
@@ -435,19 +501,21 @@ def snapshot():
         "Only git-tracked files are listed. "
         "Generated lockfiles are omitted and long excerpts are capped.",
         "## LOC per top-level directory\n" + _loc_report(paths),
-        "## README.md\n" + _read("README.md", tracked, README_CAP),
-        "## install.sh\n" + _read("install.sh", tracked),
+        "## README.md\n" + _read_ends("README.md", tracked, README_CAP, README_HEAD, README_TAIL),
+        "## install.sh\n" + _read_ends("install.sh", tracked, INSTALL_CAP, INSTALL_HEAD, INSTALL_TAIL),
+        "## Source pins\n" + _source_pins(),
         "## Manifests\n" + _manifests(tracked),
         "## Docs\n" + _docs(paths),
+        "## SKILL.md paths\n" + _skill_paths(paths),
         "## File tree\n" + _tree(paths),
         "## SKILL.md frontmatter\n"
         "Owned skills under skills/ and .agents/skills/. "
         "Each block is that file's name and description.\n" + _skill_frontmatter(paths),
-        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked),
-        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked),
+        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked, DOC_CAP),
+        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked, HARNESS_README_CAP),
     ])
     extras = [
-        "## AGENTS.md\n" + _read("AGENTS.md", tracked, AGENTS_CAP),
+        "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked, AGENTS_CAP, AGENTS_HEAD, AGENTS_TAIL),
     ]
     return _fit(required, extras)
 

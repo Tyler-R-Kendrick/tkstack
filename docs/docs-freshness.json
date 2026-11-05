@@ -748,7 +748,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "8a82534fb96de5552e4d9ace3452e27271ab43b1"
+          "oid": "75fe2a866e41ee15229dfe84e2cec2acd12b38d2"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -795,8 +795,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
+      "no_doc_impact": true,
+      "reason": "Snapshot tests now require Install options, a deep SKILL.md path, the source-pin table, and the install.sh main call. No documentation guide change."
     },
     "execution": {
       "docs": {
@@ -1133,7 +1133,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "48c72c8f266db43ae74651dbbe2634bd129169d8"
+          "oid": "459e554f9ef6c4c8895d4bcc39537215e10015e4"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2757,7 +2757,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Workflow locks now embed the already-committed src/ path notes and the rendered skill-routing guide. No skill behavior change."
+      "reason": "Repo-quality snapshot keeps Install options, every SKILL.md path, and a sources.lock name/version/revision table inside the 52000-byte cap. No skill documentation change."
     }
   },
   "object_format": "sha1",

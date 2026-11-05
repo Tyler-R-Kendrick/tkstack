@@ -289,6 +289,13 @@ class RepoQualityTests(unittest.TestCase):
         self.assertIn("## LOC per top-level directory", text)
         self.assertIn("## Docs", text)
         self.assertIn("docs/unslop.md —", text)
+        self.assertIn("## Install options", text)
+        self.assertIn("--uninstall", text)
+        self.assertIn("## Source pins", text)
+        self.assertIn("name version revision", text)
+        self.assertRegex(text, r"(?m)^ponytail \S+ [0-9a-f]{40}$")
+        self.assertIn("skills/learn/skills/codify/SKILL.md", text)
+        self.assertIn('main "$@"', text)
         self.assertIn("npx skills add", text)
         self.assertIn("[download record omitted]", text)
         for relative in (
