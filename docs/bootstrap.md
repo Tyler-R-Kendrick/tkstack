@@ -1,282 +1,117 @@
-# Bootstrap agent dotfiles
+# Install agent dotfiles
 
 One command installs tkstack. Outside a checkout it obtains
 `~/.local/share/tkstack` with Git, or with a curl tarball when Git is absent,
 and continues from there. Inside a checkout, `./install.sh` installs that
-checkout. Bash and curl are the host prerequisites. It is noninteractive, works
-from another directory, preserves existing settings, and can run again on startup:
+checkout. Bash and curl are the host prerequisites.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
 
-`scripts/` is only the dotfiles installer. Shared command, state, documentation,
-and pinned-runtime programs live in `src/`. Publish a revision that contains
-`install.sh` before using the remote command above.
+`install.sh` is the host wrapper. It execs `scripts/install.py`, which only
+links files. It does not install language toolchains, edit shell startup,
+register native hooks or MCP servers, write launchers, or rewrite
+`AGENTS.md` / `CLAUDE.md`.
 
-The default target is the current user's home. It installs Codex, Claude Code,
-and Cursor skills/agents/rules, initializes ignored state, installs all declared
-automatic runtimes, applies native hooks/MCP settings, initializes Lever's Copilot
-layout in the source checkout, and verifies the result. Keep the checkout:
-installed links, launchers, and runtime recipes refer to it. Moving it requires
-re-running setup and handling any existing links owned by the old checkout.
-
-Installing into the dotfiles checkout itself with `--scope project` keeps its
-committed `AGENTS.md` and `CLAUDE.md` pointers relative and portable. A fresh
-clone can initialize its own links/state without adopting another checkout's
-instruction block. Foreign instructions in other targets remain protected.
-
-## Profiles and commands
-
-| Profile | Host configuration | Native Lever Copilot layout |
-| --- | --- | --- |
-| `dotfiles` (default) | Codex, Claude Code, Cursor in the selected home | Selected workspace; defaults to this checkout |
-| `devcontainer` | Same host configuration | Selected workspace |
-| `codex-cloud` | Codex only | Off; Lever remains available as a Codex skill |
+The default links Codex, Claude Code, and Cursor. Repeat `--harness` for
+Copilot, Grok, Kimi, Muse, or OpenCode. t3code is an orchestrator and is never
+linked. `--scope project` uses each host's project skill directory; the default
+for a home target is home scope. Keep the checkout: the links point at it.
 
 ```sh
-./install.sh --profile devcontainer --workspace /workspaces/project
-./install.sh --profile codex-cloud --workspace /workspace/project
-./install.sh --target /repo --scope project --workspace /repo
-./install.sh --offline                 # reapply cached/file configuration; no downloads
-./install.sh --check                   # verify without changing files
-./install.sh --dry-run                 # inspect plan/preflight without changing files
-./install.sh --strict                  # fail for known unresolved manual prerequisites too
-./install.sh --uninstall               # remove this checkout's links, launchers, and git docs hook
+./install.sh --dry-run
+./install.sh --target /repo --scope project
+./install.sh --harness copilot --harness grok
+./install.sh --uninstall
 ```
 
-`--uninstall` deletes symlinks for every harness, launchers, and the owned git
-docs hook. It can run twice. It leaves shell startup files, foreign links, and
-`.github/lever.yml` repository dials in place. `--harness` does not limit it.
-`--dry-run` with `--uninstall` only prints the plan. The git docs hook is
-reported as `planned` and is not removed. A host without `git` reports
-`not-a-git-checkout` and still removes links and launchers. Owned links left
-under `.muse/skills` by an older release are removed with the other harnesses.
+`--dry-run` prints the link plan and writes nothing. `--uninstall` removes this
+checkout's links for every harness, including a legacy `.muse/skills` link, and
+unsets `core.hooksPath` when its value is `.githooks`. `--harness` does not
+limit uninstall. A second uninstall changes nothing. Foreign links stay.
 
-`--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
-independent runtime installations (default 4); `--runtime-timeout 10..1800`
-sets their process-group deadline (default 900 seconds). Runtime failures are
-reported individually, remaining workers finish, and feasible file/configuration
-work still runs. Failure exits 1; usage errors exit 2. Normal success exits 0.
+`--offline`, `--no-toolchains`, `--no-shell`, and `--workspace` are accepted so
+older commands still exit 0. They select nothing: install does not download
+skills, provision toolchains, or edit a shell rc file.
 
-`--copilot`/`--no-copilot` override the profile's native project layout.
-`--no-toolchains` uses only available language/package tooling. `--no-shell`
-keeps startup files untouched and still generates the command environment.
-`--offline` explicitly accepts deferred missing runtimes while reporting them;
-`--strict --offline` requires the locally observable prerequisites to be complete.
-`--check` and `--dry-run` perform no initialization, downloads, or report writes.
+## Host prerequisites
 
-`--scope home` is the default even for an alternative home-like `--target`.
-Use `--scope project` explicitly for a repository installation. Workspace state
-and optional Copilot files use `--workspace`, otherwise the source checkout;
-setup does not guess another project's location from its working directory.
-For real home installs, `CODEX_HOME` selects Codex's AGENTS/hooks/config location.
-The real user state root also honors TKSTACK_USER_DIR. Isolated alternative
-targets and project installs do not follow those variables
-into another user's configuration. Existing provider/model/auth settings survive.
+Missing Python **3.12.15** is installed with uv **0.12.23** after sha256
+`b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491` is checked.
+The download is a temporary file. A caller-supplied `UV_INSTALL_DIR` is ignored;
+the script runs `$HOME/.local/bin/uv`. `TKSTACK_PYTHON` wins when it is Python
+3.11 or newer. Otherwise the script tries `python3`, `python3.13`,
+`python3.12`, and `python3.11`.
 
-## Devcontainers
+`TKSTACK_HOME` chooses the checkout (default `~/.local/share/tkstack`). A
+directory this run did not create is used only when its git origin matches
+`TKSTACK_REPO` or `TKSTACK_TRUST_HOME=1`. A matching origin is fast-forwarded
+with `git pull --ff-only`. Pull failure tells you to commit or stash.
+`TKSTACK_TRUST_HOME=1` on a non-matching git checkout runs that tree and does
+not pull. On a non-git tree it downloads again and keeps `.tkstack`.
 
-This checkout includes [`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json):
-Python 3.12 image, Node 24 feature, first-create full setup, and offline repeated
-startup. Its remote PATH includes the checkout's managed command directory.
-The image/features are development environment inputs; local plugin/runtime
-versions come from the repository's own locks.
+Without Git, the default archive is
+`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main`.
+`TKSTACK_TARBALL` must be `https://`. The archive has no content hash. The
+script rejects curl failure, more than one top-level directory, and members or
+symlinks that escape the extract directory. Extraction uses `--no-same-owner`
+and `--no-same-permissions`. Symlink checks use `readlink`. Replacing a tarball
+checkout copies `.tkstack` into the new tree and restores the old directory if
+the final move fails.
 
-To use tkstack as VS Code dotfiles for other devcontainers, set these **user**
-settings:
+`install.sh` wraps its work in `main` and calls it on the last line, so a
+truncated `curl | bash` download does not run a prefix.
+
+## What the link step writes
+
+`scripts/install.py` symlinks each selected host's skill directory at the
+pinned skills, agents, and Cursor rules. It also links `.agents/steering` at
+`.tkstack/steering` when Learn is present, and `.agents/principles` at
+`skills/tkstack-principles`. Alias views under `.tkstack/` rewrite installed
+names (`matt-tdd`, `emil-prototype`, `pstack-unslop`) without changing
+`vendor/`. Graphify has no `SKILL.md` upstream. The installer copies each host
+entrypoint and its reference pages to
+`.tkstack/skill-views/graphify/<host>/graphify/SKILL.md`. That copy is the
+upstream file bytes. It does not rewrite commands or install Graphify.
+
+On a git checkout, install sets `core.hooksPath=.githooks`. Git then runs
+`.githooks/pre-commit` and ignores `.git/hooks`. A value that is already
+`.githooks` is left alone. Any other value is replaced. Uninstall unsets the
+key only when it is still `.githooks`. A directory that is not a git checkout, or a PATH with no `git` binary,
+prints `skip git docs hook: not a git checkout` and the link step still
+finishes. Dry-run prints the config change and does not run it.
+
+## Devcontainer
+
+[`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json) runs
+`install.sh --target <workspace> --scope project` after create, and the same
+command with `--offline` on later starts. `--offline` does not change the link
+step. The image's Node feature is the devcontainer's own, not something
+`install.sh` downloads.
+
+A dotfiles install in another devcontainer can use:
 
 ```json
 {
   "dotfiles.repository": "Tyler-R-Kendrick/tkstack",
   "dotfiles.targetPath": "~/.local/share/tkstack",
-  "dotfiles.installCommand": "install.sh --profile devcontainer"
+  "dotfiles.installCommand": "install.sh"
 }
 ```
 
-Alternatively, clone/mount tkstack in the image and use these lifecycle commands
-in the consuming project's devcontainer configuration:
+## Maintainer checks
 
-```json
-{
-  "postCreateCommand": "bash /home/vscode/.local/share/tkstack/install.sh --profile devcontainer --workspace /workspaces/project",
-  "postStartCommand": "bash /home/vscode/.local/share/tkstack/install.sh --profile devcontainer --workspace /workspaces/project --offline"
-}
-```
-
-Replace paths with the container's actual checkout/workspace. Arrays are used
-in this repository's own hook definition to preserve paths containing spaces.
-The first hook can download packages; repeated startup uses cached software.
-The bootstrap does not install or authenticate the host applications themselves.
-
-## Codex cloud environments
-
-Install the dotfiles checkout in the environment setup phase while dependency
-network access is available:
+Preview, link this checkout, and review docs from the repository root:
 
 ```sh
-# Environment setup script; use a persistent path included in the environment cache.
-TKSTACK_DIR="$HOME/.local/share/tkstack"
-if [ ! -d "$TKSTACK_DIR/.git" ]; then
-  git clone https://github.com/Tyler-R-Kendrick/tkstack.git "$TKSTACK_DIR"
-fi
-bash "$TKSTACK_DIR/scripts/codex-cloud-setup.sh" --workspace "$PWD"
+./install.sh --target "$PWD" --scope project --dry-run
+python3 scripts/install.py --target . --scope project
+python3 skills/sdlc/scripts/routing_inventory.py check
+python3 src/check_skills.py
+python3 src/check_docs.py check
+python3 -m unittest discover -s tests
 ```
 
-For cached environment startup/maintenance:
-
-```sh
-bash "$HOME/.local/share/tkstack/scripts/codex-cloud-startup.sh" --workspace "$PWD"
-```
-
-The setup wrapper selects full `codex-cloud` provisioning; the startup wrapper
-selects the same profile with `--offline`. Both forward ordinary bootstrap
-options. Keep the checkout and its `.tkstack/runtime/` in the environment cache;
-if the platform restores only source files, run full setup again. A project-only
-setup can use `--target "$PWD" --scope project` instead of changing the home.
-
-No platform API call or environment draft is changed by this repository. These
-scripts are inputs for the platform's setup/startup fields. Preserve the supplied
-proxy, CA, authentication, and guard variables. Python's standard HTTPS client,
-pip, npm, and uv use their normal configured trust/network paths. No interactive
-login, model call, extraction/indexing job, proxy routing change, or PR action
-is part of bootstrap.
-
-## Toolchains, commands, and state
-
-Bash and curl are the host prerequisites. `install.sh` uses Python 3.11+ when
-`TKSTACK_PYTHON`, `python3`, `python3.13`, `python3.12`, or `python3.11` is new
-enough. Otherwise it downloads the uv 0.12.23 installer to a temporary file,
-requires sha256 `b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491`,
-and ignores a caller-supplied `UV_INSTALL_DIR`. It then runs
-`uv python install 3.12.15` and `uv run --python 3.12.15` from
-`$HOME/.local/bin/uv`. Rotate `UV_VERSION`, `UV_INSTALLER_URL`,
-`UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together; uv 0.12.23
-ships CPython 3.12.15. The script's body is `main`, called on the last line, so
-a truncated `curl | bash` does not run a prefix. Outside a checkout, Git clones
-or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. A directory
-that already exists at `TKSTACK_HOME` is not executed unless its git `origin`
-matches `TKSTACK_REPO` or `TKSTACK_TRUST_HOME=1`. The tarball receipt inside
-that directory is not a trust signal. A failed `git pull --ff-only`
-stops and says to commit or stash so the fast-forward can succeed.
-`TKSTACK_TRUST_HOME=1` re-downloads a non-git checkout and keeps `.tkstack`;
-it runs a non-matching git checkout in place and does not pull. When Git is
-absent, curl downloads
-`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` (or the
-codeload archive for another GitHub `TKSTACK_REPO`, or an `https://`
-`TKSTACK_TARBALL`) to a
-file, rejects archives with more than one top-level directory or members and
-symlinks that escape the extract directory, and unpacks with
-`tar --no-same-owner --no-same-permissions`. `TKSTACK_TARBALL` must use
-`https://`. Any other scheme is refused. The repository tarball has no content
-hash: `tar.gz/main` is a mutable ref, and HTTPS does not pin those bytes.
-Symlink checks walk paths in bash and do not need `realpath`. A replacement
-copies `.tkstack` into the new tree first and restores the old directory if
-the swap fails. A tarball checkout is frozen
-between runs; the next trusted installer run downloads it again and keeps
-`.tkstack`. The uv installer's stdout is discarded so the bootstrap executes
-only `$HOME/.local/bin/uv`. When needed, bootstrap installs **uv 0.12.23**
-from a hash-locked Python wheel and **Node 24.19.0** from an official
-SHA-256-verified archive, privately under `.tkstack/runtime/toolchains/`. That
-pinned uv is separate from the standalone uv used only to get a host Python.
-Existing Node 24+ can be reused. Node archive extraction needs Python 3.11.8+
-or 3.12+ for the safe tar filter; an older 3.11 host can provide Node
-beforehand. No sudo/system-package change is required.
-Linux x86-64/ARM64 and macOS x86-64/ARM64 Node assets are pinned. Host applications,
-Git itself, Docker, accounts, and optional GUI daemons are not installed.
-
-Private command shims go in `.tkstack/bin/`; they route to the managed launchers
-and include `rtk`, `hf`, `impeccable`, `headroom`, `wikiskill`, `open-design`, `codify`, `skillify`,
-`openwiki`, `graphify`, and `graphify-mcp`. They do not shadow the system `od`.
-The generated `.tkstack/bootstrap/env.sh` adds that directory idempotently.
-Home installs add a small owned source block to `.bashrc` and the existing Bash
-login file (or `.profile`). Foreign content is preserved; another checkout's
-block or symlink-managed startup file requires using `--no-shell` and adding
-that source pointer through its owning dotfiles manager. Project installs do
-not create shell startup files in the repository.
-
-Host-launched hooks/tools independently resolve private prerequisites, so MCP
-and native hooks work even before an interactive shell sources the file. For a
-current shell or a platform that ignores login files, run:
-
-```sh
-. /path/to/tkstack/.tkstack/bootstrap/env.sh
-```
-
-All runtime versions/download digests come from `harnesses/integrations.json`.
-OpenWiki uses its npm integrity lock; Graphify and Headroom use hashed Python
-requirement locks. Vendored WikiSkill, Ponytail, and Caveman use pinned sources.
-Authored skills/instructions remain in source; user/workspace learning stores
-initialize through their actual renderers without copying private source history.
-Private run logs live in `sessions/bootstrap-<id>/`; the last result for a target
-is `bootstrap/installations/<target-hash>.json`. These are beneath `.tkstack/`
-and ignored. An OS advisory lock serializes shared checkout setup and releases
-on process death; independent runtime workers run concurrently inside it.
-
-## Completion and manual requirements
-
-A successful bootstrap means the selected software/files are applied and their
-local checks passed. Its JSON report keeps `ready`, `configured-with-requirements`,
-`failed`, `verified`, and `planned` distinct. Download/install/check failures
-return nonzero even if other integrations were configured successfully. A
-read-only check detects missing links, native configuration drift, shell pointer
-changes, and missing/stale private shims. Default startup reuses matching installs.
-Differing or interrupted third-party runtime environments are preserved and
-reported for repair rather than silently deleted or upgraded.
-
-OpenDesign needs the official executable selected by `OPEN_DESIGN_CLI` and its
-local application/daemon; Stitch registration needs `STITCH_API_KEY`. These
-known unresolved prerequisites appear in the report and make `--strict` fail.
-Fal OAuth is handled by the harness and is reported as unverified information,
-not a claim that setup signed in. Headroom CCR operations need its separately
-started proxy; merely installing it does not redirect providers or start one.
-No credential value is included in the report. Re-run setup after supplying
-required environment variables or external software.
-
-The bootstrap reuses `scripts/install.py`, `setup_integrations.py`,
-`setup_lever.py`, `doctor.py`, shared state initialization, and the native runtime
-installers. Those narrower commands remain available for focused maintenance.
-
-The shared Markdown command runtime (`command-schema`) is another automatic
-Python recipe: PyYAML 6.0.3, jsonschema 4.26.0, and hashed transitive dependencies
-from `skills/learn/skills/codify/requirements/requirements.lock`. The `codify` and `skillify`
-shims launch their actual source tools through that private interpreter, so
-fresh hosts need no system-level YAML/JSON Schema packages.
-
-## Scoped skill/workflow executable
-
-Setup also generates `<state-root>/tkstack` in its source, workspace, and user
-initialization roots, plus the `tkstack` PATH shim. These launch the deterministic
-Codify-based runner with the private command interpreter. Full setup and cached
-startup apply/check owned entrypoints; foreign or modified programs are preserved.
-Use `scripts/runner_install.py --scope global` only for an explicitly selected
-machine scope. [Runner documentation](runner.md) covers exact CLI examples,
-scoped registries, and the existing Vercel AI SDK model/provider profile format.
-
-## Repository documentation hooks
-
-`harnesses/bootstrap/profiles.json` is the shared source for profile selection
-and the README's generated profile table; `bootstrap_profiles.py` validates its
-version, unique supported harnesses, and Copilot boolean. Toolchain pins in the
-same directory drive the generated prerequisite versions.
-
-Full setup also installs this source Git checkout's pre-commit documentation
-gate, preserving/chaining any prior pre-commit handler. Project installation
-into the source checkout registers repository-only Codex/Claude/Cursor completion
-hooks; home/other project installations do not add this repo's completion gate.
-See [documentation maintenance](documentation.md) for review snapshots, staged
-checks, native hook trust/reload, and restoration of the previous Git hook.
-
-## Owned skill conformance
-
-Doctor runs `src/check_skills.py` through the managed hash-locked command
-interpreter when that runtime is ready; an offline first setup reports this check
-as pending alongside its missing-runtime requirements. It checks all 19 owned schemas, command surfaces, native bindings,
-shared runtime/state copies, marketplace metadata, current executable artifacts,
-and reviewed train/validation/test decision suites. The same script then runs
-`src/routing_inventory.py` so every installed skill has a routing entry and
-the generated inventory matches `skills/sdlc/references/routing.json`. That check
-only reads the inventory and catalog. It does not regenerate alias or Graphify
-views, which stay pinned to the interpreter that ran `install.py`. This performs no model or
-provider job. The repository CI checks the same contract and behavior fixtures;
-see [normalization and evidence](normalization.md).
+`python3 src/tkstack.py` runs a compiled skill or workflow. There is no
+generated `tkstack` launcher.

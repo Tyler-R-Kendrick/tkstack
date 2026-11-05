@@ -43,9 +43,9 @@ that runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
 `harnesses/skills.json` records that with `delegates.t3code`. See
 `t3code/README.md`. Repo-quality counts t3code as covered when every harness
 named there is itself linked. The check still requires all nine hosts.
-`./install.sh --uninstall` removes this checkout's links for every harness,
-its launchers, and its owned git docs hook. Reinstalling also removes this checkout's links that fall
-outside their placement; doctor reports any left. `sources.lock.json` pins the
+`./install.sh --uninstall` removes this checkout's links for every harness
+and unsets `core.hooksPath` when it is `.githooks`. Reinstalling also removes
+this checkout's links that fall outside their placement. `sources.lock.json` pins the
 upstream bytes, and `SCOPE.md` names the supported baseline.
 
 Cursor Team Kit's two native rules are installed into Cursor's rules directory.
@@ -57,25 +57,23 @@ Model selection follows capabilities in the active harness. A package install
 does not establish access to a provider's models, so no entitled model IDs are
 invented here. Credentials and machine-specific state belong outside this repo.
 
-The installer also maintains native shared-steering pointers. See
-`docs/learning.md` for home/project placement and the portable evidence format.
-`integrations.json` records runtime versions, verified release digests, and
-service specifications; `scripts/setup_integrations.py` manages native hook
-and MCP entries without embedding credentials. See `docs/integrations.md` for
-what is installed versus dependent on a host runtime or account sign-in.
+The installer links `.agents/steering` and `.agents/principles`. It does not
+rewrite `AGENTS.md` or `CLAUDE.md`. See `docs/learning.md` for the portable
+evidence format. `integrations.json` records runtime versions, verified release
+digests, and service specifications. Install does not register native hooks or
+MCP entries from that file. See `docs/integrations.md` for what a host still
+has to provide.
 `vendor/ponytail/` is the pinned DietrichGebert/ponytail 5.3.3 snapshot: six
 skills and Node lifecycle-hook adapters. It is vendored so setup links the
 bytes locked in `sources.lock.json` instead of cloning upstream. It is not a
 harness directory.
 
-`copilot/lever.yml` supplies initial Lever repository defaults. `--harness
-copilot` links skills into `~/.copilot/skills` or `.github/skills`. The
-separate `src/setup_lever.py` also links Lever's skills into `.github/skills`
-and creates `.github/lever.yml` only when absent. It preserves existing dials
-and leaves personal `~/.copilot/lever.yml` alone. See `docs/lever.md`.
+`copilot/lever.yml` is an example of Lever repository dials. `--harness
+copilot` links skills into `~/.copilot/skills` or `.github/skills`, the same
+way it links every other skill. Install does not write `.github/lever.yml` or
+a separate Copilot project layout. See `docs/lever.md`.
 
-The root `install.sh` is the dotfiles bootstrap: profiles for user installation,
-devcontainers, and Codex cloud startup coordinate these configurations with all
-managed runtime recipes and state initialization. See [bootstrap](../docs/bootstrap.md).
+The root `install.sh` links the selected hosts and sets `core.hooksPath`. It
+does not select a profile or provision a toolchain. See [install](../docs/bootstrap.md).
 Home-scope Codex configuration honors CODEX_HOME for the actual current home;
 explicit isolated/project targets stay contained in their selected directory.

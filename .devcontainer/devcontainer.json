@@ -13,18 +13,18 @@
   "postCreateCommand": [
     "bash",
     "${containerWorkspaceFolder}/install.sh",
-    "--profile",
-    "devcontainer",
-    "--workspace",
-    "${containerWorkspaceFolder}"
+    "--target",
+    "${containerWorkspaceFolder}",
+    "--scope",
+    "project"
   ],
   "postStartCommand": [
     "bash",
     "${containerWorkspaceFolder}/install.sh",
-    "--profile",
-    "devcontainer",
-    "--workspace",
+    "--target",
     "${containerWorkspaceFolder}",
+    "--scope",
+    "project",
     "--offline"
   ]
 }

@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 import importlib.util
 import json
 import os
@@ -13,7 +12,6 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(ROOT / 'src'))
-import runner_install
 spec = importlib.util.spec_from_file_location('test_stack_runner_cli', ROOT / 'src/tkstack.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
@@ -32,7 +30,7 @@ class StackRunnerTests(unittest.TestCase):
         self.env_patch = patch.dict(os.environ, self.environment)
         self.env_patch.start()
         self.addCleanup(self.env_patch.stop)
-        self.executable = self.scopes['workspace'] / 'tkstack'
+        self.command = [sys.executable, '-B', str(ROOT / 'src/tkstack.py')]
 
     def fixture(self, directory=None):
         directory = directory or self.workspace / 'skills/labels'
@@ -48,20 +46,15 @@ class StackRunnerTests(unittest.TestCase):
         root.mkdir(parents=True, exist_ok=True)
         (root / 'runner.json').write_text(json.dumps({'version': 1, **value}))
 
-    def invoke(self, *args, payload=None, expected=0, executable=None):
-        command = [str(executable or self.executable), *map(str, args)]
-        result = subprocess.run(command, cwd=self.workspace, env=self.environment,
+    def invoke(self, *args, payload=None, expected=0):
+        result = subprocess.run([*self.command, *map(str, args)], cwd=self.workspace, env=self.environment,
             input=json.dumps(payload) if payload is not None else None, capture_output=True, text=True, timeout=30)
         self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
         return result
 
-    def install(self, scope='workspace'):
-        return runner_install.publish(ROOT, self.scopes[scope])
-
     def test_generated_executable_runs_named_skill_workflow_aliases_and_tool_calls(self):
         skill = self.fixture()
         self.registry('workspace', {'workflows': {'labels': str(skill)}})
-        self.install()
         for kind in ('skills', 'workflows', 'skill', 'workflow'):
             self.assertEqual(json.loads(self.invoke(kind, 'labels', '--', 'normalize', '-l', '[" b ","a"]').stdout), {'labels': ['a', 'b']})
         call = {'type': 'function_call', 'name': 'normalize_labels', 'arguments': '{"labels":["b","a"]}'}
@@ -71,7 +64,6 @@ class StackRunnerTests(unittest.TestCase):
 
     def test_direct_lock_reuses_verified_runner_and_rejects_mixed_interfaces(self):
         skill = self.fixture()
-        self.install()
         lock = skill / 'scripts/workflow.lock.json'
         self.assertEqual(json.loads(self.invoke('workflows', lock, '--input', '-', payload={'labels': [' b ', 'a']}).stdout), {'labels': ['a', 'b']})
         self.invoke('workflows', lock, '--', 'normalize', expected=1)
@@ -80,12 +72,10 @@ class StackRunnerTests(unittest.TestCase):
 
     def test_help_list_tools_check_and_setup_preview_preserve_all_state_bytes(self):
         self.fixture()
-        self.install()
         before = {str(p): p.read_bytes() for p in self.base.rglob('*') if p.is_file()}
         for args in [(), ('help',), ('help', 'skills'), ('list', 'skills'), ('tools', 'skills', 'labels'),
                      ('check', 'skills', 'labels'), ('skills', 'labels', '--', 'normalize', '--help')]:
             self.invoke(*args)
-        runner_install.check(ROOT, self.scopes['workspace'])
         self.assertEqual(before, {str(p): p.read_bytes() for p in self.base.rglob('*') if p.is_file()})
         self.assertFalse(self.scopes['user'].exists())
         self.assertFalse(self.scopes['global'].exists())
@@ -96,14 +86,12 @@ class StackRunnerTests(unittest.TestCase):
         self.registry('global', {'workflows': {'choice': str(second)}})
         self.registry('user', {'workflows': {'choice': str(second)}})
         self.registry('workspace', {'workflows': {'choice': str(skill)}})
-        exe = self.install('user')
-        records = json.loads(self.invoke('list', 'workflows', executable=exe).stdout)
+        records = json.loads(self.invoke('list', 'workflows').stdout)
         self.assertEqual(next(x for x in records if x['name'] == 'choice')['path'], str(skill))
-        self.assertEqual(json.loads(self.invoke('workflows', 'choice', '--', 'normalize', '-l', '["a"]', executable=exe).stdout), {'labels': ['a']})
+        self.assertEqual(json.loads(self.invoke('workflows', 'choice', '--', 'normalize', '-l', '["a"]').stdout), {'labels': ['a']})
 
     def test_uncompiled_unknown_stale_and_invalid_inputs_never_fall_back_to_inference(self):
         skill = self.fixture()
-        self.install()
         uncompiled = self.workspace / 'skills/plain'
         uncompiled.mkdir()
         (uncompiled / 'SKILL.md').write_text('---\nname: plain\n---\nDo this with a model.')
@@ -118,62 +106,14 @@ class StackRunnerTests(unittest.TestCase):
     def test_pure_workflow_ignores_ambient_profiles_and_node_cache_but_rejects_explicit_config(self):
         self.fixture()
         self.registry('workspace', {'config': 'does-not-exist.json', 'dependencies': 'absent-node-modules'})
-        self.install()
         self.assertEqual(json.loads(self.invoke('skills', 'labels', '--', 'normalize', '-l', '["a"]').stdout), {'labels': ['a']})
         self.invoke('skills', 'labels', '--config', self.workspace / 'absent.json', '--', 'normalize', '-l', '[]', expected=1)
 
-    def test_foreign_modified_and_symlinked_executables_are_preserved(self):
-        root = self.scopes['workspace']
-        root.mkdir()
-        self.executable.write_text('user-owned command')
-        with self.assertRaisesRegex(ValueError, 'foreign'):
-            self.install()
-        self.assertEqual(self.executable.read_text(), 'user-owned command')
-        self.executable.unlink()
-        self.install()
-        self.executable.write_text('modified command')
-        with self.assertRaisesRegex(ValueError, 'modified'):
-            self.install()
-        self.executable.unlink()
-        self.executable.symlink_to(ROOT / 'install.sh')
-        with self.assertRaisesRegex(ValueError, 'symlink'):
-            self.install()
-
-    def test_repeated_and_parallel_setup_publish_identical_owned_executables(self):
-        self.install()
-        before = self.executable.read_bytes()
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            result = list(pool.map(lambda _: self.install(), range(2)))
-        self.assertEqual(result, [self.executable, self.executable])
-        self.assertEqual(self.executable.read_bytes(), before)
-        self.assertEqual(self.executable.stat().st_mode & 0o777, 0o755)
-        runner_install.check(ROOT, self.scopes['workspace'])
-
-    def test_launcher_quotes_source_paths_with_newlines_and_shell_metacharacters(self):
-        source = self.base / "source\nfalse # ' $(false)"
-        (source / 'src').mkdir(parents=True)
-        (source / 'src/tkstack.py').write_text("print('quoted source executed')\n")
-        executable = runner_install.publish(source, self.scopes['workspace'])
-        result = self.invoke(executable=executable)
-        self.assertEqual(result.stdout.strip(), 'quoted source executed')
-
-    def test_explicit_user_global_setup_and_preview_honor_scoped_roots(self):
-        command = [sys.executable, '-B', str(ROOT / 'scripts/runner_install.py')]
-        for scope in ('user', 'global'):
-            preview = subprocess.run([*command, '--scope', scope, '--dry-run'], env=self.environment, capture_output=True, text=True)
-            self.assertEqual(preview.returncode, 0, preview.stderr)
-            self.assertEqual(json.loads(preview.stdout)['status'], 'planned')
-            self.assertFalse(self.scopes[scope].exists())
-            install = subprocess.run([*command, '--scope', scope], env=self.environment, capture_output=True, text=True)
-            self.assertEqual(install.returncode, 0, install.stderr)
-            self.invoke('help', executable=self.scopes[scope] / 'tkstack')
-
     def test_invalid_registry_and_oversized_stdin_fail_without_workspace_initialization(self):
-        self.install()
         self.registry('workspace', {'version': True})
         self.invoke('list', expected=1)
         self.registry('workspace', {})
-        result = subprocess.run([str(self.executable), 'workflows', 'normalize-labels', '--call', '-'],
+        result = subprocess.run([*self.command, 'workflows', 'normalize-labels', '--call', '-'],
             cwd=self.workspace, env=self.environment, input='{}' + ' ' * (1024 * 1024),
             capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 1)
@@ -182,7 +122,6 @@ class StackRunnerTests(unittest.TestCase):
 
     def test_explicit_project_overrides_ambient_workspace_without_modifying_other_roots(self):
         skill = self.fixture()
-        self.install()
         other = self.base / 'other project'
         other.mkdir()
         self.environment['TKSTACK_WORKSPACE_DIR'] = str(other / '.tkstack')
@@ -248,7 +187,6 @@ export async function execute(input: z.infer<typeof inputSchema>, _inference: In
         config['profiles']['unrelated'] = {'kind': 'language', 'provider': 'unused', 'api': 'responses', 'model': 'unused-model'}
         (self.scopes['workspace'] / 'profiles.json').write_text(json.dumps(config))
         self.registry('workspace', {'dependencies': str(dependencies)})
-        self.install()
         actual = json.loads(self.invoke('workflows', 'profile-contract', '--', 'normalize', '-l', '["b","a"]').stdout)
         self.assertEqual(actual, {**output, 'model': 'workspace-model', 'provider': 'gateway'})
         config['profiles']['rewrite']['api'] = 'chat'  # The native schema rejects this gateway mismatch.

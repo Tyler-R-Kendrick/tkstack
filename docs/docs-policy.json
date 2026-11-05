@@ -5,7 +5,6 @@
       "inputs": [
         "install.sh",
         ".devcontainer/**",
-        "harnesses/bootstrap/**",
         "scripts/**",
         "src/**",
         ".github/workflows/**",
@@ -13,14 +12,7 @@
       ],
       "exclude": [
         "src/tkstack.py",
-        "src/tool.py",
-        "src/runtime_environment.py",
-        "src/run_hook.py",
-        "src/check_docs.py",
-        "src/docs_hook.py",
-        "scripts/setup_repo_hooks.py",
-        "src/sync_codify.py",
-        "src/evolve.py"
+        "src/check_docs.py"
       ],
       "docs": [
         "README.md",
@@ -32,9 +24,6 @@
     "execution": {
       "inputs": [
         "src/tkstack.py",
-        "src/tool.py",
-        "src/runtime_environment.py",
-        "src/run_hook.py",
         "harnesses/runner.json"
       ],
       "docs": [
@@ -46,8 +35,7 @@
     "authoring": {
       "inputs": [
         "skills/learn/skills/codify/**",
-        "skills/learn/skills/skillify/**",
-        "src/sync_codify.py"
+        "skills/learn/skills/skillify/**"
       ],
       "docs": [
         "README.md",
@@ -77,8 +65,7 @@
     "skills": {
       "inputs": [
         "skills/**",
-        "evals/**",
-        "src/evolve.py"
+        "evals/**"
       ],
       "exclude": [
         "skills/learn/skills/codify/**",
@@ -111,8 +98,6 @@
         ".githooks/**",
         "docs/docs-policy.json",
         "src/check_docs.py",
-        "src/docs_hook.py",
-        "scripts/setup_repo_hooks.py",
         "tests/**"
       ],
       "docs": [

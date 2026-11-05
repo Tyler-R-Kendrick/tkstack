@@ -27,8 +27,9 @@ provider. The complete source tree remains necessary for freshness checks.
 `commands/` when present, the whole package when `scripts/contract.json`
 exists, and each `--include` path recorded in the lock. A file that belongs
 in that inventory but is missing from the lock is stale. Nested directories
-with their own `SKILL.md` stay on their own locks; `check` omits them before
-the 512-file and 16 MiB snapshot limits. A lock with no `includes` field was
+with their own `SKILL.md` stay on their own locks. `check` and `compile`
+omit them before the 512-file and 16 MiB snapshot limits, so `--include` of
+a parent package does not freeze those child skills. A lock with no `includes` field was
 compiled before those paths were recorded. For that lock, `check` rebuilds
 the entrypoint directory, `commands/`, and the contract package root, and
 still compares every file the lock names. Recompile explicitly after adding
@@ -53,12 +54,12 @@ Markdown-defined nullable string CLI flags accept ordinary paths/text, explicit
 See [the shared command contract](../skills/learn/skills/codify/references/command-definitions.md).
 
 ```sh
-python3 src/sync_codify.py
-python3 src/sync_codify.py --check
+python3 skills/learn/skills/skillify/scripts/sync_codify.py
+python3 skills/learn/skills/skillify/scripts/sync_codify.py --check
 python3 skills/learn/skills/skillify/scripts/skillify.py compile /repo/skills/my-tool --cases /repo/skills/my-tool/cases.json
 ```
 
-Doctor checks that release against canonical Codify source. There is no reverse
+`sync_codify.py --check` compares that release with canonical Codify source. There is no reverse
 Codify-to-Skillify dependency. Flowify still owns MAF/Rhai authoring/native host
 validation; its definitions and actual host bindings can be included in a lock.
 The version-pinned Vercel AI SDK runtime now lives at
@@ -90,9 +91,9 @@ Chat exports use the native nested function envelope. JSON Schema is preserved;
 aliases and flags never leak into API tool definitions.
 
 ```sh
-python3 src/tool.py codify commands skills/learn/skills/codify/examples/normalize-labels --format responses
-python3 src/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels -- labels normalize -l '[" b ","a","a"]'
-python3 src/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels --call /path/to/tool-call.json
+python3 src/tkstack.py tools workflows normalize-labels --format responses
+python3 src/tkstack.py workflows normalize-labels -- labels normalize -l '[" b ","a","a"]'
+python3 src/tkstack.py workflows normalize-labels --call /path/to/tool-call.json
 ```
 
 The real example returns `{"labels":["a","b"]}`. The same lock accepts Responses,

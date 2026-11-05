@@ -51,7 +51,7 @@ See [installation, examples, and boundaries](principles.md).
   rather than pushing this checkout's main line.
 - The stack overview and a phase for every installed skill are in
   [the skill routing guide](../skills/sdlc/references/skill-routing.md).
-  `python3 src/routing_inventory.py check` fails when a skill has no routing
+  `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing
   entry or an entry names a missing skill.
 - Use Tstack for PR lifecycle work: `file-pr`, `babysit-pr`, `takeover`, and
   `modernize`. `full-stop` is the workflow for preparing a PR for human merge.
@@ -150,6 +150,6 @@ targets, and executable modes in `sources.lock.json`. Keep name adaptations in
 `harnesses/skills.json`; generated views belong in `.tkstack/`. When a skill is
 added or removed, add or remove its phase and strengths in
 `skills/sdlc/references/routing.json`, then run
-`python3 src/routing_inventory.py render` and `check`. Put new personal
+`python3 skills/sdlc/scripts/routing_inventory.py render` and `check`. Put new personal
 skills, agent definitions, and harness settings alongside the upstream sources,
 not inside them.

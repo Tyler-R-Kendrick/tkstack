@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install tkstack dotfiles.
-# A checkout (this file beside scripts/bootstrap.py) installs that checkout.
+# A checkout (this file beside scripts/install.py) installs that checkout.
 # Any other invocation, including `curl | bash`, obtains
 # ~/.local/share/tkstack and continues from there.
 #
@@ -51,7 +51,7 @@ checkout_root() {
   if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
     local root
     root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-    if [[ -f "$root/scripts/bootstrap.py" ]]; then
+    if [[ -f "$root/scripts/install.py" ]]; then
       printf '%s\n' "$root"
       return 0
     fi
@@ -298,7 +298,7 @@ download_tarball() {
       exit 1
     fi
   done
-  if [[ -z "$inner" || ! -f "$inner/install.sh" || ! -f "$inner/scripts/bootstrap.py" ]]; then
+  if [[ -z "$inner" || ! -f "$inner/install.sh" || ! -f "$inner/scripts/install.py" ]]; then
     printf '%s\n' 'tkstack: the downloaded archive is not a tkstack checkout.' >&2
     exit 1
   fi
@@ -372,7 +372,7 @@ fetch_checkout() {
   dest="${TKSTACK_HOME:-$HOME/.local/share/tkstack}"
   expected="$(expected_repo)"
   if [[ -e "$dest" ]]; then
-    if [[ ! -f "$dest/install.sh" || ! -f "$dest/scripts/bootstrap.py" ]]; then
+    if [[ ! -f "$dest/install.sh" || ! -f "$dest/scripts/install.py" ]]; then
       printf '%s\n' "tkstack: $dest exists and is not a tkstack checkout." >&2
       exit 1
     fi
@@ -485,7 +485,7 @@ run_bootstrap() {
   if [[ -n "${TKSTACK_PYTHON:-}" ]]; then
     if python_is_usable "$TKSTACK_PYTHON"; then
       cleanup_downloads
-      exec "$TKSTACK_PYTHON" -B "$tkstack_root/scripts/bootstrap.py" "$@"
+      exec "$TKSTACK_PYTHON" -B "$tkstack_root/scripts/install.py" "$@"
     fi
     printf '%s\n' 'tkstack: TKSTACK_PYTHON is not a usable Python 3.11+.' >&2
     exit 1
@@ -493,13 +493,13 @@ run_bootstrap() {
   for candidate in python3 python3.13 python3.12 python3.11; do
     if python_is_usable "$candidate"; then
       cleanup_downloads
-      exec "$candidate" -B "$tkstack_root/scripts/bootstrap.py" "$@"
+      exec "$candidate" -B "$tkstack_root/scripts/install.py" "$@"
     fi
   done
   uv_bin="$(ensure_uv)"
   "$uv_bin" python install "$PYTHON_VERSION"
   cleanup_downloads
-  exec "$uv_bin" run --python "$PYTHON_VERSION" --no-project -- python -B "$tkstack_root/scripts/bootstrap.py" "$@"
+  exec "$uv_bin" run --python "$PYTHON_VERSION" --no-project -- python -B "$tkstack_root/scripts/install.py" "$@"
 }
 
 main() {

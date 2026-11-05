@@ -14,9 +14,6 @@ SCRIPT = ROOT / "skills/learn/scripts/learn.py"
 SPEC = importlib.util.spec_from_file_location("learn_helper", SCRIPT)
 learn = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(learn)
-sys.path.insert(0, str(ROOT / "scripts"))
-sys.path.insert(0, str(ROOT / "src"))
-import steering_adapter
 
 
 class LearnTests(unittest.TestCase):
@@ -127,44 +124,6 @@ class LearnTests(unittest.TestCase):
         self.assertIn("stale", check.stderr)
         subprocess.run(command + ["render"], check=True, capture_output=True)
         subprocess.run(command + ["check"], check=True, capture_output=True)
-
-    def test_native_pointers_preserve_existing_instructions_and_remove_cleanly(self):
-        root = Path(self.temporary.name) / "dotfiles"
-        (root / ".tkstack/steering").mkdir(parents=True)
-        target = Path(self.temporary.name) / "project"
-        target.mkdir()
-        (target / "AGENTS.md").write_text("My project instructions\n")
-        (target / "CLAUDE.md").write_text("@AGENTS.md\n")
-        original = (target / "AGENTS.md").read_text()
-        plan = steering_adapter.instruction_plan(root, target, ["codex", "claude"], "project")
-        steering_adapter.apply_instructions(plan, dry_run=True)
-        self.assertEqual((target / "AGENTS.md").read_text(), original)
-        steering_adapter.apply_instructions(plan)
-        self.assertTrue((target / "AGENTS.md").read_text().startswith(original))
-        self.assertEqual(steering_adapter.instruction_plan(root, target, ["codex", "claude"], "project"), [])
-        remove = steering_adapter.instruction_plan(root, target, ["codex", "claude"], "project", uninstall=True)
-        steering_adapter.apply_instructions(remove)
-        self.assertEqual((target / "AGENTS.md").read_text(), original)
-        self.assertEqual((target / "CLAUDE.md").read_text(), "@AGENTS.md\n")
-
-    def test_home_pointers_use_native_harness_locations(self):
-        root = Path(self.temporary.name) / "dotfiles"
-        (root / ".tkstack/steering").mkdir(parents=True)
-        target = Path(self.temporary.name) / "test-home"
-        plan = steering_adapter.instruction_plan(root, target, ["codex", "claude"], "home")
-        self.assertEqual({p.relative_to(target) for p, _, _ in plan},
-                         {Path(".codex/AGENTS.md"), Path(".claude/CLAUDE.md")})
-
-    def test_principles_loading_does_not_require_a_correction_store(self):
-        root = Path(self.temporary.name) / "principles-only"
-        skill = root / "skills/tkstack-principles/SKILL.md"
-        skill.parent.mkdir(parents=True)
-        skill.write_text("# Portable principles\n")
-        target = Path(self.temporary.name) / "project"
-        plan = steering_adapter.instruction_plan(root, target, ["claude"], "project")
-        self.assertEqual(len(plan), 1)
-        self.assertIn(str(target / ".agents/principles/SKILL.md"), plan[0][2])
-        self.assertNotIn(".agents/steering/rules.md", plan[0][2])
 
 
 if __name__ == "__main__":

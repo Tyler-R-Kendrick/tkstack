@@ -33,14 +33,10 @@ Node.js **22.22.0+** and npm are required; this installation was exercised with
 Node **24.19.0** and npm **11.9.0** on Linux x86-64.
 
 ```sh
-python3 scripts/setup_integrations.py --target . --install-runtimes --runtime openwiki
 python3 scripts/install.py --target .
-python3 scripts/doctor.py --target .
-python3 scripts/setup_integrations.py --status
 ```
 
-The first command installs only OpenWiki. The offline dotfiles installer links
-the skill; it registers MCP only when the matching local runtime is present.
+That links the skill. It does not run `npm ci` or register MCP.
 The runtime recipe is [`harnesses/openwiki`](../harnesses/openwiki/package.json).
 Its npm lock pins 333 dependency records with registry integrity digests. Native
 dependency install scripts run through `npm ci`; platform-specific binaries are
@@ -52,13 +48,8 @@ failed install publishes no runtime. An existing differing runtime is preserved
 and reported for explicit repair. A changed recipe must be reinstalled before
 the readiness check accepts it. The installer never writes to the user's home.
 
-The launcher is:
-
-```sh
-python3 src/tool.py openwiki <arguments>
-```
-
-MCP runs `openwiki mcp --host codex|claude|cursor` through that launcher. It uses
+Run the upstream `openwiki` CLI when Node and the package are installed. tkstack
+does not wrap it. A host MCP entry, if you add one, uses
 `.tkstack/openwiki/` for private config/state and disables telemetry by default.
 Explicit `OPENWIKI_CONFIG_DIR` and `OPENWIKI_TELEMETRY_DISABLED` environment
 settings take precedence. Keep credentials in that ignored state or the launching

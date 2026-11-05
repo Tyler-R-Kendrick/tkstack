@@ -1,21 +1,17 @@
 # Run skills and workflows from `.tkstack`
 
-After setup, the selected workspace and user state roots contain executable
-`tkstack` files. The source checkout also provides `.tkstack/bin/tkstack` for
-the generated PATH. The canonical implementation is `src/tkstack.py`; the
-generated entrypoints stay ignored, alongside a private ownership receipt.
-They use the private command interpreter when available and a Python fallback
-for discovery. Keep the source checkout because these are managed launchers.
+Run the canonical program directly. Install does not write a `tkstack` launcher
+or a PATH shim.
 
 ```sh
-./.tkstack/tkstack help
-./.tkstack/tkstack list skills
-./.tkstack/tkstack list workflows
-./.tkstack/tkstack workflows normalize-labels -- labels normalize -l '[" b ","a","a"]'
-./.tkstack/tkstack skills my-skill -- command --flag value
-./.tkstack/tkstack skills my-skill --call /path/to/tool-call.json
-./.tkstack/tkstack tools skills my-skill --format responses
-./.tkstack/tkstack check skills my-skill
+python3 src/tkstack.py help
+python3 src/tkstack.py list skills
+python3 src/tkstack.py list workflows
+python3 src/tkstack.py workflows normalize-labels -- labels normalize -l '[" b ","a","a"]'
+python3 src/tkstack.py skills my-skill -- command --flag value
+python3 src/tkstack.py skills my-skill --call /path/to/tool-call.json
+python3 src/tkstack.py tools skills my-skill --format responses
+python3 src/tkstack.py check skills my-skill
 ```
 
 `normalize-labels` is a registered working workflow and returns
@@ -137,30 +133,12 @@ and guard variables; its TKSTACK_WORKSPACE_DIR is the selected execution scope.
 Runtime configuration is passed through private temporary session files rather
 than rewriting source, locks, or user credentials.
 
-## Install and verify
+## Run it
 
-Root `install.sh` provisions the command dependencies and generates the runner
-for its source checkout and selected initialization roots. Devcontainer and
-Codex setup/startup hooks use that same path. Read-only `--check` verifies the
-generated entrypoints as well as the existing installation.
-
-For a separately selected scope, use the explicit installer:
-
-```sh
-python3 scripts/runner_install.py --project /repo --dry-run
-python3 scripts/runner_install.py --project /repo
-python3 scripts/runner_install.py --scope user
-python3 scripts/runner_install.py --scope global
-python3 scripts/runner_install.py --scope user --check
-```
-
-The global command needs the host's normal write permissions; ordinary setup
-does not create `/etc/.tkstack`. Preview/check initialize nothing. Publication
-preserves foreign/modified files and symlinks, uses an ownership receipt and
-atomic file replacement, and serializes cooperating writers with a bounded OS
-lock. Process death releases the lock. A crash between executable/receipt writes
-fails closed on a later ownership mismatch; preserve and inspect both files
-before repairing that mismatch. Repeated successful setup preserves bytes.
+`python3 src/tkstack.py` is the runner. `install.sh` does not publish a copy
+of it and does not create `/etc/.tkstack`. Pass `--project /repo` before the
+operation when the workspace is not the current directory. Help, list, tools,
+and check are read-only.
 
 ## Owned normalized skill commands
 

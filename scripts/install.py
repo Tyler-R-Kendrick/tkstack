@@ -12,13 +12,8 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 import subprocess
 
-from tkstack_state import ensure_state
 from skill_roots import ADOPTED, nested, packages
-from runtime_environment import with_paths
-from harness_paths import HOOK_HARNESSES, SKILL_DIRECTORIES, skill_directory
-
-from steering_adapter import apply_instructions, instruction_plan
-from setup_integrations import apply_configuration, configuration_plan
+from harness_paths import SKILL_DIRECTORIES, skill_directory
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -103,10 +98,48 @@ def rewrite_invocations(text, aliases):
     return text
 
 
+def skill_view(root, source, harness=None):
+    """Directory of one host's generated skill view. The view is not upstream bytes."""
+    return root / ".tkstack/skill-views" / source / (harness or "default")
+
+
+def prepare_graphify(root):
+    """Copy each Graphify host skill into a view named SKILL.md.
+
+    Upstream ships skill markdown under other filenames. The copy is the file
+    the host reads. It does not rewrite commands or install a private runtime.
+    """
+    lock_path = root / "sources.lock.json"
+    if not lock_path.is_file():
+        return
+    record = json.loads(lock_path.read_text()).get("sources", {}).get("graphify")
+    templates = record.get("skill_templates") if isinstance(record, dict) else None
+    if not templates:
+        return
+    upstream = root / "vendor" / "graphify"
+    for harness, profile in templates.items():
+        directory = skill_view(root, "graphify", harness) / "graphify"
+        files = {"SKILL.md": (upstream / profile["entrypoint"]).read_bytes()}
+        references = upstream / profile["references"]
+        if references.is_dir():
+            for path in sorted(references.glob("*.md")):
+                files["references/" + path.name] = path.read_bytes()
+        for name in ("LICENSE", "LICENSE-MIT", "NOTICE"):
+            source = upstream / name
+            if source.is_file():
+                files[name] = source.read_bytes()
+        for name, data in files.items():
+            target = directory / name
+            if target.is_symlink() or any(parent.is_symlink() for parent in target.parents if root in parent.parents):
+                raise ValueError("Graphify view must not be a symlink: " + str(target))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not target.exists() or target.read_bytes() != data:
+                target.write_bytes(data)
+
+
 def prepare_aliases(root):
     """Build editable-name views without changing any pinned upstream bytes."""
-    from graphify_install import prepare_views
-    prepare_views(root)
+    prepare_graphify(root)
     for source, aliases in skill_aliases(root).items():
         if not aliases:
             continue
@@ -146,8 +179,7 @@ def source_directories(root, kind, harness=None):
     result = []
     for name, source in sorted(sources.items()):
         if kind == "skills" and source.get("skill_templates"):
-            from graphify_install import view_directory
-            result.append((name, view_directory(root, name, harness)))
+            result.append((name, skill_view(root, name, harness)))
             continue
         paths = {**source.get("paths", {}), **source.get("harness_paths", {}).get(harness, {})}
         relative = paths.get(kind, kind)
@@ -302,18 +334,37 @@ def alias_migrations(root, target, harnesses, scope="home"):
     return migrations
 
 
-def initialize_state(root, state_root=None):
-    state_root = state_root or root / ".tkstack"
-    import runner_install
-    runner_install.plan(root, state_root)
-    ensure_state(state_root)
-    runner_install.publish(root, state_root)
-    store = state_root / "steering"
-    for skill, expected in (("learn", "rules.md"), ("unslop", "unslop/patterns.md")):
-        script = root / "skills" / skill / "scripts" / (skill + ".py")
-        if script.is_file() and not (store / expected).is_file():
-            subprocess.run([sys.executable, str(script), "--store", str(store), "render"],
-                           check=True, capture_output=True, text=True)
+def repo_hooks(root, dry_run=False, uninstall=False):
+    """Use .githooks for this checkout. Git then ignores .git/hooks."""
+    try:
+        probe = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--is-inside-work-tree"],
+            capture_output=True, text=True,
+        )
+    except FileNotFoundError:
+        print("skip git docs hook: not a git checkout")
+        return
+    if probe.returncode != 0:
+        print("skip git docs hook: not a git checkout")
+        return
+    shown = subprocess.run(
+        ["git", "-C", str(root), "config", "--get", "core.hooksPath"],
+        capture_output=True, text=True,
+    )
+    current = shown.stdout.strip()
+    if uninstall:
+        if current != ".githooks":
+            print("skip git docs hook: core.hooksPath is not .githooks")
+            return
+        print(("Would unset" if dry_run else "unset") + " core.hooksPath")
+        if not dry_run:
+            subprocess.run(["git", "-C", str(root), "config", "--unset", "core.hooksPath"], check=True)
+        return
+    if current == ".githooks":
+        return
+    print(("Would set" if dry_run else "set") + " core.hooksPath=.githooks")
+    if not dry_run:
+        subprocess.run(["git", "-C", str(root), "config", "core.hooksPath", ".githooks"], check=True)
 
 
 def preflight(plan, migrations=None):
@@ -366,7 +417,6 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
 
 
 def main():
-    os.environ.update(with_paths(ROOT))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", type=Path, default=Path.home(),
                         help="Home or project root to install into (default: your home)")
@@ -374,9 +424,14 @@ def main():
                         help="Harness to install; repeat to select several (default: codex, claude, cursor)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without changing files")
     parser.add_argument("--uninstall", action="store_true",
-                        help="Remove this checkout's links for every harness")
+                        help="Remove this checkout's links for every harness and its docs hook")
     parser.add_argument("--scope", choices=("home", "project"),
-                        help="Instruction placement (default: home for your home directory, else project)")
+                        help="Home or project skill directories (default: home for your home directory, else project)")
+    # The repo-quality dry-run still passes these. They select nothing.
+    parser.add_argument("--offline", action="store_true", help="Accepted and ignored. Install does not download.")
+    parser.add_argument("--no-toolchains", action="store_true", help="Accepted and ignored. Install does not provision toolchains.")
+    parser.add_argument("--no-shell", action="store_true", help="Accepted and ignored. Install does not edit shell startup.")
+    parser.add_argument("--workspace", type=Path, help="Accepted and ignored. Links use --target.")
     args = parser.parse_args()
     try:
         if not args.uninstall:
@@ -395,21 +450,13 @@ def main():
             link_scope = scope
         plan = link_plan(ROOT, target, harnesses, link_scope)
         migrations = alias_migrations(ROOT, target, harnesses, link_scope)
-        instructions = instruction_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
-        configurations = configuration_plan(
-            ROOT, target, [harness for harness in harnesses if harness in HOOK_HARNESSES],
-            scope, uninstall=args.uninstall)
         if not args.uninstall:
             preflight(plan, migrations)
-            from runner_install import plan as runner_plan
-            runner_plan(ROOT, ROOT / '.tkstack')
             if not args.dry_run:
-                initialize_state(ROOT)
                 prepare_aliases(ROOT)
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
         changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
-        apply_instructions(instructions, dry_run=args.dry_run)
-        apply_configuration(configurations, dry_run=args.dry_run)
+        repo_hooks(ROOT, dry_run=args.dry_run, uninstall=args.uninstall)
     except (OSError, ValueError, KeyError) as error:
         print(f"tkstack: {error}", file=sys.stderr)
         return 1

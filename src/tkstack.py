@@ -13,7 +13,6 @@ from types import SimpleNamespace
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 
-from runtime_environment import with_paths
 from tkstack_state import state_roots
 from skill_roots import owned
 
@@ -233,7 +232,7 @@ def main(argv=None):
                     raise ValueError('Tool exports require Markdown command definitions; select the workflow package')
                 result = codify.command_schema.export(selected, args.format)
             else:
-                environment = with_paths(ROOT)
+                environment = os.environ.copy()
                 environment['TKSTACK_WORKSPACE_DIR'] = str(scopes['workspace'])
                 def invoke(lock, payload, _project, timeout, _dependencies, _config):
                     config = configuration(lock, args.config, scopes, settings, environment)

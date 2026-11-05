@@ -1,3 +1,5 @@
+import contextlib
+import io
 import json
 import os
 from pathlib import Path
@@ -11,9 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(ROOT / 'src'))
 import check_docs as docs
-import docs_hook
-import setup_repo_hooks
-import setup_integrations
+import install
 
 
 class DocumentationHookTests(unittest.TestCase):
@@ -25,21 +25,11 @@ class DocumentationHookTests(unittest.TestCase):
         self.git('init', '-q')
         self.git('config', 'user.name', 'Docs fixture')
         self.git('config', 'user.email', 'docs-fixture@example.invalid')
-        for folder in ['scripts', 'docs', 'src', 'harnesses/bootstrap', '.githooks']:
+        for folder in ['scripts', 'docs', 'src', '.githooks']:
             (self.root / folder).mkdir(parents=True, exist_ok=True)
-        copies = {
-            'check_docs.py': ROOT / 'src/check_docs.py',
-            'docs_hook.py': ROOT / 'src/docs_hook.py',
-            'setup_repo_hooks.py': ROOT / 'scripts/setup_repo_hooks.py',
-            'tkstack_state.py': ROOT / 'src/tkstack_state.py',
-            'bootstrap_profiles.py': ROOT / 'scripts/bootstrap_profiles.py',
-        }
-        for name, source in copies.items():
-            shutil.copy2(source, self.root / 'scripts' / name)
         shutil.copy2(ROOT / 'src/check_docs.py', self.root / 'src/check_docs.py')
+        shutil.copy2(ROOT / 'install.sh', self.root / 'install.sh')
         shutil.copy2(ROOT / '.githooks/pre-commit', self.root / '.githooks/pre-commit')
-        for name in ['profiles.json', 'toolchains.json']:
-            shutil.copyfile(ROOT / 'harnesses/bootstrap' / name, self.root / 'harnesses/bootstrap' / name)
         (self.root / 'src/cli.py').write_text("print('version one')\n")
         (self.root / 'docs/use.md').write_text('# Usage\n\nUse [the command](../src/cli.py).\n')
         (self.root / 'README.md').write_text('# Fixture\n\n[Usage](docs/use.md)\n\n' + docs.START + '\n' + docs.END + '\n')
@@ -112,11 +102,9 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertTrue(docs.check(self.snapshot(True)))
 
     def test_generated_readme_block_and_local_links_are_checked_from_the_snapshot(self):
-        path = self.root / 'harnesses/bootstrap/toolchains.json'
-        value = json.loads(path.read_text())
-        value['node_version'] = '99.0.0'
-        path.write_text(json.dumps(value))
-        self.assertTrue(any('versions are stale' in error for error in docs.check(self.snapshot())))
+        path = self.root / 'install.sh'
+        path.write_text(path.read_text().replace('PYTHON_VERSION=3.12.15', 'PYTHON_VERSION=9.9.9', 1))
+        self.assertTrue(any('install pins are stale' in error for error in docs.check(self.snapshot())))
         (self.root / 'README.md').write_text((self.root / 'README.md').read_text().replace('[Usage](docs/use.md)', '[Usage](docs/missing.md)'))
         self.assertTrue(any('missing local link' in error for error in docs.check(self.snapshot())))
 
@@ -132,7 +120,7 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertTrue(docs.check(self.snapshot()))
 
     def test_real_precommit_blocks_stale_index_and_accepts_reviewed_staged_content(self):
-        setup_repo_hooks.setup(self.root)
+        install.repo_hooks(self.root)
         self.change_source()
         self.git('add', 'src/cli.py')
         self.git('commit', '-qm', 'Stale docs must fail', expected=1)
@@ -142,96 +130,15 @@ class DocumentationHookTests(unittest.TestCase):
         self.git('commit', '-qm', 'Reviewed docs and implementation')
         self.assertEqual(docs.check(self.snapshot(True)), [])
 
-    def test_shared_worktree_hook_is_replaced_without_chaining_itself(self):
-        setup_repo_hooks.setup(self.root)
-        other = Path(self.temporary.name) / 'other worktree'
-        self.git('worktree', 'add', '--detach', str(other), 'HEAD')
-        setup_repo_hooks.setup(other)
-        hook = Path(self.git('rev-parse', '--path-format=absolute', '--git-path', 'hooks').strip()) / 'pre-commit'
-        backup = hook.with_name('pre-commit.tkstack-previous')
-        text = hook.read_text()
-        self.assertIn(str(other / '.githooks/pre-commit'), text)
-        self.assertNotIn('tkstack_previous', text)
-        self.assertFalse(backup.exists())
-        self.assertIn(setup_repo_hooks.MARKER, text)
-        completed = subprocess.run(['bash', str(hook)], cwd=other, capture_output=True, text=True, timeout=15)
-        self.assertNotEqual(completed.returncode, None)
-        self.assertFalse(backup.exists())
-
-    def test_tkstack_backup_is_removed_instead_of_executed(self):
-        setup_repo_hooks.setup(self.root)
-        directory = self.root / '.git/hooks'
-        hook = directory / 'pre-commit'
-        backup = directory / 'pre-commit.tkstack-previous'
-        backup.write_text(hook.read_text())
-        backup.chmod(0o755)
-        (self.root / '.tkstack/git-hooks/ownership.json').unlink()
-        setup_repo_hooks.setup(self.root)
-        self.assertFalse(backup.exists())
-        self.assertNotIn('tkstack_previous', hook.read_text())
-        completed = subprocess.run(['bash', str(hook)], cwd=self.root, capture_output=True, text=True, timeout=15)
-        self.assertNotEqual(completed.returncode, None)
-
-    def test_existing_precommit_is_chained_and_restored_without_touching_other_hooks(self):
-        directory = self.root / '.git/hooks'
-        previous = '#!/bin/sh\nprintf previous > "$(git rev-parse --show-toplevel)/previous-ran"\n'
-        (directory / 'pre-commit').write_text(previous)
-        (directory / 'pre-commit').chmod(0o755)
-        (directory / 'post-commit').write_text('unrelated')
-        setup_repo_hooks.setup(self.root)
-        self.git('commit', '--allow-empty', '-qm', 'Chained hook')
-        self.assertEqual((self.root / 'previous-ran').read_text(), 'previous')
-        setup_repo_hooks.setup(self.root, uninstall=True)
-        self.assertEqual((directory / 'pre-commit').read_text(), previous)
-        self.assertEqual((directory / 'post-commit').read_text(), 'unrelated')
-
-    def test_other_hook_managers_and_modified_dispatchers_are_preserved(self):
-        self.git('config', 'core.hooksPath', '.another-manager')
-        with self.assertRaisesRegex(ValueError, 'managed elsewhere'):
-            setup_repo_hooks.setup(self.root)
-        self.assertEqual(self.git('config', '--get', 'core.hooksPath').strip(), '.another-manager')
-        self.git('config', '--unset', 'core.hooksPath')
-        setup_repo_hooks.setup(self.root)
-        hook = self.root / '.git/hooks/pre-commit'
-        hook.write_text('operator modified hook')
-        with self.assertRaisesRegex(ValueError, 'modified'):
-            setup_repo_hooks.setup(self.root)
-        self.assertEqual(hook.read_text(), 'operator modified hook')
-
-    def test_native_protocols_are_scoped_bounded_and_do_not_modify_docs(self):
-        self.change_source()
-        before = (self.root / docs.LEDGER).read_bytes()
-        for harness in ('codex', 'claude', 'cursor'):
-            event = {'cwd': str(self.root), 'status': 'completed', 'loop_count': 0, 'stop_hook_active': False}
-            response = docs_hook.evaluate(self.root, harness, event, self.root)
-            self.assertIn('followup_message' if harness == 'cursor' else 'decision', response)
-            response = docs_hook.evaluate(self.root, harness, {**event, 'loop_count': 1, 'stop_hook_active': True}, self.root)
-            self.assertEqual(response, {})
-            self.assertEqual(docs_hook.evaluate(self.root, harness, {'cwd': str(self.root.parent)}, self.root.parent), {})
-        self.assertEqual((self.root / docs.LEDGER).read_bytes(), before)
-        self.review()
-        self.assertEqual(docs_hook.evaluate(self.root, 'codex', {'cwd': str(self.root), 'stop_hook_active': False}, self.root), {})
-
-    def test_malformed_ledgers_profiles_and_loop_fields_fail_closed(self):
-        for harness, event in [('codex', {'stop_hook_active': 'false'}), ('cursor', {'status': 'completed', 'loop_count': False})]:
-            with self.assertRaises(ValueError):
-                docs_hook.evaluate(self.root, harness, {'cwd': str(self.root), **event}, self.root)
+    def test_malformed_ledger_and_install_pins_fail_closed(self):
         path = self.root / docs.LEDGER
         path.write_text('{"version":1,"areas":{"cli":null}}')
         with self.assertRaisesRegex(ValueError, 'Invalid documentation review record'):
             docs.check(self.snapshot())
-        profiles = self.root / 'harnesses/bootstrap/profiles.json'
-        profiles.write_text('{"version":true,"profiles":{}}')
-        with self.assertRaises(ValueError):
+        script = self.root / 'install.sh'
+        script.write_text(script.read_text().replace('PYTHON_VERSION=3.12.15\n', '', 1))
+        with self.assertRaisesRegex(ValueError, 'install.sh is missing PYTHON_VERSION'):
             docs.profile_block(self.snapshot())
-
-    def test_native_registrations_are_opt_in_to_source_project_not_home_or_other_projects(self):
-        for harness in ('codex', 'claude', 'cursor'):
-            ordinary = setup_integrations.hook_entries(ROOT, harness)
-            scoped = setup_integrations.hook_entries(ROOT, harness, repo_docs=True)
-            self.assertNotIn('repo-docs', json.dumps(ordinary))
-            self.assertIn('repo-docs', json.dumps(scoped))
-            self.assertIn('stop' if harness == 'cursor' else 'Stop', scoped)
 
     def test_sparse_worktree_check_uses_only_index_fallback_for_skipped_paths(self):
         self.git('sparse-checkout', 'init', '--cone')
@@ -262,26 +169,32 @@ class DocumentationHookTests(unittest.TestCase):
         empty.mkdir()
         saved = os.environ.get('PATH')
         os.environ['PATH'] = str(empty)
+        captured = io.StringIO()
         try:
-            result = setup_repo_hooks.setup(self.root, uninstall=True)
+            with contextlib.redirect_stdout(captured):
+                result = install.repo_hooks(self.root, uninstall=True)
         finally:
             if saved is None:
                 os.environ.pop('PATH', None)
             else:
                 os.environ['PATH'] = saved
-        self.assertEqual(result['status'], 'not-a-git-checkout')
+        self.assertIsNone(result)
+        self.assertIn('skip git docs hook: not a git checkout', captured.getvalue())
 
     def test_dry_run_uninstall_plans_the_hook_and_leaves_it_in_place(self):
-        installed = setup_repo_hooks.setup(self.root)
-        self.assertEqual(installed['status'], 'installed')
-        hook = Path(installed['hook'])
-        receipt = self.root / '.tkstack/git-hooks/ownership.json'
-        before_hook = hook.read_bytes()
-        before_receipt = receipt.read_bytes()
-        planned = setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)
-        self.assertEqual(planned['status'], 'planned')
-        self.assertEqual(hook.read_bytes(), before_hook)
-        self.assertEqual(receipt.read_bytes(), before_receipt)
-        self.assertEqual(setup_repo_hooks.setup(self.root, uninstall=True)['status'], 'removed')
-        self.assertFalse(receipt.exists())
-        self.assertEqual(setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)['status'], 'not-installed')
+        with contextlib.redirect_stdout(io.StringIO()):
+            install.repo_hooks(self.root)
+        self.assertEqual(self.git('config', '--get', 'core.hooksPath').strip(), '.githooks')
+        planned = io.StringIO()
+        with contextlib.redirect_stdout(planned):
+            install.repo_hooks(self.root, dry_run=True, uninstall=True)
+        self.assertIn('Would unset', planned.getvalue())
+        self.assertEqual(self.git('config', '--get', 'core.hooksPath').strip(), '.githooks')
+        with contextlib.redirect_stdout(io.StringIO()):
+            install.repo_hooks(self.root, uninstall=True)
+        shown = subprocess.run(['git', '-C', str(self.root), 'config', '--get', 'core.hooksPath'], capture_output=True, text=True)
+        self.assertNotEqual(shown.returncode, 0)
+        skipped = io.StringIO()
+        with contextlib.redirect_stdout(skipped):
+            install.repo_hooks(self.root, dry_run=True, uninstall=True)
+        self.assertIn('core.hooksPath is not .githooks', skipped.getvalue())

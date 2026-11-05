@@ -4,22 +4,21 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "580141f66ed7ec8898fb42a8f92797ac27d7b0b2"
+          "oid": "e8814387734938377eb4cb2872a799cabf8272bc"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
+          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
         },
         "docs/skillify.md": {
           "mode": "100644",
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -179,7 +178,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
+          "oid": "a2d5569d096a30c8b556d95a3c013991521511cd"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -223,7 +222,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "4de113953cd526e6deb73a7bf44946405aec81fc"
+          "oid": "01de0af46a6649b485c121910d64a0aba8deca0e"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -411,7 +410,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
+          "oid": "a2d5569d096a30c8b556d95a3c013991521511cd"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -505,6 +504,10 @@
           "mode": "100644",
           "oid": "37dfb634480dcf6e40b54dae9491eb487c62a4e9"
         },
+        "skills/learn/skills/skillify/scripts/sync_codify.py": {
+          "mode": "100644",
+          "oid": "325ef28865906efcd3cd24d250bf01e938a2aa92"
+        },
         "skills/learn/skills/skillify/scripts/tkstack_state.py": {
           "mode": "100644",
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
@@ -515,7 +518,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a4f9d751d1562bbfca3a861383f27605d426f3bd"
+          "oid": "f3b441bf4030e1b6fe48268394f7f6b3bc2983bc"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -532,34 +535,31 @@
         "skills/learn/skills/skillify/templates/verification.md.tmpl": {
           "mode": "100644",
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
-        },
-        "src/sync_codify.py": {
-          "mode": "100644",
-          "oid": "794405559ea28efc02c64d1e561f052b2378327a"
         }
       },
       "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
+          "oid": "7104446061273acd093e31244792221f059ef1d0"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
+          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
         },
         "docs/skills.md": {
           "mode": "100644",
           "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
         }
       },
+      "docs_refresh_reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -575,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "153a140b2579decb241112b4ad39fc6ee24b83cb"
+          "oid": "242e93c276e7774b2715ac4253425c6b0546ea4c"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -635,17 +635,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
+      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "9d8cc03b953e9a077fb002d633589421123a09a6"
+          "oid": "b7d84d80ae99c5a630d480404ce4b9f78af20176"
         }
       },
       "inputs": {
@@ -656,23 +656,15 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "8c812fff589d2d8f3500587ac248212a442f6a8b"
+          "oid": "1f1b97c09e5c7364699f029637ea23dcdeaf1384"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
-        },
-        "scripts/setup_repo_hooks.py": {
-          "mode": "100755",
-          "oid": "be78ade0b482edbd556173e59b2611f50d5f5703"
+          "oid": "8d1049ca2a8e1a7c741a1aa2c31bcf7e1122b3c2"
         },
         "src/check_docs.py": {
           "mode": "100755",
-          "oid": "9aba4faaa29d1337880e406528c6b9af87b725b4"
-        },
-        "src/docs_hook.py": {
-          "mode": "100755",
-          "oid": "59a384671639f4f569dff1546443af488566d054"
+          "oid": "2d86f055f6ba528c93f0e2dc96b127dbb6a6260b"
         },
         "tests/test_authoring.py": {
           "mode": "100644",
@@ -680,11 +672,7 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "81c6916d70597f98faa295f9bd4500b7e452b2e8"
-        },
-        "tests/test_caveman.py": {
-          "mode": "100644",
-          "oid": "100e597f781818b4683037d4cb146c1a62b162d1"
+          "oid": "d36aea21623a187088dcb1ab24a7b4f16e579bbc"
         },
         "tests/test_codify.py": {
           "mode": "100644",
@@ -696,7 +684,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "dacdaea0fc6fdff580833a19a312f89131d8d6a8"
+          "oid": "812922d214ad92fc850f99e65fc147b75f875226"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -704,7 +692,7 @@
         },
         "tests/test_graphify.py": {
           "mode": "100644",
-          "oid": "b9ccc6278f824f84e88bbbe7251726aee8547d1c"
+          "oid": "4a970c5dc67a972b2d184090bf3a01aa82326612"
         },
         "tests/test_grok_learn.py": {
           "mode": "100644",
@@ -716,19 +704,15 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "3460afab0719a66f78bffcbc821f69ab95291471"
+          "oid": "d5f5a6321eb314d3f540d9af367196727686d690"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
           "oid": "397af8ab24b54bff2cbde4920e930621c6f69115"
         },
-        "tests/test_integrations.py": {
-          "mode": "100644",
-          "oid": "02be0f6d1672e71a1e8ca1125a8da3e2fb72b4f4"
-        },
         "tests/test_learn.py": {
           "mode": "100644",
-          "oid": "85f3dafc291353374a1339f67ac1865224ec8f82"
+          "oid": "e06a38379a0030fa15030cae79bf9e0e7243c16b"
         },
         "tests/test_learn_help.py": {
           "mode": "100644",
@@ -736,15 +720,11 @@
         },
         "tests/test_lever.py": {
           "mode": "100644",
-          "oid": "7b96b202cf41bc1067bdc66371a8428b54e44a15"
+          "oid": "a050d624ff991ecdf430770253ae7e53306a9b04"
         },
         "tests/test_lintify.py": {
           "mode": "100644",
           "oid": "f370ad9ccf93fbee1bff788fc5615f2677a58728"
-        },
-        "tests/test_npm_runtime.py": {
-          "mode": "100644",
-          "oid": "1db737801a3c8396396f7a6dbfc364966119ac0b"
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
@@ -768,7 +748,7 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "9ca3f42c15bd95818cf00db624de9c8f788466b8"
+          "oid": "09226f1365d4ad031d4c7908b8b5095ce612716c"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
@@ -776,7 +756,7 @@
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
-          "oid": "7a46151200ac831e62c56d8ec17303eacd55e931"
+          "oid": "530ebfd387af6f9d005c0b4e30b96bd1d56ba1cd"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -784,7 +764,7 @@
         },
         "tests/test_stack_runner.py": {
           "mode": "100644",
-          "oid": "b7e9560e5c5ef72045c0b9ef772c1145795882bb"
+          "oid": "2e474ba329a07f25ab898ee1107f94b12627b03b"
         },
         "tests/test_state_layout.py": {
           "mode": "100644",
@@ -796,72 +776,60 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
+      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
+          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
+          "oid": "f8db6b3e08365f9d1093d037400bee0211f55505"
         }
       },
-      "docs_refresh_reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that.",
+      "docs_refresh_reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
           "oid": "8c6960e1878beeb3d50ef59f9b93e4deda40772a"
         },
-        "src/run_hook.py": {
-          "mode": "100755",
-          "oid": "2ff3a0ffbcab5065c78c31edb4d5b89cc0eeeeef"
-        },
-        "src/runtime_environment.py": {
-          "mode": "100644",
-          "oid": "f5b499932e3a6e3282b17da79a27f29160478f1c"
-        },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "506b173a3213954d87abeb14e571190a49f95d6a"
-        },
-        "src/tool.py": {
-          "mode": "100755",
-          "oid": "f9eaee5c81176a3475b24ec6e6db91b0832ca4ab"
+          "oid": "bff5a69feadd3a887fe9ba7e521cc417c628b4d9"
         }
       },
       "no_doc_impact": false,
-      "reason": "merge origin/main into hill-climb"
+      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "eb32144afc297d10c0a9e618ccac43f63384adb9"
+          "oid": "a0d75f42e6afe2a62acc472901348781d9931188"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
+          "oid": "7104446061273acd093e31244792221f059ef1d0"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
+          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
         }
       },
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
-          "oid": "dccf7f965922bdf4181029e00f171816f61f5469"
+          "oid": "76231828f77fba89c261e0723ddec5abce20147f"
         },
         ".gitattributes": {
           "mode": "100644",
@@ -871,49 +839,9 @@
           "mode": "100644",
           "oid": "4ba51b38a1c5ca753b3a37e1d8f2a4a9af50f344"
         },
-        "harnesses/bootstrap/profiles.json": {
-          "mode": "100644",
-          "oid": "f3eefe6f1567d6b981824b8696780283ece5ce56"
-        },
-        "harnesses/bootstrap/requirements.in": {
-          "mode": "100644",
-          "oid": "7f196e3f76b1009b08ee2917668981162410d9b1"
-        },
-        "harnesses/bootstrap/requirements.lock": {
-          "mode": "100644",
-          "oid": "dd005e06762f589461f68c2cb0f82809dde02fd3"
-        },
-        "harnesses/bootstrap/toolchains.json": {
-          "mode": "100644",
-          "oid": "24e5115230c0facc9bd20b7573473107cad36a86"
-        },
         "install.sh": {
           "mode": "100755",
-          "oid": "5058c77ef03afe88b9a2896827582e33bb14e689"
-        },
-        "scripts/bootstrap.py": {
-          "mode": "100755",
-          "oid": "01031bcc7dd34b595571d978c4cf75371d29a953"
-        },
-        "scripts/bootstrap_profiles.py": {
-          "mode": "100644",
-          "oid": "74a50a9a0dfb5871768da096d701579647b956e8"
-        },
-        "scripts/bootstrap_shell.py": {
-          "mode": "100644",
-          "oid": "38e8696b09d7a2ba001a59e4c5d193b7dcede380"
-        },
-        "scripts/codex-cloud-setup.sh": {
-          "mode": "100755",
-          "oid": "3d8c2d4ab42a37c1024a5beb3ce93c1f0124ca25"
-        },
-        "scripts/codex-cloud-startup.sh": {
-          "mode": "100755",
-          "oid": "d71a81fae585ecea1cf57a1099108a7757d53458"
-        },
-        "scripts/doctor.py": {
-          "mode": "100755",
-          "oid": "f2a85820f4e0b5629db5f4ef3975be080f144b80"
+          "oid": "5b7045165588ca748acd275e00ca026afbb3a85f"
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
@@ -921,59 +849,19 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "717bd1360c108751dee8aabab5ae3d68944476fa"
-        },
-        "scripts/runner_install.py": {
-          "mode": "100644",
-          "oid": "e6acd4662c2d8a348a0abb783a655f9f8fd8256f"
-        },
-        "scripts/setup_integrations.py": {
-          "mode": "100755",
-          "oid": "a598fb00f571bee73ca94243a877a8dc24c14d9d"
+          "oid": "01d38b4d6ff1093e09f19baedae21d4d4fdf36c2"
         },
         "src/README.md": {
           "mode": "100644",
-          "oid": "598b7ed1e1b109ac3243604d5f6c6a19e6839340"
-        },
-        "src/bootstrap_toolchains.py": {
-          "mode": "100644",
-          "oid": "421d67d0dd6259bd6132ab1596dc6431400875ab"
+          "oid": "44397d8f48c9cf3f1c97d926c85eb1d9fc6ac360"
         },
         "src/check_skills.py": {
           "mode": "100644",
-          "oid": "3bc5b71d3248d37c625a00aaa055137eb4fa76ee"
-        },
-        "src/graphify_adapter.py": {
-          "mode": "100644",
-          "oid": "9ba14c8d3814823c57702744023eb41d520d5312"
-        },
-        "src/graphify_install.py": {
-          "mode": "100644",
-          "oid": "5d9254218272334c0fde88af9409cf2593b535ac"
-        },
-        "src/npm_runtime.py": {
-          "mode": "100644",
-          "oid": "f81064fed441e6c0283cc56613fbfbbdf67b24ba"
-        },
-        "src/python_runtime.py": {
-          "mode": "100644",
-          "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
-        },
-        "src/routing_inventory.py": {
-          "mode": "100644",
-          "oid": "19804903a38b9aac25b353c63fa2c44ea4292d78"
-        },
-        "src/setup_lever.py": {
-          "mode": "100644",
-          "oid": "698201967058b46a121c0e289707e9f79262bb9f"
+          "oid": "bfb20502e90373869bc27460a17c9ca096ace21f"
         },
         "src/skill_roots.py": {
           "mode": "100644",
           "oid": "07c5b8be393fef36404b954e779e2b970f1a90ea"
-        },
-        "src/steering_adapter.py": {
-          "mode": "100644",
-          "oid": "fc98eb3cd51c33a0b61cf33f0ac417cc9b2bb7f6"
         },
         "src/tkstack_state.py": {
           "mode": "100644",
@@ -981,17 +869,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
+      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "45ee8da45eb0a662d526816b489f4f0930c12928"
+          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "24681e5b9aa4bc5e387dfd67b87f02542d523f0e"
+          "oid": "1407938d2815baab9b0e17d347f704d7fc5e0aa6"
         },
         "docs/flowify.md": {
           "mode": "100644",
@@ -1007,11 +895,11 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
+          "oid": "7104446061273acd093e31244792221f059ef1d0"
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "6917e03fba588896b4dd3c9494ea4fcf65761970"
+          "oid": "e7a7d2b9aaa602c5f4feeedc9161d951ead1f26d"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1019,11 +907,11 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
+          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
         },
         "docs/principles.md": {
           "mode": "100644",
-          "oid": "30100b4edf2984cb66aa858ae7972b2af22e63f0"
+          "oid": "346120c01281e3ca68cbf84dae6498ae4a9565af"
         },
         "docs/reusify.md": {
           "mode": "100644",
@@ -1031,7 +919,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "74b3750719906581feb241401773a824c5d33cb8"
+          "oid": "70143d14f02428da5d939e1381321e279c0bc2a9"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -1039,7 +927,7 @@
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
-          "oid": "ab91cdbc03ab602ffe3d2a25bc3bc4844e6008c1"
+          "oid": "085de420caa755642bf10a00c2930c2759b72f17"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -1047,7 +935,7 @@
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "bba55ea6a9d7402fe76871470fb80242309a1eb5"
+          "oid": "00336fdc1d1925de37c57ef8c956108b2aeb6870"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1061,7 +949,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "4abd27a4360089ace9af2e3570ad0d7e1a93ef25"
+          "oid": "a8b06159a6795fca27fbf55284f5defa5a1b4f01"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1177,7 +1065,7 @@
         },
         "skills/README.md": {
           "mode": "100644",
-          "oid": "3c913103c57d8329d7e93860f88e949908ec4a56"
+          "oid": "1866288a99b03deb215e3fb3c6bc0af860436421"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1551,6 +1439,10 @@
           "mode": "100644",
           "oid": "37b1a5c5dffaa6f49fbc47adbf47905cb2b132fe"
         },
+        "skills/learn/scripts/evolve.py": {
+          "mode": "100644",
+          "oid": "0af505a8eed29a21c120c6dc2be5204217c3579b"
+        },
         "skills/learn/scripts/json_contract.py": {
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
@@ -1585,7 +1477,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a484d376fbe5954e5955e00f874ffff1e6180ff9"
+          "oid": "0230a64718fb58377e51fb1da1a1db602b9e782b"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -2397,7 +2289,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "fbb1217c96dfd09f0a919e96d204c9b8c99766d9"
+          "oid": "97ef74a961b3e85091b2a3989a66d650fac05900"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2422,6 +2314,10 @@
         "skills/sdlc/scripts/package_runtime.py": {
           "mode": "100644",
           "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+        },
+        "skills/sdlc/scripts/routing_inventory.py": {
+          "mode": "100644",
+          "oid": "59d7fc25b86ee8a572ec7479c7af0e8cc5802ed8"
         },
         "skills/sdlc/scripts/run.py": {
           "mode": "100644",
@@ -2449,7 +2345,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ac95d0a07bf85cccc3dae398ec5d46b350c694e5"
+          "oid": "af89c1b610d91d69c55a996fed76072fab354fb4"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2754,20 +2650,16 @@
         "skills/write/scripts/workflow.lock.json": {
           "mode": "100644",
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
-        },
-        "src/evolve.py": {
-          "mode": "100644",
-          "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
       "no_doc_impact": false,
-      "reason": "t3code is an orchestrator: skills.json delegates names the linked hosts it consumes, and harness coverage counts that."
+      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
+    "oid": "8d1049ca2a8e1a7c741a1aa2c31bcf7e1122b3c2"
   },
   "version": 1
 }

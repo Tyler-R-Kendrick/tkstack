@@ -22,12 +22,11 @@ curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/insta
 ```
 
 From a checkout of this repository, `./install.sh` installs that checkout instead
-of downloading another copy. The command links skills, agents, rules, and hooks,
-initializes private state and launchers, installs this repository's Git docs
-hook, and verifies the result. Existing settings stay; a conflicting foreign
-path stops setup. Keep the checkout, because the links and launchers point at
-it. `SCOPE.md` is the supported baseline. `sources.lock.json` pins every upstream
-snapshot under `vendor/`.
+of downloading another copy. The command links skills, agents, and rules for
+Codex, Claude Code, and Cursor, and sets this checkout's `core.hooksPath` to
+`.githooks`. A conflicting foreign path stops setup. Keep the checkout, because
+the links point at it. `SCOPE.md` is the supported baseline. `sources.lock.json`
+pins every upstream snapshot under `vendor/`.
 
 ## Develop
 
@@ -47,7 +46,7 @@ python3 src/check_docs.py check
 `npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`
 (`latest.json` is gitignored). Suites and that harness are described in
 [evals/README.md](evals/README.md). The [maintain section](#maintain-this-repository)
-has the longer preview, routing, and doctor sequence.
+has the longer preview and routing check.
 
 ## Install one skill
 
@@ -85,9 +84,9 @@ Other manifest packages and their tree paths are `document`
 
 OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
 needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
-Setup reports these requirements and does not authenticate accounts, start a
+The installer only links files. It does not authenticate accounts, start a
 proxy, redirect providers, run models, or index repositories. See
-[bootstrap details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
+[install details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
 
 ## Repository layout
 
@@ -97,17 +96,17 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | --- | --- |
 | `.agents/` | Third-party packages. `.agents/skills/` holds `fal-ai`, `headroom`, `open-design`, and `rtk`. |
 | `.claude-plugin/` | Claude marketplace and plugin manifests (`marketplace.json`, `plugin.json`). |
-| `.devcontainer/` | Devcontainer: full setup on create, offline setup on later starts. |
+| `.devcontainer/` | Devcontainer: project-scope link on create and on later starts. |
 | `.githooks/` | Versioned `pre-commit` that checks the staged docs ledger. |
 | `.github/` | CI workflow `workflows/skills.yml` and Lever dials `lever.yml`. |
 | `.tkstack/` | Versioned state seed: `.gitignore` and `reuse/catalog.json`. |
 | `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
 | `docs/` | Focused install, skill, harness, and maintainer guides. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
-| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (profiles, Python locks, toolchains), `harnesses/copilot/` (`lever.yml`), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
-| `scripts/` | Installer tools. `install.sh` calls `scripts/bootstrap.py`. |
-| `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. |
-| `src/` | Shared command, state, documentation, and pinned-runtime programs. |
+| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (uv pin, not applied by install), `harnesses/copilot/` (`lever.yml` example dials), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
+| `scripts/` | The linker. `install.sh` calls `scripts/install.py`. |
+| `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
+| `src/` | Shared command, state, and documentation programs. See `src/README.md`. |
 | `tests/` | Unittest suite. |
 | `vendor/` | Pinned upstream snapshots named in `sources.lock.json`. |
 | `vendor/ponytail/` | DietrichGebert/ponytail 5.3.3 (MIT): six skills and Node lifecycle-hook adapters. Vendored so setup uses those locked bytes instead of cloning upstream. |
@@ -115,14 +114,9 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 ## Install options
 
 <!-- tkstack:profiles:start -->
-| Profile | Harness configuration | Lever Copilot layout |
-| --- | --- | --- |
-| `dotfiles` | Codex, Claude Code, Cursor | Selected workspace |
-| `devcontainer` | Codex, Claude Code, Cursor | Selected workspace |
-| `codex-cloud` | Codex | Off |
-
-The host needs Bash and curl. Missing Python **3.11+** is installed with uv **0.12.23** (`uv python install 3.12.15`) after that installer sha256 is checked. Missing Git is replaced by a curl tarball of the GitHub repository.
-Setup can provision private Node **24.19.0** and uv **0.12.23** when needed.
+The host needs Bash and curl. Missing Python **3.12.15** is installed with uv **0.12.23** after sha256 `b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491` is checked.
+Missing Git is replaced by a curl tarball of the GitHub repository.
+One install links Codex, Claude Code, and Cursor. Repeat `--harness` for the other hosts.
 <!-- tkstack:profiles:end -->
 
 `install.sh` uses `TKSTACK_PYTHON` when that executable is Python 3.11+.
@@ -137,8 +131,8 @@ stdout is discarded so only `$HOME/.local/bin/uv` is executed. A caller-supplied
 Rotate the pin by changing `UV_VERSION`, `UV_INSTALLER_URL`,
 `UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together.
 uv 0.12.23 ships CPython 3.12.15 and does not ship 3.12.16. That uv only
-bootstraps the host interpreter. Setup still provisions private Node and the
-pinned uv when those tools are missing.
+bootstraps the host interpreter. Install does not provision a private Node
+or a second uv.
 
 `TKSTACK_HOME` chooses the checkout directory (default `~/.local/share/tkstack`).
 This run executes a checkout it just cloned or unpacked. A directory that
@@ -182,54 +176,40 @@ bash /tmp/tkstack-install.sh
 ```
 
 ```sh
-./install.sh --profile codex-cloud       # Codex-only host configuration
-./install.sh --target /repo --scope project --workspace /repo
-./install.sh --offline                  # reapply files using cached runtimes
-./install.sh --check                    # read-only verification
-./install.sh --dry-run                  # read-only plan and collision checks
-./install.sh --strict                   # fail for known unresolved prerequisites
-./install.sh --uninstall                # remove this checkout's links, launchers, and git docs hook
+./install.sh --target /repo --scope project
+./install.sh --harness copilot
+./install.sh --dry-run
+./install.sh --uninstall
 ```
 
-`--uninstall` is idempotent. It removes symlinks for every harness, launchers,
-and the owned git docs hook this checkout owns, even when `--harness` is also
-passed. It leaves shell startup files, foreign links, and repository Lever dials
-in `.github/lever.yml`. `--dry-run --uninstall` prints that plan and writes
-nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|opencode|copilot|muse`
-to select hosts for installation. Copilot links `~/.copilot/skills` at home and
-`.github/skills` in a project. Muse links `~/.config/muse/skills` at home and
-does not follow `XDG_CONFIG_HOME`; a project install uses `.agents/skills`.
-The default profile selects Codex, Claude Code, and Cursor.
-`--no-shell` leaves shell startup files alone; source the generated environment
-yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
-harness after setup. Codex may require reviewing new hook definitions with
-`/hooks` before they run.
+`--uninstall` removes this checkout's symlinks for every harness and unsets
+`core.hooksPath` when that value is `.githooks`. `--harness` does not limit it.
+It leaves foreign links in place. `--dry-run --uninstall` prints that plan and
+writes nothing. Repeat `--harness` with `codex`, `claude`, `cursor`, `grok`,
+`kimi`, `opencode`, `copilot`, or `muse` to select hosts. t3code is not a
+choice: it reads the other hosts' skills. Copilot links `~/.copilot/skills` at
+home and `.github/skills` in a project. Muse links `~/.config/muse/skills` at
+home and does not follow `XDG_CONFIG_HOME`; a project install uses
+`.agents/skills`. The default selection is Codex, Claude Code, and Cursor.
+`--offline`, `--no-toolchains`, `--no-shell`, and `--workspace` are accepted
+and ignored. Set `CODEX_HOME` for a real-home Codex install. Restart or reload
+the harness after setup.
 
-## Devcontainers and Codex cloud
+## Devcontainers
 
-The included [devcontainer](.devcontainer/devcontainer.json) performs full setup
-on creation and offline setup on subsequent starts. To use this repository as
-VS Code dotfiles in another devcontainer, set these user settings:
+The included [devcontainer](.devcontainer/devcontainer.json) links this
+checkout into the workspace on create and on later starts. To use this
+repository as VS Code dotfiles in another devcontainer:
 
 ```json
 {
   "dotfiles.repository": "Tyler-R-Kendrick/tkstack",
   "dotfiles.targetPath": "~/.local/share/tkstack",
-  "dotfiles.installCommand": "install.sh --profile devcontainer"
+  "dotfiles.installCommand": "install.sh"
 }
 ```
 
-For a Codex cloud environment, clone/mount the durable checkout first, then use
-these setup and cached-startup commands in its environment configuration:
-
-```sh
-bash "$HOME/.local/share/tkstack/scripts/codex-cloud-setup.sh" --workspace "$PWD"
-bash "$HOME/.local/share/tkstack/scripts/codex-cloud-startup.sh" --workspace "$PWD"
-```
-
-Keep the checkout and its `.tkstack/runtime/` in the environment cache. The first
-setup needs dependency network access; cached startup downloads nothing.
-[Environment hook examples](docs/bootstrap.md) cover custom paths and project-only setup.
+[Install details](docs/bootstrap.md) cover a project-only target.
 
 ## Use skills and compiled workflows
 
@@ -242,7 +222,7 @@ installed skill to an SDLC phase.
 
 [SDLC](docs/sdlc.md) coordinates durable task graphs in ignored local SQLite,
 with explicit requirement/ADR revisions when development findings change the plan.
-Use `.tkstack/tkstack skills sdlc -- help` for its deterministic task commands.
+Use `python3 src/tkstack.py skills sdlc -- help` for its deterministic task commands.
 
 All **19 repository skills** now expose the shared typed command protocol and compiled
 artifacts. Use `skills <name> -- model` for its contract, `verify --report ...` for
@@ -254,7 +234,7 @@ Common entrypoints include `sdlc`, `learn`, `unslop`, `hill-climb`, `investigate
 `document`, and `write`. The authoring skills `skillify`, `codify`, `hookify`,
 `lintify`, `instructify`, `flowify`, and `reusify` are Learn subskills: they ship
 inside `skills/learn/skills/` and run as `/learn <name>` or
-`.tkstack/tkstack skills learn -- <name> ...`.
+`python3 src/tkstack.py skills learn -- <name> ...`.
 
 ```text
 /learn help
@@ -262,20 +242,19 @@ inside `skills/learn/skills/` and run as `/learn <name>` or
 /learn reusify init src --preview
 ```
 
-Setup also creates `.tkstack/tkstack` in selected workspace/user roots and a
-`tkstack` PATH shim. Run compiled code through its declared command schema:
+Run compiled code through `src/tkstack.py`. Install does not write a launcher:
 
 ```sh
-./.tkstack/tkstack help
-./.tkstack/tkstack list workflows
-./.tkstack/tkstack workflows normalize-labels -- normalize -l '[" b ","a","a"]'
-./.tkstack/tkstack skills my-compiled-skill -- command --flag value
-./.tkstack/tkstack tools skills my-compiled-skill --format responses
+python3 src/tkstack.py help
+python3 src/tkstack.py list workflows
+python3 src/tkstack.py workflows normalize-labels -- normalize -l '[" b ","a","a"]'
+python3 src/tkstack.py skills my-compiled-skill -- command --flag value
+python3 src/tkstack.py tools skills my-compiled-skill --format responses
 ```
 
 Skillify supplies reserved `help` and `version` commands for command packages.
 Omitting a command renders a deterministic console manual; use `help --format
-man` to export man(1) source. For example, `.tkstack/tkstack skills sdlc -- version`
+man` to export man(1) source. For example, `python3 src/tkstack.py skills sdlc -- version`
 prints SDLC's declared package version. Discovery works without a compiled lock.
 
 The normalization workflow is runnable; `my-compiled-skill` is a placeholder for
@@ -298,14 +277,13 @@ Workspace, user, and global state use `<repo>/.tkstack`, `~/.tkstack`, and
 - `reuse/catalog.json` records reusable code assets and can be versioned.
 
 Normal setup does not create the machine-wide root. Credentials, histories,
-runtimes, and generated launchers remain ignored. See [state conventions](docs/state-layout.md)
+and runtimes remain ignored. See [state conventions](docs/state-layout.md)
 and [model/provider configuration](skills/learn/skills/codify/references/inference.md).
 
 ## Maintain this repository
 
-`scripts/` is the dotfiles installer (`install.sh` calls `scripts/bootstrap.py`).
-Shared command, state, documentation, and pinned-runtime programs live in
-`src/` so the installer stays a small set of single-purpose tools. Skills under
+`scripts/` is the dotfiles linker (`install.sh` calls `scripts/install.py`).
+Shared command, state, and documentation programs live in `src/`. Skills under
 active development live in `skills/`; third-party-derived packages live in
 `.agents/skills/`; shared agents live in `agents/`; host settings live in
 `harnesses/`. Personal skills join every selected harness. Upstream skills in
@@ -316,34 +294,32 @@ Code, and Cursor, including the generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
 `harnesses/README.md`. Reinstalling removes this checkout's links that no
 longer match that placement. `./install.sh --uninstall` removes this
-checkout's links for every harness, its launchers, and its owned git docs hook.
-Preserve `vendor/` snapshots and update
+checkout's links for every harness and unsets `core.hooksPath` when it is
+`.githooks`. Preserve `vendor/` snapshots and update
 `sources.lock.json` when updating an upstream revision. The
-[maintainer guides](docs/authoring.md) and [bootstrap reference](docs/bootstrap.md)
-describe narrower installation tools.
+[install reference](docs/bootstrap.md) is the linker. Skill authoring stays in
+[the maintainer guides](docs/authoring.md).
 
 For repository development, preview, test, and check docs from the checkout:
 
 ```sh
-./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline --dry-run
-python3 src/routing_inventory.py check
+./install.sh --target "$PWD" --scope project --dry-run
+python3 skills/sdlc/scripts/routing_inventory.py check
 python3 src/check_docs.py check
 python3 -m unittest discover -s tests -v
-python3 scripts/install.py --target .
-python3 src/tool.py command-schema -B src/check_skills.py
-python3 scripts/doctor.py --target .
+python3 scripts/install.py --target . --scope project
+python3 src/check_skills.py
 ```
 
-`./install.sh --dry-run` and `--check` are read-only. Drop `--dry-run` to apply
-that project install and provision the private command-schema interpreter.
-`python3 src/routing_inventory.py check` fails when a skill has no routing entry
-or an entry names a missing skill. The unittest command uses the Python that
-runs it. CI installs the PyYAML/jsonschema packages the same way
-`.github/workflows/skills.yml` does and runs the suite with
-`.tkstack/runtime/command-schema/bin/python`. Reapply
-`python3 scripts/install.py --target .` afterward because tests can regenerate
-ignored views. `src/tool.py command-schema` then runs the owned-skill gate with
-that interpreter, and `doctor` checks the restored installation.
+`./install.sh --dry-run` is read-only. Drop `--dry-run` to apply that project
+install. `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a
+skill has no routing entry or an entry names a missing skill. The unittest
+command uses the Python that runs it. CI installs the PyYAML/jsonschema
+packages the same way `.github/workflows/skills.yml` does and runs the suite
+with `.tkstack/runtime/command-schema/bin/python`. Reapply
+`python3 scripts/install.py --target . --scope project` afterward because tests
+can regenerate ignored alias views. `python3 src/check_skills.py` is the
+owned-skill gate.
 
 [`evals/repo-quality`](evals/repo-quality/) grades this checkout separately from
 the skill-evolution suites. The harness is Unix-only. Its snapshot lists
@@ -354,14 +330,11 @@ run unless `REPO_QUALITY_GATE=1`. The promptfoo judge is opt-in via `RUN_JUDGE=1
 on `tests.test_repo_quality`, uses pinned promptfoo 0.125.1, and passes only
 when every metric scores 1.0. See [Repository quality](evals/README.md).
 
-Project completion hooks for Codex, Claude Code, and Cursor check documentation
-in this repository. The versioned Git handler is `.githooks/pre-commit`. Setup
-writes an owned dispatcher into the repository's Git hooks directory and records
-that ownership in `.tkstack/git-hooks/ownership.json` (gitignored). It never
-chains a hook this project already owns, including a dispatcher installed from
-another worktree that shares `.git/hooks`. A foreign pre-commit is still chained
-and restored on uninstall. The hook checks the **staged index**. After reviewing
-a changed area:
+The versioned Git handler is `.githooks/pre-commit`. Install sets
+`core.hooksPath=.githooks` for this checkout, so Git runs that script and does
+not chain `.git/hooks`. Uninstall unsets the key only when it is still
+`.githooks`. The hook checks the **staged index**. After reviewing a changed
+area:
 
 ```sh
 python3 src/check_docs.py render
@@ -377,7 +350,7 @@ index/sparse-checkout behavior, internal-only changes, and the limits of static 
 
 | Read next | Purpose |
 | --- | --- |
-| [Bootstrap](docs/bootstrap.md) | Profiles, installation, startup, prerequisite repair, and narrow installers |
+| [Install](docs/bootstrap.md) | One-command link, host prerequisites, and the docs hook |
 | [Runner](docs/runner.md) | Compiled CLI commands, registries, scopes, and inference configuration |
 | [Skills](docs/skills.md) | Installed upstream and owned packages |
 | [Standards](docs/standards.md) | Personal defaults and workflow selection |

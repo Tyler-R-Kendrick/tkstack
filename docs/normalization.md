@@ -8,12 +8,12 @@ bindings call that code; the shared runtime does not reimplement their policy.
 Pinned `vendor/` packages remain unchanged.
 
 ```sh
-.tkstack/tkstack skills write -- help
-.tkstack/tkstack skills write -- model
-.tkstack/tkstack skills write -- verify --report /repo/.tkstack/evidence/write-report.json
-.tkstack/tkstack skills codify -- native compile --help
-.tkstack/tkstack skills learn -- native capture --help
-python3 src/tool.py command-schema -B src/check_skills.py
+python3 src/tkstack.py skills write -- help
+python3 src/tkstack.py skills write -- model
+python3 src/tkstack.py skills write -- verify --report /repo/.tkstack/evidence/write-report.json
+python3 src/tkstack.py skills codify -- native compile --help
+python3 src/tkstack.py skills learn -- native capture --help
+python3 src/check_skills.py
 ```
 
 `model` describes required facts, criteria, and actual automation limits using
@@ -88,9 +88,9 @@ entries for its own files so its lock does not snapshot the subskills, which
 keep their own locks.
 
 ```sh
-python3 src/tool.py skillify normalize skills/write \
+python3 skills/learn/skills/skillify/scripts/skillify.py normalize skills/write \
   --profile skills/write/scripts/contract.json --dry-run
-python3 src/tool.py skillify normalize skills/write \
+python3 skills/learn/skills/skillify/scripts/skillify.py normalize skills/write \
   --profile skills/write/scripts/contract.json
 ```
 
@@ -100,7 +100,7 @@ diff, update the index/version/marketplace and focused docs, and compile actual
 code. Include the package's templates/resources when native helpers need them:
 
 ```sh
-python3 src/tool.py codify compile skills/write/SKILL.md \
+python3 skills/learn/skills/codify/scripts/codify.py compile skills/write/SKILL.md \
   --entrypoint skills/write/scripts/run.py \
   --cases skills/write/scripts/workflow.cases.json \
   --root skills/write --include skills/write \
@@ -139,9 +139,7 @@ checks all owned marketplace entries, shared runtime/state copies, required
 typed commands, contract schemas, and reviewed decision splits. It also checks
 the SDLC skill routing inventory: every installed skill needs an entry, and an
 entry cannot name a missing skill. The routing check does not regenerate alias
-or Graphify views. Doctor runs it
-through the managed command interpreter when ready, and explicitly reports pending
-verification if an offline first setup lacks it. The repository's
+or Graphify views. The repository's
 [CI workflow](../.github/workflows/skills.yml) creates
 `.tkstack/runtime/command-schema` from the Codify lockfile, then runs
 `src/check_skills.py`, `src/check_docs.py check`, and
@@ -155,9 +153,13 @@ does. Authored text uses LF attributes; pinned vendor bytes are excluded from
 normalization. A real commit/clone regression verifies cached artifact portability.
 Existing source/case/code drift still requires explicit recompilation.
 Learn, Codify, and Instructify workflow locks embed their reference docs.
-Those references name `src/evolve.py`, `src/sync_codify.py`, and
-`src/steering_adapter.py`. The locks were recompiled with the same entrypoint,
-cases, and included paths so the frozen bytes match those references.
+Recompile a lock after editing one of those references. Learn's lock now
+includes `skills/learn/scripts/evolve.py`, SDLC's includes
+`skills/sdlc/scripts/routing_inventory.py`, and Skillify's includes
+`skills/learn/skills/skillify/scripts/sync_codify.py`. Codify compile omits
+nested skill packages, and those four locks were recompiled with that
+snapshot. Install links `.agents/steering` and does not rewrite instruction
+files.
 
 Self-project installation retains portable repository-owned instruction pointers
 in `AGENTS.md` and `CLAUDE.md`; external installations preserve checkout-specific

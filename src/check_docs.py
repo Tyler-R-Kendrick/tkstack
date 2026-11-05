@@ -12,9 +12,7 @@ import subprocess
 import sys
 import tempfile
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from urllib.parse import unquote, urlsplit
-from bootstrap_profiles import validate as validate_profiles
 
 POLICY, LEDGER = 'docs/docs-policy.json', 'docs/docs-freshness.json'
 START, END = '<!-- tkstack:profiles:start -->', '<!-- tkstack:profiles:end -->'
@@ -125,16 +123,25 @@ def area_snapshot(snapshot, area):
     return {'inputs': fingerprints(snapshot, names), 'docs': fingerprints(snapshot, sorted(area['docs']))}
 
 
+def _pin(text, name):
+    match = re.search(rf'(?m)^{name}=(\S+)', text)
+    if not match:
+        raise ValueError('install.sh is missing ' + name)
+    return match.group(1).strip('"').strip("'")
+
+
 def profile_block(snapshot):
-    profiles = load(snapshot, 'harnesses/bootstrap/profiles.json')
-    toolchains = load(snapshot, 'harnesses/bootstrap/toolchains.json')
-    profiles = validate_profiles(profiles)
-    names = {'codex': 'Codex', 'claude': 'Claude Code', 'cursor': 'Cursor'}
-    rows = [START, '| Profile | Harness configuration | Lever Copilot layout |', '| --- | --- | --- |']
-    for name, settings in profiles.items():
-        rows.append('| `' + name + '` | ' + ', '.join(names[harness] for harness in settings['harnesses']) + ' | ' + ('Selected workspace' if settings['copilot'] else 'Off') + ' |')
-    rows.extend(['', 'The host needs Bash and curl. Missing Python **' + toolchains['python_minimum'] + '+** is installed with uv **' + toolchains['uv_version'] + '** (`uv python install 3.12.15`) after that installer sha256 is checked. Missing Git is replaced by a curl tarball of the GitHub repository.',
-        'Setup can provision private Node **' + toolchains['node_version'] + '** and uv **' + toolchains['uv_version'] + '** when needed.', END])
+    """README block generated from the install.sh pins. There is one install, not profiles."""
+    text = snapshot.read('install.sh').decode()
+    rows = [
+        START,
+        'The host needs Bash and curl. Missing Python **' + _pin(text, 'PYTHON_VERSION')
+        + '** is installed with uv **' + _pin(text, 'UV_VERSION')
+        + '** after sha256 `' + _pin(text, 'UV_INSTALLER_SHA256') + '` is checked.',
+        'Missing Git is replaced by a curl tarball of the GitHub repository.',
+        'One install links Codex, Claude Code, and Cursor. Repeat `--harness` for the other hosts.',
+        END,
+    ]
     return '\n'.join(rows)
 
 
@@ -158,7 +165,7 @@ def structural_errors(snapshot):
     if readme.count(START) != 1 or readme.count(END) != 1:
         errors.append('README is missing its generated profile block; run check_docs.py render')
     elif readme[readme.index(START):readme.index(END) + len(END)] != profile_block(snapshot):
-        errors.append('README profiles/toolchain versions are stale; run check_docs.py render')
+        errors.append('README install pins are stale; run check_docs.py render')
     markdown = sorted(name for name in snapshot.files if name in ('README.md', 'GLOSSARY.md') or name.startswith('docs/') and name.endswith('.md'))
     for name in markdown:
         content = prose(snapshot.read(name).decode())

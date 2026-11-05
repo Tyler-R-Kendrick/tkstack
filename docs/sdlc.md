@@ -14,7 +14,7 @@ loads the complete operating guide and retains all lifecycle requirements below.
 Which installed skill fits a phase is
 [the routing guide](../skills/sdlc/references/skill-routing.md). The SDLC skill
 links that guide from its request table and keeps this page on the outer loop.
-`python3 src/routing_inventory.py check` fails when a skill has no routing
+`python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing
 entry or an entry names a missing skill.
 
 The outer loop defines the outcome, decomposes it, challenges the result, and
