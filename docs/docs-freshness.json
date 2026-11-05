@@ -4,15 +4,15 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "9d01319f6a447d223d35dbcdf46ea0ed16cbf94d"
+          "oid": "580141f66ed7ec8898fb42a8f92797ac27d7b0b2"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -94,7 +94,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "cdc69f72b1aca8ba334d8ec80ac3fe4dc6dbd133"
+          "oid": "fe1f7c355a129c98d9b13975e2b0aa493fec3b30"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -102,7 +102,7 @@
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
-          "oid": "f5b751f77361bc453b8a31f1cc5fdd1646506d35"
+          "oid": "b2a8b3dbf6baee21698f8702dd642f0ac76da540"
         },
         "skills/learn/skills/codify/references/compilation.md": {
           "mode": "100644",
@@ -178,7 +178,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -222,7 +222,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "00390b99adc8feeee739088f21a93961e431856f"
+          "oid": "4de113953cd526e6deb73a7bf44946405aec81fc"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -410,7 +410,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -514,7 +514,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "1ce48c01e6ac8c91af3c8b2bb9a8acbea9a24ed9"
+          "oid": "a4f9d751d1562bbfca3a861383f27605d426f3bd"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -538,28 +538,27 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths."
+      "reason": "merge origin/main into hill-climb"
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
+          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "a8f67dd89f60ba15c12d3a35bf69f6961d7a632a"
+          "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
         }
       },
-      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -575,7 +574,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "c39f202207654ceff0c53a758052e236b36933fd"
+          "oid": "d57e22087711813245c85d4cafb4d0a9df3d3b95"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -623,7 +622,7 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "da56f62912ce64de5f261b270ad4bfcb227ef91c"
+          "oid": "d252ccd9583904ab05850156eb760b8ea122bffd"
         },
         "harnesses/t3code/README.md": {
           "mode": "100644",
@@ -631,21 +630,21 @@
         },
         "sources.lock.json": {
           "mode": "100644",
-          "oid": "76b93e7db565fc8bd04c7c531bcff2abbe046775"
+          "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
+      "reason": "merge origin/main into hill-climb"
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "ae58046e00bad23e7c4a76e08cebc47d24d0a7b9"
+          "oid": "d518fd740e61eddd5e133dd8de3e593213e6d15a"
         }
       },
       "inputs": {
@@ -656,7 +655,7 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "662b0c27d6f7abac66344adbd8affdbcc64a01a7"
+          "oid": "62dbf5d2736f3d769159f619b9f431170ec4dedb"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
@@ -688,11 +687,11 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "7256d2fe1b19eb8763e73ff1222c2be7e1a8dc09"
+          "oid": "19895586a75d35485deffcfdebf2635eb98103d7"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
-          "oid": "5ee7173583538fdf85d434948ab760f8402bfbbe"
+          "oid": "ae5fac132493f1287b1c7bcb302773e991c8409d"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -716,7 +715,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "016ad546db3673aaa3a77b77e153cd5d05680107"
+          "oid": "9d93f8d8cf1396a0515a5f5fa0b18e98703fc786"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -774,6 +773,10 @@
           "mode": "100644",
           "oid": "408226708b8c98f3d90c07b64cd05ff6c5281080"
         },
+        "tests/test_skill_routing.py": {
+          "mode": "100644",
+          "oid": "7a46151200ac831e62c56d8ec17303eacd55e931"
+        },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
           "oid": "40e486488580aa65a14a972e0fc9c74bc966cd58"
@@ -792,24 +795,23 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
+      "reason": "merge origin/main into hill-climb"
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -833,28 +835,27 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
+      "reason": "merge origin/main into hill-climb"
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "9ea2c69623306bf23efdd76997ddec70ebc819b5"
+          "oid": "62e487c8a1193d9349169421739b4218d5512e64"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
+          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         }
       },
-      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -918,7 +919,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "85ee489f774adf7c22e6d197343b8a5ed25aaf74"
+          "oid": "d3cb773d0113b67dae138ec74c0e8c66c9324260"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
@@ -930,7 +931,7 @@
         },
         "src/README.md": {
           "mode": "100644",
-          "oid": "94464d8ff75604da0ad8448a7f367c2368f01ad4"
+          "oid": "598b7ed1e1b109ac3243604d5f6c6a19e6839340"
         },
         "src/bootstrap_toolchains.py": {
           "mode": "100644",
@@ -938,7 +939,7 @@
         },
         "src/check_skills.py": {
           "mode": "100644",
-          "oid": "fe6d662f79a1941c8269ade2a636ee8f4e3577c4"
+          "oid": "3bc5b71d3248d37c625a00aaa055137eb4fa76ee"
         },
         "src/graphify_adapter.py": {
           "mode": "100644",
@@ -955,6 +956,10 @@
         "src/python_runtime.py": {
           "mode": "100644",
           "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
+        },
+        "src/routing_inventory.py": {
+          "mode": "100644",
+          "oid": "19804903a38b9aac25b353c63fa2c44ea4292d78"
         },
         "src/setup_lever.py": {
           "mode": "100644",
@@ -974,13 +979,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
+      "reason": "merge origin/main into hill-climb"
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
+          "oid": "47a87f497e3a208414090b24f0a60d85b2385fba"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1000,7 +1005,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
+          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -1012,7 +1017,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1024,7 +1029,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "42bb5bfc3aec28ab28cbc1167366d903a2db4280"
+          "oid": "74b3750719906581feb241401773a824c5d33cb8"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -1036,11 +1041,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "a8f67dd89f60ba15c12d3a35bf69f6961d7a632a"
+          "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "adaa6b25c845fc446b0c1c7636cb95367cd80669"
+          "oid": "bba55ea6a9d7402fe76871470fb80242309a1eb5"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -2270,7 +2275,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "fabc50c606ac14e3c049964473690baa960a49a3"
+          "oid": "05d5fa1162383e56762ac25418009316bdb3886a"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2380,6 +2385,14 @@
           "mode": "100644",
           "oid": "428deea952d93b122257a354a9de5b1c47f9036b"
         },
+        "skills/sdlc/references/routing.json": {
+          "mode": "100644",
+          "oid": "c6db289b1638e09b92709827dcd00bc730c4b969"
+        },
+        "skills/sdlc/references/skill-routing.md": {
+          "mode": "100644",
+          "oid": "b9e63f1ea82355bf467741172f603418898da7df"
+        },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
           "oid": "a8f364a8cb24785ed4d359cd7fbc7a5780aa91b2"
@@ -2430,7 +2443,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "187ecccb5e337cfa5c246ccc826e319af7b6515b"
+          "oid": "f4b38d06d47eeee05cb4b64e9098f2e1db965d59"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2742,7 +2755,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths."
+      "reason": "merge origin/main into hill-climb"
     }
   },
   "object_format": "sha1",

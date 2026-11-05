@@ -25,7 +25,11 @@ The personal `learn` skill maintains the shared steering store and supports
 explicit report/audit and procedural skill-improvement modes. See
 [learning](learning.md), [integration readiness](integrations.md), and the
 [initial compatibility review](evaluation.md). Matt's TDD skill is `matt-tdd`;
-its internal calls are adapted while the pinned source stays unchanged.
+its internal calls are adapted while the pinned source stays unchanged. Emil
+Kowalski's UI prototype is `emil-prototype`; Matt's engineering prototype keeps
+`prototype`. The generated Emil view rewrites that skill's name and quoted
+calls. Upstream bytes stay unchanged. Phase routing for every installed skill
+is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 
 ## Skills under development (8)
 
@@ -310,3 +314,43 @@ capabilities depend on the actual host. See [setup and dials](lever.md).
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
 | [`design-md`](../vendor/stitch-design-md/plugins/stitch-utilities/skills/design-md/SKILL.md) | main | User or model |
+
+## Emil Kowalski (17)
+
+Design engineering, UI polish, and animation from `emilkowalski/skills`. The
+snapshot is the complete upstream tree at the pinned revision, including the
+skill trees, both cheatsheets, LICENSE, and README (MIT). It installs only into
+shared `.agents/skills`. `emil-design-eng` is the default. The UI variant picker
+installs as `emil-prototype` so Matt's `prototype` keeps its name.
+
+| Skill | Bucket | Invocation |
+| --- | --- | --- |
+| [`animate`](../vendor/emil-kowalski/skills/animate/SKILL.md) | main | User or model |
+| [`animate-expo`](../vendor/emil-kowalski/skills/animate-expo/SKILL.md) | main | User or model |
+| [`animation-performance`](../vendor/emil-kowalski/skills/animation-performance/SKILL.md) | main | User or model |
+| [`animation-vocabulary`](../vendor/emil-kowalski/skills/animation-vocabulary/SKILL.md) | main | User or model |
+| [`apple-design`](../vendor/emil-kowalski/skills/apple-design/SKILL.md) | main | User or model |
+| [`ask-sonner`](../vendor/emil-kowalski/skills/ask-sonner/SKILL.md) | main | User or model |
+| [`break-ui`](../vendor/emil-kowalski/skills/break-ui/SKILL.md) | main | User or model |
+| [`choreograph`](../vendor/emil-kowalski/skills/choreograph/SKILL.md) | main | User or model |
+| [`emil-design-eng`](../vendor/emil-kowalski/skills/emil-design-eng/SKILL.md) | main | User or model |
+| [`emil-prototype`](../vendor/emil-kowalski/skills/prototype/SKILL.md) | main | User only |
+| [`find-animation-opportunities`](../vendor/emil-kowalski/skills/find-animation-opportunities/SKILL.md) | main | User or model |
+| [`improve-animations`](../vendor/emil-kowalski/skills/improve-animations/SKILL.md) | main | User or model |
+| [`mobile-native`](../vendor/emil-kowalski/skills/mobile-native/SKILL.md) | main | User or model |
+| [`pick-ui-library`](../vendor/emil-kowalski/skills/pick-ui-library/SKILL.md) | main | User only |
+| [`remove-animations`](../vendor/emil-kowalski/skills/remove-animations/SKILL.md) | main | User or model |
+| [`review-animations`](../vendor/emil-kowalski/skills/review-animations/SKILL.md) | main | User only |
+| [`write-swift`](../vendor/emil-kowalski/skills/write-swift/SKILL.md) | main | User or model |
+
+## ub-mode (1)
+
+Robert C. Martin's reduced skill from `unclebob/ub-mode`. The snapshot is the
+root `SKILL.md`, LICENSE, and README (MIT). `paths.skills` is `.` because the
+skill lives at the repository root. Companion repos crapper, dryer, and mutator
+are not vendored. It installs only into shared `.agents/skills` and does not
+replace Pstack's `tdd` name.
+
+| Skill | Bucket | Invocation |
+| --- | --- | --- |
+| [`ub-mode`](../vendor/ub-mode/SKILL.md) | main | User or model |

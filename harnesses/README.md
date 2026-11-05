@@ -1,15 +1,22 @@
 # Harness preferences
 
 `skills.json` maps source-local skill names to installed aliases. Matt Pocock's
-`tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. The installer
-generates a copy of Matt's skill tree with declarations and invocation
-references rewritten; relative reference paths and invocation-policy metadata
-stay intact. Remove an existing installation before changing its alias names.
+`tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. Emil Kowalski's
+`prototype` is installed as `emil-prototype`, preserving Matt's `prototype`.
+The installer generates a copy of each aliased source's skill tree with
+declarations and invocation references rewritten; relative reference paths and
+invocation-policy metadata stay intact. Emil's generated view rewrites quoted
+`prototype` calls, including the one in `break-ui`. Pstack keeps
+`rewrite_callers` off, so only `unslop` becomes `pstack-unslop` and its other
+callers still resolve to the personal `unslop`. Remove an existing installation
+before changing its alias names.
 
 `placement` decides which harness directories receive each upstream source.
 Personal skills in `skills/` join every selected harness. `placement.default`
 is Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`),
-Muse (`.muse/skills`), and OpenCode (`.config/opencode/skills`). Pstack and
+Muse (`.muse/skills`), and OpenCode (`.config/opencode/skills`). Emil Kowalski
+and ub-mode use that default, so a default profile install lands them in the
+shared Codex directory unless you also select the other harnesses. Pstack and
 Cursor Team Kit are Cursor packages and go only to `.cursor/` (skills, agents,
 and rules). Graphify and Impeccable ship per-harness builds for Codex, Claude
 Code, and Cursor. Graphify also keeps a generic agent-skills view at

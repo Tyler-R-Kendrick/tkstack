@@ -2,8 +2,9 @@
 
 Personal agent dotfiles: portable skills, custom agents, harness settings, native
 hooks, and compiled workflow tools. Pinned upstream packages include Pstack by
-poteto, Theo's Tstack, Matt Pocock's skills, Impeccable, Caveman, Lever, Graphify,
-OpenWiki, and the design/media integrations listed in the [inventory](docs/skills.md).
+poteto, Theo's Tstack, Matt Pocock's skills, Emil Kowalski's design-engineering
+skills, Uncle Bob's ub-mode, Impeccable, Caveman, Lever, Graphify, OpenWiki, and
+the design/media integrations listed in the [inventory](docs/skills.md).
 
 ## Install
 
@@ -119,7 +120,10 @@ setup needs dependency network access; cached startup downloads nothing.
 
 Use `/skill-name` in Claude Code/Cursor, or `$skill-name` and the skill picker in
 Codex. The [skill inventory](docs/skills.md) and [personal standards](docs/standards.md)
-explain routing. Pstack owns `tdd`; Matt's version is `matt-tdd`.
+explain routing. Pstack owns `tdd`; Matt's version is `matt-tdd`. Emil Kowalski's
+UI prototype is `emil-prototype`; Matt's engineering `prototype` keeps that name.
+The [skill routing guide](skills/sdlc/references/skill-routing.md) maps every
+installed skill to an SDLC phase.
 
 [SDLC](docs/sdlc.md) coordinates durable task graphs in ignored local SQLite,
 with explicit requirement/ADR revisions when development findings change the plan.
@@ -190,7 +194,8 @@ Shared command, state, documentation, and pinned-runtime programs live in
 active development live in `skills/`; third-party-derived packages live in
 `.agents/skills/`; shared agents live in `agents/`; host settings live in
 `harnesses/`. Personal skills join every selected harness. Upstream skills in
-`placement.default` go to Codex, Grok, Kimi, Muse, and OpenCode. Pstack and
+`placement.default`, including Emil Kowalski and ub-mode, go to Codex, Grok,
+Kimi, Muse, and OpenCode. Pstack and
 Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
@@ -205,14 +210,24 @@ For repository development, preview, test, and check docs from the checkout:
 
 ```sh
 ./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline --dry-run
-python3 -m unittest discover -s tests -v
+python3 src/routing_inventory.py check
 python3 src/check_docs.py check
+python3 -m unittest discover -s tests -v
+python3 scripts/install.py --target .
+python3 src/tool.py command-schema -B src/check_skills.py
 python3 scripts/doctor.py --target .
 ```
 
-`./install.sh --dry-run` and `--check` are read-only. The unittest command uses
-the Python that runs it. CI installs the PyYAML/jsonschema packages the same
-way `.github/workflows/skills.yml` does when those imports are missing.
+`./install.sh --dry-run` and `--check` are read-only. Drop `--dry-run` to apply
+that project install and provision the private command-schema interpreter.
+`python3 src/routing_inventory.py check` fails when a skill has no routing entry
+or an entry names a missing skill. The unittest command uses the Python that
+runs it. CI installs the PyYAML/jsonschema packages the same way
+`.github/workflows/skills.yml` does and runs the suite with
+`.tkstack/runtime/command-schema/bin/python`. Reapply
+`python3 scripts/install.py --target .` afterward because tests can regenerate
+ignored views. `src/tool.py command-schema` then runs the owned-skill gate with
+that interpreter, and `doctor` checks the restored installation.
 
 [`evals/repo-quality`](evals/repo-quality/) grades this checkout separately from
 the skill-evolution suites. The harness is Unix-only. Its snapshot lists

@@ -6,6 +6,8 @@ installer calls and that maintainers run directly:
 - `tkstack.py` runs compiled skills and workflows.
 - `tool.py` and `run_hook.py` launch pinned runtimes and native hooks.
 - `check_docs.py` and `docs_hook.py` review documentation freshness.
+- `check_skills.py` checks owned skill contracts, and `routing_inventory.py`
+  checks the SDLC routing catalog against the installed skill set.
 - `tkstack_state.py` is the canonical state helper copied into each skill.
 - `python_runtime.py`, `npm_runtime.py`, and `bootstrap_toolchains.py` install
   pinned language tools when setup asks for them.

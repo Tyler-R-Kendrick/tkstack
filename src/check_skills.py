@@ -69,6 +69,11 @@ def check(root=ROOT, jobs=4):
 if __name__ == '__main__':
     try:
         rows = check()
+        spec = importlib.util.spec_from_file_location(
+            'routing_inventory', Path(__file__).resolve().parent / 'routing_inventory.py')
+        routing_inventory = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(routing_inventory)
+        routing_inventory.check(ROOT)
         print(json.dumps({'status': 'pass', 'skills': len(rows), 'results': rows,
                           'limits': 'Conformance is not a semantic/model-quality score or native provider activation proof.'}, indent=2))
     except (OSError, ValueError, KeyError, TypeError) as error:

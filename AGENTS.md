@@ -26,8 +26,9 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
 - Use Lever for explicit feedback-loop, experiment, briefing, and delivery asks.
   Read `docs/lever.md` for its repository dials and native Copilot setup. Keep
   `learn` as the correction evidence store and honor an explicit `sdlc` workflow.
-- Pstack owns `tdd`; Matt's workflows use `matt-tdd`. Alias rules live in
-  `harnesses/skills.json`; the installer adapts Matt's declarations and calls.
+- Pstack owns `tdd`; Matt's workflows use `matt-tdd`. Emil Kowalski's UI
+  prototype is `emil-prototype` so Matt's `prototype` keeps its name. Alias rules
+  live in `harnesses/skills.json`; the installer adapts declarations and calls.
 - Personal `unslop` owns cross-artifact anti-slop review and the evolving pattern
   catalog. Preserve Pstack's prose skill as `pstack-unslop`; its other callers
   intentionally use the personal `unslop`. See `docs/unslop.md`.

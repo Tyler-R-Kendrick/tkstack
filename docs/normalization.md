@@ -136,7 +136,10 @@ need their real task adapters and inspected artifacts.
 
 `src/check_skills.py` reuses Skillify validation and Codify freshness checks,
 checks all owned marketplace entries, shared runtime/state copies, required
-typed commands, contract schemas, and reviewed decision splits. Doctor runs it
+typed commands, contract schemas, and reviewed decision splits. It also checks
+the SDLC skill routing inventory: every installed skill needs an entry, and an
+entry cannot name a missing skill. The routing check does not regenerate alias
+or Graphify views. Doctor runs it
 through the managed command interpreter when ready, and explicitly reports pending
 verification if an offline first setup lacks it. The repository's
 [CI workflow](../.github/workflows/skills.yml) creates

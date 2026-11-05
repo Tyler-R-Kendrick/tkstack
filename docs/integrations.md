@@ -20,6 +20,8 @@ Runtime readiness is separate from those installed files. Use the root
 | Graphify | `Graphify-Labs/graphify` 0.9.97 | Native skills, hash-locked local CLI/MCP, Claude guidance hooks, Cursor rule | Installed; restart hosts. Code-only extraction needs no model key. See [setup](graphify.md). |
 | OpenWiki | `langchain-ai/openwiki` 0.7.2 | Official skill, locked local npm CLI, and working stdio MCP for Codex/Claude/Cursor | Restart the harness; host-driven generation uses its existing session. See [setup and native evidence](openwiki.md) |
 | Google Stitch `design-md` | `google-labs-code/stitch-skills` | The requested skill with its example and documentation | Stitch project access and `STITCH_API_KEY` for the staged MCP connection |
+| Emil Kowalski skills | `emilkowalski/skills` at `c8a79627` | Complete 33-file tree, 17 skills (`prototype` installed as `emil-prototype`) | Shared `.agents/skills` placement; no extra runtime |
+| ub-mode | `unclebob/ub-mode` at `3da62bf3` | The root skill, LICENSE, and README (MIT) | Shared `.agents/skills`. Companion crapper, dryer, and mutator tools are not vendored |
 | SkillOpt-Sleep | `microsoft/SkillOpt` at `bc0a392` | Complete pinned Sleep package, handoff workflow, local evolution driver and decision regressions for learn/sdlc | Handoff uses fresh-context native agents; Codex CLI execution requires its normal network/model access |
 | Lever | `github/lever` 0.1.0 at `f859d0a` | 16 skills in Codex/Claude/Cursor, per-project Copilot layout, templates, helper scripts, automation recipes and repo dials | Copilot host for native plugin sessions, models and automation tools; see [Lever setup](lever.md) |
 | Grok Build learn behavior | Runtime source inspected at `2bdd1d6` | Independent learn 0.2 report/audit/improve workflow, typed procedural experiences, and read-only local body locator | Exact upstream learn prompt was not recovered; see [source findings](grok-learn.md) |
@@ -95,10 +97,19 @@ and `wrap` flows are explicit. No API account or provider URL was redirected.
 
 ## Checks performed
 
-- Verified all 1058 pinned source files, including modes and symlink targets.
-- Installed 183 unique skills per main harness, ten Claude/Cursor agents per
-  harness, four Cursor rules, shared steering and principles: 575 main links.
-  Lever's separate Copilot layout adds 20 links and initial repository dials.
+- Verified all 1094 pinned source files across 19 sources, including modes and
+  symlink targets. Emil Kowalski is the complete 33-file tree at
+  `c8a79627b59d72d764d6ab6f2c87c09a48169833`. ub-mode is 3 files at
+  `3da62bf3fcfd2034de41f30d920d2739e566171f`.
+- Placement follows `harnesses/skills.json`. Personal skills install into every
+  selected harness. `placement.default` sends other upstream skills, including
+  Emil Kowalski (17) and ub-mode (1), to Codex (`.agents/skills/`), Grok, Kimi,
+  Muse, and OpenCode when those harnesses are selected. The default profile
+  selects Codex, Claude Code, and Cursor, so that set lands in shared
+  `.agents/skills` unless you pass `--harness`. Pstack and Cursor Team Kit stay
+  Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor.
+  Learn's 7 subskills install only through `learn`.
+  Lever's separate Copilot layout adds its project links and initial repository dials.
 - Exercised fresh-checkout installation, provider-specific skill discovery,
   native configuration preservation, repeatability, scoped learning records,
   rule retirement, and selective removal in automated tests.

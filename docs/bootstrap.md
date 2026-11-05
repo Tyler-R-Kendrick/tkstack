@@ -236,6 +236,10 @@ Doctor runs `src/check_skills.py` through the managed hash-locked command
 interpreter when that runtime is ready; an offline first setup reports this check
 as pending alongside its missing-runtime requirements. It checks all 19 owned schemas, command surfaces, native bindings,
 shared runtime/state copies, marketplace metadata, current executable artifacts,
-and reviewed train/validation/test decision suites. This performs no model or
+and reviewed train/validation/test decision suites. The same script then runs
+`src/routing_inventory.py` so every installed skill has a routing entry and
+the generated inventory matches `skills/sdlc/references/routing.json`. That check
+only reads the inventory and catalog. It does not regenerate alias or Graphify
+views, which stay pinned to the interpreter that ran `install.py`. This performs no model or
 provider job. The repository CI checks the same contract and behavior fixtures;
 see [normalization and evidence](normalization.md).

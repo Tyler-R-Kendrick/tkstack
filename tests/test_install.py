@@ -73,7 +73,8 @@ class InstallTests(unittest.TestCase):
             self.assertIn(name, cursor)
             self.assertNotIn(name, shared | claude)
         # Harness-independent upstream and third-party-derived skills stay shared.
-        for name in ("matt-tdd", "lever", "caveman", "fal-ai", "headroom", "open-design", "rtk"):
+        for name in ("matt-tdd", "lever", "caveman", "fal-ai", "headroom", "open-design", "rtk",
+                     "ub-mode", "emil-design-eng", "emil-prototype"):
             self.assertIn(name, shared)
             self.assertNotIn(name, claude | cursor)
         # Sources with native per-harness variants keep their own directories.
@@ -156,8 +157,17 @@ class InstallTests(unittest.TestCase):
             self.assertEqual(declared.strip().strip('\"\''), name)
         self.assertEqual(skills["tdd"], ROOT / "vendor/pstack/skills/tdd")
         for name in ("full-send", "full-stop", "ask-matt", "matt-tdd", "deslop",
-                     "chief-of-staff", "git-guardrails-claude-code", "learn"):
+                     "chief-of-staff", "git-guardrails-claude-code", "learn",
+                     "ub-mode", "emil-design-eng", "emil-prototype"):
             self.assertIn(name, skills)
+        self.assertEqual(skills["emil-prototype"],
+                         (ROOT / ".tkstack/emil-kowalski/skills/prototype").resolve())
+        self.assertEqual(skills["prototype"],
+                         (ROOT / ".tkstack/matt-pocock/skills/engineering/prototype").resolve())
+        self.assertIn("\nname: prototype\n",
+                      (ROOT / "vendor/emil-kowalski/skills/prototype/SKILL.md").read_text())
+        self.assertIn("\nname: emil-prototype\n",
+                      (skills["emil-prototype"] / "SKILL.md").read_text())
 
     def test_alias_updates_matt_workflows_and_preserves_relative_references(self):
         skills = install.collect(ROOT, "skills")

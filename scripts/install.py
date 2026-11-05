@@ -78,9 +78,9 @@ def rewrite_callers(root, source):
 def placement(rules, kind, source):
     """Harnesses that receive a source's content; None means every selected harness.
 
-    Personal content joins every harness. Harness-independent upstream skills go
-    only to the shared `.agents/skills` directory (the codex slot); explicitly
-    placed sources, such as Cursor-only packages, keep their own harnesses.
+    Personal content joins every selected harness. Other skills use
+    placement.default when kind is "skills", unless placement.sources names
+    that source. An absent default means every selected harness.
     """
     if source is None:
         return None

@@ -38,7 +38,21 @@ See [installation, examples, and boundaries](principles.md).
   [the source decisions](skill-distillation.md).
 - Use Matt's `ask-matt` to choose between requirements, specs, tickets,
   implementation, and domain modeling. Within Matt's workflows, use `matt-tdd`;
-  the installer rewrites their TDD calls to that name.
+  the installer rewrites their TDD calls to that name. Pstack's `tdd` keeps that
+  name.
+- For design and UI polish, start with Emil Kowalski's `emil-design-eng` and the
+  motion skill that matches the job, then `impeccable` or `open-design`. Several
+  live UI variants are `emil-prototype`. One throwaway that answers a design
+  question is Matt's `prototype`.
+- For clean-code and TDD discipline beyond a named TDD skill, use `ub-mode`:
+  make it work, make it right, then practice. It does not replace Pstack's `tdd`.
+  Upstream Practice says to commit often and push to the main line at the end.
+  That is not tkstack delivery. Commit only when asked, and ship stacked PRs
+  rather than pushing this checkout's main line.
+- The stack overview and a phase for every installed skill are in
+  [the skill routing guide](../skills/sdlc/references/skill-routing.md).
+  `python3 src/routing_inventory.py check` fails when a skill has no routing
+  entry or an entry names a missing skill.
 - Use Tstack for PR lifecycle work: `file-pr`, `babysit-pr`, `takeover`, and
   `modernize`. `full-stop` is the workflow for preparing a PR for human merge.
   Invoke `full-send` when the user explicitly requests its autonomous merge flow.
@@ -133,6 +147,9 @@ the repository.
 
 Keep upstream snapshots unchanged. Pin revisions, file contents, symlink
 targets, and executable modes in `sources.lock.json`. Keep name adaptations in
-`harnesses/skills.json`; generated views belong in `.tkstack/`. Put new personal
+`harnesses/skills.json`; generated views belong in `.tkstack/`. When a skill is
+added or removed, add or remove its phase and strengths in
+`skills/sdlc/references/routing.json`, then run
+`python3 src/routing_inventory.py render` and `check`. Put new personal
 skills, agent definitions, and harness settings alongside the upstream sources,
 not inside them.
