@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
         }
       },
-      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
+      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
       "inputs": {
         "scripts/sync_codify.py": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -560,7 +560,7 @@
           "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
         }
       },
-      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
+      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -634,7 +634,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -741,7 +741,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "571550ee9c3d3204e97a8c0453b487694ae0c9c0"
+          "oid": "da586bc1d8c85e9a33a503130de2fb4f664fb638"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -785,13 +785,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented the pinned promptfoo judge test and its score gate."
+      "reason": "Documented the tracked-file snapshot in the maintainer guide and covered it in the repo-quality tests."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -802,7 +802,7 @@
           "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
         }
       },
-      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
+      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -832,7 +832,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -847,7 +847,7 @@
           "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
         }
       },
-      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
+      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -969,7 +969,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
+          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1043,7 +1043,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "fd6411ece3d0b391fb35815a9a5f523302cb7c69"
+          "oid": "a059b1a08dec3f1c4d1fc459cd35f229d4d2feee"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1115,7 +1115,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "f4c18ad0c589904f23cc7904bbf67df9ed35b88a"
+          "oid": "d2ced9bc07cf4a1a2da4c43fe229887be47d62eb"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2731,7 +2731,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide."
+      "reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree."
     }
   },
   "object_format": "sha1",

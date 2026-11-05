@@ -273,11 +273,14 @@ class RepoQualityTests(unittest.TestCase):
         self.assertEqual(outputs[0], outputs[2])
         self.assertIn("## File tree", outputs[0])
         self.assertIn("## README.md", outputs[0])
+        self.assertLess(outputs[0].index("## README.md"), outputs[0].index("## File tree"))
 
     def test_snapshot_stays_within_limit_and_keeps_evidence(self):
         text = snapshot.snapshot()
         self.assertLessEqual(len(text), snapshot.LIMIT)
+        self.assertIn("## README.md", text)
         self.assertIn("## File tree", text)
+        self.assertLess(text.index("## README.md"), text.index("## File tree"))
         self.assertIn("## SKILL.md frontmatter", text)
         self.assertIn("## docs/skill-marketplace.md", text)
         self.assertIn("npx skills add", text)

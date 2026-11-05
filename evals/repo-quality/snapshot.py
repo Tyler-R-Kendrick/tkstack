@@ -6,10 +6,16 @@ rendered prompt, provider options, and call context as extra arguments. Those
 arguments are ignored. The repository root is this file's parents[2], so the
 snapshot does not depend on the process working directory. Output is capped
 at 60_000 characters. Home directories and secret-like values are redacted.
+
+The snapshot lists git-tracked files (`git ls-files`). A generated tree such
+as `.tkstack/runtime` is omitted. When git cannot be run, a walk skips `.git`,
+`__pycache__`, `node_modules`, `.tkstack`, `.venv`, and `venv`. README.md is
+placed before the file tree so truncating a long tree keeps the README.
 """
 
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,7 +23,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 LIMIT = 60_000
 READ_CAP = 8_000
-SKIP_NAMES = {".git", "__pycache__", "node_modules"}
 INTERESTING_FILES = {
     "SKILL.md", "README.md", "AGENTS.md", "CLAUDE.md",
     "plugin.json", "marketplace.json", "install.sh",
@@ -29,6 +34,9 @@ MANIFESTS = (
     "harnesses/integrations.json",
 )
 OWNED_SKILL_ROOTS = ("skills", ".agents/skills")
+# Used only when `git ls-files` cannot be run. `.tkstack` is skipped whole
+# because a CI venv is created at `.tkstack/runtime` before the tests.
+FALLBACK_SKIP = {".git", "__pycache__", "node_modules", ".tkstack", ".venv", "venv"}
 _ASSIGNED_SECRET = re.compile(
     r"(?i)\b(api[_-]?key|secret|token|password|passwd|authorization|bearer)"
     r"(\s*[:=]\s*)([^\s,;\"']{8,})"
@@ -62,12 +70,43 @@ def redact(text):
     return text
 
 
-def _count_files(directory):
-    total = 0
-    for dirpath, dirnames, filenames in os.walk(directory, followlinks=False):
-        dirnames[:] = [name for name in dirnames if name not in SKIP_NAMES]
-        total += len(filenames)
-    return total
+def _git_ls_files():
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "-z"],
+            capture_output=True,
+            timeout=60,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if completed.returncode != 0:
+        return None
+    paths = []
+    for item in completed.stdout.split(b"\0"):
+        if item:
+            paths.append(item.decode("utf-8", "surrogateescape"))
+    return paths
+
+
+def _fallback_files():
+    paths = []
+    for dirpath, dirnames, filenames in os.walk(ROOT, followlinks=False):
+        dirnames[:] = [name for name in dirnames if name not in FALLBACK_SKIP]
+        for name in filenames:
+            path = Path(dirpath) / name
+            if name in FALLBACK_SKIP:
+                continue
+            paths.append(path.relative_to(ROOT).as_posix())
+    return paths
+
+
+def _tracked_files():
+    """Repo-relative paths of files the snapshot may mention."""
+    listed = _git_ls_files()
+    if listed is not None:
+        return listed
+    return _fallback_files()
 
 
 def _nonblank_lines(path):
@@ -84,72 +123,93 @@ def _nonblank_lines(path):
     return sum(1 for line in data.decode("utf-8", "replace").splitlines() if line.strip())
 
 
-def _loc_report():
-    lines = []
+def _loc_report(paths):
+    per_top = {}
     root_files = 0
-    for path in sorted(ROOT.iterdir(), key=lambda item: item.name.lower()):
-        if path.name in SKIP_NAMES:
+    for relative in paths:
+        path = ROOT / relative
+        if path.is_symlink():
+            count = 0
+        else:
+            count = _nonblank_lines(path) or 0
+        if "/" not in relative:
+            root_files += count
             continue
-        if path.is_file() and not path.is_symlink():
-            count = _nonblank_lines(path)
-            if count:
-                root_files += count
-            continue
-        if not path.is_dir() or path.is_symlink():
-            continue
-        total = 0
-        per_file = []
-        for dirpath, dirnames, filenames in os.walk(path, followlinks=False):
-            dirnames[:] = [name for name in dirnames if name not in SKIP_NAMES]
-            for name in filenames:
-                file_path = Path(dirpath) / name
-                count = _nonblank_lines(file_path)
+        top = relative.split("/", 1)[0]
+        per_top.setdefault(top, []).append((relative, count))
+    lines = [f"(top-level files): {root_files} non-blank lines"]
+    for name in sorted(per_top, key=str.lower):
+        entries = per_top[name]
+        total = sum(count for _, count in entries)
+        lines.append(f"{name}/: {total} non-blank lines")
+        if name == "scripts":
+            for relative, count in sorted(entries, key=lambda item: (-item[1], item[0])):
                 if count:
-                    total += count
-                    per_file.append((file_path.relative_to(ROOT).as_posix(), count))
-        lines.append(f"{path.name}/: {total} non-blank lines")
-        if path.name == "scripts":
-            for relative, count in sorted(per_file, key=lambda item: (-item[1], item[0])):
-                lines.append(f"  {relative}: {count}")
-    lines.insert(0, f"(top-level files): {root_files} non-blank lines")
+                    lines.append(f"  {relative}: {count}")
     return "\n".join(lines)
 
 
-def _tree():
+def _tree(paths):
+    file_set = set(paths)
+    counts = {}
+    child_names = {}
+    for relative in paths:
+        parts = relative.split("/")
+        for index in range(len(parts)):
+            parent = "/".join(parts[:index])
+            counts[parent] = counts.get(parent, 0) + 1
+            child_names.setdefault(parent, set()).add(parts[index])
+
     lines = []
 
     def walk(directory):
-        children = sorted(directory.iterdir(), key=lambda item: (item.is_file(), item.name.lower()))
-        for child in children:
-            if child.name in SKIP_NAMES:
+        names = child_names.get(directory, ())
+
+        def sort_key(name):
+            relative = f"{directory}/{name}" if directory else name
+            return (relative not in child_names, name.lower())
+
+        for name in sorted(names, key=sort_key):
+            relative = f"{directory}/{name}" if directory else name
+            path = ROOT / relative
+            if path.is_symlink():
+                try:
+                    target = os.readlink(path)
+                except OSError as error:
+                    target = f"unreadable ({error})"
+                lines.append(f"{relative} -> {target}")
                 continue
-            relative = child.relative_to(ROOT).as_posix()
-            if child.is_symlink():
-                lines.append(f"{relative} -> {os.readlink(child)}")
-                continue
-            if child.is_dir():
-                if child.name == "vendor" and directory == ROOT:
-                    lines.append(f"{relative}/ ({_count_files(child)} files, packages only)")
+            if relative in child_names or path.is_dir():
+                if name == "vendor" and directory == "":
+                    lines.append(f"{relative}/ ({counts.get(relative, 0)} files, packages only)")
                     packages = sorted(
-                        (entry for entry in child.iterdir() if entry.is_dir() and not entry.is_symlink()),
-                        key=lambda entry: entry.name.lower(),
+                        (
+                            package for package in child_names.get(relative, ())
+                            if (ROOT / relative / package).is_dir()
+                            and not (ROOT / relative / package).is_symlink()
+                        ),
+                        key=str.lower,
                     )
                     for package in packages:
-                        lines.append(f"{relative}/{package.name}/ ({_count_files(package)} files)")
+                        package_relative = f"{relative}/{package}"
+                        lines.append(
+                            f"{package_relative}/ ({counts.get(package_relative, 0)} files)"
+                        )
                     continue
-                lines.append(f"{relative}/ ({_count_files(child)} files)")
-                walk(child)
-            elif child.name in INTERESTING_FILES or directory == ROOT:
-                lines.append(relative)
+                lines.append(f"{relative}/ ({counts.get(relative, 0)} files)")
+                walk(relative)
+            elif name in INTERESTING_FILES or directory == "":
+                if relative in file_set:
+                    lines.append(relative)
 
-    walk(ROOT)
+    walk("")
     return "\n".join(lines)
 
 
-def _read(relative, cap=READ_CAP):
-    path = ROOT / relative
-    if not path.is_file():
+def _read(relative, tracked, cap=READ_CAP):
+    if relative not in tracked:
         return f"ABSENT: {relative}"
+    path = ROOT / relative
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except OSError as error:
@@ -159,11 +219,11 @@ def _read(relative, cap=READ_CAP):
     return text
 
 
-def _read_ends(relative, cap=READ_CAP):
+def _read_ends(relative, tracked, cap=READ_CAP):
     """Keep the start and the end so a long file's closing sections survive."""
-    path = ROOT / relative
-    if not path.is_file():
+    if relative not in tracked:
         return f"ABSENT: {relative}"
+    path = ROOT / relative
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except OSError as error:
@@ -197,22 +257,25 @@ def _frontmatter_fields(text):
     return fields
 
 
-def _skill_frontmatter():
+def _skill_frontmatter(paths):
     blocks = []
+    path_set = set(paths)
     for relative_root in OWNED_SKILL_ROOTS:
         base = ROOT / relative_root
         if not base.is_dir():
             blocks.append(f"ABSENT: {relative_root}")
             continue
-        paths = sorted(
-            path for path in base.rglob("SKILL.md")
-            if path.is_file() and not any(part in SKIP_NAMES for part in path.parts)
+        prefix = relative_root + "/"
+        matched = sorted(
+            relative for relative in path_set
+            if relative.rsplit("/", 1)[-1] == "SKILL.md"
+            and (relative == prefix + "SKILL.md" or relative.startswith(prefix))
         )
-        if not paths:
+        if not matched:
             blocks.append(f"none under {relative_root}")
             continue
-        for path in paths:
-            relative = path.relative_to(ROOT).as_posix()
+        for relative in matched:
+            path = ROOT / relative
             try:
                 fields = _frontmatter_fields(path.read_text(encoding="utf-8", errors="replace"))
             except OSError:
@@ -226,15 +289,15 @@ def _skill_frontmatter():
     return "\n\n".join(blocks)
 
 
-def _docs():
+def _docs(paths):
     docs = ROOT / "docs"
     if not docs.is_dir():
         return "ABSENT: docs/"
     lines = []
-    for path in sorted(item for item in docs.rglob("*") if item.is_file()):
-        if any(part in SKIP_NAMES for part in path.parts):
+    for relative in sorted(path for path in paths if path == "docs" or path.startswith("docs/")):
+        path = ROOT / relative
+        if not path.is_file() or path.is_symlink():
             continue
-        relative = path.relative_to(ROOT).as_posix()
         title = ""
         if path.suffix.lower() == ".md":
             try:
@@ -248,10 +311,10 @@ def _docs():
     return "\n".join(lines)
 
 
-def _manifests():
+def _manifests(tracked):
     parts = []
     for relative in MANIFESTS:
-        parts.append(f"### {relative}\n{_read(relative, cap=READ_CAP)}")
+        parts.append(f"### {relative}\n{_read(relative, tracked)}")
     return "\n\n".join(parts)
 
 
@@ -277,24 +340,29 @@ def _fit(required, extras):
 
 
 def snapshot():
+    paths = _tracked_files()
+    tracked = set(paths)
+    # README.md is required and comes before the file tree. A long tree is
+    # truncated from the end of this blob, so the README stays in the prefix.
     required = "\n\n".join([
         "Repository snapshot. Paths are relative to the repo root. "
         "Use only paths and text that appear below as evidence. "
-        "Home directories and secret-like values are redacted.",
-        "## LOC per top-level directory\n" + _loc_report(),
-        "## File tree\n" + _tree(),
-        "## Manifests\n" + _manifests(),
+        "Home directories and secret-like values are redacted. "
+        "Only git-tracked files are listed.",
+        "## LOC per top-level directory\n" + _loc_report(paths),
+        "## README.md\n" + _read_ends("README.md", tracked),
+        "## File tree\n" + _tree(paths),
+        "## Manifests\n" + _manifests(tracked),
         "## SKILL.md frontmatter\n"
         "Owned skills under skills/ and .agents/skills/. "
-        "Each block is that file's name and description.\n" + _skill_frontmatter(),
-        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md"),
-        "## install.sh\n" + _read("install.sh"),
-        "## harnesses/README.md\n" + _read("harnesses/README.md"),
+        "Each block is that file's name and description.\n" + _skill_frontmatter(paths),
+        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked),
+        "## install.sh\n" + _read("install.sh", tracked),
+        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked),
     ])
     extras = [
-        "## README.md\n" + _read_ends("README.md"),
-        "## AGENTS.md\n" + _read_ends("AGENTS.md"),
-        "## Docs\n" + _docs(),
+        "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked),
+        "## Docs\n" + _docs(paths),
     ]
     return _fit(required, extras)
 

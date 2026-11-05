@@ -42,9 +42,12 @@ than replacing full skill outcomes or creative/provider execution.
 ## Repository quality
 
 `evals/repo-quality/` grades this checkout on Unix. `snapshot.py` prints a
-bounded snapshot (file tree, LOC, README, install.sh, AGENTS.md, manifests,
-owned SKILL.md frontmatter, `docs/skill-marketplace.md`, harness docs, and the
-docs list) with home paths and secret-like values redacted. `judge.py` is the
+bounded snapshot of git-tracked files (file tree, LOC, README, install.sh,
+AGENTS.md, manifests, owned SKILL.md frontmatter, `docs/skill-marketplace.md`,
+harness docs, and the docs list) with home paths and secret-like values
+redacted. README.md is placed before the file tree. Without git, the walk
+skips `.git`, `__pycache__`, `node_modules`, `.tkstack`, `.venv`, and `venv`.
+`judge.py` is the
 headless grader. `checks.py` applies deterministic limits and prints a JSON
 array of check results.
 

@@ -176,7 +176,9 @@ Reapply the file installer afterward because tests can regenerate ignored views
 using their interpreter; `doctor` then checks the normal installation context.
 
 [`evals/repo-quality`](evals/repo-quality/) grades this checkout separately from
-the skill-evolution suites. The harness is Unix-only. `python3 evals/repo-quality/checks.py`
+the skill-evolution suites. The harness is Unix-only. Its snapshot lists
+git-tracked files and places README.md before the file tree, so a generated
+`.tkstack/runtime` tree cannot drop the README. `python3 evals/repo-quality/checks.py`
 prints the deterministic ceilings. Those tests stay out of the default unittest
 run unless `REPO_QUALITY_GATE=1`. The promptfoo judge is opt-in via `RUN_JUDGE=1`
 on `tests.test_repo_quality`, uses pinned promptfoo 0.125.1, and passes only
