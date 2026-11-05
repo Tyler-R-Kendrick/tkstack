@@ -1,6 +1,7 @@
 """Deterministic repo-quality checks and the promptfoo eval config."""
 
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -283,7 +285,19 @@ class RepoQualityTests(unittest.TestCase):
         self.assertLess(text.index("## README.md"), text.index("## File tree"))
         self.assertIn("## SKILL.md frontmatter", text)
         self.assertIn("## docs/skill-marketplace.md", text)
+        self.assertIn("## install.sh", text)
+        self.assertIn("## LOC per top-level directory", text)
+        self.assertIn("## Docs", text)
+        self.assertIn("docs/unslop.md —", text)
+        self.assertIn("## Install options", text)
+        self.assertIn("--uninstall", text)
+        self.assertIn("## Source pins", text)
+        self.assertIn("name version revision", text)
+        self.assertRegex(text, r"(?m)^ponytail \S+ [0-9a-f]{40}$")
+        self.assertIn("skills/learn/skills/codify/SKILL.md", text)
+        self.assertIn('main "$@"', text)
         self.assertIn("npx skills add", text)
+        self.assertIn("[download record omitted]", text)
         for relative in (
             ".claude-plugin/marketplace.json",
             ".claude-plugin/plugin.json",
@@ -294,6 +308,42 @@ class RepoQualityTests(unittest.TestCase):
         home = str(Path.home())
         if len(home) > 1:
             self.assertNotIn(home, text)
+
+    def test_snapshot_encoded_size_fits_exec_argv(self):
+        text = snapshot.snapshot()
+        self.assertLess(len(text.encode()), 100_000)
+
+    def test_generated_lock_json_is_summarized(self):
+        self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/bootstrap/requirements.lock"))
+        self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
+        lockfile = json.dumps({
+            "name": "demo",
+            "lockfileVersion": 3,
+            "packages": {".": {"integrity": "sha512-abc"}},
+        })
+        summarized = snapshot._compact_json(lockfile)
+        self.assertIn("lockfile omitted", summarized)
+        self.assertNotIn("packages", summarized)
+        manifest = json.dumps({
+            "tools": {
+                "rtk": {
+                    "version": "1.1.0",
+                    "platforms": {
+                        "linux-x86_64": {
+                            "url": "https://example.invalid/rtk.tar.gz",
+                            "sha256": "ab" * 32,
+                            "archive_member": "rtk",
+                        }
+                    },
+                }
+            }
+        })
+        compacted = snapshot._compact_json(manifest)
+        self.assertIn("[download record omitted]", compacted)
+        self.assertNotIn("sha256", compacted)
+        self.assertIn("1.1.0", compacted)
 
     def test_quickstart_requires_exactly_one_command(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-readme-") as temporary:
@@ -342,13 +392,78 @@ class RepoQualityTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (root / "harnesses").mkdir()
+            (root / "harnesses" / "muse").mkdir()
+            (root / "harnesses" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
             (root / "harnesses" / "skills.json").write_text(
-                '{"placement": {"default": ["codex"]}}\n', encoding="utf-8"
+                '{"placement": {"default": ["codex"], "experimental": ["muse"]}}\n',
+                encoding="utf-8",
             )
-            (root / "harnesses" / "integrations.json").write_text("{}\n", encoding="utf-8")
+            (root / "scripts").mkdir()
+            (root / "scripts" / "harness_paths.py").write_text(
+                "from pathlib import Path\n"
+                "SKILL_DIRECTORIES = {'codex': Path('.agents/skills')}\n"
+                "DELEGATED_HARNESSES = {}\n"
+                "def skill_directory(harness, scope='home'):\n"
+                "    if harness in DELEGATED_HARNESSES or harness not in SKILL_DIRECTORIES:\n"
+                "        return None\n"
+                "    return SKILL_DIRECTORIES[harness]\n",
+                encoding="utf-8",
+            )
             covered = checks.harness_coverage(root)
             self.assertEqual(covered["value"], 1, covered["evidence"])
             self.assertFalse(covered["pass"])
+            self.assertIn("muse: experimental, not counted", covered["evidence"])
+            self.assertFalse(any("harnesses/muse" in line for line in covered["evidence"]))
+
+    def test_counted_harnesses_are_directories_the_installer_links(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import install
+        covered = checks.harness_coverage(ROOT)
+        counted = [line.split(":", 1)[0] for line in covered["evidence"] if "installer links " in line]
+        self.assertEqual(covered["value"], len(counted))
+        self.assertEqual(
+            counted,
+            ["claude", "codex", "cursor", "copilot", "grok", "kimi", "muse", "opencode"],
+        )
+        self.assertEqual(covered["value"], 8)
+        self.assertFalse(covered["pass"])
+        self.assertIn("t3code: not counted; no skills directory of its own", covered["evidence"][-1])
+        self.assertFalse(any("experimental" in line for line in covered["evidence"]))
+        target = Path("/tmp/tkstack-coverage-target")
+        parents = {
+            destination.parent.relative_to(target)
+            for _, destination in install.link_plan(ROOT, target, list(install.SKILL_PATHS), "home")
+        }
+        for line in covered["evidence"]:
+            if "installer links " not in line:
+                continue
+            linked = Path(line.split("installer links ", 1)[1])
+            self.assertIn(linked, parents)
+
+    def test_harness_coverage_parses_installer_code_and_does_not_execute_it(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-parse-") as temporary:
+            root = Path(temporary)
+            (root / "harnesses").mkdir()
+            (root / "harnesses" / "skills.json").write_text(
+                '{"placement": {"default": ["codex"]}}\n',
+                encoding="utf-8",
+            )
+            (root / "scripts").mkdir()
+            marker = root / "executed"
+            payload = root / "scripts" / "harness_paths.py"
+            payload.write_text(
+                "import os\n"
+                f"os.system('touch {marker}')\n"
+                "from pathlib import Path\n"
+                "SKILL_DIRECTORIES = {'codex': Path('.agents/skills')}\n"
+                "def skill_directory(harness, scope='home'):\n"
+                "    return SKILL_DIRECTORIES.get(harness)\n",
+                encoding="utf-8",
+            )
+            covered = checks.harness_coverage(root)
+            self.assertFalse(marker.exists())
+            self.assertEqual(covered["value"], 0, covered["evidence"])
+            self.assertIn("codex: no skills.json placement path the installer links", covered["evidence"])
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"
@@ -389,6 +504,57 @@ class RepoQualityTests(unittest.TestCase):
         self.assertNotIn("SECRET-GRADE", completed.stdout)
         self.assertNotIn("SECRET-GRADE", completed.stderr)
         self.assertIn("judge provider: REPO_QUALITY_JUDGE", completed.stderr)
+
+    def _judge_module(self, name):
+        path = ROOT / "evals" / "repo-quality" / "judge.py"
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_judge_timeout_is_900_seconds_and_retries_once(self):
+        module = self._judge_module("repo_quality_judge_timeout")
+        self.assertEqual(module.TIMEOUT_SECONDS, 900)
+        self.assertEqual(module.TIMEOUT_ATTEMPTS, 2)
+        saved = os.environ.copy()
+        try:
+            os.environ.pop("CURSOR_API_KEY", None)
+            os.environ["REPO_QUALITY_JUDGE"] = f"{sys.executable} -c \"import sys; sys.exit(0)\""
+            attempts = {"n": 0}
+
+            def once(command, **kwargs):
+                attempts["n"] += 1
+                self.assertEqual(kwargs["timeout"], 900)
+                if attempts["n"] == 1:
+                    raise subprocess.TimeoutExpired(command, 900)
+                return subprocess.CompletedProcess(command, 0, stdout="grade\n", stderr="")
+
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with mock.patch.object(module.subprocess, "run", once), \
+                    mock.patch.object(module.sys, "stdout", stdout), \
+                    mock.patch.object(module.sys, "stderr", stderr):
+                code = module.main(["judge.py", "GRADE-PROMPT"])
+            self.assertEqual(code, 0, stderr.getvalue())
+            self.assertEqual(attempts["n"], 2)
+            self.assertEqual(stdout.getvalue(), "grade\n")
+            self.assertIn("retrying once", stderr.getvalue())
+            self.assertNotIn("GRADE-PROMPT", stdout.getvalue() + stderr.getvalue())
+
+            def always(command, **kwargs):
+                raise subprocess.TimeoutExpired(command, kwargs.get("timeout"))
+
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with mock.patch.object(module.subprocess, "run", always), \
+                    mock.patch.object(module.sys, "stdout", stdout), \
+                    mock.patch.object(module.sys, "stderr", stderr):
+                code = module.main(["judge.py", "GRADE-PROMPT"])
+            self.assertEqual(code, 124)
+            self.assertEqual(stdout.getvalue(), "")
+            self.assertIn("judge timed out; retrying once\n", stderr.getvalue())
+            self.assertIn("judge timed out\n", stderr.getvalue())
+        finally:
+            os.environ.clear()
+            os.environ.update(saved)
 
     def test_default_grok_judge_uses_prompt_file(self):
         path = ROOT / "evals" / "repo-quality" / "judge.py"

@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
 import install
 from steering_adapter import instruction_plan
@@ -36,8 +37,8 @@ def main():
         recipe = json.loads((install.ROOT / 'harnesses/integrations.json').read_text())['tools']['command-schema']
         owned_verified = package_ready(install.ROOT, 'command-schema', recipe)
         if owned_verified:
-            owned = subprocess.run([sys.executable, str(install.ROOT / 'scripts/tool.py'), 'command-schema',
-                                    '-B', str(install.ROOT / 'scripts/check_skills.py')],
+            owned = subprocess.run([sys.executable, str(install.ROOT / 'src/tool.py'), 'command-schema',
+                                    '-B', str(install.ROOT / 'src/check_skills.py')],
                                    capture_output=True, text=True, timeout=60)
             if owned.returncode:
                 raise ValueError('Owned skill conformance failed: ' + owned.stderr.strip())
@@ -48,7 +49,7 @@ def main():
         _, before, after = policy_plan(install.ROOT)
         if before != after:
             raise ValueError("Local state ignore policy is missing or stale; rerun the installer")
-        harnesses = list(dict.fromkeys(args.harness or install.SKILL_PATHS))
+        harnesses = list(dict.fromkeys(args.harness or install.DEFAULT_HARNESSES))
         skills = install.collect(install.ROOT, "skills")
         for harness in harnesses:
             for name, path in install.collect(install.ROOT, "skills", harness).items():
@@ -57,16 +58,16 @@ def main():
                 if not match or match[1].strip().strip('\"\'') != name:
                     raise ValueError(f"Skill name does not match installed name: {name} ({harness})")
         target = args.target.expanduser().resolve()
-        plan = install.link_plan(install.ROOT, target, harnesses)
+        scope = args.scope or ("home" if target == Path.home().resolve() else "project")
+        plan = install.link_plan(install.ROOT, target, harnesses, scope)
         missing = [str(destination) for source, destination in plan
                    if not source.exists() or not install.matches(destination, source)]
         if missing:
             raise ValueError("Missing or mismatched installation: " + ", ".join(missing))
-        stale = install.stale_links(install.ROOT, target, harnesses, plan)
+        stale = install.stale_links(install.ROOT, target, harnesses, plan, scope)
         if stale:
             raise ValueError("Stale links outside their placement; rerun the installer: "
                              + ", ".join(map(str, stale)))
-        scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if instruction_plan(install.ROOT, target, harnesses, scope):
             raise ValueError("Native steering pointers are missing or stale; rerun the installer")
         if configuration_plan(install.ROOT, target, harnesses, scope):

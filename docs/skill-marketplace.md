@@ -23,24 +23,45 @@ The entrypoint carries purpose, triggers, the execution spine, boundaries, and
 condition-to-reference pointers. Detailed procedures and provenance live under
 `references/`; templates and scripts stay local to the selected package.
 
-For a skills CLI installation from a checkout:
+Install one published package with the skills CLI. `skills` 1.7.6 `--help`
+shows `add <package>` as `owner/repo` (for example `vercel-labs/agent-skills`)
+and `--skill` as the SKILL.md name:
 
 ```sh
-npx skills add . --skill investigate --skill write --skill document
+npx skills add Tyler-R-Kendrick/tkstack --skill investigate
 ```
 
-For a published checkout, substitute `Tyler-R-Kendrick/tkstack` for `.`. Add any
-other package names explicitly. These commands are distribution instructions;
-they do not claim a remote revision contains the local uncommitted changes.
+The `investigate` package's tree path is `skills/investigate`. This command
+names that manifest package and path. `--list` on skills 1.7.6 resolves the
+source to `https://github.com/Tyler-R-Kendrick/tkstack.git`
+(`skills/investigate`) and finds one skill named `investigate`:
 
-For Claude's marketplace interface:
+```sh
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate
+```
+
+Other real packages are `document`
+(`skills/document`), `write` (`skills/write`), `fal-ai`
+(`.agents/skills/fal-ai`), `headroom` (`.agents/skills/headroom`),
+`hill-climb` (`skills/hill-climb`), `learn` (`skills/learn`), `open-design`
+(`.agents/skills/open-design`), `rtk` (`.agents/skills/rtk`), `sdlc`
+(`skills/sdlc`), `tkstack-principles` (`skills/tkstack-principles`), and
+`unslop` (`skills/unslop`). From a local checkout, replace the GitHub source
+with the same relative path, for example `./skills/investigate`.
+
+Add the marketplace, then install one plugin. These are Claude Code slash
+commands. The `investigate` plugin source in `.claude-plugin/marketplace.json`
+is `./skills/investigate`:
 
 ```text
-/plugin marketplace add /absolute/path/to/tkstack
+/plugin marketplace add Tyler-R-Kendrick/tkstack
 /plugin install investigate@tkstack
-/plugin install write@tkstack
-/plugin install document@tkstack
 ```
+
+The same form works for `write@tkstack` (`./skills/write`) and
+`document@tkstack` (`./skills/document`). These commands are distribution
+instructions; they do not claim a remote revision contains local uncommitted
+changes.
 
 Use a single installation route for a package to avoid duplicate names.
 The dotfiles route installs all pinned and owned skills into selected harnesses:

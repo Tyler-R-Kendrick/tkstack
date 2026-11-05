@@ -4,26 +4,23 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "d6b8190321bff3557aa0bb3d8fc8a85d97bdf6c6"
+          "oid": "580141f66ed7ec8898fb42a8f92797ac27d7b0b2"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/skillify.md": {
           "mode": "100644",
-          "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
+          "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
+      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
       "inputs": {
-        "scripts/sync_codify.py": {
-          "mode": "100644",
-          "oid": "794405559ea28efc02c64d1e561f052b2378327a"
-        },
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
           "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
@@ -122,7 +119,7 @@
         },
         "skills/learn/skills/codify/references/reuse.md": {
           "mode": "100644",
-          "oid": "904b9941b6e2e6980db694574fe42ba245e0cb06"
+          "oid": "a471a076015f613ea57af4090fc872042bdfe167"
         },
         "skills/learn/skills/codify/references/sources.md": {
           "mode": "100644",
@@ -226,7 +223,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "7832cc6887d67d98c49b32a39d9697789b699234"
+          "oid": "4de113953cd526e6deb73a7bf44946405aec81fc"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -535,28 +532,32 @@
         "skills/learn/skills/skillify/templates/verification.md.tmpl": {
           "mode": "100644",
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
+        },
+        "src/sync_codify.py": {
+          "mode": "100644",
+          "oid": "794405559ea28efc02c64d1e561f052b2378327a"
         }
       },
-      "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "no_doc_impact": false,
+      "reason": "merge origin/main into hill-climb"
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
+          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
         }
       },
       "inputs": {
@@ -564,13 +565,17 @@
           "mode": "100644",
           "oid": "feb9c717b2c7a87bf30a8668ba962ca8f46df157"
         },
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "oid": "1c76ca53518176e714b0bb8a301157d52ad282fb"
+        },
         "agents/README.md": {
           "mode": "100644",
           "oid": "0c546b9194aa8e15a7c0496c2f895c574f1c2bb3"
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "2c39cc8ed20e8dc1fd3df7d67b05ca54e079a64c"
+          "oid": "4e605bfc4840bb76aaa8bac0481e4d253b9af795"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -586,7 +591,7 @@
         },
         "harnesses/cursor/tkstack-steering.mdc": {
           "mode": "100644",
-          "oid": "ddcbc43b257d877421db80b3b0ba076965670452"
+          "oid": "ba9e2fd7e9604018392a38a88ad30db48779e7ce"
         },
         "harnesses/graphify/requirements.in": {
           "mode": "100644",
@@ -618,7 +623,11 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "e401f919f465188961b89d6bb6ef7f8aabe170a7"
+          "oid": "802e70a70f8028ea3bdca92d3fff2cea15a0ada9"
+        },
+        "harnesses/t3code/README.md": {
+          "mode": "100644",
+          "oid": "41884bd05e775ea72ba807d7f6eb7f6208500fa7"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -626,44 +635,44 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "0cbda95112f0d6c959f1fce94aca5a8deaa1ff67"
+          "oid": "9d8cc03b953e9a077fb002d633589421123a09a6"
         }
       },
       "inputs": {
         ".githooks/pre-commit": {
           "mode": "100755",
-          "oid": "52da4cb2ed4658b87a69f2d7f2d4676e2b96393e"
+          "oid": "bb4a990deffd6ff3a19d11c26a1761e7a203b80e"
         },
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "de6229a37be6dfff619e494766d53139286e6af3"
+          "oid": "8c812fff589d2d8f3500587ac248212a442f6a8b"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "defb5c1c1b66332bda9bba3e1de72f7eac81412e"
-        },
-        "scripts/check_docs.py": {
-          "mode": "100755",
-          "oid": "09786cea5e35c184a4615fc1e885605ee74ca792"
-        },
-        "scripts/docs_hook.py": {
-          "mode": "100755",
-          "oid": "d242ac5a34993bf5265386965903686409f6a143"
+          "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
         },
         "scripts/setup_repo_hooks.py": {
           "mode": "100755",
-          "oid": "f9f2a88a5bd2f0dcfb2b11ddf9ec92dfb07b642e"
+          "oid": "be78ade0b482edbd556173e59b2611f50d5f5703"
+        },
+        "src/check_docs.py": {
+          "mode": "100755",
+          "oid": "9aba4faaa29d1337880e406528c6b9af87b725b4"
+        },
+        "src/docs_hook.py": {
+          "mode": "100755",
+          "oid": "59a384671639f4f569dff1546443af488566d054"
         },
         "tests/test_authoring.py": {
           "mode": "100644",
@@ -671,11 +680,11 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "ee3363b28f65debce4ae9d66dded0326039441fa"
+          "oid": "81c6916d70597f98faa295f9bd4500b7e452b2e8"
         },
         "tests/test_caveman.py": {
           "mode": "100644",
-          "oid": "f3ffe5793eb6b708873310a5e687c3a3b0e12b68"
+          "oid": "100e597f781818b4683037d4cb146c1a62b162d1"
         },
         "tests/test_codify.py": {
           "mode": "100644",
@@ -687,7 +696,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "34e0aabc186617f62a6ead29c4ae0f090ceb5ee7"
+          "oid": "dacdaea0fc6fdff580833a19a312f89131d8d6a8"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -695,7 +704,7 @@
         },
         "tests/test_graphify.py": {
           "mode": "100644",
-          "oid": "06801353fb1643d3d9e5dd8e0ef3b0ced80bea71"
+          "oid": "b9ccc6278f824f84e88bbbe7251726aee8547d1c"
         },
         "tests/test_grok_learn.py": {
           "mode": "100644",
@@ -707,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "0678dbd235970eb82a1aa4e6ef8504d2adef253b"
+          "oid": "3460afab0719a66f78bffcbc821f69ab95291471"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -715,11 +724,11 @@
         },
         "tests/test_integrations.py": {
           "mode": "100644",
-          "oid": "1d4b96eb949db42a261957d07d0591c598c79c8c"
+          "oid": "02be0f6d1672e71a1e8ca1125a8da3e2fb72b4f4"
         },
         "tests/test_learn.py": {
           "mode": "100644",
-          "oid": "16b669195cfcac72d560879c3f8e2b14b876869d"
+          "oid": "85f3dafc291353374a1339f67ac1865224ec8f82"
         },
         "tests/test_learn_help.py": {
           "mode": "100644",
@@ -727,7 +736,7 @@
         },
         "tests/test_lever.py": {
           "mode": "100644",
-          "oid": "ca528153e015310909aeaa2dfb8ae9f17dca6a84"
+          "oid": "7b96b202cf41bc1067bdc66371a8428b54e44a15"
         },
         "tests/test_lintify.py": {
           "mode": "100644",
@@ -735,11 +744,11 @@
         },
         "tests/test_npm_runtime.py": {
           "mode": "100644",
-          "oid": "b0cffe8280ce71c3f7bbac68562039fd2a910c7b"
+          "oid": "1db737801a3c8396396f7a6dbfc364966119ac0b"
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "da586bc1d8c85e9a33a503130de2fb4f664fb638"
+          "oid": "db9246fc5ef5d4a39d669976e6a5df9f423919b4"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -759,15 +768,15 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "b07f5ff842c05ca0a545d76da0a7fa85721517e7"
+          "oid": "9ca3f42c15bd95818cf00db624de9c8f788466b8"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "1570263b1a02a35b7b992fbd913bedb4695af440"
+          "oid": "408226708b8c98f3d90c07b64cd05ff6c5281080"
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
-          "oid": "ab8999d27143a67765198ba523ddf02647b02ab8"
+          "oid": "7a46151200ac831e62c56d8ec17303eacd55e931"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -775,11 +784,11 @@
         },
         "tests/test_stack_runner.py": {
           "mode": "100644",
-          "oid": "a1bc923917500fb242150ae17e15c1efb15f349b"
+          "oid": "b7e9560e5c5ef72045c0b9ef772c1145795882bb"
         },
         "tests/test_state_layout.py": {
           "mode": "100644",
-          "oid": "391592236c9a7f79ef75b9464fc02a98067be2bc"
+          "oid": "f49e6a64c2ef2e488a3f5db4a531a55aa49cbb9f"
         },
         "tests/test_unslop.py": {
           "mode": "100644",
@@ -787,65 +796,66 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
+          "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
+      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
           "oid": "8c6960e1878beeb3d50ef59f9b93e4deda40772a"
         },
-        "scripts/run_hook.py": {
+        "src/run_hook.py": {
           "mode": "100755",
-          "oid": "45db26cad47cecdf42d9c2b6f8fc6d8fe75747cf"
+          "oid": "2ff3a0ffbcab5065c78c31edb4d5b89cc0eeeeef"
         },
-        "scripts/runtime_environment.py": {
+        "src/runtime_environment.py": {
           "mode": "100644",
           "oid": "f5b499932e3a6e3282b17da79a27f29160478f1c"
         },
-        "scripts/tkstack.py": {
+        "src/tkstack.py": {
           "mode": "100755",
-          "oid": "57d425f754d8509676b769864d9814f1e233dcdc"
+          "oid": "506b173a3213954d87abeb14e571190a49f95d6a"
         },
-        "scripts/tool.py": {
+        "src/tool.py": {
           "mode": "100755",
           "oid": "f9eaee5c81176a3475b24ec6e6db91b0832ca4ab"
         }
       },
-      "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "no_doc_impact": false,
+      "reason": "merge origin/main into hill-climb"
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "0225921bbe6d3a7f643f5c6091516731bded634a"
+          "oid": "eb32144afc297d10c0a9e618ccac43f63384adb9"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         }
       },
       "inputs": {
@@ -859,7 +869,7 @@
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
-          "oid": "b7ee5a221cf5271e724c38621b87eca8a025c05f"
+          "oid": "4ba51b38a1c5ca753b3a37e1d8f2a4a9af50f344"
         },
         "harnesses/bootstrap/profiles.json": {
           "mode": "100644",
@@ -879,11 +889,11 @@
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "6ce6b08398ea9aac930918a6df50069dccc1833c"
+          "oid": "5058c77ef03afe88b9a2896827582e33bb14e689"
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
-          "oid": "e371952199522944e7ad424d2eae12f3acf7d7ce"
+          "oid": "01031bcc7dd34b595571d978c4cf75371d29a953"
         },
         "scripts/bootstrap_profiles.py": {
           "mode": "100644",
@@ -891,15 +901,7 @@
         },
         "scripts/bootstrap_shell.py": {
           "mode": "100644",
-          "oid": "644f48c3a37bb6eabfb426d9c402069060b82d4d"
-        },
-        "scripts/bootstrap_toolchains.py": {
-          "mode": "100644",
-          "oid": "421d67d0dd6259bd6132ab1596dc6431400875ab"
-        },
-        "scripts/check_skills.py": {
-          "mode": "100644",
-          "oid": "cac7fe6d6509917e97ed6505a5e5289c5f1f3511"
+          "oid": "38e8696b09d7a2ba001a59e4c5d193b7dcede380"
         },
         "scripts/codex-cloud-setup.sh": {
           "mode": "100755",
@@ -911,77 +913,89 @@
         },
         "scripts/doctor.py": {
           "mode": "100755",
-          "oid": "9c1efc484c305d9e8633259df22e35ccc2422a29"
-        },
-        "scripts/graphify_adapter.py": {
-          "mode": "100644",
-          "oid": "9ba14c8d3814823c57702744023eb41d520d5312"
-        },
-        "scripts/graphify_install.py": {
-          "mode": "100644",
-          "oid": "9e2d0c140b53351b882450edece64a42ce6f2ebc"
+          "oid": "f2a85820f4e0b5629db5f4ef3975be080f144b80"
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "7ce5985b4f075fe0313647b65548a7ba0eedb825"
+          "oid": "f56a01dc9ba328225dbad03904ca992498a1466d"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "9172a320c7ac118ac231280fcefedb375ef7e86b"
-        },
-        "scripts/npm_runtime.py": {
-          "mode": "100644",
-          "oid": "f81064fed441e6c0283cc56613fbfbbdf67b24ba"
-        },
-        "scripts/python_runtime.py": {
-          "mode": "100644",
-          "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
-        },
-        "scripts/routing_inventory.py": {
-          "mode": "100644",
-          "oid": "779d0c37e68d5080a0a43bf649f05eae16a50b28"
+          "oid": "717bd1360c108751dee8aabab5ae3d68944476fa"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
-          "oid": "25db58ef774ba9133ed35c4832bd09462a80c767"
+          "oid": "e6acd4662c2d8a348a0abb783a655f9f8fd8256f"
         },
         "scripts/setup_integrations.py": {
           "mode": "100755",
-          "oid": "fa39e40912b81187cdb2555c9556befb9e813c06"
+          "oid": "a598fb00f571bee73ca94243a877a8dc24c14d9d"
         },
-        "scripts/setup_lever.py": {
+        "src/README.md": {
           "mode": "100644",
-          "oid": "70e68bafb1b6be08dc7595b5f3f78e70292d6c20"
+          "oid": "598b7ed1e1b109ac3243604d5f6c6a19e6839340"
         },
-        "scripts/skill_roots.py": {
+        "src/bootstrap_toolchains.py": {
+          "mode": "100644",
+          "oid": "421d67d0dd6259bd6132ab1596dc6431400875ab"
+        },
+        "src/check_skills.py": {
+          "mode": "100644",
+          "oid": "3bc5b71d3248d37c625a00aaa055137eb4fa76ee"
+        },
+        "src/graphify_adapter.py": {
+          "mode": "100644",
+          "oid": "9ba14c8d3814823c57702744023eb41d520d5312"
+        },
+        "src/graphify_install.py": {
+          "mode": "100644",
+          "oid": "5d9254218272334c0fde88af9409cf2593b535ac"
+        },
+        "src/npm_runtime.py": {
+          "mode": "100644",
+          "oid": "f81064fed441e6c0283cc56613fbfbbdf67b24ba"
+        },
+        "src/python_runtime.py": {
+          "mode": "100644",
+          "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
+        },
+        "src/routing_inventory.py": {
+          "mode": "100644",
+          "oid": "19804903a38b9aac25b353c63fa2c44ea4292d78"
+        },
+        "src/setup_lever.py": {
+          "mode": "100644",
+          "oid": "698201967058b46a121c0e289707e9f79262bb9f"
+        },
+        "src/skill_roots.py": {
           "mode": "100644",
           "oid": "07c5b8be393fef36404b954e779e2b970f1a90ea"
         },
-        "scripts/steering_adapter.py": {
+        "src/steering_adapter.py": {
           "mode": "100644",
-          "oid": "4fe99318c7197f2d17cbc4577b76fca2effc8ada"
+          "oid": "fc98eb3cd51c33a0b61cf33f0ac417cc9b2bb7f6"
         },
-        "scripts/tkstack_state.py": {
+        "src/tkstack_state.py": {
           "mode": "100644",
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
       "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "e8117dd2758d4881f50642c249bb1eff9c1a894f"
+          "oid": "24681e5b9aa4bc5e387dfd67b87f02542d523f0e"
         },
         "docs/flowify.md": {
           "mode": "100644",
-          "oid": "1785ae8493d15a2cfbda6bacabf19f8a8edf7738"
+          "oid": "ffb4224e2841715362944f794a2ed23f4318f66b"
         },
         "docs/grok-learn.md": {
           "mode": "100644",
@@ -989,15 +1003,15 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "64bf90ed0caca6c07feadcdb9c86c0d666c67c62"
+          "oid": "e5fc1a4c35b035b0d7cc6ad622f9df702fe08022"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "a7190d8d9d1fe1e3ae0707fc542ac595b217df2e"
+          "oid": "6917e03fba588896b4dd3c9494ea4fcf65761970"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1005,7 +1019,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
+          "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1017,7 +1031,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "14df3d9b3efab318e0c1789d878250b8bd84b836"
+          "oid": "74b3750719906581feb241401773a824c5d33cb8"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -1025,19 +1039,19 @@
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
-          "oid": "5102f47a6386f9c49253205aa52eaf5008bc93fa"
+          "oid": "ab91cdbc03ab602ffe3d2a25bc3bc4844e6008c1"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
+          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "27ddd9b6058a41389ab39b3303e6cbb18558ce30"
+          "oid": "bba55ea6a9d7402fe76871470fb80242309a1eb5"
         },
         "docs/state-layout.md": {
           "mode": "100644",
-          "oid": "dbe4cd941e7b70e7a623154271d92d58b564efdb"
+          "oid": "d0c075fdbb4e73fd482e821adce7cf1c0fd3e623"
         },
         "docs/unslop.md": {
           "mode": "100644",
@@ -1047,7 +1061,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a059b1a08dec3f1c4d1fc459cd35f229d4d2feee"
+          "oid": "4abd27a4360089ace9af2e3570ad0d7e1a93ef25"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1099,27 +1113,31 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "feeac513464be3d97f9cb7f24d0a0470551aca21"
+          "oid": "96f192ad19de6e0f0a2be7535a8237ba0d50e21d"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
-          "oid": "b39c5597a052110cac2887fb491b7183b7b40c39"
+          "oid": "62b2758f7c4c3db36fdd5bdc6b93271d70558afc"
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
-          "oid": "407a9f4dcc8e09a1b11ffc409bf7cf1bee537a95"
+          "oid": "8898597a3304574ecbca7930576679bfd5f91222"
         },
-        "evals/repo-quality/results/baseline-checks.json": {
+        "evals/repo-quality/results/archive/README.md": {
+          "mode": "100644",
+          "oid": "029df5ab0a1d635ce2748c4322a35eaf988347b6"
+        },
+        "evals/repo-quality/results/archive/baseline-checks.json": {
           "mode": "100644",
           "oid": "31bafa3d4baaaa24a360efa9b40a87aeedbf6878"
         },
-        "evals/repo-quality/results/baseline-reasons.md": {
+        "evals/repo-quality/results/archive/baseline-reasons.md": {
           "mode": "100644",
           "oid": "2b727b4eeb24d48a5d22199d7a4082a160b4df8d"
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "d2ced9bc07cf4a1a2da4c43fe229887be47d62eb"
+          "oid": "65d4a1c4244c353ad5284a2496ba8971b8646167"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -1156,10 +1174,6 @@
         "evals/write/tasks.json": {
           "mode": "100644",
           "oid": "1714d25d186f4f1280b44748032d3fc493f71195"
-        },
-        "scripts/evolve.py": {
-          "mode": "100644",
-          "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         },
         "skills/README.md": {
           "mode": "100644",
@@ -1507,7 +1521,7 @@
         },
         "skills/learn/references/improvement.md": {
           "mode": "100644",
-          "oid": "fbcec2d37b80777200247d20b531e4a813bdf410"
+          "oid": "bc8e0ead1b1f549f08f35b4768833a39195093a1"
         },
         "skills/learn/references/operating-guide.md": {
           "mode": "100644",
@@ -1571,7 +1585,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "d45e98650b7a91cafdb07ebbb810be8c580b5a72"
+          "oid": "a484d376fbe5954e5955e00f874ffff1e6180ff9"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1883,7 +1897,7 @@
         },
         "skills/learn/skills/instructify/references/harnesses.md": {
           "mode": "100644",
-          "oid": "89df93231089e8b496e8626c2b2f0b85d1a5c3f3"
+          "oid": "3b255ff6015bc4d2396e592f00d5d46c869ed6a5"
         },
         "skills/learn/skills/instructify/references/manifest.md": {
           "mode": "100644",
@@ -1891,7 +1905,7 @@
         },
         "skills/learn/skills/instructify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "da83c2588aa1164ba54ef17aaacbecd74c89a1ec"
+          "oid": "3336da104c7280ee908244d5ebe5f43aeff49a7f"
         },
         "skills/learn/skills/instructify/references/storage.md": {
           "mode": "100644",
@@ -1931,7 +1945,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "6aea6dfb1f1b585a6a594483b69fe7c33cd34bda"
+          "oid": "14681967e5a978341c3aca4f0da43c1bea205147"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2383,7 +2397,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "bc6f41fdf6e8b1339b9e69793c7f54dddf9a9203"
+          "oid": "c6a0a9ca8e7722b8dd735b7ce7b0ba610d075dca"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2435,7 +2449,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "fdb9d131dd3591f71e72c9733781281f458a8b9d"
+          "oid": "ac95d0a07bf85cccc3dae398ec5d46b350c694e5"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2740,16 +2754,20 @@
         "skills/write/scripts/workflow.lock.json": {
           "mode": "100644",
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
+        },
+        "src/evolve.py": {
+          "mode": "100644",
+          "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": true,
-      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
+      "no_doc_impact": false,
+      "reason": "Parse harness skill links without importing the checkout and name Copilot and Muse in placement."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "defb5c1c1b66332bda9bba3e1de72f7eac81412e"
+    "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
   },
   "version": 1
 }

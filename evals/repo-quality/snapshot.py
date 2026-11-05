@@ -4,15 +4,26 @@
 Promptfoo's exec provider cwd is the config directory, and it appends the
 rendered prompt, provider options, and call context as extra arguments. Those
 arguments are ignored. The repository root is this file's parents[2], so the
-snapshot does not depend on the process working directory. Output is capped
-at 60_000 characters. Home directories and secret-like values are redacted.
+snapshot does not depend on the process working directory. Home directories
+and secret-like values are redacted.
+
+Promptfoo's exec grader (`exec:python3 judge.py`) passes the rendered grading
+prompt as one argv string and a context JSON as another. That context embeds
+the snapshot twice: inside the grading prompt, and again as `vars.output`.
+JSON escaping makes the context about 2.2 times the snapshot. Linux
+MAX_ARG_STRLEN is 131072 bytes, so a 60_000 character snapshot overflows the
+context argument (`spawn E2BIG`). Output stays at or below LIMIT encoded
+bytes, safely under 100 KiB.
 
 The snapshot lists git-tracked files (`git ls-files`). A generated tree such
 as `.tkstack/runtime` is omitted. When git cannot be run, a walk skips `.git`,
 `__pycache__`, `node_modules`, `.tkstack`, `.venv`, and `venv`. README.md is
 placed before the file tree so truncating a long tree keeps the README.
+Long file excerpts are capped. Generated lock JSON is summarized instead of
+inlined, and download records (urls, hashes) inside manifests are omitted.
 """
 
+import json
 import os
 import re
 import subprocess
@@ -21,8 +32,38 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-LIMIT = 60_000
-READ_CAP = 8_000
+# Encoded-byte ceiling. A snapshot at this size keeps promptfoo's doubled,
+# JSON-escaped context argument under MAX_ARG_STRLEN with margin. See the
+# module docstring. The public test also requires the snapshot itself to stay
+# under 100_000 bytes.
+LIMIT = 52_000
+READ_CAP = 5_000
+# Head includes ## Install options through --uninstall and the verify-first
+# alternative. The file's later ## Maintain section does not fit this cap;
+# ## Develop, which is inside the head, already shows preview, test, and docs.
+README_CAP = 10_800
+README_HEAD = 10_800
+README_TAIL = 0
+# Head keeps the uv pin and archive checks. Tail keeps main() and the call
+# on the last line, inside the same encoded budget as a flat 5_000 excerpt.
+INSTALL_CAP = 5_000
+INSTALL_HEAD = 4_550
+INSTALL_TAIL = 400
+AGENTS_CAP = 4_200
+AGENTS_HEAD = 1_700
+AGENTS_TAIL = 2_300
+MANIFEST_CAP = 1_600
+DOC_CAP = 2_100
+HARNESS_README_CAP = 2_000
+JSON_STRING_CAP = 180
+_LOCK_NAMES = {
+    "package-lock.json",
+    "npm-shrinkwrap.json",
+    "sources.lock.json",
+    "workflow.lock.json",
+}
+_OMIT_JSON_KEYS = {"sha256", "integrity", "resolved", "archive_member"}
+_DOWNLOAD_KEYS = {"url", "sha256", "integrity", "resolved", "archive_member"}
 INTERESTING_FILES = {
     "SKILL.md", "README.md", "AGENTS.md", "CLAUDE.md",
     "plugin.json", "marketplace.json", "install.sh",
@@ -142,7 +183,7 @@ def _loc_report(paths):
         entries = per_top[name]
         total = sum(count for _, count in entries)
         lines.append(f"{name}/: {total} non-blank lines")
-        if name == "scripts":
+        if name in ("scripts", "src"):
             for relative, count in sorted(entries, key=lambda item: (-item[1], item[0])):
                 if count:
                     lines.append(f"  {relative}: {count}")
@@ -197,6 +238,10 @@ def _tree(paths):
                         )
                     continue
                 lines.append(f"{relative}/ ({counts.get(relative, 0)} files)")
+                # Deep package internals are counts only. Every SKILL.md path is
+                # listed in its own section, including paths below this cutoff.
+                if relative.count("/") >= 2:
+                    continue
                 walk(relative)
             elif name in INTERESTING_FILES or directory == "":
                 if relative in file_set:
@@ -206,36 +251,115 @@ def _tree(paths):
     return "\n".join(lines)
 
 
+def _is_lockfile(relative):
+    name = relative.rsplit("/", 1)[-1]
+    return name in _LOCK_NAMES or name.endswith(".lock")
+
+
+def _compact_json_value(value):
+    """Drop lockfile bodies, download hashes, and very long strings."""
+    if isinstance(value, dict):
+        if "packages" in value and ("lockfileVersion" in value or "dependencies" in value):
+            summary = {"_excerpt": "lockfile omitted"}
+            for key in ("name", "version"):
+                if key in value and not isinstance(value[key], (dict, list)):
+                    summary[key] = value[key]
+            return summary
+        if "sha256" in value and "url" in value and set(value) <= _DOWNLOAD_KEYS:
+            return "[download record omitted]"
+        compacted = {}
+        for key, item in value.items():
+            if key in _OMIT_JSON_KEYS:
+                continue
+            compacted[key] = _compact_json_value(item)
+        return compacted
+    if isinstance(value, list):
+        return [_compact_json_value(item) for item in value]
+    if isinstance(value, str) and len(value) > JSON_STRING_CAP:
+        return value[:JSON_STRING_CAP] + "…"
+    return value
+
+
+def _compact_json(text):
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        return text
+    compacted = json.dumps(_compact_json_value(value), indent=2, ensure_ascii=False) + "\n"
+    return compacted if len(compacted) < len(text) else text
+
+
+def _load_text(relative):
+    path = ROOT / relative
+    try:
+        return path.read_text(encoding="utf-8", errors="replace"), None
+    except OSError as error:
+        return None, f"UNREADABLE: {relative} ({error})"
+
+
 def _read(relative, tracked, cap=READ_CAP):
     if relative not in tracked:
         return f"ABSENT: {relative}"
-    path = ROOT / relative
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except OSError as error:
-        return f"UNREADABLE: {relative} ({error})"
+    text, error = _load_text(relative)
+    if error:
+        return error
+    if _is_lockfile(relative):
+        return f"[omitted generated lockfile {relative}, {len(text.encode())} bytes]\n"
+    if relative.endswith(".json"):
+        text = _compact_json(text)
     if len(text) > cap:
         return text[:cap] + f"\n[truncated {relative}]\n"
     return text
 
 
-def _read_ends(relative, tracked, cap=READ_CAP):
-    """Keep the start and the end so a long file's closing sections survive."""
+def _read_ends(relative, tracked, cap, head, tail):
+    """Keep the start and end of a long file inside cap."""
     if relative not in tracked:
         return f"ABSENT: {relative}"
-    path = ROOT / relative
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except OSError as error:
-        return f"UNREADABLE: {relative} ({error})"
+    text, error = _load_text(relative)
+    if error:
+        return error
     if len(text) <= cap:
         return text
-    head = cap * 2 // 3
     marker = f"\n[truncated middle of {relative}]\n"
-    tail = cap - head - len(marker)
-    if tail < 200:
+    if head + len(marker) + tail > cap:
+        tail = max(0, cap - head - len(marker))
+    if tail <= 0:
         return text[:cap] + f"\n[truncated {relative}]\n"
     return text[:head] + marker + text[-tail:]
+
+
+def _skill_paths(paths):
+    """Every tracked SKILL.md, including paths the file tree collapses."""
+    names = sorted(
+        relative for relative in paths
+        if relative == "SKILL.md" or relative.endswith("/SKILL.md")
+    )
+    return "\n".join(names) if names else "none"
+
+
+def _source_pins():
+    """name, version, and revision for each sources.lock.json source."""
+    relative = "sources.lock.json"
+    text, error = _load_text(relative)
+    if error:
+        return error
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        return f"UNREADABLE: {relative}"
+    sources = value.get("sources") if isinstance(value, dict) else None
+    if not isinstance(sources, dict):
+        return "ABSENT: sources.lock.json sources"
+    lines = ["name version revision"]
+    for name in sorted(sources):
+        source = sources[name]
+        if not isinstance(source, dict):
+            continue
+        version = source.get("version") or "-"
+        revision = source.get("revision") or "-"
+        lines.append(f"{name} {version} {revision}")
+    return "\n".join(lines)
 
 
 def _frontmatter_fields(text):
@@ -284,7 +408,7 @@ def _skill_frontmatter(paths):
                 blocks.append(f"### {relative}\nno frontmatter")
                 continue
             name = fields.get("name", "")
-            description = fields.get("description", "")[:240]
+            description = fields.get("description", "")[:80]
             blocks.append(f"### {relative}\nname: {name}\ndescription: {description}")
     return "\n\n".join(blocks)
 
@@ -314,55 +438,84 @@ def _docs(paths):
 def _manifests(tracked):
     parts = []
     for relative in MANIFESTS:
-        parts.append(f"### {relative}\n{_read(relative, tracked)}")
+        cap = READ_CAP if relative.endswith("skills.json") or relative.endswith("plugin.json") else MANIFEST_CAP
+        parts.append(f"### {relative}\n{_read(relative, tracked, cap)}")
     return "\n\n".join(parts)
+
+
+def _within(text):
+    """True when both the character count and the encoded size fit LIMIT."""
+    return len(text) <= LIMIT and len(text.encode()) <= LIMIT
+
+
+def _cut(text):
+    marker = "\n[truncated]\n"
+    if _within(text):
+        return text
+    lo, hi = 0, len(text)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if _within(text[:mid] + marker):
+            lo = mid
+        else:
+            hi = mid - 1
+    return text[:lo] + marker
 
 
 def _fit(required, extras):
     """Keep required sections. Add later sections only while under LIMIT."""
     text = redact(required)
+    if not _within(text):
+        return _cut(text)
     marker = "\n[truncated]\n"
-    if len(text) > LIMIT:
-        return text[: LIMIT - len(marker)] + marker
     for extra in extras:
         piece = redact(extra)
         candidate = text + "\n\n" + piece
-        if len(candidate) <= LIMIT:
+        if _within(candidate):
             text = candidate
             continue
         room = LIMIT - len(text) - 2 - len(marker)
         if room > 200:
-            text = text + "\n\n" + piece[:room] + marker
+            chunk = piece[:room]
+            newline = chunk.rfind("\n")
+            if newline > 200:
+                chunk = chunk[:newline]
+            trimmed = text + "\n\n" + chunk + marker
+            text = trimmed if _within(trimmed) else _cut(trimmed)
         break
-    if len(text) > LIMIT:
-        text = text[: LIMIT - len(marker)] + marker
+    if not _within(text):
+        text = _cut(text)
     return text
 
 
 def snapshot():
     paths = _tracked_files()
     tracked = set(paths)
-    # README.md is required and comes before the file tree. A long tree is
-    # truncated from the end of this blob, so the README stays in the prefix.
+    # README, install.sh, manifests, docs headings, and the LOC table are
+    # required and come before the file tree. A long tree is truncated from
+    # the end of this blob, so that evidence stays in the prefix.
     required = "\n\n".join([
         "Repository snapshot. Paths are relative to the repo root. "
         "Use only paths and text that appear below as evidence. "
         "Home directories and secret-like values are redacted. "
-        "Only git-tracked files are listed.",
+        "Only git-tracked files are listed. "
+        "Generated lockfiles are omitted and long excerpts are capped.",
         "## LOC per top-level directory\n" + _loc_report(paths),
-        "## README.md\n" + _read_ends("README.md", tracked),
-        "## File tree\n" + _tree(paths),
+        "## README.md\n" + _read_ends("README.md", tracked, README_CAP, README_HEAD, README_TAIL),
+        "## install.sh\n" + _read_ends("install.sh", tracked, INSTALL_CAP, INSTALL_HEAD, INSTALL_TAIL),
+        "## Source pins\n" + _source_pins(),
         "## Manifests\n" + _manifests(tracked),
+        "## Docs\n" + _docs(paths),
+        "## SKILL.md paths\n" + _skill_paths(paths),
+        "## File tree\n" + _tree(paths),
         "## SKILL.md frontmatter\n"
         "Owned skills under skills/ and .agents/skills/. "
         "Each block is that file's name and description.\n" + _skill_frontmatter(paths),
-        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked),
-        "## install.sh\n" + _read("install.sh", tracked),
-        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked),
+        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked, DOC_CAP),
+        "## harnesses/README.md\n" + _read("harnesses/README.md", tracked, HARNESS_README_CAP),
     ])
     extras = [
-        "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked),
-        "## Docs\n" + _docs(paths),
+        "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked, AGENTS_CAP, AGENTS_HEAD, AGENTS_TAIL),
     ]
     return _fit(required, extras)
 

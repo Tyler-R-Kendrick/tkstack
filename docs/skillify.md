@@ -145,4 +145,4 @@ and residual semantic limits. Native helper policy stays with its original code.
 Generation tracks relative owned output hashes and rejects modified generated
 sources before overwrite/removal. Recompile actual code/cases after changes.
 [All-skill normalization and maintenance](normalization.md) contains the complete
-procedure and coverage; `scripts/check_skills.py` and doctor enforce conformance.
+procedure and coverage; `src/check_skills.py` and doctor enforce conformance.

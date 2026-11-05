@@ -1,7 +1,7 @@
 # RTK runtime and exact evidence
 
 Use the actual Rust Token Killer executable and its supported wrappers. In the
-tkstack checkout, `scripts/tool.py rtk` launches the selected runtime and native
+tkstack checkout, `src/tool.py rtk` launches the selected runtime and native
 hooks leave commands unchanged when it is absent. A standalone copied skill
 does not contain this launcher or install the binary.
 

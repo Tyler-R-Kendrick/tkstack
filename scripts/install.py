@@ -9,22 +9,23 @@ from pathlib import Path
 import re
 import sys
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 import subprocess
 
 from tkstack_state import ensure_state
 from skill_roots import ADOPTED, nested, packages
 from runtime_environment import with_paths
+from harness_paths import HOOK_HARNESSES, SKILL_DIRECTORIES, skill_directory
 
 from steering_adapter import apply_instructions, instruction_plan
 from setup_integrations import apply_configuration, configuration_plan
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILL_PATHS = {
-    "codex": Path(".agents/skills"),
-    "claude": Path(".claude/skills"),
-    "cursor": Path(".cursor/skills"),
-}
+SKILL_PATHS = SKILL_DIRECTORIES
+DEFAULT_HARNESSES = ("codex", "claude", "cursor")
+# Releases before Muse moved to ~/.config/muse/skills linked .muse/skills.
+LEGACY_SKILL_DIRECTORIES = (Path(".muse/skills"),)
 # Committed third-party-derived packages; they install like a harness-independent source.
 ADOPTED_SOURCE = "adopted"
 AGENT_PATHS = {
@@ -79,9 +80,9 @@ def rewrite_callers(root, source):
 def placement(rules, kind, source):
     """Harnesses that receive a source's content; None means every selected harness.
 
-    Personal content joins every harness. Harness-independent upstream skills go
-    only to the shared `.agents/skills` directory (the codex slot); explicitly
-    placed sources, such as Cursor-only packages, keep their own harnesses.
+    Personal content joins every selected harness. Other skills use
+    placement.default when kind is "skills", unless placement.sources names
+    that source. An absent default means every selected harness.
     """
     if source is None:
         return None
@@ -198,7 +199,24 @@ def placed(root, kind, harness):
             if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
 
 
-def link_plan(root, target, harnesses):
+def harness_skill_directories(harness, scope="home"):
+    """Skill directories this installer links.
+
+    scope None scans home and project. Uninstall uses that so a project
+    Copilot, Muse, or OpenCode link is removed with the home link.
+    """
+    if scope is None:
+        found = []
+        for scope_name in ("home", "project"):
+            relative = skill_directory(harness, scope_name)
+            if relative is not None and relative not in found:
+                found.append(relative)
+        return found
+    relative = skill_directory(harness, scope)
+    return [] if relative is None else [relative]
+
+
+def link_plan(root, target, harnesses, scope="home"):
     plan = []
     if harnesses and ((root / "skills/learn/SKILL.md").is_file() or (root / ".tkstack/steering").is_dir()):
         plan.append(((root / ".tkstack/steering").resolve(), target / ".agents/steering"))
@@ -206,11 +224,15 @@ def link_plan(root, target, harnesses):
     if harnesses and (principles / "SKILL.md").is_file():
         plan.append((principles.resolve(), target / ".agents/principles"))
     for harness in harnesses:
+        relatives = harness_skill_directories(harness, scope)
+        if not relatives:
+            continue
         skills, agents = placed(root, "skills", harness), placed(root, "agents", harness)
-        # A package committed at its own destination (self-install) needs no link.
-        plan.extend((source, target / SKILL_PATHS[harness] / name)
-                    for name, source in skills.items()
-                    if (target / SKILL_PATHS[harness]).resolve() / name != source)
+        for relative in relatives:
+            # A package committed at its own destination (self-install) needs no link.
+            plan.extend((source, target / relative / name)
+                        for name, source in skills.items()
+                        if (target / relative).resolve() / name != source)
         if harness in AGENT_PATHS:
             plan.extend((source, target / AGENT_PATHS[harness] / name)
                         for name, source in agents.items())
@@ -219,20 +241,31 @@ def link_plan(root, target, harnesses):
                         for name, source in placed(root, "rules", harness).items())
             for rule in sorted((root / "harnesses/cursor").glob("*.mdc")):
                 plan.append((rule.resolve(), target / ".cursor/rules" / rule.name))
-    return plan
+    # Project Muse shares Codex's .agents/skills, so the same link can be planned twice.
+    unique = []
+    seen = set()
+    for item in plan:
+        if item in seen:
+            continue
+        seen.add(item)
+        unique.append(item)
+    return unique
 
 
 def matches(destination, source):
     return destination.is_symlink() and destination.resolve() == source
 
 
-def stale_links(root, target, harnesses, plan):
+def stale_links(root, target, harnesses, plan, scope="home"):
     """This checkout's links in native directories that the plan no longer places."""
     planned = {destination for _, destination in plan}
-    directories = [SKILL_PATHS[h] for h in harnesses] + [AGENT_PATHS[h] for h in harnesses
-                                                          if h in AGENT_PATHS]
+    directories = []
+    for harness in harnesses:
+        directories.extend(harness_skill_directories(harness, scope))
+    directories += [AGENT_PATHS[h] for h in harnesses if h in AGENT_PATHS]
     if "cursor" in harnesses:
         directories.append(Path(".cursor/rules"))
+    directories.extend(LEGACY_SKILL_DIRECTORIES)
     root = root.resolve()
     stale = []
     for relative in directories:
@@ -254,7 +287,7 @@ def remove_stale(paths, dry_run=False):
     return len(paths)
 
 
-def alias_migrations(root, target, harnesses):
+def alias_migrations(root, target, harnesses, scope="home"):
     """Recognize only this checkout's former, unaliased upstream skill links."""
     migrations = {}
     steering = target / ".agents/steering"
@@ -264,7 +297,8 @@ def alias_migrations(root, target, harnesses):
         for path in (root / "vendor" / source / "skills").rglob("SKILL.md"):
             if path.parent.name in aliases:
                 for harness in harnesses:
-                    migrations[target / SKILL_PATHS[harness] / path.parent.name] = path.parent.resolve()
+                    for relative in harness_skill_directories(harness, scope):
+                        migrations[target / relative / path.parent.name] = path.parent.resolve()
     return migrations
 
 
@@ -337,22 +371,34 @@ def main():
     parser.add_argument("--target", type=Path, default=Path.home(),
                         help="Home or project root to install into (default: your home)")
     parser.add_argument("--harness", action="append", choices=tuple(SKILL_PATHS),
-                        help="Harness to install; repeat to select several (default: all)")
+                        help="Harness to install; repeat to select several (default: codex, claude, cursor)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without changing files")
-    parser.add_argument("--uninstall", action="store_true", help="Remove only this checkout's links")
+    parser.add_argument("--uninstall", action="store_true",
+                        help="Remove this checkout's links for every harness")
     parser.add_argument("--scope", choices=("home", "project"),
                         help="Instruction placement (default: home for your home directory, else project)")
     args = parser.parse_args()
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        harnesses = list(dict.fromkeys(args.harness or SKILL_PATHS))
+        selected = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
-        plan = link_plan(ROOT, target, harnesses)
-        migrations = alias_migrations(ROOT, target, harnesses)
+        if args.uninstall:
+            harnesses = list(SKILL_PATHS)
+            link_scope = None
+            if args.harness:
+                print("tkstack: --uninstall removes this checkout's links for every harness; --harness does not limit it.",
+                      file=sys.stderr)
+        else:
+            harnesses = selected
+            link_scope = scope
+        plan = link_plan(ROOT, target, harnesses, link_scope)
+        migrations = alias_migrations(ROOT, target, harnesses, link_scope)
         instructions = instruction_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
-        configurations = configuration_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
+        configurations = configuration_plan(
+            ROOT, target, [harness for harness in harnesses if harness in HOOK_HARNESSES],
+            scope, uninstall=args.uninstall)
         if not args.uninstall:
             preflight(plan, migrations)
             from runner_install import plan as runner_plan
@@ -361,7 +407,7 @@ def main():
                 initialize_state(ROOT)
                 prepare_aliases(ROOT)
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
-        changes += remove_stale(stale_links(ROOT, target, harnesses, plan), dry_run=args.dry_run)
+        changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
         apply_instructions(instructions, dry_run=args.dry_run)
         apply_configuration(configurations, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError) as error:

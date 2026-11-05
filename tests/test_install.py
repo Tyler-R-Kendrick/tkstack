@@ -1,7 +1,11 @@
 """Exercise installation against temporary targets, never the user's home."""
 
+import hashlib
 import importlib.util
+import io
+import os
 import re
+import tarfile
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
@@ -14,6 +18,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 SPEC = importlib.util.spec_from_file_location("install", ROOT / "scripts/install.py")
 install = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(install)
@@ -42,7 +47,11 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(destinations, {Path(".agents/skills"), Path(".claude/skills"),
                                        Path(".cursor/skills"), Path(".claude/agents"),
                                        Path(".cursor/agents"), Path(".cursor/rules"),
-                                       Path(".agents")})
+                                       Path(".agents"), Path(".grok/skills"),
+                                       Path(".kimi/skills"),
+                                       Path(".config/opencode/skills"),
+                                       Path(".copilot/skills"),
+                                       Path(".config/muse/skills")})
 
     def test_install_preserves_references_and_is_repeatable(self):
         self.assertEqual(install.apply(self.plan), self.expected_links)
@@ -77,6 +86,23 @@ class InstallTests(unittest.TestCase):
         # Sources with native per-harness variants keep their own directories.
         for name in ("graphify", "impeccable"):
             self.assertIn(name, shared & claude & cursor)
+        grok = by_directory[Path(".grok/skills")]
+        self.assertIn("learn", grok)
+        self.assertIn("matt-tdd", grok)
+        self.assertNotIn("architect", grok)
+        for relative in (Path(".copilot/skills"), Path(".config/muse/skills")):
+            hosted = by_directory[relative]
+            self.assertIn("learn", hosted)
+            self.assertIn("matt-tdd", hosted)
+            self.assertNotIn("architect", hosted)
+            self.assertNotIn("graphify", hosted)
+        self.assertIsNone(install.skill_directory("t3code"))
+        self.assertEqual(install.skill_directory("copilot"), Path(".copilot/skills"))
+        self.assertEqual(install.skill_directory("copilot", "project"), Path(".github/skills"))
+        self.assertEqual(install.skill_directory("muse"), Path(".config/muse/skills"))
+        self.assertEqual(install.skill_directory("muse", "project"), Path(".agents/skills"))
+        self.assertEqual(install.skill_directory("opencode"), Path(".config/opencode/skills"))
+        self.assertEqual(install.skill_directory("opencode", "project"), Path(".opencode/skills"))
 
     def test_reinstall_removes_links_outside_their_new_placement(self):
         install.apply(self.plan)
@@ -128,6 +154,83 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(install.apply(self.plan, uninstall=True), self.expected_links - 1)
         self.assertEqual(destination.read_text(), "replacement agent")
         self.assertEqual(install.apply(self.plan, uninstall=True), 0)
+
+    def test_uninstall_preserves_a_foreign_symlink_at_a_planned_destination(self):
+        install.apply(self.plan)
+        source, destination = next(pair for pair in self.plan if pair[1].parent.name == "skills" and ".grok" in pair[1].parts)
+        destination.unlink()
+        foreign = self.target / "not-this-checkout"
+        destination.symlink_to(foreign)
+        removed = install.apply(self.plan, uninstall=True)
+        self.assertEqual(removed, self.expected_links - 1)
+        self.assertTrue(destination.is_symlink())
+        self.assertEqual(os.readlink(destination), str(foreign))
+
+    def test_default_uninstall_removes_links_from_every_harness(self):
+        install.apply(self.plan)
+        foreign = self.target / ".grok" / "skills" / "foreign-skill"
+        foreign.parent.mkdir(parents=True, exist_ok=True)
+        foreign.symlink_to(self.target, target_is_directory=True)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        for _, destination in self.plan:
+            self.assertFalse(destination.exists() or destination.is_symlink())
+        self.assertTrue(foreign.is_symlink())
+
+    def test_foreign_runner_is_skipped(self):
+        import runner_install
+        state = self.target / "runner-state"
+        state.mkdir()
+        launcher = state / "tkstack"
+        launcher.write_text("not ours\n")
+        (state / "runner-owner.json").write_text('{"version": 1, "source": "/other", "sha256": "abc"}\n')
+        self.assertFalse(runner_install.remove(ROOT, state))
+        self.assertEqual(launcher.read_text(), "not ours\n")
+
+    def test_opencode_project_scope_uses_the_project_skills_directory(self):
+        project = self.target / "project"
+        plan = install.link_plan(ROOT, project, ["opencode"], "project")
+        parents = {destination.parent.relative_to(project) for _, destination in plan}
+        self.assertIn(Path(".opencode/skills"), parents)
+        self.assertNotIn(Path(".config/opencode/skills"), parents)
+
+    def test_copilot_and_muse_project_scopes_use_their_native_directories(self):
+        project = self.target / "project"
+        copilot = install.link_plan(ROOT, project, ["copilot"], "project")
+        copilot_parents = {destination.parent.relative_to(project) for _, destination in copilot}
+        self.assertIn(Path(".github/skills"), copilot_parents)
+        self.assertNotIn(Path(".copilot/skills"), copilot_parents)
+        muse = install.link_plan(ROOT, project, ["muse"], "project")
+        muse_parents = {destination.parent.relative_to(project) for _, destination in muse}
+        self.assertIn(Path(".agents/skills"), muse_parents)
+        self.assertNotIn(Path(".config/muse/skills"), muse_parents)
+        both = install.link_plan(ROOT, project, ["codex", "muse"], "project")
+        destinations = [destination for _, destination in both]
+        self.assertEqual(len(destinations), len(set(destinations)))
+        owned = project / ".github" / "skills" / "learn"
+        owned.parent.mkdir(parents=True)
+        owned.symlink_to(ROOT / "skills" / "learn", target_is_directory=True)
+        stale = install.stale_links(ROOT, project, list(install.SKILL_PATHS), [], None)
+        self.assertIn(owned, stale)
+
+    def test_uninstall_removes_owned_legacy_muse_links_and_keeps_foreign_ones(self):
+        legacy = self.target / ".muse" / "skills"
+        legacy.mkdir(parents=True)
+        owned = legacy / "learn"
+        owned.symlink_to(ROOT / "skills" / "learn", target_is_directory=True)
+        foreign = legacy / "other"
+        foreign.symlink_to(self.target, target_is_directory=True)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertFalse(owned.exists() or owned.is_symlink())
+        self.assertTrue(foreign.is_symlink())
+        self.assertEqual(os.readlink(foreign), str(self.target))
 
     def test_personal_skills_and_agents_join_the_installation(self):
         personal = self.target / "dotfiles"
@@ -224,6 +327,8 @@ class InstallTests(unittest.TestCase):
             self.assertIn('tkstack:steering:source repository', text)
             self.assertNotIn(str(root), text)
             self.assertIn('`.agents/steering/rules.md`', text)
+            self.assertIn('skills/learn/scripts/learn.py', text)
+            self.assertIn('generated and gitignored', text)
         relocated = self.target / 'relocated'
         shutil.copytree(root, relocated)
         self.assertEqual(instruction_plan(relocated, relocated, ['codex', 'claude'], 'project'), [])
@@ -235,6 +340,32 @@ class InstallTests(unittest.TestCase):
             instruction_plan(relocated, foreign, ['codex'], 'project')
         self.assertEqual((foreign / 'AGENTS.md').read_bytes(), before)
         self.assertEqual(instruction_plan(relocated, foreign, ['codex'], 'project', uninstall=True), [])
+
+    def test_generated_instruction_paths_name_their_tracked_sources(self):
+        from steering_adapter import instruction_plan
+        root = self.target / 'checkout'
+        for relative in (
+            'skills/learn/SKILL.md',
+            'skills/learn/scripts/learn.py',
+            'skills/tkstack-principles/SKILL.md',
+            'skills/unslop/SKILL.md',
+            'skills/unslop/scripts/unslop.py',
+            'skills/unslop/catalog/seeds.json',
+        ):
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('fixture\n')
+        (root / 'AGENTS.md').write_text('# Guide\n')
+        plan = instruction_plan(root, root, ['codex'], 'project')
+        text = plan[0][2]
+        self.assertIn('`.agents/steering/rules.md`', text)
+        self.assertIn('skills/learn/scripts/learn.py render', text)
+        self.assertIn('`.agents/principles/SKILL.md`', text)
+        self.assertIn('skills/tkstack-principles/SKILL.md', text)
+        self.assertIn('`.agents/steering/unslop/patterns.md`', text)
+        self.assertIn('skills/unslop/catalog/seeds.json', text)
+        self.assertIn('skills/unslop/scripts/unslop.py render', text)
+        self.assertNotIn(str(root), text)
 
     def test_self_project_migrates_only_its_own_legacy_steering_block(self):
         import hashlib
@@ -273,7 +404,7 @@ class InstallTests(unittest.TestCase):
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
         checkout.mkdir()
-        for directory in ('vendor', 'scripts', 'harnesses', 'skills'):
+        for directory in ('vendor', 'scripts', 'src', 'harnesses', 'skills'):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
         for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
@@ -313,7 +444,7 @@ class InstallTests(unittest.TestCase):
     def test_fresh_checkout_installs_without_a_preexisting_alias_view(self):
         checkout = self.target / "checkout"
         checkout.mkdir()
-        for directory in ("vendor", "scripts", "harnesses", "skills"):
+        for directory in ("vendor", "scripts", "src", "harnesses", "skills"):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copy2(ROOT / "sources.lock.json", checkout / "sources.lock.json")
@@ -333,6 +464,511 @@ class InstallTests(unittest.TestCase):
         self.assertIn("tkstack:steering:start", (target / "AGENTS.md").read_text())
         again = subprocess.run(command, check=True, capture_output=True, text=True)
         self.assertIn("0 link(s) changed.", again.stdout)
+
+
+def _stub_path(root, hide_prefixes, stubs):
+    """Build a PATH whose stub executables hide selected real commands."""
+    root.mkdir(parents=True, exist_ok=True)
+    bindir = root / "stubs"
+    system = root / "system-bin"
+    bindir.mkdir()
+    system.mkdir()
+    hidden = set()
+    for name, text in stubs.items():
+        path = bindir / name
+        path.write_text(text)
+        path.chmod(0o755)
+        hidden.add(name)
+    seen = set(hidden)
+    for directory in os.environ["PATH"].split(os.pathsep):
+        try:
+            entries = list(Path(directory).iterdir())
+        except OSError:
+            continue
+        for source in entries:
+            name = source.name
+            if name in seen or any(name == prefix or name.startswith(prefix) for prefix in hide_prefixes):
+                continue
+            if not source.is_file() or not os.access(source, os.X_OK):
+                continue
+            try:
+                (system / name).symlink_to(source)
+            except FileExistsError:
+                continue
+            seen.add(name)
+    return str(bindir) + os.pathsep + str(system)
+
+
+_UV_STUB = """#!/bin/sh
+printf '%s\\n' "$*" >> "$UV_LOG"
+exit 0
+"""
+
+_UV_INSTALLER_BODY = """#!/bin/sh
+bindir="${UV_INSTALL_DIR:-$HOME/.local/bin}"
+mkdir -p "$bindir"
+cat > "$bindir/uv" << 'UV'
+#!/bin/sh
+printf '%s\\n' "$*" >> "$UV_LOG"
+exit 0
+UV
+chmod +x "$bindir/uv"
+"""
+
+_CURL_UV = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$CURL_LOG"
+out=
+url=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) out=$2; shift 2 ;;
+    -o*) out=${1#-o}; shift ;;
+    https://*|http://*) url=$1; shift ;;
+    *) shift ;;
+  esac
+done
+case "$url" in
+  https://astral.sh/uv/0.12.23/install.sh) ;;
+  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
+esac
+[ -n "$out" ] || { printf '%s\n' 'missing -o' >&2; exit 1; }
+cat "$UV_INSTALLER_FILE" > "$out"
+"""
+
+_CURL_TARBALL = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$CURL_LOG"
+out=
+url=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) out=$2; shift 2 ;;
+    -o*) out=${1#-o}; shift ;;
+    https://*|http://*) url=$1; shift ;;
+    *) shift ;;
+  esac
+done
+case "$url" in
+  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main) ;;
+  *)
+    if [ -n "${CURL_ACCEPT:-}" ] && [ "$url" = "$CURL_ACCEPT" ]; then
+      :
+    else
+      printf '%s\n' "unexpected url: $url" >&2
+      exit 1
+    fi
+    ;;
+esac
+[ -n "$out" ] || exit 1
+if [ -n "${BAD_TAR:-}" ]; then
+  cat "$BAD_TAR" > "$out"
+  exit 0
+fi
+work=$(mktemp -d)
+mkdir -p "$work/tkstack-main/scripts"
+printf '%s\n' 'print(1)' > "$work/tkstack-main/scripts/bootstrap.py"
+cat > "$work/tkstack-main/install.sh" << 'END'
+#!/bin/sh
+printf '%s\n' "local-install $*" >> "$INSTALL_LOG"
+END
+chmod +x "$work/tkstack-main/install.sh"
+tar -czf "$out" -C "$work" tkstack-main
+rm -rf "$work"
+"""
+
+
+class InstallerPrerequisiteTests(unittest.TestCase):
+    """PATH stubs stand in for a host with no Python 3.11+ or no Git."""
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.base = Path(self.temporary.name)
+        self.home = self.base / "home with spaces"
+        self.home.mkdir()
+        self.uv_log = self.base / "uv.log"
+        self.curl_log = self.base / "curl.log"
+        self.install_log = self.base / "install.log"
+
+    def _env(self, path):
+        environment = os.environ.copy()
+        environment.update({
+            "HOME": str(self.home),
+            "PATH": path,
+            "UV_LOG": str(self.uv_log),
+            "CURL_LOG": str(self.curl_log),
+            "INSTALL_LOG": str(self.install_log),
+            "GIT_LOG": str(self.base / "git.log"),
+        })
+        environment.pop("TKSTACK_PYTHON", None)
+        environment.pop("UV_INSTALL_DIR", None)
+        environment.pop("TKSTACK_HOME", None)
+        environment.pop("TKSTACK_REPO", None)
+        environment.pop("TKSTACK_TARBALL", None)
+        environment.pop("TKSTACK_TRUST_HOME", None)
+        environment.pop("BAD_TAR", None)
+        environment.pop("UV_INSTALLER_FILE", None)
+        environment.pop("CURL_ACCEPT", None)
+        environment.pop("FAIL_MV_DEST", None)
+        environment.pop("REAL_MV", None)
+        environment.pop("MV_LOG", None)
+        return environment
+
+    def _installer_body(self):
+        path = self.base / "uv-installer.sh"
+        path.write_text(_UV_INSTALLER_BODY)
+        return path
+
+    def _pinned_checkout(self, digest=None):
+        checkout = self.base / "checkout"
+        (checkout / "scripts").mkdir(parents=True)
+        text = (ROOT / "install.sh").read_text()
+        if digest:
+            pin = "UV_INSTALLER_SHA256=b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491"
+            text = text.replace(pin, "UV_INSTALLER_SHA256=" + digest, 1)
+        script = checkout / "install.sh"
+        script.write_text(text)
+        script.chmod(0o755)
+        (checkout / "scripts" / "bootstrap.py").write_text("raise SystemExit(0)\n")
+        return script
+
+    def _run(self, script, path, *arguments, extra=None):
+        environment = self._env(path)
+        if extra:
+            environment.update(extra)
+        return subprocess.run(
+            ["bash", str(script), *arguments],
+            cwd=self.base,
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+        )
+
+    def test_readme_pins_match_the_installer(self):
+        script = (ROOT / "install.sh").read_text()
+        readme = (ROOT / "README.md").read_text()
+        bootstrap = (ROOT / "docs" / "bootstrap.md").read_text()
+        for token in (
+            "0.12.23",
+            "3.12.15",
+            "b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491",
+        ):
+            self.assertIn(token, script)
+            self.assertIn(token, readme)
+            self.assertIn(token, bootstrap)
+        self.assertTrue(script.rstrip().endswith('main "$@"'))
+        self.assertNotIn("uv/install.sh |", script)
+        self.assertIsNone(re.search(r"(?m)^\s*mv -T\b", script))
+        self.assertIsNone(re.search(r"(?m)^\s*realpath\b", script))
+        install = readme.split("## Develop", 1)[0]
+        self.assertEqual(install.count("```sh"), 1)
+
+    def test_truncated_installer_does_not_run_a_prefix(self):
+        text = (ROOT / "install.sh").read_text()
+        partial = self.base / "partial.sh"
+        partial.write_text(text[:text.rfind('main "$@"')])
+        path = _stub_path(self.base / "bins", ("python", "uv", "git"), {"curl": _CURL_TARBALL})
+        result = self._run(partial, path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse((self.home / ".local" / "share" / "tkstack").exists())
+        self.assertFalse(self.curl_log.exists())
+
+    def test_missing_python_uses_uv_without_installing_uv(self):
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"uv": _UV_STUB, "curl": "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$CURL_LOG\"\nexit 1\n"})
+        target = self.base / "target"
+        result = self._run(ROOT / "install.sh", path, "--dry-run", "--offline", "--target", str(target))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        log = self.uv_log.read_text()
+        self.assertIn("python install 3.12.15", log)
+        self.assertIn("run --python 3.12.15 --no-project -- python -B ", log)
+        self.assertIn(str(ROOT / "scripts" / "bootstrap.py"), log)
+        self.assertIn("--dry-run", log)
+        self.assertIn("--offline", log)
+        self.assertNotIn("requires Python 3.11+", result.stderr)
+        self.assertFalse(self.curl_log.exists())
+
+    def test_missing_python_and_uv_bootstraps_the_pinned_uv_installer(self):
+        body = self._installer_body()
+        digest = hashlib.sha256(body.read_bytes()).hexdigest()
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV})
+        poison = self.base / "poison-bin"
+        script = self._pinned_checkout(digest)
+        result = self._run(
+            script, path, "--dry-run", "--target", str(self.base / "target"),
+            extra={"UV_INSTALLER_FILE": str(body), "UV_INSTALL_DIR": str(poison)},
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("https://astral.sh/uv/0.12.23/install.sh", self.curl_log.read_text())
+        self.assertIn(" -o ", " " + self.curl_log.read_text())
+        log = self.uv_log.read_text()
+        self.assertIn("python install 3.12.15", log)
+        self.assertIn("run --python 3.12.15", log)
+        installed = self.home / ".local" / "bin" / "uv"
+        self.assertTrue(installed.is_file())
+        self.assertFalse(poison.exists())
+        self.assertNotIn("requires Python 3.11+", result.stderr)
+
+    def test_uv_installer_sha256_mismatch_does_not_run_it(self):
+        body = self._installer_body()
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV, "sh": "#!/bin/sh\nprintf '%s\\n' ran-sh >> \"$UV_LOG\"\nexit 0\n"})
+        script = self._pinned_checkout()
+        result = self._run(script, path, extra={"UV_INSTALLER_FILE": str(body)})
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("sha256", result.stderr)
+        self.assertFalse((self.home / ".local" / "bin" / "uv").exists())
+        self.assertFalse(self.uv_log.exists())
+
+    def test_missing_git_downloads_the_repository_tarball(self):
+        path = _stub_path(self.base / "bins", ("git",), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        result = self._run(script, path, "--offline")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main", self.curl_log.read_text())
+        self.assertIn("local-install --offline", self.install_log.read_text())
+        checkout = self.home / ".local" / "share" / "tkstack"
+        self.assertTrue((checkout / "install.sh").is_file())
+        receipt = (checkout / ".tkstack" / "source-receipt.txt").read_text()
+        self.assertIn("kind=tarball", receipt)
+        (checkout / ".tkstack" / "keep").write_text("state\n")
+        refused = self._run(script, path, "--check")
+        self.assertNotEqual(refused.returncode, 0, refused.stdout + refused.stderr)
+        self.assertIn("Refusing to run it", refused.stderr)
+        self.assertIn("TKSTACK_TRUST_HOME", refused.stderr)
+        self.assertEqual(self.curl_log.read_text().count("codeload.github.com"), 1)
+        self.assertNotIn("local-install --check", self.install_log.read_text())
+        self.assertEqual((checkout / ".tkstack" / "keep").read_text(), "state\n")
+        again = self._run(script, path, "--check", extra={"TKSTACK_TRUST_HOME": "1"})
+        self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
+        self.assertIn("frozen", again.stderr)
+        self.assertEqual(self.curl_log.read_text().count("codeload.github.com"), 2)
+        self.assertIn("local-install --check", self.install_log.read_text())
+        self.assertEqual((checkout / ".tkstack" / "keep").read_text(), "state\n")
+
+    def _bad_archive(self, name, build):
+        archive = self.base / name
+        with tarfile.open(archive, "w:gz") as tar:
+            build(tar)
+        return archive
+
+    def _reject_archive(self, archive):
+        path = _stub_path(self.base / "bins-bad", ("git", "realpath"), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        if not script.exists():
+            script.write_text((ROOT / "install.sh").read_text())
+            script.chmod(0o755)
+        result = self._run(script, path, extra={"BAD_TAR": str(archive)})
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse((self.home / ".local" / "share" / "tkstack" / "install.sh").exists())
+        return result
+
+    def test_tarball_rejects_multiple_top_level_directories(self):
+        def build(tar):
+            for name in ("one/install.sh", "one/scripts/bootstrap.py", "two/extra.txt"):
+                data = b"x\n"
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+        result = self._reject_archive(self._bad_archive("multi.tar.gz", build))
+        self.assertIn("more than one top-level", result.stderr)
+
+    def test_tarball_rejects_parent_directory_members(self):
+        def build(tar):
+            data = b"nope\n"
+            info = tarfile.TarInfo("../escape.txt")
+            info.size = len(data)
+            tar.addfile(info, io.BytesIO(data))
+        result = self._reject_archive(self._bad_archive("escape.tar.gz", build))
+        self.assertIn("escapes", result.stderr)
+
+    def test_tarball_rejects_a_symlink_that_leaves_the_extract_directory(self):
+        def build(tar):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+            link = tarfile.TarInfo("tkstack-main/outside")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "/tmp"
+            tar.addfile(link)
+        result = self._reject_archive(self._bad_archive("link.tar.gz", build))
+        self.assertIn("symlink escapes", result.stderr)
+
+    def test_tarball_rejects_a_relative_symlink_that_leaves_the_extract_directory(self):
+        def build(tar):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+            link = tarfile.TarInfo("tkstack-main/outside")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "../../../outside"
+            tar.addfile(link)
+        result = self._reject_archive(self._bad_archive("rel-link.tar.gz", build))
+        self.assertIn("symlink escapes", result.stderr)
+
+    def test_tarball_accepts_a_symlink_inside_the_extract_directory(self):
+        def build(tar):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                info.mode = 0o755
+                tar.addfile(info, io.BytesIO(data))
+            link = tarfile.TarInfo("tkstack-main/inside")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "scripts/bootstrap.py"
+            tar.addfile(link)
+        archive = self._bad_archive("inside-link.tar.gz", build)
+        path = _stub_path(self.base / "bins-inside", ("git", "realpath"), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        result = self._run(script, path, extra={"BAD_TAR": str(archive)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue((self.home / ".local" / "share" / "tkstack" / "install.sh").is_file())
+
+    def test_tarball_url_must_be_https(self):
+        path = _stub_path(self.base / "bins-scheme", ("git",), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        for url in ("http://example.com/tk.tar.gz", "file:///tmp/tk.tar.gz", "/tmp/tk.tar.gz"):
+            result = self._run(script, path, extra={"TKSTACK_TARBALL": url})
+            self.assertNotEqual(result.returncode, 0, url + result.stdout + result.stderr)
+            self.assertIn("https://", result.stderr)
+        self.assertFalse(self.curl_log.exists())
+        accepted = "https://example.com/tkstack.tar.gz"
+        result = self._run(script, path, extra={"TKSTACK_TARBALL": accepted, "CURL_ACCEPT": accepted})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(accepted, self.curl_log.read_text())
+
+    def test_receipt_alone_does_not_run_a_preexisting_checkout(self):
+        dest = self.home / ".local" / "share" / "tkstack"
+        (dest / "scripts").mkdir(parents=True)
+        (dest / "scripts" / "bootstrap.py").write_text("print(1)\n")
+        (dest / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' PLANTED >> \"$INSTALL_LOG\"\n")
+        (dest / "install.sh").chmod(0o755)
+        (dest / ".tkstack").mkdir()
+        (dest / ".tkstack" / "source-receipt.txt").write_text(
+            "kind=tarball\n"
+            "repo=https://github.com/Tyler-R-Kendrick/tkstack\n"
+            "url=https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main\n"
+        )
+        (dest / ".tkstack" / "keep").write_text("state\n")
+        path = _stub_path(self.base / "bins-plant", ("git",), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        refused = self._run(script, path)
+        self.assertNotEqual(refused.returncode, 0, refused.stdout + refused.stderr)
+        self.assertIn("Refusing to run it", refused.stderr)
+        self.assertFalse(self.install_log.exists())
+        self.assertEqual((dest / "install.sh").read_text().splitlines()[0], "#!/bin/sh")
+        self.assertEqual((dest / ".tkstack" / "keep").read_text(), "state\n")
+        trusted = self._run(script, path, extra={"TKSTACK_TRUST_HOME": "1"})
+        self.assertEqual(trusted.returncode, 0, trusted.stdout + trusted.stderr)
+        self.assertIn("local-install", self.install_log.read_text())
+        self.assertNotIn("PLANTED", self.install_log.read_text())
+        self.assertEqual((dest / ".tkstack" / "keep").read_text(), "state\n")
+
+    def test_matching_git_origin_runs_without_trust_and_a_mismatch_does_not(self):
+        dest = self.home / ".local" / "share" / "tkstack"
+        (dest / "scripts").mkdir(parents=True)
+        (dest / "scripts" / "bootstrap.py").write_text("print(1)\n")
+        (dest / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' \"PLANTED $*\" >> \"$INSTALL_LOG\"\n")
+        (dest / "install.sh").chmod(0o755)
+        (dest / ".git").mkdir()
+        git = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$GIT_LOG"
+if [ "$1" = -C ]; then shift 2; fi
+if [ "$1" = remote ]; then printf '%s\n' "$GIT_ORIGIN"; fi
+if [ "$1" = pull ]; then exit 0; fi
+exit 0
+"""
+        path = _stub_path(self.base / "bins-origin", ("git",), {"git": git})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        mismatch = self._run(script, path, "--offline", extra={"GIT_ORIGIN": "https://example.com/other.git"})
+        self.assertNotEqual(mismatch.returncode, 0, mismatch.stdout + mismatch.stderr)
+        self.assertIn("Refusing to run it", mismatch.stderr)
+        self.assertFalse(self.install_log.exists())
+        self.assertNotIn("pull", (self.base / "git.log").read_text())
+        trusted = self._run(
+            script, path, "--offline",
+            extra={"GIT_ORIGIN": "https://example.com/other.git", "TKSTACK_TRUST_HOME": "1"},
+        )
+        self.assertEqual(trusted.returncode, 0, trusted.stdout + trusted.stderr)
+        self.assertIn("PLANTED --offline", self.install_log.read_text())
+        self.assertNotIn("pull", (self.base / "git.log").read_text())
+        self.install_log.unlink()
+        matched = self._run(
+            script, path, "--check",
+            extra={"GIT_ORIGIN": "https://github.com/Tyler-R-Kendrick/tkstack.git"},
+        )
+        self.assertEqual(matched.returncode, 0, matched.stdout + matched.stderr)
+        self.assertIn("PLANTED --check", self.install_log.read_text())
+        self.assertIn("pull", (self.base / "git.log").read_text())
+
+    def test_failed_replacement_restores_the_previous_checkout(self):
+        path = _stub_path(self.base / "bins-restore", ("git", "realpath"), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        script.write_text((ROOT / "install.sh").read_text())
+        script.chmod(0o755)
+        first = self._run(script, path, "--offline")
+        self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+        checkout = self.home / ".local" / "share" / "tkstack"
+        (checkout / ".tkstack" / "keep").write_text("state\n")
+        (checkout / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' ORIGINAL\n")
+        real_mv = shutil.which("mv")
+        mv_log = self.base / "mv.log"
+        blocker = r"""#!/bin/sh
+dest=
+for arg in "$@"; do
+  case "$arg" in
+    --) ;;
+    *) dest=$arg ;;
+  esac
+done
+if [ "$dest" = "$FAIL_MV_DEST" ] && [ ! -f "$MV_LOG" ]; then
+  printf '%s\n' "blocked $dest" >> "$MV_LOG"
+  exit 1
+fi
+exec "$REAL_MV" "$@"
+"""
+        blocked = _stub_path(
+            self.base / "bins-mv", ("git", "realpath"),
+            {"curl": _CURL_TARBALL, "mv": blocker},
+        )
+        failed = self._run(
+            script, blocked, "--offline",
+            extra={
+                "TKSTACK_TRUST_HOME": "1",
+                "FAIL_MV_DEST": str(checkout),
+                "REAL_MV": real_mv,
+                "MV_LOG": str(mv_log),
+            },
+        )
+        self.assertNotEqual(failed.returncode, 0, failed.stdout + failed.stderr)
+        self.assertIn("restored", failed.stderr)
+        self.assertEqual((checkout / ".tkstack" / "keep").read_text(), "state\n")
+        self.assertIn("ORIGINAL", (checkout / "install.sh").read_text())
+        self.assertTrue(mv_log.is_file())
+
+    def test_chatty_uv_installer_does_not_pollute_the_uv_path(self):
+        body = self.base / "uv-installer.sh"
+        body.write_text(_UV_INSTALLER_BODY + "\nprintf '%s\\n' 'chatty installer revision'\n")
+        digest = hashlib.sha256(body.read_bytes()).hexdigest()
+        path = _stub_path(self.base / "bins-chatty", ("python", "uv"), {"curl": _CURL_UV})
+        script = self._pinned_checkout(digest)
+        result = self._run(script, path, "--dry-run", "--target", str(self.base / "target"), extra={"UV_INSTALLER_FILE": str(body)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("chatty installer revision", result.stderr)
+        log = self.uv_log.read_text()
+        self.assertIn("python install 3.12.15", log)
+        self.assertNotIn("chatty", log)
 
 
 if __name__ == "__main__":

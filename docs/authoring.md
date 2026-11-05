@@ -175,7 +175,7 @@ would shadow a new AGENTS file. See the [manifest contract](../skills/learn/skil
 and [native discovery details and sources](../skills/learn/skills/instructify/references/harnesses.md).
 
 Within tkstack, existing installer-owned instruction pointers remain controlled
-by `scripts/steering_adapter.py` and `harnesses/cursor/tkstack-steering.mdc`.
+by `src/steering_adapter.py` and `harnesses/cursor/tkstack-steering.mdc`.
 Creating this skill registers no demonstration instructions and rewrites no
 unrelated project or home instruction files. Local tests establish file-level
 behavior, not native loading or model compliance.

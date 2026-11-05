@@ -9,10 +9,10 @@ rewrite docs, or automatically approve a new baseline.
 ## Review a source change
 
 ```sh
-python3 scripts/check_docs.py check
-python3 scripts/check_docs.py render
-python3 scripts/check_docs.py refresh --area setup --reason 'Reviewed setup changes and updated install instructions'
-python3 scripts/check_docs.py check
+python3 src/check_docs.py check
+python3 src/check_docs.py render
+python3 src/check_docs.py refresh --area setup --reason 'Reviewed setup changes and updated install instructions'
+python3 src/check_docs.py check
 ```
 
 The policy in `docs/docs-policy.json` maps source paths to documentation owners.
@@ -105,14 +105,21 @@ Full setup installs the source repository's Git hook. Narrow maintenance uses:
 python3 scripts/setup_repo_hooks.py --dry-run
 python3 scripts/setup_repo_hooks.py
 python3 scripts/setup_repo_hooks.py --check
-python3 scripts/check_docs.py check --staged
+python3 src/check_docs.py check --staged
 ```
 
-The versioned handler is `.githooks/pre-commit`. Installation places an owned
-dispatcher in the repository's effective default Git hooks directory, preserving
-and chaining any existing pre-commit hook before the docs check. Other hooks and
-Git configuration remain untouched. Shared/custom `core.hooksPath` managers are
+Invoked as a script, `scripts/setup_repo_hooks.py` imports the docs checker and
+the state helper from `src/`. The versioned handler is `.githooks/pre-commit`. The ownership receipt is
+`.tkstack/git-hooks/ownership.json` and stays gitignored. Installation places
+an owned dispatcher in the repository's effective default Git hooks directory.
+A foreign pre-commit is preserved and chained. A dispatcher this project
+already owns, including one installed from another worktree of the same
+repository, is replaced and is never chained. Other hooks and Git configuration
+remain untouched. Shared/custom `core.hooksPath` managers are
 preserved; add the versioned handler to that manager rather than overwriting it.
+`--uninstall --dry-run` reports `planned` when this checkout's receipt exists
+and leaves the hook and receipt in place. A missing `git` binary is
+`not-a-git-checkout`, not a traceback.
 The installer reports that case explicitly. A source copy without Git metadata
 keeps the versioned files and reports that Git activation is deferred.
 
@@ -130,21 +137,36 @@ To restore the previous owned pre-commit setup:
 python3 scripts/setup_repo_hooks.py --uninstall
 ```
 
-Removal restores the saved predecessor or removes only the owned dispatcher.
+Removal restores a foreign saved predecessor. A missing or tkstack-owned backup
+is deleted with the dispatcher instead of being executed.
 Foreign or modified installed hooks are preserved for inspection. Native hook
 entries use the ordinary installer ownership/uninstall path. Editing generated
 host settings is temporary; source setup will reapply its declared configuration.
 
 ## Verify the maintainer recipe
 
-Use the bootstrap-provisioned command interpreter for the test suite, then
-reapply `python3 scripts/install.py --target .` before running doctor. Some tests
-rebuild ignored aliases/native views using their own interpreter. Reapplication
-restores the normal source installation context; those generated views are not
-documentation inputs or versioned source. The README includes this sequence.
-`tests/test_repo_quality.py` always checks the repo-quality harness shape.
-Ceiling assertions run only with `REPO_QUALITY_GATE=1`, and the promptfoo judge
-only with `RUN_JUDGE=1`, so a checkout below those ceilings still passes the
-default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
+Run `python3 -m unittest discover -s tests -v` from the checkout. The suite
+uses the Python that runs it. CI installs the locked PyYAML/jsonschema packages
+into `.tkstack/runtime/command-schema` and runs the same suite with that
+interpreter. Some tests rebuild ignored aliases or native views.
+`python3 scripts/install.py --target .` restores the normal source installation
+before `python3 src/tool.py command-schema -B src/check_skills.py` and doctor.
+Those generated views are not documentation inputs or versioned source. The
+README Develop section has copy-paste commands for
+`python3 -m unittest discover -s tests`,
+`REPO_QUALITY_GATE=1 python3 -m unittest tests.test_repo_quality`,
+`RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v`,
+and `python3 src/check_docs.py check`. Develop also names `evals/README.md`,
+`evals/repo-quality/`, and the promptfoo command that judge test runs,
+`npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
+The README repository layout table lists every tracked top-level directory
+and the notable subtrees, including `vendor/ponytail/` and each `harnesses/`
+directory. The maintain section includes the dry-run
+preview, routing inventory check, docs check, tests, and that restore sequence.
+`tests/test_repo_quality.py` always checks the repo-quality harness shape,
+including that the encoded snapshot stays under 100 KiB so the promptfoo grader
+argument fits the operating-system limit. Ceiling assertions run only with
+`REPO_QUALITY_GATE=1`, and the promptfoo judge only with `RUN_JUDGE=1`, so a
+checkout below those ceilings still passes the default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
 requires each metric score to be 1.0. The harness is Unix-only. Commands are
-in the README maintain section and [Repository quality](../evals/README.md).
+in the README Develop section and [Repository quality](../evals/README.md).

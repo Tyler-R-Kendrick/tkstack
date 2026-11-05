@@ -14,10 +14,12 @@ import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True
-SCRIPTS = Path(__file__).resolve().parent
-if str(SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS))
-ROOT = SCRIPTS.parent
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+SCRIPTS = ROOT / "scripts"
+for directory in (HERE, SCRIPTS):
+    if str(directory) not in sys.path:
+        sys.path.insert(0, str(directory))
 CATALOG = Path("skills/sdlc/references/routing.json")
 GUIDE = Path("skills/sdlc/references/skill-routing.md")
 START = "<!-- tkstack:routing-inventory:start -->"
@@ -105,15 +107,15 @@ DUPLICATE_SKILL_PATHS = frozenset({
 })
 
 
-def _load(name, filename):
-    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / filename)
+def _load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-install = _load("tkstack_install", "install.py")
-skill_roots = _load("tkstack_skill_roots", "skill_roots.py")
+install = _load("tkstack_install", ROOT / "scripts" / "install.py")
+skill_roots = _load("tkstack_skill_roots", ROOT / "src" / "skill_roots.py")
 
 
 def _unescape_double_quoted(value):
@@ -187,16 +189,39 @@ def _upstream_text(root, source, installed):
     return (root / "vendor" / source / "skills" / relative / "SKILL.md").read_text(errors="replace")
 
 
+_HARNESS_LABELS = (
+    ("codex", "Codex"),
+    ("claude", "Claude Code"),
+    ("cursor", "Cursor"),
+    ("grok", "Grok"),
+    ("kimi", "Kimi"),
+    ("muse", "Muse"),
+    ("opencode", "OpenCode"),
+    ("copilot", "Copilot"),
+)
+
+
+def _join_labels(names):
+    if len(names) == 1:
+        return names[0]
+    if len(names) == 2:
+        return names[0] + " and " + names[1]
+    return ", ".join(names[:-1]) + ", and " + names[-1]
+
+
 def _placement(rules, source):
+    """Describe install.placement. None means every harness the user selected."""
     selected = install.placement(rules, "skills", source)
     if selected is None:
-        return "Codex, Claude Code, and Cursor"
-    if selected == {"codex"}:
-        return "shared .agents/skills only"
+        return "every selected harness"
     if selected == {"cursor"}:
         return "Cursor only"
-    labels = {"codex": "shared .agents/skills", "claude": "Claude Code", "cursor": "Cursor"}
-    return ", ".join(labels[name] for name in ("codex", "claude", "cursor") if name in selected)
+    if selected == {"codex"}:
+        return "shared .agents/skills only"
+    labels = dict(_HARNESS_LABELS)
+    ordered = [labels[name] for name, _label in _HARNESS_LABELS if name in selected]
+    ordered.extend(sorted(selected - set(labels)))
+    return _join_labels(ordered)
 
 
 def discover(root=ROOT):
@@ -339,7 +364,7 @@ def render_inventory(skills, catalog):
     lines = [
         "Generated from the installed skill set, Learn subskills, unplaced vendored",
         "skills, and `harnesses/` packages. Do not edit this region by hand. Run",
-        "`python3 scripts/routing_inventory.py render` after adding a skill and its",
+        "`python3 src/routing_inventory.py render` after adding a skill and its",
         "routing entry.",
         "",
         "| Stack | Best starting point | What this stack is for |",
@@ -390,7 +415,7 @@ def check(root=ROOT):
     inventory = render_inventory(skills, catalog)
     _head, body, _tail = split_guide(guide_text(root))
     if body.strip() != inventory.strip():
-        raise ValueError("skill-routing.md inventory is stale; run python3 scripts/routing_inventory.py render")
+        raise ValueError("skill-routing.md inventory is stale; run python3 src/routing_inventory.py render")
     return {"skills": len(skills), "stacks": len(catalog["stacks"])}
 
 

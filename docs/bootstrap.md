@@ -1,13 +1,18 @@
 # Bootstrap agent dotfiles
 
-Run the root script from a durable checkout containing this implementation.
-Publish that revision before using the remote-clone examples below. It is noninteractive, works from
-another directory, preserves existing settings, and can run again on startup:
+One command installs tkstack. Outside a checkout it obtains
+`~/.local/share/tkstack` with Git, or with a curl tarball when Git is absent,
+and continues from there. Inside a checkout, `./install.sh` installs that
+checkout. Bash and curl are the host prerequisites. It is noninteractive, works
+from another directory, preserves existing settings, and can run again on startup:
 
 ```sh
-git clone https://github.com/Tyler-R-Kendrick/tkstack.git "$HOME/.local/share/tkstack"
-"$HOME/.local/share/tkstack/install.sh"
+curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
+
+`scripts/` is only the dotfiles installer. Shared command, state, documentation,
+and pinned-runtime programs live in `src/`. Publish a revision that contains
+`install.sh` before using the remote command above.
 
 The default target is the current user's home. It installs Codex, Claude Code,
 and Cursor skills/agents/rules, initializes ignored state, installs all declared
@@ -37,7 +42,16 @@ instruction block. Foreign instructions in other targets remain protected.
 ./install.sh --check                   # verify without changing files
 ./install.sh --dry-run                 # inspect plan/preflight without changing files
 ./install.sh --strict                  # fail for known unresolved manual prerequisites too
+./install.sh --uninstall               # remove this checkout's links, launchers, and git docs hook
 ```
+
+`--uninstall` deletes symlinks for every harness, launchers, and the owned git
+docs hook. It can run twice. It leaves shell startup files, foreign links, and
+`.github/lever.yml` repository dials in place. `--harness` does not limit it.
+`--dry-run` with `--uninstall` only prints the plan. The git docs hook is
+reported as `planned` and is not removed. A host without `git` reports
+`not-a-git-checkout` and still removes links and launchers. Owned links left
+under `.muse/skills` by an older release are removed with the other harnesses.
 
 `--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
 independent runtime installations (default 4); `--runtime-timeout 10..1800`
@@ -130,12 +144,44 @@ is part of bootstrap.
 
 ## Toolchains, commands, and state
 
-Python **3.11+**, Bash, and Git are base prerequisites (Python 3.12 preferred).
-When needed, bootstrap installs **uv 0.12.23** from a hash-locked Python wheel and
-**Node 24.19.0** from an official SHA-256-verified archive, privately under
-`.tkstack/runtime/toolchains/`. Existing Node 24+ can be reused. Node archive
-extraction needs Python 3.11.8+ or 3.12+ for the safe tar filter; an older 3.11
-host can provide Node beforehand. No sudo/system-package change is required.
+Bash and curl are the host prerequisites. `install.sh` uses Python 3.11+ when
+`TKSTACK_PYTHON`, `python3`, `python3.13`, `python3.12`, or `python3.11` is new
+enough. Otherwise it downloads the uv 0.12.23 installer to a temporary file,
+requires sha256 `b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491`,
+and ignores a caller-supplied `UV_INSTALL_DIR`. It then runs
+`uv python install 3.12.15` and `uv run --python 3.12.15` from
+`$HOME/.local/bin/uv`. Rotate `UV_VERSION`, `UV_INSTALLER_URL`,
+`UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together; uv 0.12.23
+ships CPython 3.12.15. The script's body is `main`, called on the last line, so
+a truncated `curl | bash` does not run a prefix. Outside a checkout, Git clones
+or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. A directory
+that already exists at `TKSTACK_HOME` is not executed unless its git `origin`
+matches `TKSTACK_REPO` or `TKSTACK_TRUST_HOME=1`. The tarball receipt inside
+that directory is not a trust signal. A failed `git pull --ff-only`
+stops and says to commit or stash so the fast-forward can succeed.
+`TKSTACK_TRUST_HOME=1` re-downloads a non-git checkout and keeps `.tkstack`;
+it runs a non-matching git checkout in place and does not pull. When Git is
+absent, curl downloads
+`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` (or the
+codeload archive for another GitHub `TKSTACK_REPO`, or an `https://`
+`TKSTACK_TARBALL`) to a
+file, rejects archives with more than one top-level directory or members and
+symlinks that escape the extract directory, and unpacks with
+`tar --no-same-owner --no-same-permissions`. `TKSTACK_TARBALL` must use
+`https://`. Any other scheme is refused. The repository tarball has no content
+hash: `tar.gz/main` is a mutable ref, and HTTPS does not pin those bytes.
+Symlink checks walk paths in bash and do not need `realpath`. A replacement
+copies `.tkstack` into the new tree first and restores the old directory if
+the swap fails. A tarball checkout is frozen
+between runs; the next trusted installer run downloads it again and keeps
+`.tkstack`. The uv installer's stdout is discarded so the bootstrap executes
+only `$HOME/.local/bin/uv`. When needed, bootstrap installs **uv 0.12.23**
+from a hash-locked Python wheel and **Node 24.19.0** from an official
+SHA-256-verified archive, privately under `.tkstack/runtime/toolchains/`. That
+pinned uv is separate from the standalone uv used only to get a host Python.
+Existing Node 24+ can be reused. Node archive extraction needs Python 3.11.8+
+or 3.12+ for the safe tar filter; an older 3.11 host can provide Node
+beforehand. No sudo/system-package change is required.
 Linux x86-64/ARM64 and macOS x86-64/ARM64 Node assets are pinned. Host applications,
 Git itself, Docker, accounts, and optional GUI daemons are not installed.
 
@@ -223,12 +269,12 @@ checks, native hook trust/reload, and restoration of the previous Git hook.
 
 ## Owned skill conformance
 
-Doctor runs `scripts/check_skills.py` through the managed hash-locked command
+Doctor runs `src/check_skills.py` through the managed hash-locked command
 interpreter when that runtime is ready; an offline first setup reports this check
 as pending alongside its missing-runtime requirements. It checks all 19 owned schemas, command surfaces, native bindings,
 shared runtime/state copies, marketplace metadata, current executable artifacts,
 and reviewed train/validation/test decision suites. The same script then runs
-`scripts/routing_inventory.py` so every installed skill has a routing entry and
+`src/routing_inventory.py` so every installed skill has a routing entry and
 the generated inventory matches `skills/sdlc/references/routing.json`. That check
 only reads the inventory and catalog. It does not regenerate alias or Graphify
 views, which stay pinned to the interpreter that ran `install.py`. This performs no model or

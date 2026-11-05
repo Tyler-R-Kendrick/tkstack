@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from urllib.parse import unquote, urlsplit
 from bootstrap_profiles import validate as validate_profiles
 
@@ -132,7 +133,7 @@ def profile_block(snapshot):
     rows = [START, '| Profile | Harness configuration | Lever Copilot layout |', '| --- | --- | --- |']
     for name, settings in profiles.items():
         rows.append('| `' + name + '` | ' + ', '.join(names[harness] for harness in settings['harnesses']) + ' | ' + ('Selected workspace' if settings['copilot'] else 'Off') + ' |')
-    rows.extend(['', 'Base requirements: Bash, Git, and Python **' + toolchains['python_minimum'] + '+**.',
+    rows.extend(['', 'The host needs Bash and curl. Missing Python **' + toolchains['python_minimum'] + '+** is installed with uv **' + toolchains['uv_version'] + '** (`uv python install 3.12.15`) after that installer sha256 is checked. Missing Git is replaced by a curl tarball of the GitHub repository.',
         'Setup can provision private Node **' + toolchains['node_version'] + '** and uv **' + toolchains['uv_version'] + '** when needed.', END])
     return '\n'.join(rows)
 

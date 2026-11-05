@@ -9,6 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'src'))
 import check_docs as docs
 import docs_hook
 import setup_repo_hooks
@@ -26,8 +27,16 @@ class DocumentationHookTests(unittest.TestCase):
         self.git('config', 'user.email', 'docs-fixture@example.invalid')
         for folder in ['scripts', 'docs', 'src', 'harnesses/bootstrap', '.githooks']:
             (self.root / folder).mkdir(parents=True, exist_ok=True)
-        for name in ['check_docs.py', 'docs_hook.py', 'setup_repo_hooks.py', 'tkstack_state.py', 'bootstrap_profiles.py']:
-            shutil.copy2(ROOT / 'scripts' / name, self.root / 'scripts' / name)
+        copies = {
+            'check_docs.py': ROOT / 'src/check_docs.py',
+            'docs_hook.py': ROOT / 'src/docs_hook.py',
+            'setup_repo_hooks.py': ROOT / 'scripts/setup_repo_hooks.py',
+            'tkstack_state.py': ROOT / 'src/tkstack_state.py',
+            'bootstrap_profiles.py': ROOT / 'scripts/bootstrap_profiles.py',
+        }
+        for name, source in copies.items():
+            shutil.copy2(source, self.root / 'scripts' / name)
+        shutil.copy2(ROOT / 'src/check_docs.py', self.root / 'src/check_docs.py')
         shutil.copy2(ROOT / '.githooks/pre-commit', self.root / '.githooks/pre-commit')
         for name in ['profiles.json', 'toolchains.json']:
             shutil.copyfile(ROOT / 'harnesses/bootstrap' / name, self.root / 'harnesses/bootstrap' / name)
@@ -133,6 +142,36 @@ class DocumentationHookTests(unittest.TestCase):
         self.git('commit', '-qm', 'Reviewed docs and implementation')
         self.assertEqual(docs.check(self.snapshot(True)), [])
 
+    def test_shared_worktree_hook_is_replaced_without_chaining_itself(self):
+        setup_repo_hooks.setup(self.root)
+        other = Path(self.temporary.name) / 'other worktree'
+        self.git('worktree', 'add', '--detach', str(other), 'HEAD')
+        setup_repo_hooks.setup(other)
+        hook = Path(self.git('rev-parse', '--path-format=absolute', '--git-path', 'hooks').strip()) / 'pre-commit'
+        backup = hook.with_name('pre-commit.tkstack-previous')
+        text = hook.read_text()
+        self.assertIn(str(other / '.githooks/pre-commit'), text)
+        self.assertNotIn('tkstack_previous', text)
+        self.assertFalse(backup.exists())
+        self.assertIn(setup_repo_hooks.MARKER, text)
+        completed = subprocess.run(['bash', str(hook)], cwd=other, capture_output=True, text=True, timeout=15)
+        self.assertNotEqual(completed.returncode, None)
+        self.assertFalse(backup.exists())
+
+    def test_tkstack_backup_is_removed_instead_of_executed(self):
+        setup_repo_hooks.setup(self.root)
+        directory = self.root / '.git/hooks'
+        hook = directory / 'pre-commit'
+        backup = directory / 'pre-commit.tkstack-previous'
+        backup.write_text(hook.read_text())
+        backup.chmod(0o755)
+        (self.root / '.tkstack/git-hooks/ownership.json').unlink()
+        setup_repo_hooks.setup(self.root)
+        self.assertFalse(backup.exists())
+        self.assertNotIn('tkstack_previous', hook.read_text())
+        completed = subprocess.run(['bash', str(hook)], cwd=self.root, capture_output=True, text=True, timeout=15)
+        self.assertNotEqual(completed.returncode, None)
+
     def test_existing_precommit_is_chained_and_restored_without_touching_other_hooks(self):
         directory = self.root / '.git/hooks'
         previous = '#!/bin/sh\nprintf previous > "$(git rev-parse --show-toplevel)/previous-ran"\n'
@@ -217,3 +256,32 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertEqual(docs.check(self.snapshot(True)), [])
         path.write_text(path.read_text().replace('# Authored policy', '# Changed authored policy'))
         self.assertTrue(docs.check(self.snapshot()))
+
+    def test_missing_git_uninstall_is_not_a_checkout(self):
+        empty = self.root.parent / 'no-git'
+        empty.mkdir()
+        saved = os.environ.get('PATH')
+        os.environ['PATH'] = str(empty)
+        try:
+            result = setup_repo_hooks.setup(self.root, uninstall=True)
+        finally:
+            if saved is None:
+                os.environ.pop('PATH', None)
+            else:
+                os.environ['PATH'] = saved
+        self.assertEqual(result['status'], 'not-a-git-checkout')
+
+    def test_dry_run_uninstall_plans_the_hook_and_leaves_it_in_place(self):
+        installed = setup_repo_hooks.setup(self.root)
+        self.assertEqual(installed['status'], 'installed')
+        hook = Path(installed['hook'])
+        receipt = self.root / '.tkstack/git-hooks/ownership.json'
+        before_hook = hook.read_bytes()
+        before_receipt = receipt.read_bytes()
+        planned = setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)
+        self.assertEqual(planned['status'], 'planned')
+        self.assertEqual(hook.read_bytes(), before_hook)
+        self.assertEqual(receipt.read_bytes(), before_receipt)
+        self.assertEqual(setup_repo_hooks.setup(self.root, uninstall=True)['status'], 'removed')
+        self.assertFalse(receipt.exists())
+        self.assertEqual(setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)['status'], 'not-installed')

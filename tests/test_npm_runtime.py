@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 import npm_runtime
 import setup_integrations
 
@@ -87,7 +88,7 @@ class NpmRuntimeTests(unittest.TestCase):
         with patch.object(setup_integrations, "ready", return_value=True):
             for host in ("codex", "claude", "cursor"):
                 entry = setup_integrations.mcp_entries(ROOT, manifest, host)["openwiki"]
-                self.assertEqual(entry["args"], [str(ROOT / "scripts/tool.py"), "openwiki", "mcp", "--host", host])
+                self.assertEqual(entry["args"], [str(ROOT / "src/tool.py"), "openwiki", "mcp", "--host", host])
                 self.assertEqual(entry["command"], sys.executable)
 
 

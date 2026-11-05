@@ -22,9 +22,9 @@ The separate project setup follows Lever's
 [documented per-repo installation](../vendor/lever/README.md):
 
 ```sh
-python3 scripts/setup_lever.py --target . --dry-run
-python3 scripts/setup_lever.py --target .
-python3 scripts/setup_lever.py --target . --check
+python3 src/setup_lever.py --target . --dry-run
+python3 src/setup_lever.py --target .
+python3 src/setup_lever.py --target . --check
 ```
 
 It creates 16 skill links under `.github/skills` and four support-directory
@@ -41,7 +41,7 @@ that would redirect writes outside the selected project.
 Remove only owned Copilot links with:
 
 ```sh
-python3 scripts/setup_lever.py --target . --uninstall
+python3 src/setup_lever.py --target . --uninstall
 ```
 
 Repository dials and unrelated skills are retained. Remove the main three

@@ -13,6 +13,7 @@ from pathlib import Path
 import subprocess
 import sys
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 import uuid
 
 import install
@@ -46,13 +47,17 @@ def parser():
     copilot.add_argument('--no-copilot', dest='copilot', action='store_false')
     result.set_defaults(copilot=None)
     result.add_argument('--no-shell', action='store_true', help='Do not add home bash/login pointers; env.sh is still generated')
+    result.add_argument('--uninstall', action='store_true', help='Remove this checkout\'s links, launchers, and owned git docs hook')
     result.add_argument('--jobs', type=int, default=4, help='Independent runtime workers, 1..8 (default 4)')
     result.add_argument('--runtime-timeout', type=int, default=900, help='Deadline per runtime in seconds (10..1800)')
     return result
 
 
 def command(script, *args):
-    return [sys.executable, '-B', str(ROOT / 'scripts' / script), *map(str, args)]
+    path = ROOT / 'scripts' / script
+    if not path.is_file():
+        path = ROOT / 'src' / script
+    return [sys.executable, '-B', str(path), *map(str, args)]
 
 
 def selection(args, manifest):
@@ -137,9 +142,57 @@ def ownership():
             fcntl.flock(stream, fcntl.LOCK_UN)
 
 
+def remove_launchers(state, dry_run):
+    """Remove tkstack launchers this checkout published under one state root."""
+    import runner_install
+    removed = runner_install.remove(ROOT, state, dry_run=dry_run)
+    bindir = state / 'bin'
+    if not bindir.is_dir() or bindir.is_symlink():
+        return removed
+    for name, arguments in bootstrap_shell.ALIASES.items():
+        path = bindir / name
+        try:
+            owned = path.is_file() and not path.is_symlink() and path.read_text() == bootstrap_shell.alias_text(ROOT, arguments)
+        except OSError:
+            owned = False
+        if not owned:
+            continue
+        print(('Would remove' if dry_run else 'remove') + ' launcher: ' + str(path))
+        if not dry_run:
+            path.unlink()
+        removed = True
+    return removed
+
+
+def uninstall(args, workspace, copilot, common, state_roots):
+    flag = ['--dry-run'] if args.dry_run else []
+    environment = os.environ.copy()
+    execute(command('install.py', *common, '--uninstall', *flag), environment)
+    import setup_repo_hooks
+    try:
+        hook = setup_repo_hooks.setup(ROOT, dry_run=args.dry_run, uninstall=True)
+    except (OSError, ValueError) as error:
+        print('skip git docs hook: ' + str(error))
+        hook = {'status': 'skipped'}
+    print('git docs hook: ' + hook.get('status', 'unchanged'))
+    if copilot:
+        execute(command('setup_lever.py', '--target', workspace, '--uninstall', *flag), environment)
+    for state in dict.fromkeys(state_roots):
+        remove_launchers(state, args.dry_run)
+    report = {'version': 1, 'profile': args.profile, 'target': str(args.target.expanduser().resolve()),
+              'workspace': str(workspace), 'scope': args.scope, 'status': 'planned' if args.dry_run else 'removed',
+              'launchers': [str(state / 'tkstack') for state in state_roots]}
+    print(json.dumps(report, indent=2))
+    return 0
+
+
 def run(args):
+    if args.uninstall and args.check:
+        raise ValueError('--check cannot be combined with --uninstall')
     manifest = json.loads((ROOT / 'harnesses/integrations.json').read_text())
     target, workspace, harnesses, selected, copilot, common = selection(args, manifest)
+    if args.uninstall:
+        return uninstall(args, workspace, copilot, common, initialization_roots(target, workspace, args.scope))
     state_roots = initialization_roots(target, workspace, args.scope)
     environment, toolchains = bootstrap_toolchains.resolve(ROOT, install=False)
     report = {'version': 1, 'profile': args.profile, 'target': str(target), 'workspace': str(workspace), 'scope': args.scope,

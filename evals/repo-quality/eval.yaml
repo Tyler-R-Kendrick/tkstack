@@ -49,11 +49,11 @@ tests:
         metric: minimal_code
         threshold: 1.0
         value: |
-          Grade minimal code. Installer and glue code stay small. Count non-blank lines under scripts/. Each script has one job.
-          10: scripts/ has at most 1500 non-blank lines, and the LOC breakdown shows a short, obvious split.
-          7: scripts/ has 1501 to 1650 non-blank lines, and the split is still obvious.
-          5: scripts/ has 1651 to 2500 non-blank lines, or the same behavior shows up in more than one script while the total is at most 2500.
-          3: scripts/ has more than 2500 non-blank lines, or large undifferentiated scripts dominate scripts/.
+          Grade minimal code. Installer and glue code stay small. Count non-blank lines under scripts/ plus src/. Each script has one job.
+          10: scripts/ plus src/ has at most 1500 non-blank lines, and the LOC breakdown shows a short, obvious split.
+          7: scripts/ plus src/ has 1501 to 1650 non-blank lines, and the split is still obvious.
+          5: scripts/ plus src/ has 1651 to 2500 non-blank lines, or the same behavior shows up in more than one script while the total is at most 2500.
+          3: scripts/ plus src/ has more than 2500 non-blank lines, or large undifferentiated scripts dominate scripts/ plus src/.
           0: The glue code is large enough that the snapshot's LOC breakdown has no readable structure.
           Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
           Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.

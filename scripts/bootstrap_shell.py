@@ -4,6 +4,7 @@ from pathlib import Path
 import shlex
 import shutil
 import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 from tkstack_state import ensure_state
 
 BEGIN, END = '# tkstack:path:start', '# tkstack:path:end'
@@ -53,7 +54,7 @@ def alias_text(root, arguments):
         from runner_install import launcher_text
         return launcher_text(root)
     return ('#!' + sys.executable + '\nimport os,sys\nos.execv(sys.executable,' +
-            repr([sys.executable, '-B', str(root / 'scripts/tool.py'), *arguments]) + '+sys.argv[1:])\n')
+            repr([sys.executable, '-B', str(root / 'src/tool.py'), *arguments]) + '+sys.argv[1:])\n')
 
 
 def check(root):

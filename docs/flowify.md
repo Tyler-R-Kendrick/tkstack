@@ -2,7 +2,7 @@
 
 Use `/flowify <procedure>` or `$flowify` to create a reusable executable workflow.
 The canonical package is [`skills/learn/skills/flowify`](../skills/learn/skills/flowify/SKILL.md), installed
-in Codex, Claude Code, and Cursor and listed in the root marketplace.
+with Learn into every selected harness and listed in the root marketplace.
 
 Flowify defaults to Microsoft Agent Framework declarative YAML for tool/code
 workflows. Its other supplied backend is **Rhai**, the Rust scripting library

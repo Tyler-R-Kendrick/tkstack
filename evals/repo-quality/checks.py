@@ -6,6 +6,7 @@ Each check returns one JSON object. The process prints a JSON array and exits
 checkout can still fail them.
 """
 
+import ast
 import json
 import os
 import re
@@ -29,21 +30,6 @@ HARNESSES = (
     "opencode",
     "t3code",
 )
-# Path components that name a harness. "open-code" and "t3-code" are the same
-# harnesses as the metric tokens. A prose mention is not placement.
-HARNESS_PATH_NAMES = {
-    "claude": "claude",
-    "codex": "codex",
-    "cursor": "cursor",
-    "copilot": "copilot",
-    "grok": "grok",
-    "kimi": "kimi",
-    "muse": "muse",
-    "opencode": "opencode",
-    "open-code": "opencode",
-    "t3code": "t3code",
-    "t3-code": "t3code",
-}
 _HEADING = re.compile(
     r"(?i)(?<!un)(?<!un-)(?<!un )\b(?:quickstart|getting started|install)\b"
 )
@@ -100,22 +86,25 @@ def _iter_files(directory):
 
 
 def scripts_loc(root):
-    """Ceiling on glue under scripts/. Comments stay in the count."""
-    directory = root / "scripts"
+    """Ceiling on glue under scripts/ and src/. Comments stay in the count."""
     per_file = []
-    for path in _iter_files(directory):
-        count = _nonblank_lines(path)
-        if count is None:
+    missing = []
+    for name in ("scripts", "src"):
+        directory = root / name
+        if not directory.is_dir():
+            missing.append(f"{name}/ is absent")
             continue
-        per_file.append((path.relative_to(root).as_posix(), count))
+        for path in _iter_files(directory):
+            count = _nonblank_lines(path)
+            if count is None:
+                continue
+            per_file.append((path.relative_to(root).as_posix(), count))
     total = sum(count for _, count in per_file)
     largest = sorted(per_file, key=lambda item: (-item[1], item[0]))[:8]
-    evidence = [f"{path}: {count} non-blank lines" for path, count in largest]
-    if not directory.is_dir():
-        evidence = ["scripts/ is absent"]
-    ok = total <= SCRIPTS_LOC_LIMIT
+    evidence = missing + [f"{path}: {count} non-blank lines" for path, count in largest]
+    ok = total <= SCRIPTS_LOC_LIMIT and not missing
     explanation = (
-        f"scripts/ has {total} non-blank lines. "
+        f"scripts/ plus src/ has {total} non-blank lines. "
         f"The best-practice ceiling for dotfiles glue is {SCRIPTS_LOC_LIMIT}."
     )
     return result(
@@ -387,87 +376,238 @@ def marketplace_manifests(root):
     )
 
 
-def _record_harness(hits, name, evidence):
-    if name in hits and not hits[name]:
-        hits[name] = evidence
+class _Unstatic(Exception):
+    """The installer function is not a static lookup the grader can read."""
 
 
-def _record_name_list(hits, value, label):
-    if not isinstance(value, list):
-        return
-    for item in value:
-        if isinstance(item, str):
-            _record_harness(hits, item, label)
+def _literal_string(node):
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    return None
 
 
-def _walk_args_by_harness(value, hits):
-    if isinstance(value, dict):
-        args = value.get("args_by_harness")
-        if isinstance(args, dict):
-            for name in args:
-                _record_harness(hits, name, "harnesses/integrations.json args_by_harness." + name)
-        for child in value.values():
-            _walk_args_by_harness(child, hits)
-    elif isinstance(value, list):
-        for child in value:
-            _walk_args_by_harness(child, hits)
+def _path_literal(node):
+    text = _literal_string(node)
+    if text is not None:
+        return text
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "Path"
+        and len(node.args) == 1
+        and not node.keywords
+    ):
+        return _literal_string(node.args[0])
+    return None
 
 
-def _placement_from_manifests(root, hits):
+def _static_strings(node):
+    if not isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+        return None
+    values = []
+    for item in node.elts:
+        text = _literal_string(item)
+        if text is None:
+            return None
+        values.append(text)
+    return values
+
+
+def _assignment_value(node):
+    path = _path_literal(node)
+    if path is not None:
+        return path
+    if not isinstance(node, ast.Dict):
+        return None
+    if node.keys and any(key is None for key in node.keys):
+        return None
+    value = {}
+    for key, item in zip(node.keys, node.values):
+        name = _literal_string(key)
+        if name is None:
+            return None
+        nested = _path_literal(item)
+        if nested is None:
+            nested = _static_strings(item)
+        if nested is None:
+            return None
+        value[name] = nested
+    return value
+
+
+def _eval_static(node, env):
+    if isinstance(node, ast.Constant):
+        return node.value
+    if isinstance(node, ast.Name):
+        if node.id not in env:
+            raise _Unstatic()
+        return env[node.id]
+    if isinstance(node, ast.Subscript):
+        return _eval_static(node.value, env)[_eval_static(node.slice, env)]
+    if isinstance(node, ast.Compare):
+        left = _eval_static(node.left, env)
+        for op, comparator in zip(node.ops, node.comparators):
+            right = _eval_static(comparator, env)
+            if isinstance(op, ast.In):
+                ok = left in right
+            elif isinstance(op, ast.NotIn):
+                ok = left not in right
+            elif isinstance(op, ast.Eq):
+                ok = left == right
+            elif isinstance(op, ast.NotEq):
+                ok = left != right
+            else:
+                raise _Unstatic()
+            if not ok:
+                return False
+            left = right
+        return True
+    if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.And):
+        return all(_eval_static(item, env) for item in node.values)
+    if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+        return any(_eval_static(item, env) for item in node.values)
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        return not _eval_static(node.operand, env)
+    raise _Unstatic()
+
+
+_NO_RETURN = object()
+
+
+def _eval_block(body, env):
+    for stmt in body:
+        if isinstance(stmt, ast.Pass):
+            continue
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+            continue
+        if isinstance(stmt, ast.If):
+            if not isinstance(_eval_static(stmt.test, env), bool):
+                raise _Unstatic()
+            taken = stmt.body if _eval_static(stmt.test, env) else stmt.orelse
+            result = _eval_block(taken, env)
+            if result is not _NO_RETURN:
+                return result
+            continue
+        if isinstance(stmt, ast.Return):
+            if stmt.value is None:
+                return None
+            return _eval_static(stmt.value, env)
+        raise _Unstatic()
+    return _NO_RETURN
+
+
+def _home_skill_directories(root):
+    """Home-scope links declared by harness_paths.py. Parse only; never import it."""
+    path = root / "scripts" / "harness_paths.py"
+    if not path.is_file():
+        return None
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, SyntaxError, UnicodeError):
+        return None
+    env = {}
+    function = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            parsed = _assignment_value(node.value)
+            if parsed is None:
+                continue
+            env[node.targets[0].id] = parsed
+        elif isinstance(node, ast.FunctionDef) and node.name == "skill_directory":
+            function = node
+    if function is None or "SKILL_DIRECTORIES" not in env or not isinstance(env["SKILL_DIRECTORIES"], dict):
+        return None
+    for node in ast.walk(function):
+        if node is function:
+            continue
+        if isinstance(node, (ast.Call, ast.Attribute, ast.Import, ast.ImportFrom, ast.Lambda,
+                             ast.FunctionDef, ast.ClassDef, ast.Await, ast.Yield, ast.YieldFrom)):
+            return None
+    args = function.args
+    if args.vararg or args.kwarg or args.kwonlyargs or args.posonlyargs or not args.args:
+        return None
+    names = [arg.arg for arg in args.args]
+    defaults = [None] * (len(names) - len(args.defaults)) + list(args.defaults)
+    linked = {}
+    for harness in env["SKILL_DIRECTORIES"]:
+        local = dict(env)
+        local[names[0]] = harness
+        for name, default in zip(names[1:], defaults[1:]):
+            if default is None:
+                return None
+            try:
+                local[name] = _eval_static(default, env)
+            except _Unstatic:
+                return None
+        try:
+            relative = _eval_block(function.body, local)
+        except (_Unstatic, KeyError, TypeError):
+            return None
+        if relative is _NO_RETURN or not isinstance(relative, str) or not relative or relative.startswith("/"):
+            continue
+        linked[harness] = relative
+    return linked
+
+
+def _linked_placements(root):
+    """Harnesses skills.json lists and scripts/harness_paths.py actually links."""
     skills, _detail = _json_object(root / "harnesses" / "skills.json")
-    if isinstance(skills, dict):
-        placement = skills.get("placement")
-        if isinstance(placement, dict):
-            _record_name_list(hits, placement.get("default"), "harnesses/skills.json placement.default")
-            sources = placement.get("sources")
-            if isinstance(sources, dict):
-                for source, names in sources.items():
-                    _record_name_list(
-                        hits, names, f"harnesses/skills.json placement.sources.{source}"
-                    )
-    integrations, _detail = _json_object(root / "harnesses" / "integrations.json")
-    if isinstance(integrations, dict):
-        _walk_args_by_harness(integrations, hits)
-
-
-def _placement_from_paths(root, hits):
-    if all(hits.values()):
-        return
-    skip = SKIP_NAMES | {"vendor"}
-    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
-        dirnames[:] = [name for name in dirnames if name not in skip]
-        relative = Path(dirpath).relative_to(root)
-        for part in relative.parts:
-            name = HARNESS_PATH_NAMES.get(part.lower())
-            if name:
-                _record_harness(hits, name, relative.as_posix() + "/")
-        for filename in filenames:
-            name = HARNESS_PATH_NAMES.get(filename.lower())
-            if name:
-                _record_harness(hits, name, (relative / filename).as_posix())
-        if all(hits.values()):
-            return
+    placement = skills.get("placement") if isinstance(skills, dict) else None
+    if not isinstance(placement, dict):
+        placement = {}
+    experimental = placement.get("experimental")
+    experimental = {str(item) for item in experimental} if isinstance(experimental, list) else set()
+    listed = []
+    default = placement.get("default")
+    if isinstance(default, list):
+        for name in default:
+            if isinstance(name, str):
+                listed.append((name, "harnesses/skills.json placement.default"))
+    sources = placement.get("sources")
+    if isinstance(sources, dict):
+        for source, names in sources.items():
+            if not isinstance(names, list):
+                continue
+            for name in names:
+                if isinstance(name, str):
+                    listed.append((name, f"harnesses/skills.json placement.sources.{source}"))
+    directories = _home_skill_directories(root)
+    linked = {}
+    if directories is None:
+        return linked, experimental
+    for name, label in listed:
+        if name not in HARNESSES or name in experimental or name in linked:
+            continue
+        relative = directories.get(name)
+        if not relative:
+            continue
+        linked[name] = f"{label}; installer links {relative}"
+    return linked, experimental
 
 
 def harness_coverage(root):
-    """Each harness has a placement entry, args_by_harness key, or config path."""
-    hits = {name: "" for name in HARNESSES}
-    _placement_from_manifests(root, hits)
-    _placement_from_paths(root, hits)
+    """Count a harness only when skills.json placement is a directory the installer links."""
+    linked, experimental = _linked_placements(root)
+    notes = {
+        "t3code": "not counted; no skills directory of its own",
+    }
     evidence = []
     found = 0
     for name in HARNESSES:
-        if hits[name]:
+        if name in experimental:
+            evidence.append(f"{name}: experimental, not counted")
+            continue
+        if name in linked:
             found += 1
-            evidence.append(f"{name}: {hits[name]}")
-        else:
-            evidence.append(f"{name}: no placement, args_by_harness entry, or config path")
+            evidence.append(f"{name}: {linked[name]}")
+            continue
+        evidence.append(f"{name}: {notes.get(name, 'no skills.json placement path the installer links')}")
     ok = found == len(HARNESSES)
     explanation = (
         f"{found} of {len(HARNESSES)} harnesses "
         "(claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) "
-        "have a skills.json placement, an integrations.json args_by_harness entry, "
-        "or a config path whose component is that harness."
+        "have a skills.json placement path that scripts/harness_paths.py links. "
+        "Experimental harnesses and bare directory names are not counted."
     )
     return result(
         "harness_coverage", "cross_harness", ok, found, len(HARNESSES), explanation, evidence

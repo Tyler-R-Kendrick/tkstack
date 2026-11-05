@@ -3,6 +3,8 @@
 import hashlib
 from pathlib import Path
 import shlex
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from harness_paths import codex_directory
 
 
@@ -21,11 +23,17 @@ def instruction_plan(root, target, harnesses, scope, uninstall=False):
     owner = "<!-- tkstack:steering:source repository -->" if self_project else checkout_owner
     pointer_root = Path('.') if self_project else target
     helper_root = Path('.') if self_project else root
+    learn_render = helper_root / "skills/learn/scripts/learn.py"
+    principles_source = helper_root / "skills/tkstack-principles/SKILL.md"
+    unslop_seeds = helper_root / "skills/unslop/catalog/seeds.json"
+    unslop_render = helper_root / "skills/unslop/scripts/unslop.py"
     pointer = pointer_root / ".agents/steering/rules.md"
     block = "\n".join([BEGIN, owner])
     if has_steering:
         block += "\n" + "\n".join([
             f"At task start and after a correction, read `{pointer}`.",
+            "That path is generated and gitignored. The installer links `.agents/steering` to",
+            f"`.tkstack/steering`, and `{learn_render} render` writes `rules.md` from the correction ledger.",
             "Apply rules whose scope and trigger match. Use the learn skill to capture every",
             "user correction and expressed frustration, retain its evidence, and extract a",
             "reasoning rule. Keep uncertain interpretations as candidates. The evidence ledger",
@@ -41,12 +49,15 @@ def instruction_plan(root, target, harnesses, scope, uninstall=False):
     if has_principles:
         block += "\n" + "\n".join([
             f"At task start, read `{pointer_root / '.agents/principles/SKILL.md'}` and its applicable full principles.",
+            f"That path is the installer's gitignored link to the tracked `{principles_source}`.",
             "Use deterministic code/rules first, constrained decision models/APIs second,",
             "and LLMs/agents last. Design all code for bounded concurrency with explicit",
             "dependencies, isolated mutable state, and stable results; serialize only for a concrete constraint."])
     if has_steering and (root / "skills/unslop/SKILL.md").is_file():
         block += "\n" + "\n".join([
             f"When grading AI outputs, use the unslop skill and `{pointer_root / '.agents/steering/unslop/patterns.md'}`.",
+            "That path is generated and gitignored under the steering link.",
+            f"`{unslop_render} render` writes it from the tracked `{unslop_seeds}` and the correction ledger.",
             "Record user-identified slop patterns with unslop in the same correction ledger;",
             "apply confirmed scoped patterns and retain legitimate exceptions. Inspect actual",
             "artifacts before judging visual or runtime quality; missing evidence is unreviewed."])

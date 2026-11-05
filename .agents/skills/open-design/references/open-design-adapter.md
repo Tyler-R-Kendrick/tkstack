@@ -2,7 +2,7 @@
 
 When OpenDesign is explicitly selected, discover its real MCP tools and runtime
 readiness. In the tkstack checkout, `scripts/setup_integrations.py --status` and
-`scripts/tool.py open-design` provide local integration entrypoints. A standalone
+`src/tool.py open-design` provide local integration entrypoints. A standalone
 skill does not contain that checkout or install the application. Never invoke
 the unrelated system byte-dump `od` utility.
 

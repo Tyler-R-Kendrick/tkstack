@@ -209,7 +209,7 @@
       "id": "scoped-skill-workflow-runner",
       "kind": "module",
       "summary": "Discover scoped skill/workflow packages and invoke their frozen Codify commands or locks with selected existing inference profiles and independent child environments.",
-      "artifact": "scripts/tkstack.py",
+      "artifact": "src/tkstack.py",
       "guide": "docs/runner.md",
       "tags": [
         "runner",
@@ -228,7 +228,7 @@
       "id": "documentation-freshness-gate",
       "kind": "module",
       "summary": "Compare source/document review snapshots and generated README facts, using live files or the actual Git index; shared by native completion hooks and pre-commit.",
-      "artifact": "scripts/check_docs.py",
+      "artifact": "src/check_docs.py",
       "guide": "docs/documentation.md",
       "tags": [
         "docs",
@@ -320,7 +320,7 @@
       "id": "owned-skill-conformance",
       "kind": "module",
       "summary": "Read-only inventory-wide skill schema, shared source, generator, metadata, split and artifact freshness CLI gate.",
-      "artifact": "scripts/check_skills.py",
+      "artifact": "src/check_skills.py",
       "guide": "docs/normalization.md",
       "tags": [
         "skills",
@@ -328,7 +328,7 @@
         "normalization",
         "deterministic"
       ],
-      "usage": "python3 scripts/tool.py command-schema -B scripts/check_skills.py; doctor and CI call the same shared validators."
+      "usage": "python3 src/tool.py command-schema -B src/check_skills.py; doctor and CI call the same shared validators."
     }
   ]
 }

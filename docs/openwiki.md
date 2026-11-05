@@ -55,7 +55,7 @@ the readiness check accepts it. The installer never writes to the user's home.
 The launcher is:
 
 ```sh
-python3 scripts/tool.py openwiki <arguments>
+python3 src/tool.py openwiki <arguments>
 ```
 
 MCP runs `openwiki mcp --host codex|claude|cursor` through that launcher. It uses

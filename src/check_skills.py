@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location('owned_skill_checker', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
 skillify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(skillify)
-sys.path.insert(0, str(ROOT / 'scripts'))
 from skill_roots import all_packages, owned, subskills  # noqa: E402
 
 
@@ -26,7 +25,7 @@ def check(root=ROOT, jobs=4):
     packages = owned(root)
     runtime = (root / 'skills/learn/skills/codify/scripts/package_runtime.py').read_bytes()
     json_reader = (root / 'skills/learn/skills/codify/scripts/json_contract.py').read_bytes()
-    state = (root / 'scripts/tkstack_state.py').read_bytes()
+    state = (root / 'src/tkstack_state.py').read_bytes()
     def inspect(name):
         directory = packages[name]
         plugin = published.get(name)
@@ -70,7 +69,10 @@ def check(root=ROOT, jobs=4):
 if __name__ == '__main__':
     try:
         rows = check()
-        import routing_inventory
+        spec = importlib.util.spec_from_file_location(
+            'routing_inventory', Path(__file__).resolve().parent / 'routing_inventory.py')
+        routing_inventory = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(routing_inventory)
         routing_inventory.check(ROOT)
         print(json.dumps({'status': 'pass', 'skills': len(rows), 'results': rows,
                           'limits': 'Conformance is not a semantic/model-quality score or native provider activation proof.'}, indent=2))

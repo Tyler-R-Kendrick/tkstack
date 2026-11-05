@@ -12,8 +12,9 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'src'))
 import runner_install
-spec = importlib.util.spec_from_file_location('test_stack_runner_cli', ROOT / 'scripts/tkstack.py')
+spec = importlib.util.spec_from_file_location('test_stack_runner_cli', ROOT / 'src/tkstack.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 
@@ -150,8 +151,8 @@ class StackRunnerTests(unittest.TestCase):
 
     def test_launcher_quotes_source_paths_with_newlines_and_shell_metacharacters(self):
         source = self.base / "source\nfalse # ' $(false)"
-        (source / 'scripts').mkdir(parents=True)
-        (source / 'scripts/tkstack.py').write_text("print('quoted source executed')\n")
+        (source / 'src').mkdir(parents=True)
+        (source / 'src/tkstack.py').write_text("print('quoted source executed')\n")
         executable = runner_install.publish(source, self.scopes['workspace'])
         result = self.invoke(executable=executable)
         self.assertEqual(result.stdout.strip(), 'quoted source executed')

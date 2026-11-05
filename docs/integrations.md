@@ -68,7 +68,7 @@ working server.
 ```sh
 python3 scripts/setup_integrations.py --status
 python3 scripts/setup_integrations.py --target . --dry-run
-python3 scripts/tool.py wikiskill status tkstack --ws .tkstack/wikiskill
+python3 src/tool.py wikiskill status tkstack --ws .tkstack/wikiskill
 ```
 
 The runtime installer is an explicit network operation:
@@ -101,11 +101,17 @@ and `wrap` flows are explicit. No API account or provider URL was redirected.
   symlink targets. Emil Kowalski is the complete 33-file tree at
   `c8a79627b59d72d764d6ab6f2c87c09a48169833`. ub-mode is 3 files at
   `3da62bf3fcfd2034de41f30d920d2739e566171f`.
-- Placement follows `harnesses/skills.json`. Harness-independent upstream skills,
-  including Emil Kowalski (17) and ub-mode (1), install only into shared
-  `.agents/skills`. Personal skills install into Codex, Claude Code, and Cursor.
-  Pstack and Cursor Team Kit stay Cursor-only. Graphify and Impeccable keep a
-  native copy in each harness. Learn's 7 subskills install only through `learn`.
+- Placement follows `harnesses/skills.json`. Personal skills install into every
+  selected harness. `placement.default` sends other upstream skills, including
+  Emil Kowalski (17) and ub-mode (1), to Codex (`.agents/skills/`), Grok, Kimi,
+  OpenCode, GitHub Copilot (`~/.copilot/skills` or `.github/skills`), and Muse
+  (`~/.config/muse/skills`, or `.agents/skills` in a project) when those
+  harnesses are selected. The Muse home link does not follow `XDG_CONFIG_HOME`.
+  The default profile
+  selects Codex, Claude Code, and Cursor, so that set lands in shared
+  `.agents/skills` unless you pass `--harness`. Pstack and Cursor Team Kit stay
+  Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor.
+  Learn's 7 subskills install only through `learn`.
   Lever's separate Copilot layout adds its project links and initial repository dials.
 - Exercised fresh-checkout installation, provider-specific skill discovery,
   native configuration preservation, repeatability, scoped learning records,

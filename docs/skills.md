@@ -6,13 +6,20 @@ reviewed compiled artifacts. [Normalization coverage](normalization.md) describe
 what runs mechanically and what still requires actual semantic/provider work.
 
 
-Skills install by origin. The 8 skills under development in `skills/` join
-Codex, Claude Code, and Cursor; Learn's 7 subskills install inside it. Harness-independent outside skills, including the
-four third-party-derived packages in `.agents/skills/`, install only to the shared
-`.agents/skills/` directory. Pstack and its Cursor Team Kit dependency install
-only to `.cursor/skills/`. Graphify and Impeccable ship a distinct build for each
-harness, so each harness keeps its native copy. `harnesses/skills.json` records
-this placement. Links point to source instructions.
+Skills install by origin. Personal skills in `skills/` join every selected
+harness; Learn's 7 subskills install inside Learn. `placement.default` in
+`harnesses/skills.json` sends other upstream skills to Codex
+(`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), OpenCode
+(`.config/opencode/skills` at home, `.opencode/skills` in a project), GitHub
+Copilot (`~/.copilot/skills` at home, `.github/skills` in a project), and Muse
+(`~/.config/muse/skills` at home, `.agents/skills` in a project) when those
+harnesses are selected. Muse does not follow `XDG_CONFIG_HOME`. The default `./install.sh` profile selects Codex, Claude Code,
+and Cursor, so that default set lands in the shared Codex directory unless you
+pass `--harness`. Pstack and Cursor Team Kit install only to `.cursor/skills/`.
+Graphify and Impeccable keep Codex, Claude Code, and Cursor, including the
+generic view at `.tkstack/skill-views/graphify/default/`. t3code has no skills
+directory; it reads the skills of Claude, Codex, Cursor, Copilot, or Grok.
+`scripts/harness_paths.py` records that delegation. See `harnesses/t3code/README.md`. Links point to source instructions.
 Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
 preserve upstream `disable-model-invocation: true` policy.
 

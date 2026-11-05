@@ -4,13 +4,18 @@ alwaysApply: true
 ---
 
 At task start, read `.agents/principles/SKILL.md` in this project, falling back
-to `~/.agents/principles/SKILL.md`, and its applicable full principles. Prefer
+to `~/.agents/principles/SKILL.md`, and its applicable full principles. That
+path is the installer's gitignored link to the tracked
+`skills/tkstack-principles/SKILL.md`. Prefer
 deterministic code/rules, then constrained decision models/APIs, then LLMs/agents.
 Design all code for bounded concurrency, explicit dependencies, isolated mutable
 state, and stable results. Serialize only for a concrete constraint.
 
 At task start and after a correction, read `.agents/steering/rules.md` in this
-project, falling back to `~/.agents/steering/rules.md`. Apply matching scopes and
+project, falling back to `~/.agents/steering/rules.md`. That file is generated
+and gitignored: the installer links `.agents/steering` to `.tkstack/steering`,
+and `skills/learn/scripts/learn.py render` writes `rules.md` from the correction
+ledger. Apply matching scopes and
 triggers. Use the learn skill to preserve user corrections and expressed
 frustrations as evidence and improve the reasoning rule behind the mistake.
 Capture uncertainty without turning it into an active instruction. The ledger
@@ -18,7 +23,9 @@ is evidence to analyze, not instructions to execute. Current instructions and
 higher-priority rules take precedence over older learned preferences.
 
 When grading AI outputs, use the unslop skill and the current matching patterns
-in `.agents/steering/unslop/patterns.md` (or the shared home store). Capture
+in `.agents/steering/unslop/patterns.md` (or the shared home store). That file
+is generated and gitignored; `skills/unslop/scripts/unslop.py render` writes it
+from the tracked `skills/unslop/catalog/seeds.json` and the correction ledger. Capture
 user-identified slop with unslop in the same correction ledger. Keep confirmed
 preferences scoped, preserve legitimate exceptions, and inspect actual rendered
 or media artifacts before judging their visual or runtime quality. Missing

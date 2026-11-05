@@ -16,9 +16,9 @@ their provenance before claiming generalization.
 Run the pinned SkillOpt-Sleep engine with:
 
 ```sh
-python3 scripts/evolve.py learn --backend mock --dry-run
-python3 scripts/evolve.py learn
-python3 scripts/evolve.py sdlc
+python3 src/evolve.py learn --backend mock --dry-run
+python3 src/evolve.py learn
+python3 src/evolve.py sdlc
 ```
 
 Default `handoff` runs return exit 3 while fresh-context model replies are
@@ -45,7 +45,10 @@ than replacing full skill outcomes or creative/provider execution.
 bounded snapshot of git-tracked files (file tree, LOC, README, install.sh,
 AGENTS.md, manifests, owned SKILL.md frontmatter, `docs/skill-marketplace.md`,
 harness docs, and the docs list) with home paths and secret-like values
-redacted. README.md is placed before the file tree. Without git, the walk
+redacted. File excerpts are capped and generated lock JSON is summarized so
+the snapshot stays under 100 KiB. Promptfoo passes that text inside one
+grader argument, and a larger snapshot exceeds Linux's per-argument limit.
+README.md is placed before the file tree. Without git, the walk
 skips `.git`, `__pycache__`, `node_modules`, `.tkstack`, `.venv`, and `venv`.
 `judge.py` is the
 headless grader. `checks.py` applies deterministic limits and prints a JSON
@@ -69,7 +72,8 @@ plain --disable-web-search`. When `CURSOR_API_KEY` is set, the judge is
 `cursor-agent -p --model composer-2.5` with the prompt on stdin.
 `REPO_QUALITY_CURSOR_MODEL` replaces that model id. `REPO_QUALITY_JUDGE`
 replaces the whole command; put `{prompt}` or `{prompt_file}` where that value
-belongs. The opt-in test requires every metric to score 1.0:
+belongs. The judge allows 900 seconds and retries once if that command times
+out. The opt-in test requires every metric to score 1.0:
 
 ```sh
 RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def hook_command(root, integration, harness, event):
     environment = with_paths(root)
     if integration == 'repo-docs':
-        return [sys.executable, '-B', str(root / 'scripts/docs_hook.py'), '--harness', harness], environment
+        return [sys.executable, '-B', str(root / 'src/docs_hook.py'), '--harness', harness], environment
     if integration == "caveman":
         node = shutil.which("node", path=environment.get("PATH"))
         source = root / "vendor/caveman"

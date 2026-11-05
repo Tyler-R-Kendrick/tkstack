@@ -12,7 +12,7 @@
   },
   "rewrite_callers": {"pstack": false},
   "placement": {
-    "default": ["codex"],
+    "default": ["codex", "grok", "kimi", "opencode", "copilot", "muse"],
     "sources": {
       "cursor-team-kit": ["cursor"],
       "graphify": ["codex", "claude", "cursor"],

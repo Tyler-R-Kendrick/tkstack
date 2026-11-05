@@ -14,11 +14,11 @@ rather than installing/upgrading packages in your home or system Python.
 For deterministic code-only indexing and querying:
 
 ```sh
-python3 scripts/tool.py graphify extract /path/to/project --code-only --max-workers 4
+python3 src/tool.py graphify extract /path/to/project --code-only --max-workers 4
 # Query from that project directory, using the absolute tkstack launcher path:
-python3 /path/to/tkstack/scripts/tool.py graphify query 'authentication flow'
-python3 /path/to/tkstack/scripts/tool.py graphify path 'Caller' 'Callee'
-python3 /path/to/tkstack/scripts/tool.py graphify explain 'Symbol'
+python3 /path/to/tkstack/src/tool.py graphify query 'authentication flow'
+python3 /path/to/tkstack/src/tool.py graphify path 'Caller' 'Callee'
+python3 /path/to/tkstack/src/tool.py graphify explain 'Symbol'
 ```
 
 Code parsing uses the native tree-sitter extractors. Preserve `EXTRACTED` versus
@@ -45,7 +45,7 @@ MCP project selection for repository context. Native global graph storage uses
 `~/.graphify`, which is outside the managed state convention.
 
 The local stdio MCP connection is named **`graphify-local`** in all three host
-configurations. It launches `graphify-mcp` through `scripts/tool.py graphify mcp`.
+configurations. It launches `graphify-mcp` through `src/tool.py graphify mcp`.
 The default relative output path preserves native `project_path` selection;
 explicit absolute/shared output overrides select a fixed graph instead. This is
 separate from Graphify's hosted OAuth service; no hosted account, workspace,
