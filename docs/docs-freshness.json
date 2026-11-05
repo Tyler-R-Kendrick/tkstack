@@ -735,7 +735,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "b34ce4b3dd96b676e75e95147e20b57757d92382"
+          "oid": "3bf92de710fb751c710070e7fdeb1e0879db52fe"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -783,7 +783,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "scripts_loc counts non-blank lines under scripts/ and src/, plus a skills/**/scripts file only when scripts/, src/, CI, or tests use it and its own skill never mentions it in SKILL.md, references, or workflow. The rule is in the check explanation and eval.yaml minimal_code, so mapped docs are unchanged. The root skills gate still does not run the SDLC routing inventory."
+      "reason": "scripts_loc resolves its root once so a relative root counts the same glue as the absolute path, and its evidence lists reached skill scripts excluded because the skill mentions them. Tests cover both. The ceiling and mapped docs are unchanged."
     },
     "execution": {
       "docs": {
@@ -1007,7 +1007,7 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "e472ae6ac7e9c5cde1c358323deb93a17b5dda6a"
+          "oid": "f03451d4ec73d903b964aed1a23a1f4a1a3a7ab8"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -2659,7 +2659,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "scripts_loc counts non-blank lines under scripts/ and src/, plus a skills/**/scripts file only when scripts/, src/, CI, or tests use it and its own skill never mentions it in SKILL.md, references, or workflow. The rule is in the check explanation and eval.yaml minimal_code, so mapped docs are unchanged. The root skills gate still does not run the SDLC routing inventory."
+      "reason": "scripts_loc resolves its root once so a relative root counts the same glue as the absolute path, and its evidence lists reached skill scripts excluded because the skill mentions them. Tests cover both. The ceiling and mapped docs are unchanged."
     }
   },
   "object_format": "sha1",

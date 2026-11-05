@@ -158,19 +158,20 @@ def _consumer_text(root):
     return "\n".join(chunks)
 
 
-def reached_skill_scripts(root):
-    """Skill scripts whose only users are scripts/, src/, CI, or tests.
+def _partition_reached_skill_scripts(root):
+    """Split skill scripts that root glue reaches into counted and excluded.
 
-    A file counts only when one of those calls it and its own skill never
-    mentions it in SKILL.md, references, or workflow. Skill engines the skill
-    itself names stay product code, even when a thin CLI imports them.
+    counted is (relative path, non-blank lines) for a script the owning skill
+    never names. excluded is relative paths the skill mentions in SKILL.md,
+    references, or workflow. Those stay product code.
     """
     root = Path(root)
     skills = root / "skills"
     if not skills.is_dir():
-        return []
+        return [], []
     consumers = _consumer_text(root)
     counted = []
+    excluded = []
     for path in _iter_files(skills):
         if not _is_skill_script(root, path):
             continue
@@ -178,20 +179,37 @@ def reached_skill_scripts(root):
         if relative not in consumers:
             continue
         if _skill_mentions(_owning_skill(root, path), path):
+            excluded.append(relative)
             continue
         count = _nonblank_lines(path)
         if count is not None:
             counted.append((relative, count))
-    return sorted(counted, key=lambda item: (-item[1], item[0]))
+    counted.sort(key=lambda item: (-item[1], item[0]))
+    excluded.sort()
+    return counted, excluded
+
+
+def reached_skill_scripts(root):
+    """Skill scripts whose only users are scripts/, src/, CI, or tests.
+
+    A file counts only when one of those calls it and its own skill never
+    mentions it in SKILL.md, references, or workflow. Skill engines the skill
+    itself names stay product code, even when a thin CLI imports them.
+    """
+    counted, _excluded = _partition_reached_skill_scripts(root)
+    return counted
 
 
 def scripts_loc(root):
     """Ceiling on repo glue: scripts/, src/, and root-only skill scripts.
 
-    Comments stay in the count. A skills/**/scripts file counts only when
-    scripts/, src/, CI, or tests are its only users and its own skill never
-    mentions it in SKILL.md, references, or workflow.
+    Comments stay in the count. Resolve root once so a relative path counts
+    the same files as the absolute path. A skills/**/scripts file counts only
+    when scripts/, src/, CI, or tests are its only users and its own skill
+    never mentions it in SKILL.md, references, or workflow. Evidence lists
+    the reached skill scripts left out because the skill mentions them.
     """
+    root = Path(root).resolve()
     per_file = []
     missing = []
     for name in ("scripts", "src"):
@@ -204,19 +222,24 @@ def scripts_loc(root):
             if count is None:
                 continue
             per_file.append((path.relative_to(root).as_posix(), count))
-    reached = [] if missing else reached_skill_scripts(root)
+    if missing:
+        reached, excluded = [], []
+    else:
+        reached, excluded = _partition_reached_skill_scripts(root)
     glue = sum(count for _, count in per_file)
     extra = sum(count for _, count in reached)
     per_file.extend(reached)
     total = glue + extra
     largest = sorted(per_file, key=lambda item: (-item[1], item[0]))[:8]
     evidence = missing + [f"{path}: {count} non-blank lines" for path, count in largest]
+    evidence.extend(f"{path}: excluded because the skill mentions it" for path in excluded)
     ok = total <= SCRIPTS_LOC_LIMIT and not missing
     explanation = (
         f"scripts/ plus src/ has {glue} non-blank lines. "
         f"Also count a skills/**/scripts file only when scripts/, src/, CI, or tests "
         f"use it and its own skill never mentions it in SKILL.md, references, or workflow. "
         f"That adds {extra} non-blank lines from {len(reached)} root-only skill scripts. "
+        f"{len(excluded)} reached skill scripts stay out of the count because the skill mentions them. "
         f"The total is {total}. "
         f"The best-practice ceiling for dotfiles glue is {SCRIPTS_LOC_LIMIT}."
     )

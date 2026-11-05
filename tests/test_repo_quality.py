@@ -74,6 +74,44 @@ def failure_message(result):
     return result["explanation"] + "\n" + evidence
 
 
+def write_glue_and_skill_scripts(root):
+    """scripts/, src/, one root-only skill script, and one the skill names."""
+    root = Path(root)
+    (root / "scripts").mkdir()
+    (root / "src").mkdir()
+    (root / "scripts" / "glue.py").write_text("print('glue')\n", encoding="utf-8")
+    (root / "src" / "gate.py").write_text(
+        "load('hidden', 'skills/demo/scripts/hidden.py')\n"
+        "load('owned', 'skills/demo/scripts/owned.py')\n",
+        encoding="utf-8",
+    )
+    skill = root / "skills" / "demo"
+    (skill / "scripts").mkdir(parents=True)
+    (skill / "references").mkdir()
+    (skill / "SKILL.md").write_text(
+        "Run scripts/owned.py for the skill's own engine.\n",
+        encoding="utf-8",
+    )
+    (skill / "references" / "guide.md").write_text(
+        "The workflow calls scripts/owned.py.\n",
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "workflow.lock.json").write_text(
+        '{"files": {"scripts/owned.py": {}}}\n',
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "hidden.py").write_text(
+        "".join(f"value_{index} = {index}\n" for index in range(20)),
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "owned.py").write_text(
+        "".join(f"kept_{index} = {index}\n" for index in range(15)),
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "engine.py").write_text("print('skill engine')\n", encoding="utf-8")
+    return root
+
+
 def load_eval_config(path):
     text = path.read_text(encoding="utf-8")
     try:
@@ -231,20 +269,60 @@ class RepoQualityTests(unittest.TestCase):
 
     def test_scripts_loc_counts_root_only_skill_scripts_not_skill_owned_ones(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = write_glue_and_skill_scripts(temporary)
+            result = checks.scripts_loc(root)
+            evidence = "\n".join(result["evidence"])
+            self.assertIn("skills/demo/scripts/hidden.py: 20 non-blank lines", evidence)
+            self.assertNotIn("skills/demo/scripts/owned.py: 15 non-blank lines", evidence)
+            self.assertNotIn("engine.py", evidence)
+            self.assertIn("SKILL.md", result["explanation"])
+            self.assertIn("references", result["explanation"])
+            self.assertIn("workflow", result["explanation"])
+            self.assertEqual(result["value"], 1 + 2 + 20)
+            self.assertTrue(result["pass"], evidence)
+
+    def test_scripts_loc_relative_root_matches_resolved_root(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = write_glue_and_skill_scripts(temporary)
+            absolute = checks.scripts_loc(root)
+            previous = os.getcwd()
+            try:
+                os.chdir(root.parent)
+                from_parent = checks.scripts_loc(Path(root.name))
+                os.chdir(root)
+                from_dot = checks.scripts_loc(Path("."))
+                os.chdir(root / "scripts")
+                from_parent_dir = checks.scripts_loc(Path(".."))
+            finally:
+                os.chdir(previous)
+            self.assertEqual(absolute["value"], 1 + 2 + 20)
+            self.assertIn(
+                "skills/demo/scripts/owned.py: excluded because the skill mentions it",
+                absolute["evidence"],
+            )
+            for relative in (from_parent, from_dot, from_parent_dir):
+                self.assertEqual(relative["value"], absolute["value"])
+                self.assertEqual(relative["evidence"], absolute["evidence"])
+
+    def test_scripts_loc_lists_reached_skill_scripts_the_skill_mentions(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
             root = Path(temporary)
             (root / "scripts").mkdir()
             (root / "src").mkdir()
             (root / "scripts" / "glue.py").write_text("print('glue')\n", encoding="utf-8")
             (root / "src" / "gate.py").write_text(
                 "load('hidden', 'skills/demo/scripts/hidden.py')\n"
-                "load('owned', 'skills/demo/scripts/owned.py')\n",
+                "load('owned', 'skills/demo/scripts/owned.py')\n"
+                "load('also', 'skills/demo/scripts/also.py')\n",
                 encoding="utf-8",
             )
             skill = root / "skills" / "demo"
             (skill / "scripts").mkdir(parents=True)
             (skill / "references").mkdir()
             (skill / "SKILL.md").write_text(
-                "Run scripts/owned.py for the skill's own engine.\n",
+                "Run scripts/owned.py for the skill's own engine.\n"
+                "scripts/also.py is also part of the skill.\n"
+                "scripts/quiet.py is documented but root code never calls it.\n",
                 encoding="utf-8",
             )
             (skill / "references" / "guide.md").write_text(
@@ -263,17 +341,29 @@ class RepoQualityTests(unittest.TestCase):
                 "".join(f"kept_{index} = {index}\n" for index in range(15)),
                 encoding="utf-8",
             )
+            (skill / "scripts" / "also.py").write_text(
+                "".join(f"also_{index} = {index}\n" for index in range(4)),
+                encoding="utf-8",
+            )
             (skill / "scripts" / "engine.py").write_text("print('skill engine')\n", encoding="utf-8")
+            (skill / "scripts" / "quiet.py").write_text("print('unreached')\n", encoding="utf-8")
             result = checks.scripts_loc(root)
+            excluded = [
+                line for line in result["evidence"]
+                if line.endswith(": excluded because the skill mentions it")
+            ]
+            self.assertEqual(
+                excluded,
+                [
+                    "skills/demo/scripts/also.py: excluded because the skill mentions it",
+                    "skills/demo/scripts/owned.py: excluded because the skill mentions it",
+                ],
+            )
             evidence = "\n".join(result["evidence"])
-            self.assertIn("skills/demo/scripts/hidden.py: 20 non-blank lines", evidence)
-            self.assertNotIn("owned.py", evidence)
+            self.assertNotIn("quiet.py", evidence)
             self.assertNotIn("engine.py", evidence)
-            self.assertIn("SKILL.md", result["explanation"])
-            self.assertIn("references", result["explanation"])
-            self.assertIn("workflow", result["explanation"])
-            self.assertEqual(result["value"], 1 + 2 + 20)
-            self.assertTrue(result["pass"], evidence)
+            self.assertNotIn("hidden.py: excluded", evidence)
+            self.assertEqual(result["value"], 1 + 3 + 20)
 
     def test_named_skill_engines_are_not_repo_glue(self):
         reached = [path for path, _count in checks.reached_skill_scripts(ROOT)]
