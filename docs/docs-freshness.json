@@ -591,7 +591,7 @@
         },
         "harnesses/cursor/tkstack-steering.mdc": {
           "mode": "100644",
-          "oid": "ddcbc43b257d877421db80b3b0ba076965670452"
+          "oid": "ba9e2fd7e9604018392a38a88ad30db48779e7ce"
         },
         "harnesses/graphify/requirements.in": {
           "mode": "100644",
@@ -634,8 +634,8 @@
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Record Copilot and Muse native skill directories and leave t3code uncounted at 8 of 9."
+      "no_doc_impact": true,
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "documentation": {
       "docs": {
@@ -716,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "af0abb291da0a7722c38e0108ea010b8916c6b9e"
+          "oid": "3460afab0719a66f78bffcbc821f69ab95291471"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -795,8 +795,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "A dry-run hook uninstall reports planned, and a missing git binary is not a checkout."
+      "no_doc_impact": true,
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "execution": {
       "docs": {
@@ -973,15 +973,15 @@
         },
         "src/steering_adapter.py": {
           "mode": "100644",
-          "oid": "dee8e3e52bef4793c807b3c8cd98413362393b87"
+          "oid": "fc98eb3cd51c33a0b61cf33f0ac417cc9b2bb7f6"
         },
         "src/tkstack_state.py": {
           "mode": "100644",
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Document that a dry-run uninstall plans the git docs hook and a missing git binary does not abort uninstall."
+      "no_doc_impact": true,
+      "reason": "AGENTS.md names the tracked sources of the installer-generated steering files; mapped docs already describe those stores."
     },
     "skills": {
       "docs": {

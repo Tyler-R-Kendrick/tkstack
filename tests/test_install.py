@@ -327,6 +327,8 @@ class InstallTests(unittest.TestCase):
             self.assertIn('tkstack:steering:source repository', text)
             self.assertNotIn(str(root), text)
             self.assertIn('`.agents/steering/rules.md`', text)
+            self.assertIn('skills/learn/scripts/learn.py', text)
+            self.assertIn('generated and gitignored', text)
         relocated = self.target / 'relocated'
         shutil.copytree(root, relocated)
         self.assertEqual(instruction_plan(relocated, relocated, ['codex', 'claude'], 'project'), [])
@@ -338,6 +340,32 @@ class InstallTests(unittest.TestCase):
             instruction_plan(relocated, foreign, ['codex'], 'project')
         self.assertEqual((foreign / 'AGENTS.md').read_bytes(), before)
         self.assertEqual(instruction_plan(relocated, foreign, ['codex'], 'project', uninstall=True), [])
+
+    def test_generated_instruction_paths_name_their_tracked_sources(self):
+        from steering_adapter import instruction_plan
+        root = self.target / 'checkout'
+        for relative in (
+            'skills/learn/SKILL.md',
+            'skills/learn/scripts/learn.py',
+            'skills/tkstack-principles/SKILL.md',
+            'skills/unslop/SKILL.md',
+            'skills/unslop/scripts/unslop.py',
+            'skills/unslop/catalog/seeds.json',
+        ):
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('fixture\n')
+        (root / 'AGENTS.md').write_text('# Guide\n')
+        plan = instruction_plan(root, root, ['codex'], 'project')
+        text = plan[0][2]
+        self.assertIn('`.agents/steering/rules.md`', text)
+        self.assertIn('skills/learn/scripts/learn.py render', text)
+        self.assertIn('`.agents/principles/SKILL.md`', text)
+        self.assertIn('skills/tkstack-principles/SKILL.md', text)
+        self.assertIn('`.agents/steering/unslop/patterns.md`', text)
+        self.assertIn('skills/unslop/catalog/seeds.json', text)
+        self.assertIn('skills/unslop/scripts/unslop.py render', text)
+        self.assertNotIn(str(root), text)
 
     def test_self_project_migrates_only_its_own_legacy_steering_block(self):
         import hashlib
