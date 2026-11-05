@@ -1058,7 +1058,6 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
-      "docs_refresh_reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -2446,7 +2445,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "f4b38d06d47eeee05cb4b64e9098f2e1db965d59"
+          "oid": "3830ea21396b0abf67688d465aa5eef539adbbbd"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2757,8 +2756,8 @@
           "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
+      "no_doc_impact": true,
+      "reason": "Recompiled skills/sdlc/scripts/workflow.lock.json after references/skill-routing.md changed. The lock is generated and the guide already states the placement."
     }
   },
   "object_format": "sha1",
