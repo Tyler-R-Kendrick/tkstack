@@ -549,7 +549,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
+          "oid": "58faa124ed546d8969af505cacbf791004ddba44"
         },
         "docs/harnesses.md": {
           "mode": "100644",
@@ -557,7 +557,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
+          "oid": "69d05aa9a91458ccd19a2108e4d242c8242e7024"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -599,7 +599,7 @@
         },
         "mcp.json": {
           "mode": "100644",
-          "oid": "20f68e8499154cffec88b63646a4e06cb1a685d9"
+          "oid": "e48b43d2696ac6ec1bb83b049db12d1db5bed4a7"
         },
         "plugin.json": {
           "mode": "100644",
@@ -615,7 +615,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
+      "reason": "Removed one Streamable HTTP MCP server from mcp.json, the repo MCP policy, and the install and integration docs. Remaining pinned servers are serena, playwright, firecrawl, vercel, and graphify."
     },
     "documentation": {
       "docs": {
@@ -799,15 +799,15 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
+          "oid": "58faa124ed546d8969af505cacbf791004ddba44"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "f79ca564ca1788a5fc90c306c0fd585f765ec137"
+          "oid": "ab38c44bbf33a5d87d226bb10e82d5f13f42a19e"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
+          "oid": "69d05aa9a91458ccd19a2108e4d242c8242e7024"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -860,8 +860,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Uninstall removes every linked harness without reading skills.json delegates, so an empty or unknown delegates.t3code still succeeds. The test covers that path. Install still expands delegates.t3code. Existing install and uninstall docs already say that."
+      "no_doc_impact": false,
+      "reason": "Removed one Streamable HTTP MCP server from mcp.json, the repo MCP policy, and the install and integration docs. Remaining pinned servers are serena, playwright, firecrawl, vercel, and graphify."
     },
     "skills": {
       "docs": {
@@ -871,7 +871,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "fc8bca61d0ae0b0f25221082d1074cb29017841c"
+          "oid": "58faa124ed546d8969af505cacbf791004ddba44"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -891,7 +891,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
+          "oid": "69d05aa9a91458ccd19a2108e4d242c8242e7024"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -1013,7 +1013,7 @@
         },
         "evals/repo-quality/repo_mcp_policy.py": {
           "mode": "100644",
-          "oid": "a0ca9d792858c6762e7db4d592a514fd8e8a33b2"
+          "oid": "2fc3b392ef09fbbbaf5e49cf5ac9ed837b18f78d"
         },
         "evals/repo-quality/results/archive/README.md": {
           "mode": "100644",
@@ -2669,7 +2669,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
+      "reason": "Removed one Streamable HTTP MCP server from mcp.json, the repo MCP policy, and the install and integration docs. Remaining pinned servers are serena, playwright, firecrawl, vercel, and graphify."
     }
   },
   "object_format": "sha1",

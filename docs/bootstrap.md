@@ -108,7 +108,7 @@ Required environment for the shipped MCP servers, not for this index step:
 | --- | --- | --- |
 | `FIRECRAWL_API_KEY` | `firecrawl` (`npx -y firecrawl-mcp@3.33.2`) | Cloud Firecrawl tools. Set it in the MCP client's env UI for this server (Cursor Settings → MCP, Claude Code `/mcp` or `claude mcp`, or Codex's MCP server env). `mcp.json` does not reference it, because Agent Plugins would pass `${FIRECRAWL_API_KEY}` through as literal text. |
 | none | `serena`, `playwright`, `graphify` | Local commands. Playwright needs Node. Graphify needs `uv tool install "graphifyy[mcp]"` and a graph at `${PLUGIN_DATA}/graphify-out/graph.json`. |
-| none | `mobbin`, `vercel` | OAuth in the MCP client. Mobbin requires a paid Mobbin plan. |
+| none | `vercel` | OAuth in the MCP client. |
 
 ## Devcontainer
 
