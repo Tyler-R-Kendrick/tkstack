@@ -2757,7 +2757,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Recompiled skills/sdlc/scripts/workflow.lock.json after references/skill-routing.md changed. The lock is generated and the guide already states the placement."
+      "reason": "Workflow locks now embed the already-committed src/ path notes and the rendered skill-routing guide. No skill behavior change."
     }
   },
   "object_format": "sha1",
