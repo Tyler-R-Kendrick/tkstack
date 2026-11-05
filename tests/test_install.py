@@ -214,6 +214,30 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((self.target / ".copilot/skills/learn").exists())
         self.assertFalse((self.target / ".claude/skills/learn").exists())
 
+    def test_uninstall_succeeds_when_delegates_are_broken(self):
+        install.apply(self.plan)
+        owned = self.target / ".claude" / "skills" / "learn"
+        self.assertTrue(owned.is_symlink())
+        placement = ROOT / "skills" / "skills.json"
+        original = placement.read_bytes()
+        needle = b'"t3code": ["claude", "codex", "cursor", "copilot", "grok"]'
+        self.assertIn(needle, original)
+        self.addCleanup(placement.write_bytes, original)
+        command = [
+            sys.executable, str(ROOT / "scripts/install.py"),
+            "--uninstall", "--target", str(self.target),
+        ]
+        env = _env_without_uv()
+        for replacement in (b'"t3code": []', b'"t3code": ["claude", "nope"]'):
+            placement.write_bytes(original.replace(needle, replacement, 1))
+            if not owned.is_symlink():
+                install.apply(self.plan)
+            completed = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            self.assertNotIn("delegates must name", completed.stderr)
+            self.assertIn("skip serena: uninstall", completed.stdout)
+            self.assertFalse(owned.exists() or owned.is_symlink())
+
     def test_invalid_parent_stops_before_creating_other_links(self):
         parent = self.plan[-1][1].parent
         parent.parent.mkdir(parents=True)

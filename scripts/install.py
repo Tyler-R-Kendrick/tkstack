@@ -563,16 +563,16 @@ def main():
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        selected = expand_harnesses(ROOT, list(dict.fromkeys(args.harness or DEFAULT_HARNESSES)))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if args.uninstall:
-            harnesses = expand_harnesses(ROOT, [*SKILL_PATHS, *_delegates(ROOT)])
+            harnesses = list(SKILL_PATHS)
             link_scope = None
             if args.harness:
                 print("tkstack: --uninstall removes this checkout's links for every harness; --harness does not limit it.",
                       file=sys.stderr)
         else:
+            selected = expand_harnesses(ROOT, list(dict.fromkeys(args.harness or DEFAULT_HARNESSES)))
             harnesses = selected
             link_scope = scope
         plan = link_plan(ROOT, target, harnesses, link_scope)

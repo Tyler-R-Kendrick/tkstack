@@ -688,7 +688,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "b50d83b7eac7c1c774a76b2bb183a87afb950bc9"
+          "oid": "183f742ac6dc6af44877048fe26e63cfe8261c0f"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -759,8 +759,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
+      "no_doc_impact": true,
+      "reason": "Uninstall removes every linked harness without reading skills.json delegates, so an empty or unknown delegates.t3code still succeeds. The test covers that path. Install still expands delegates.t3code. Existing install and uninstall docs already say that."
     },
     "execution": {
       "docs": {
@@ -837,7 +837,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "0616a15cf346fca80aede4e3fde9f921d13969e9"
+          "oid": "3334ecfff556a18b71d82610fda4aeab6ac76b74"
         },
         "src/README.md": {
           "mode": "100644",
@@ -860,8 +860,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed --harness t3code: it installs the skill directories of every host in skills/skills.json delegates.t3code and creates no t3code directory. Dry-run and uninstall use that same expansion. Also reviewed the Graphify inventory line against the deleted PyPI lock, the Serena skip line naming uvx, the public json_object loader, in-root skill symlinks, and the reverse-domain check for extensions keys."
+      "no_doc_impact": true,
+      "reason": "Uninstall removes every linked harness without reading skills.json delegates, so an empty or unknown delegates.t3code still succeeds. The test covers that path. Install still expands delegates.t3code. Existing install and uninstall docs already say that."
     },
     "skills": {
       "docs": {
