@@ -23,15 +23,24 @@ The entrypoint carries purpose, triggers, the execution spine, boundaries, and
 condition-to-reference pointers. Detailed procedures and provenance live under
 `references/`; templates and scripts stay local to the selected package.
 
-Install one published package with the skills CLI. This command names the
-`investigate` manifest package and its tree path `skills/investigate`:
+Install one published package with the skills CLI. `skills` 1.7.6 `--help`
+shows `add <package>` as `owner/repo` (for example `vercel-labs/agent-skills`)
+and `--skill` as the SKILL.md name:
 
 ```sh
-npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
+npx skills add Tyler-R-Kendrick/tkstack --skill investigate
 ```
 
-`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects that same
-package from the repository root. Other real packages are `document`
+The `investigate` package's tree path is `skills/investigate`. This command
+names that manifest package and path. `--list` on skills 1.7.6 resolves the
+source to `https://github.com/Tyler-R-Kendrick/tkstack.git`
+(`skills/investigate`) and finds one skill named `investigate`:
+
+```sh
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate
+```
+
+Other real packages are `document`
 (`skills/document`), `write` (`skills/write`), `fal-ai`
 (`.agents/skills/fal-ai`), `headroom` (`.agents/skills/headroom`),
 `hill-climb` (`skills/hill-climb`), `learn` (`skills/learn`), `open-design`
@@ -40,8 +49,9 @@ package from the repository root. Other real packages are `document`
 `unslop` (`skills/unslop`). From a local checkout, replace the GitHub source
 with the same relative path, for example `./skills/investigate`.
 
-Add the marketplace, then install one plugin. The `investigate` plugin source
-in `.claude-plugin/marketplace.json` is `./skills/investigate`:
+Add the marketplace, then install one plugin. These are Claude Code slash
+commands. The `investigate` plugin source in `.claude-plugin/marketplace.json`
+is `./skills/investigate`:
 
 ```text
 /plugin marketplace add Tyler-R-Kendrick/tkstack

@@ -48,20 +48,30 @@ has the longer preview, routing, and doctor sequence.
 
 ## Install one skill
 
-The marketplace name is `tkstack`. These commands install the `investigate`
-plugin from `skills/investigate`:
+The marketplace name is `tkstack`. These are Claude Code slash commands. They
+install the `investigate` plugin, whose manifest source is `./skills/investigate`:
 
 ```text
 /plugin marketplace add Tyler-R-Kendrick/tkstack
 /plugin install investigate@tkstack
 ```
 
+`skills` 1.7.6 `--help` installs `owner/repo` and uses `--skill` for the
+SKILL.md name:
+
 ```sh
-npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
+npx skills add Tyler-R-Kendrick/tkstack --skill investigate
 ```
 
-`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects the same
-package. Other manifest packages and their tree paths are `document`
+That package's tree path is `skills/investigate`. This command names the
+package and that path. `--list` on skills 1.7.6 resolves it and finds one
+skill named `investigate`:
+
+```sh
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate
+```
+
+Other manifest packages and their tree paths are `document`
 (`skills/document`), `fal-ai` (`.agents/skills/fal-ai`), `headroom`
 (`.agents/skills/headroom`), `hill-climb` (`skills/hill-climb`), `learn`
 (`skills/learn`), `open-design` (`.agents/skills/open-design`), `rtk`
