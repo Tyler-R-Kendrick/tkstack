@@ -24,7 +24,7 @@ def load(name, path):
     return module
 
 
-evolve = load("tkstack_evolve", ROOT / "scripts/evolve.py")
+evolve = load("tkstack_evolve", ROOT / "src/evolve.py")
 from skillopt_sleep.judges import score_rule_judge
 
 

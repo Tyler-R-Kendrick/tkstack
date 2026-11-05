@@ -25,8 +25,8 @@ jobs:
           python -m venv .tkstack/runtime/command-schema
           .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
       - name: Check every owned skill and executable artifact
-        run: .tkstack/runtime/command-schema/bin/python -B scripts/check_skills.py
+        run: .tkstack/runtime/command-schema/bin/python -B src/check_skills.py
       - name: Check reviewed documentation
-        run: python -B scripts/check_docs.py check
+        run: python -B src/check_docs.py check
       - name: Run the full offline regression suite
         run: .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -v

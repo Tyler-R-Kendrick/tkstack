@@ -43,7 +43,7 @@ GitHub clone defaults use .tkstack/graphify/repos rather than home.
     text, count = re.subn(r'### Step 1 -[^\n]*\n.*?(?=### Step 2 -)', lambda _: setup, text, count=1, flags=re.S)
     if count != 1:
         raise ValueError('Graphify source layout changed; review its native setup before adapting')
-    cli = shlex.join([sys.executable, str(root / 'scripts/tool.py'), 'graphify'])
+    cli = shlex.join([sys.executable, str(root / 'src/tool.py'), 'graphify'])
     def commands(content):
         return re.sub(r'(?<![\w/.$-])graphify (?=(?:query|path|explain|extract|update|tree|merge-graphs|merge-chunks|merge-semantic|cache-check|check-update|benchmark|clone|export|hook-guard|hook-check|global|add|watch)\b)', lambda _: cli + ' ', content)
     files = {'SKILL.md': commands(text).encode()}
@@ -52,7 +52,7 @@ GitHub clone defaults use .tkstack/graphify/repos rather than home.
     for name in ('LICENSE', 'LICENSE-MIT', 'NOTICE'):
         files[name] = (upstream / name).read_bytes()
     files['scripts/python'] = ('#!' + sys.executable + '\nimport os,sys\nos.execv(sys.executable,[sys.executable,' +
-        repr(str(root / 'scripts/graphify_adapter.py')) + ',*sys.argv[1:]])\n').encode()
+        repr(str(root / 'src/graphify_adapter.py')) + ',*sys.argv[1:]])\n').encode()
     return files
 
 

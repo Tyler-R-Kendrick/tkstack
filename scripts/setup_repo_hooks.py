@@ -13,17 +13,38 @@ import subprocess
 import sys
 import tempfile
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 from check_docs import git
 from tkstack_state import ensure_state
 
 ROOT = Path(__file__).resolve().parent.parent
+MARKER = '# tkstack Git docs hook'
 
 
-def wrapper(root, backup):
-    return ('#!/usr/bin/env bash\nset -euo pipefail\n# tkstack Git docs hook\n' +
-        'tkstack_previous=' + shlex.quote(str(backup)) + '\n' +
-        'if [ -x "$tkstack_previous" ]; then "$tkstack_previous" "$@"; fi\n' +
-        'exec ' + shlex.quote(str(root / '.githooks/pre-commit')) + ' "$@"\n')
+def tkstack_owned(path):
+    """True when path is one of our dispatchers. Never chain one of those."""
+    try:
+        if not os.path.lexists(path):
+            return False
+        target = path.resolve() if path.is_symlink() else path
+        if not target.is_file():
+            return False
+        return MARKER in target.read_text(errors='replace')
+    except OSError:
+        return False
+
+
+def wrapper(root, backup, chain):
+    lines = ['#!/usr/bin/env bash', 'set -euo pipefail', MARKER]
+    if chain:
+        lines += [
+            'tkstack_previous=' + shlex.quote(str(backup)),
+            'if [ -x "$tkstack_previous" ] && ! grep -F -q ' + shlex.quote(MARKER) + ' "$tkstack_previous"; then',
+            '  "$tkstack_previous" "$@"',
+            'fi',
+        ]
+    lines.append('exec ' + shlex.quote(str(root / '.githooks/pre-commit')) + ' "$@"')
+    return '\n'.join(lines) + '\n'
 
 
 def plan(root):
@@ -45,21 +66,28 @@ def plan(root):
         raise ValueError('Existing core.hooksPath is managed elsewhere; preserve it and call ' + str(source) + ' from its pre-commit hook')
     backup = directory / 'pre-commit.tkstack-previous'
     receipt = root / '.tkstack/git-hooks/ownership.json'
-    expected = wrapper(root, backup)
     state = json.loads(receipt.read_text()) if receipt.is_file() else None
     if receipt.is_symlink():
         raise ValueError('Git hook receipt must not be a symlink')
     if state is not None and (not isinstance(state, dict) or type(state.get('version')) is not int or state.get('version') != 1 or state.get('source') != str(root) or state.get('hook') != str(hook)):
         raise ValueError('Existing Git hook installation belongs to another checkout')
     existing = os.path.lexists(hook)
+    hook_owned = existing and tkstack_owned(hook)
+    backup_exists = os.path.lexists(backup)
+    backup_owned = backup_exists and tkstack_owned(backup)
     if state is not None and existing:
         if hook.is_symlink() or not hook.is_file() or hashlib.sha256(hook.read_bytes()).hexdigest() != state.get('sha256'):
             raise ValueError('Installed Git hook was modified; preserve it before reinstalling')
-    if state is None and os.path.lexists(backup):
+    # A tkstack backup is the fork-bomb case (another worktree's dispatcher, or a
+    # previous install that renamed our hook onto the path it then calls). Drop it.
+    if state is None and backup_exists and not backup_owned:
         raise ValueError('Unowned previous-hook backup already exists')
-    changed = state is None or not existing or hook.read_text() != expected or hook.stat().st_mode & 0o777 != 0o755
+    preserve = state is None and existing and not hook_owned
+    chain = preserve or (backup_exists and not backup_owned)
+    expected = wrapper(root, backup, chain)
+    changed = state is None or not existing or hook_owned and backup_owned or hook.read_text() != expected or hook.stat().st_mode & 0o777 != 0o755
     return {'status': 'planned' if changed else 'installed', 'hook': str(hook), 'backup': str(backup),
-            'receipt': str(receipt), 'text': expected, 'preserve': state is None and existing}
+            'receipt': str(receipt), 'text': expected, 'preserve': preserve, 'drop_backup': backup_owned}
 
 
 @contextmanager
@@ -88,10 +116,13 @@ def setup(root, dry_run=False, check=False, uninstall=False):
             with writer(root):
                 result = plan(root)
                 hook, backup = Path(result['hook']), Path(result['backup'])
-                if os.path.lexists(backup):
+                if os.path.lexists(backup) and not tkstack_owned(backup):
                     backup.replace(hook)
-                elif os.path.lexists(hook):
-                    hook.unlink()
+                else:
+                    if os.path.lexists(hook):
+                        hook.unlink()
+                    if os.path.lexists(backup):
+                        backup.unlink()
                 receipt.unlink()
         return {'status': 'removed', 'hook': result['hook']}
     if check:
@@ -113,6 +144,8 @@ def setup(root, dry_run=False, check=False, uninstall=False):
                         os.fchmod(output.fileno(), 0o755)
                     temporary.replace(hook)
                     temporary = None
+                    if result.get('drop_backup') and os.path.lexists(backup) and tkstack_owned(backup):
+                        backup.unlink()
                     state = {'version': 1, 'source': str(root), 'hook': str(hook), 'sha256': hashlib.sha256(result['text'].encode()).hexdigest()}
                     receipt.write_text(json.dumps(state, sort_keys=True) + '\n')
                 finally:

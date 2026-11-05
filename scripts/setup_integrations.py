@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import sys
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 import tarfile
 import tomllib
 import urllib.request
@@ -49,7 +50,7 @@ def ready(root, name):
 
 def hook_entries(root, harness, repo_docs=False):
     def command(integration, event):
-        return shlex.join([sys.executable, str(root / "scripts/run_hook.py"), integration, harness, event])
+        return shlex.join([sys.executable, str(root / "src/run_hook.py"), integration, harness, event])
 
     result = {}
     def add(event, integration, operation, matcher=None):
@@ -115,13 +116,13 @@ def mcp_entries(root, manifest, harness):
         else:
             arguments = server.get("args_by_harness", {}).get(harness, server["args"])
             item = {"command": sys.executable,
-                    "args": [str(root / "scripts/tool.py"), server["tool"], *arguments]}
+                    "args": [str(root / "src/tool.py"), server["tool"], *arguments]}
         result[name] = item
     return result
 
 
 def owned_hook(item, root):
-    return str(root / "scripts/run_hook.py") in json.dumps(item)
+    return str(root / "src/run_hook.py") in json.dumps(item)
 
 
 def merge_servers(document, desired, previous, uninstall):

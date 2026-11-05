@@ -1,13 +1,17 @@
 # Bootstrap agent dotfiles
 
-Run the root script from a durable checkout containing this implementation.
-Publish that revision before using the remote-clone examples below. It is noninteractive, works from
-another directory, preserves existing settings, and can run again on startup:
+One command installs tkstack. Outside a checkout it clones or updates
+`~/.local/share/tkstack` and continues from there. Inside a checkout,
+`./install.sh` installs that checkout. It is noninteractive, works from another
+directory, preserves existing settings, and can run again on startup:
 
 ```sh
-git clone https://github.com/Tyler-R-Kendrick/tkstack.git "$HOME/.local/share/tkstack"
-"$HOME/.local/share/tkstack/install.sh"
+curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
+
+`scripts/` is only the dotfiles installer. Shared command, state, documentation,
+and pinned-runtime programs live in `src/`. Publish a revision that contains
+`install.sh` before using the remote command above.
 
 The default target is the current user's home. It installs Codex, Claude Code,
 and Cursor skills/agents/rules, initializes ignored state, installs all declared
@@ -37,7 +41,12 @@ instruction block. Foreign instructions in other targets remain protected.
 ./install.sh --check                   # verify without changing files
 ./install.sh --dry-run                 # inspect plan/preflight without changing files
 ./install.sh --strict                  # fail for known unresolved manual prerequisites too
+./install.sh --uninstall               # remove only this checkout's links and launchers
 ```
+
+`--uninstall` deletes symlinks and launchers owned by this checkout. It can
+run twice. It leaves shell startup files, foreign links, and `.github/lever.yml`
+repository dials in place. `--dry-run` with `--uninstall` only prints the plan.
 
 `--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
 independent runtime installations (default 4); `--runtime-timeout 10..1800`
@@ -223,7 +232,7 @@ checks, native hook trust/reload, and restoration of the previous Git hook.
 
 ## Owned skill conformance
 
-Doctor runs `scripts/check_skills.py` through the managed hash-locked command
+Doctor runs `src/check_skills.py` through the managed hash-locked command
 interpreter when that runtime is ready; an offline first setup reports this check
 as pending alongside its missing-runtime requirements. It checks all 19 owned schemas, command surfaces, native bindings,
 shared runtime/state copies, marketplace metadata, current executable artifacts,

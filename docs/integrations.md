@@ -66,7 +66,7 @@ working server.
 ```sh
 python3 scripts/setup_integrations.py --status
 python3 scripts/setup_integrations.py --target . --dry-run
-python3 scripts/tool.py wikiskill status tkstack --ws .tkstack/wikiskill
+python3 src/tool.py wikiskill status tkstack --ws .tkstack/wikiskill
 ```
 
 The runtime installer is an explicit network operation:

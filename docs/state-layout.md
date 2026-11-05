@@ -50,7 +50,8 @@ explicitly rather than the session-local namespace helper. Harness/session
 cleanup must preserve it and retained proof. See
 [task coordination](../skills/sdlc/references/durable-task-graph.md).
 
-All custom packages bundle the same `scripts/tkstack_state.py` primitive:
+The canonical state helper is `src/tkstack_state.py`. Every custom package
+bundles that same file, unchanged, as `scripts/tkstack_state.py`:
 
 ```sh
 python3 <skill-directory>/scripts/tkstack_state.py locations --project /repo

@@ -14,6 +14,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 SPEC = importlib.util.spec_from_file_location("install", ROOT / "scripts/install.py")
 install = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(install)
@@ -42,7 +43,9 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(destinations, {Path(".agents/skills"), Path(".claude/skills"),
                                        Path(".cursor/skills"), Path(".claude/agents"),
                                        Path(".cursor/agents"), Path(".cursor/rules"),
-                                       Path(".agents")})
+                                       Path(".agents"), Path(".grok/skills"),
+                                       Path(".kimi/skills"), Path(".muse/skills"),
+                                       Path(".config/opencode/skills")})
 
     def test_install_preserves_references_and_is_repeatable(self):
         self.assertEqual(install.apply(self.plan), self.expected_links)
@@ -76,6 +79,12 @@ class InstallTests(unittest.TestCase):
         # Sources with native per-harness variants keep their own directories.
         for name in ("graphify", "impeccable"):
             self.assertIn(name, shared & claude & cursor)
+        grok = by_directory[Path(".grok/skills")]
+        self.assertIn("learn", grok)
+        self.assertIn("matt-tdd", grok)
+        self.assertNotIn("architect", grok)
+        self.assertIsNone(install.skill_directory("t3code"))
+        self.assertEqual(install.skill_directory("opencode"), Path(".config/opencode/skills"))
 
     def test_reinstall_removes_links_outside_their_new_placement(self):
         install.apply(self.plan)
@@ -263,7 +272,7 @@ class InstallTests(unittest.TestCase):
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
         checkout.mkdir()
-        for directory in ('vendor', 'scripts', 'harnesses', 'skills'):
+        for directory in ('vendor', 'scripts', 'src', 'harnesses', 'skills'):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
         for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
@@ -303,7 +312,7 @@ class InstallTests(unittest.TestCase):
     def test_fresh_checkout_installs_without_a_preexisting_alias_view(self):
         checkout = self.target / "checkout"
         checkout.mkdir()
-        for directory in ("vendor", "scripts", "harnesses", "skills"):
+        for directory in ("vendor", "scripts", "src", "harnesses", "skills"):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copy2(ROOT / "sources.lock.json", checkout / "sources.lock.json")

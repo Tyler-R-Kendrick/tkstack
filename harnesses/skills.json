@@ -9,7 +9,10 @@
   },
   "rewrite_callers": {"pstack": false},
   "placement": {
-    "default": ["codex"],
+    "default": ["codex", "grok", "kimi", "muse", "opencode"],
+    "delegated": {
+      "t3code": ["claude", "codex", "cursor", "copilot", "grok"]
+    },
     "sources": {
       "cursor-team-kit": ["cursor"],
       "graphify": ["codex", "claude", "cursor"],

@@ -7,21 +7,21 @@ OpenWiki, and the design/media integrations listed in the [inventory](docs/skill
 
 ## Install
 
-Use Bash, Git, and Python 3.11+ (3.12 recommended). Clone a revision containing
-`install.sh` into a durable location:
+One command clones or updates `~/.local/share/tkstack` and installs it into your home:
 
 ```sh
-git clone https://github.com/Tyler-R-Kendrick/tkstack.git "$HOME/.local/share/tkstack"
-cd "$HOME/.local/share/tkstack"
-./install.sh
-. .tkstack/bootstrap/env.sh
+curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
 
-The default target is your home. Setup installs private prerequisites and pinned
-runtimes, applies skills/agents/rules/hooks/MCP configuration, initializes scoped
-state and CLI launchers, installs this source repository's Git docs hook, and
-verifies the result. Existing settings are preserved; conflicting foreign paths
-stop setup. Keep the checkout because installed links and launchers reference it.
+From a checkout of this repository, `./install.sh` installs that checkout instead
+of cloning. The command links skills, agents, rules, and hooks, initializes
+private state and launchers, installs this repository's Git docs hook, and
+verifies the result. Existing settings stay; a conflicting foreign path stops
+setup. Keep the checkout, because the links and launchers point at it.
+`SCOPE.md` is the supported baseline. `sources.lock.json` pins every upstream
+snapshot under `vendor/`.
+
+## Install options
 
 <!-- tkstack:profiles:start -->
 | Profile | Harness configuration | Lever Copilot layout |
@@ -30,11 +30,14 @@ stop setup. Keep the checkout because installed links and launchers reference it
 | `devcontainer` | Codex, Claude Code, Cursor | Selected workspace |
 | `codex-cloud` | Codex | Off |
 
-Base requirements: Bash, Git, and Python **3.11+**.
+The installer runs with Bash, Git, and Python **3.11+** already on PATH.
 Setup can provision private Node **24.19.0** and uv **0.12.23** when needed.
 <!-- tkstack:profiles:end -->
 
-Useful options:
+`install.sh` finds Python 3.11+ from `TKSTACK_PYTHON`, then `python3`,
+`python3.13`, `python3.12`, or `python3.11`. It provisions private Node and uv
+when those tools are missing. Set `TKSTACK_HOME` to choose the clone directory
+and `TKSTACK_REPO` to choose the Git URL.
 
 ```sh
 ./install.sh --profile codex-cloud       # Codex-only host configuration
@@ -43,12 +46,42 @@ Useful options:
 ./install.sh --check                    # read-only verification
 ./install.sh --dry-run                  # read-only plan and collision checks
 ./install.sh --strict                   # fail for known unresolved prerequisites
+./install.sh --uninstall                # remove only this checkout's links and launchers
 ```
 
-Use repeated `--harness codex|claude|cursor` to select hosts. `--no-shell` leaves
-shell startup files alone; source the generated environment yourself. Set
-`CODEX_HOME` for a real-home Codex install. Restart/reload the harness after setup;
-Codex may require reviewing new hook definitions with `/hooks` before they run.
+`--uninstall` is idempotent. It removes symlinks and launchers this checkout
+owns and leaves shell startup files, foreign links, and repository Lever dials
+in `.github/lever.yml`. `--dry-run --uninstall` prints that plan and writes
+nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|muse|opencode`
+to select hosts. The default profile selects Codex, Claude Code, and Cursor.
+`--no-shell` leaves shell startup files alone; source the generated environment
+yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
+harness after setup. Codex may require reviewing new hook definitions with
+`/hooks` before they run.
+
+## Install one skill
+
+The marketplace name is `tkstack`. These commands install the `investigate`
+plugin from `skills/investigate`:
+
+```text
+/plugin marketplace add Tyler-R-Kendrick/tkstack
+/plugin install investigate@tkstack
+```
+
+```sh
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
+```
+
+`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects the same
+package. Other manifest packages and their tree paths are `document`
+(`skills/document`), `fal-ai` (`.agents/skills/fal-ai`), `headroom`
+(`.agents/skills/headroom`), `hill-climb` (`skills/hill-climb`), `learn`
+(`skills/learn`), `open-design` (`.agents/skills/open-design`), `rtk`
+(`.agents/skills/rtk`), `sdlc` (`skills/sdlc`), `tkstack-principles`
+(`skills/tkstack-principles`), `unslop` (`skills/unslop`), and `write`
+(`skills/write`). Learn's subskills ship inside `skills/learn`. See
+[skill distribution](docs/skill-marketplace.md).
 
 OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
 needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
@@ -151,29 +184,35 @@ and [model/provider configuration](skills/learn/skills/codify/references/inferen
 
 ## Maintain this repository
 
-Skills under active development live in `skills/`; third-party-derived packages
-live in `.agents/skills/`, shared agents in `agents/`, and host settings in
-`harnesses/`. The installer places outside skills by origin: harness-independent
-ones in `.agents/skills/` only, Pstack and Cursor Team Kit in `.cursor/skills/`
-only (see `harnesses/skills.json`), and it removes this checkout's links that no
-longer match that placement. Preserve `vendor/` snapshots and update `sources.lock.json` when
-updating an upstream revision. The [maintainer guides](docs/authoring.md) and
-[bootstrap reference](docs/bootstrap.md) describe narrower installation tools and
-removal of owned links/configuration without deleting personal state.
+`scripts/` is the dotfiles installer (`install.sh` calls `scripts/bootstrap.py`).
+Shared command, state, documentation, and pinned-runtime programs live in
+`src/` so the installer stays a small set of single-purpose tools. Skills under
+active development live in `skills/`; third-party-derived packages live in
+`.agents/skills/`; shared agents live in `agents/`; host settings live in
+`harnesses/`. Personal skills join every selected harness. Upstream skills in
+`placement.default` go to Codex, Grok, Kimi, Muse, and OpenCode. Pstack and
+Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
+Code, and Cursor, including the generic agent-skills view at
+`.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
+`harnesses/README.md`. Reinstalling removes this checkout's links that no
+longer match that placement. `./install.sh --uninstall` removes only this
+checkout's links and launchers. Preserve `vendor/` snapshots and update
+`sources.lock.json` when updating an upstream revision. The
+[maintainer guides](docs/authoring.md) and [bootstrap reference](docs/bootstrap.md)
+describe narrower installation tools.
 
-For repository development, apply its project configuration:
+For repository development, preview, test, and check docs from the checkout:
 
 ```sh
-./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline
-python3 scripts/check_docs.py check
-.tkstack/runtime/command-schema/bin/python -m unittest discover -s tests -v
-python3 scripts/install.py --target .
+./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline --dry-run
+python3 -m unittest discover -s tests -v
+python3 src/check_docs.py check
 python3 scripts/doctor.py --target .
 ```
 
-The test command uses the private PyYAML/jsonschema environment installed by setup.
-Reapply the file installer afterward because tests can regenerate ignored views
-using their interpreter; `doctor` then checks the normal installation context.
+`./install.sh --dry-run` and `--check` are read-only. The unittest command uses
+the Python that runs it. CI installs the PyYAML/jsonschema packages the same
+way `.github/workflows/skills.yml` does when those imports are missing.
 
 [`evals/repo-quality`](evals/repo-quality/) grades this checkout separately from
 the skill-evolution suites. The harness is Unix-only. Its snapshot lists
@@ -185,13 +224,18 @@ on `tests.test_repo_quality`, uses pinned promptfoo 0.125.1, and passes only
 when every metric scores 1.0. See [Repository quality](evals/README.md).
 
 Project completion hooks for Codex, Claude Code, and Cursor check documentation
-in this repository. The Git `pre-commit` hook checks the **staged index**.
-Both use the same source/document review ledger. After reviewing a changed area:
+in this repository. The versioned Git handler is `.githooks/pre-commit`. Setup
+writes an owned dispatcher into the repository's Git hooks directory and records
+that ownership in `.tkstack/git-hooks/ownership.json` (gitignored). It never
+chains a hook this project already owns, including a dispatcher installed from
+another worktree that shares `.git/hooks`. A foreign pre-commit is still chained
+and restored on uninstall. The hook checks the **staged index**. After reviewing
+a changed area:
 
 ```sh
-python3 scripts/check_docs.py render
-python3 scripts/check_docs.py refresh --area setup --reason 'Reviewed the setup interface and updated its instructions'
-python3 scripts/check_docs.py check
+python3 src/check_docs.py render
+python3 src/check_docs.py refresh --area setup --reason 'Reviewed the setup interface and updated its instructions'
+python3 src/check_docs.py check
 ```
 
 Stage the relevant docs and `docs/docs-freshness.json` with their source changes.

@@ -21,6 +21,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / 'skills/learn/skills/codify/scripts'))
 import package_runtime as runtime
 sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'src'))
 from skill_roots import owned  # noqa: E402
 PACKAGES = owned(ROOT)
 

@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location('owned_skill_checker', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
 skillify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(skillify)
-sys.path.insert(0, str(ROOT / 'scripts'))
 from skill_roots import all_packages, owned, subskills  # noqa: E402
 
 
@@ -26,7 +25,7 @@ def check(root=ROOT, jobs=4):
     packages = owned(root)
     runtime = (root / 'skills/learn/skills/codify/scripts/package_runtime.py').read_bytes()
     json_reader = (root / 'skills/learn/skills/codify/scripts/json_contract.py').read_bytes()
-    state = (root / 'scripts/tkstack_state.py').read_bytes()
+    state = (root / 'src/tkstack_state.py').read_bytes()
     def inspect(name):
         directory = packages[name]
         plugin = published.get(name)

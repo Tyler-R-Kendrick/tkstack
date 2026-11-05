@@ -3,6 +3,8 @@
 import hashlib
 from pathlib import Path
 import shlex
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from harness_paths import codex_directory
 
 

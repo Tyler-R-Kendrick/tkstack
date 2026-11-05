@@ -43,8 +43,8 @@ Markdown-defined nullable string CLI flags accept ordinary paths/text, explicit
 See [the shared command contract](../skills/learn/skills/codify/references/command-definitions.md).
 
 ```sh
-python3 scripts/sync_codify.py
-python3 scripts/sync_codify.py --check
+python3 src/sync_codify.py
+python3 src/sync_codify.py --check
 python3 skills/learn/skills/skillify/scripts/skillify.py compile /repo/skills/my-tool --cases /repo/skills/my-tool/cases.json
 ```
 
@@ -80,9 +80,9 @@ Chat exports use the native nested function envelope. JSON Schema is preserved;
 aliases and flags never leak into API tool definitions.
 
 ```sh
-python3 scripts/tool.py codify commands skills/learn/skills/codify/examples/normalize-labels --format responses
-python3 scripts/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels -- labels normalize -l '[" b ","a","a"]'
-python3 scripts/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels --call /path/to/tool-call.json
+python3 src/tool.py codify commands skills/learn/skills/codify/examples/normalize-labels --format responses
+python3 src/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels -- labels normalize -l '[" b ","a","a"]'
+python3 src/tool.py codify invoke skills/learn/skills/codify/examples/normalize-labels --call /path/to/tool-call.json
 ```
 
 The real example returns `{"labels":["a","b"]}`. The same lock accepts Responses,

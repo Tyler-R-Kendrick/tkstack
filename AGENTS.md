@@ -92,13 +92,12 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   `.tkstack/tkstack skills learn -- <name> ...`. Each stays a complete package
   with its own lock, and Learn's `commands/<name>.md` mounts it. See
   `skills/README.md`.
-- Verify changes with `.tkstack/runtime/command-schema/bin/python -m unittest discover -s tests -v`,
-  `python3 scripts/install.py --target . --dry-run`, and
-  `python3 scripts/doctor.py --target .`. Tests use temporary installation
-  targets and may regenerate the ignored alias view; leave the user's home and
-  existing configuration alone. Reapply `python3 scripts/install.py --target .`
-  after the suite and before doctor so interpreter-dependent generated views
-  match the installation context.
+- Verify changes with `python3 -m unittest discover -s tests -v`,
+  `./install.sh --dry-run`, and `python3 scripts/doctor.py --target .`.
+  Tests use temporary installation targets and may regenerate the ignored alias
+  view; leave the user's home and existing configuration alone. Reapply
+  `python3 scripts/install.py --target .` after the suite and before doctor so
+  generated views match the installation context.
   Asyncio thread tests require local IPC: restricted sandboxes may deny their
   wake-up socket. Use a test environment that permits local socket operations;
   do not replace the production scheduler to work around that restriction.
@@ -123,7 +122,7 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
 - Graphify supplies local structural code graphs through the official native
   skill, pinned CLI, and graphify-local MCP connection. Use existing graph
   context when relevant; preserve extracted/inferred distinctions and verify
-  current source. Invoke its CLI through `scripts/tool.py graphify`; graph state
+  current source. Invoke its CLI through `src/tool.py graphify`; graph state
   stays in `.tkstack/graphify/`. Installation starts no indexing, watcher, model,
   or delegated extraction. See `docs/graphify.md`.
 - OpenWiki supplies repository wiki retrieval and maintenance through its official
@@ -140,7 +139,8 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   the smallest useful set of ___ify skills to create verified reusable artifacts.
   Save useful evidence/lessons outside temporary sessions before cleanup.
   Automatic correction capture and report/audit keep their narrower scopes.
-  Use the shared `scripts/tkstack_state.py` primitive and keep `.tkstack/.gitignore`
+  Use the shared `src/tkstack_state.py` primitive (bundled unchanged into each
+  package as `scripts/tkstack_state.py`) and keep `.tkstack/.gitignore`
   protecting histories, sessions, evidence, caches, leases, and locks. Durable
   reuse metadata is `.tkstack/reuse/catalog.json`; authored deliverables keep
   their native/requested paths. Read-only operations do not initialize state.
@@ -150,10 +150,10 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   Use `skillify normalize` from its explicit authored profile, canonical Codify
   runtime/JSON helpers, reserved help/version and a current executable lock.
   Preserve native helper ownership and declared semantic/provider boundaries.
-  Run `python3 scripts/tool.py command-schema -B scripts/check_skills.py`;
+  Run `python3 src/tool.py command-schema -B src/check_skills.py`;
   doctor and CI use that same read-only gate. See `docs/normalization.md`.
 - Keep README installation/use and the mapped documentation current. Run
-  `python3 scripts/check_docs.py check`; after reviewing changed sources, update
+  `python3 src/check_docs.py check`; after reviewing changed sources, update
   their docs and explicitly refresh the named areas with an actual reason.
   Use `--no-doc-impact` only for justified internal-only changes. Never refresh
   merely to silence a gate. Native repo Stop hooks share this check; Git

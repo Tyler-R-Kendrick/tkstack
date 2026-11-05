@@ -23,24 +23,35 @@ The entrypoint carries purpose, triggers, the execution spine, boundaries, and
 condition-to-reference pointers. Detailed procedures and provenance live under
 `references/`; templates and scripts stay local to the selected package.
 
-For a skills CLI installation from a checkout:
+Install one published package with the skills CLI. This command names the
+`investigate` manifest package and its tree path `skills/investigate`:
 
 ```sh
-npx skills add . --skill investigate --skill write --skill document
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
 ```
 
-For a published checkout, substitute `Tyler-R-Kendrick/tkstack` for `.`. Add any
-other package names explicitly. These commands are distribution instructions;
-they do not claim a remote revision contains the local uncommitted changes.
+`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects that same
+package from the repository root. Other real packages are `document`
+(`skills/document`), `write` (`skills/write`), `fal-ai`
+(`.agents/skills/fal-ai`), `headroom` (`.agents/skills/headroom`),
+`hill-climb` (`skills/hill-climb`), `learn` (`skills/learn`), `open-design`
+(`.agents/skills/open-design`), `rtk` (`.agents/skills/rtk`), `sdlc`
+(`skills/sdlc`), `tkstack-principles` (`skills/tkstack-principles`), and
+`unslop` (`skills/unslop`). From a local checkout, replace the GitHub source
+with the same relative path, for example `./skills/investigate`.
 
-For Claude's marketplace interface:
+Add the marketplace, then install one plugin. The `investigate` plugin source
+in `.claude-plugin/marketplace.json` is `./skills/investigate`:
 
 ```text
-/plugin marketplace add /absolute/path/to/tkstack
+/plugin marketplace add Tyler-R-Kendrick/tkstack
 /plugin install investigate@tkstack
-/plugin install write@tkstack
-/plugin install document@tkstack
 ```
+
+The same form works for `write@tkstack` (`./skills/write`) and
+`document@tkstack` (`./skills/document`). These commands are distribution
+instructions; they do not claim a remote revision contains local uncommitted
+changes.
 
 Use a single installation route for a package to avoid duplicate names.
 The dotfiles route installs all pinned and owned skills into selected harnesses:

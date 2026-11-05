@@ -7,13 +7,19 @@ references rewritten; relative reference paths and invocation-policy metadata
 stay intact. Remove an existing installation before changing its alias names.
 
 `placement` decides which harness directories receive each upstream source.
-Personal skills in `skills/` join every selected harness. By default, upstream
-skills and the committed third-party-derived packages in `.agents/skills/` go
-only to the shared `.agents/skills/` directory (the `codex` slot, which other
-Agent Skills hosts also read). Pstack and Cursor Team Kit are Cursor packages
-and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
-ship per-harness builds and keep every harness. Reinstalling removes this
-checkout's links that fall outside their placement; doctor reports any left.
+Personal skills in `skills/` join every selected harness. `placement.default`
+is Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`),
+Muse (`.muse/skills`), and OpenCode (`.config/opencode/skills`). Pstack and
+Cursor Team Kit are Cursor packages and go only to `.cursor/` (skills, agents,
+and rules). Graphify and Impeccable ship per-harness builds for Codex, Claude
+Code, and Cursor. Graphify also keeps a generic agent-skills view at
+`.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
+and Cursor views. t3code does not get a skills directory. It runs on Claude,
+Codex, Cursor, Copilot, or Grok and reads that host's skills. See
+`t3code/README.md`. `./install.sh --uninstall` removes only this checkout's
+links and launchers. Reinstalling also removes this checkout's links that fall
+outside their placement; doctor reports any left. `sources.lock.json` pins the
+upstream bytes, and `SCOPE.md` names the supported baseline.
 
 Cursor Team Kit's two native rules are installed into Cursor's rules directory.
 Shared workflow and engineering defaults are documented in `docs/standards.md`
@@ -32,7 +38,7 @@ and MCP entries without embedding credentials. See `docs/integrations.md` for
 what is installed versus dependent on a host runtime or account sign-in.
 
 `copilot/lever.yml` supplies initial Lever repository defaults. The separate
-`scripts/setup_lever.py` installs Lever's documented project Copilot layout and
+`src/setup_lever.py` installs Lever's documented project Copilot layout and
 creates `.github/lever.yml` only when absent. It preserves existing dials and
 leaves personal `~/.copilot/lever.yml` alone. See `docs/lever.md`.
 

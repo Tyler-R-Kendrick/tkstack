@@ -1,0 +1,24 @@
+{
+  "name": "tkstack",
+  "version": "0.8.0",
+  "description": "Portable personal learning, quality review, development lifecycle, and measured improvement skills.",
+  "author": {
+    "name": "Tyler Kendrick"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/Tyler-R-Kendrick/tkstack",
+  "skills": [
+    "./skills/document",
+    "./skills/hill-climb",
+    "./skills/investigate",
+    "./skills/learn",
+    "./skills/sdlc",
+    "./skills/tkstack-principles",
+    "./skills/unslop",
+    "./skills/write",
+    "./.agents/skills/fal-ai",
+    "./.agents/skills/headroom",
+    "./.agents/skills/open-design",
+    "./.agents/skills/rtk"
+  ]
+}

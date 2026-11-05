@@ -16,9 +16,9 @@ their provenance before claiming generalization.
 Run the pinned SkillOpt-Sleep engine with:
 
 ```sh
-python3 scripts/evolve.py learn --backend mock --dry-run
-python3 scripts/evolve.py learn
-python3 scripts/evolve.py sdlc
+python3 src/evolve.py learn --backend mock --dry-run
+python3 src/evolve.py learn
+python3 src/evolve.py sdlc
 ```
 
 Default `handoff` runs return exit 3 while fresh-context model replies are

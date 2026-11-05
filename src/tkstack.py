@@ -11,6 +11,7 @@ import re
 import sys
 from types import SimpleNamespace
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 
 from runtime_environment import with_paths
 from tkstack_state import state_roots

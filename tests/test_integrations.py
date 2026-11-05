@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 import setup_integrations as setup
 import install
 import run_hook
@@ -111,7 +112,7 @@ class IntegrationTests(unittest.TestCase):
         self.assertFalse((self.root / ".tkstack/runtime/bin/impeccable").exists())
 
     def test_wikiskill_runs_from_the_pinned_source_without_mutating_it(self):
-        result = subprocess.run([sys.executable, str(ROOT / "scripts/tool.py"), "wikiskill", "--help"],
+        result = subprocess.run([sys.executable, str(ROOT / "src/tool.py"), "wikiskill", "--help"],
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("evolve", result.stdout)

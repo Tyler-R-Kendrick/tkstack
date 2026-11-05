@@ -2,7 +2,7 @@
 
 After setup, the selected workspace and user state roots contain executable
 `tkstack` files. The source checkout also provides `.tkstack/bin/tkstack` for
-the generated PATH. The canonical implementation is `scripts/tkstack.py`; the
+the generated PATH. The canonical implementation is `src/tkstack.py`; the
 generated entrypoints stay ignored, alongside a private ownership receipt.
 They use the private command interpreter when available and a Python fallback
 for discovery. Keep the source checkout because these are managed launchers.

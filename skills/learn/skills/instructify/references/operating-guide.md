@@ -109,7 +109,7 @@ for external writers, crash recovery, and rollback; do not describe a batch as
 a filesystem transaction.
 
 In tkstack, existing installer-owned startup blocks remain controlled by
-`scripts/steering_adapter.py`; Cursor's standing rule is sourced in `harnesses/`.
+`src/steering_adapter.py`; Cursor's standing rule is sourced in `harnesses/`.
 Change those sources for their content, rather than adding a competing generated
 section or patching ignored installation outputs. Never edit vendor snapshots.
 

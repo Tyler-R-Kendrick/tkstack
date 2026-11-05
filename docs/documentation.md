@@ -9,10 +9,10 @@ rewrite docs, or automatically approve a new baseline.
 ## Review a source change
 
 ```sh
-python3 scripts/check_docs.py check
-python3 scripts/check_docs.py render
-python3 scripts/check_docs.py refresh --area setup --reason 'Reviewed setup changes and updated install instructions'
-python3 scripts/check_docs.py check
+python3 src/check_docs.py check
+python3 src/check_docs.py render
+python3 src/check_docs.py refresh --area setup --reason 'Reviewed setup changes and updated install instructions'
+python3 src/check_docs.py check
 ```
 
 The policy in `docs/docs-policy.json` maps source paths to documentation owners.
@@ -105,13 +105,17 @@ Full setup installs the source repository's Git hook. Narrow maintenance uses:
 python3 scripts/setup_repo_hooks.py --dry-run
 python3 scripts/setup_repo_hooks.py
 python3 scripts/setup_repo_hooks.py --check
-python3 scripts/check_docs.py check --staged
+python3 src/check_docs.py check --staged
 ```
 
-The versioned handler is `.githooks/pre-commit`. Installation places an owned
-dispatcher in the repository's effective default Git hooks directory, preserving
-and chaining any existing pre-commit hook before the docs check. Other hooks and
-Git configuration remain untouched. Shared/custom `core.hooksPath` managers are
+Invoked as a script, `scripts/setup_repo_hooks.py` imports the docs checker and
+the state helper from `src/`. The versioned handler is `.githooks/pre-commit`. The ownership receipt is
+`.tkstack/git-hooks/ownership.json` and stays gitignored. Installation places
+an owned dispatcher in the repository's effective default Git hooks directory.
+A foreign pre-commit is preserved and chained. A dispatcher this project
+already owns, including one installed from another worktree of the same
+repository, is replaced and is never chained. Other hooks and Git configuration
+remain untouched. Shared/custom `core.hooksPath` managers are
 preserved; add the versioned handler to that manager rather than overwriting it.
 The installer reports that case explicitly. A source copy without Git metadata
 keeps the versioned files and reports that Git activation is deferred.
@@ -130,18 +134,19 @@ To restore the previous owned pre-commit setup:
 python3 scripts/setup_repo_hooks.py --uninstall
 ```
 
-Removal restores the saved predecessor or removes only the owned dispatcher.
+Removal restores a foreign saved predecessor. A missing or tkstack-owned backup
+is deleted with the dispatcher instead of being executed.
 Foreign or modified installed hooks are preserved for inspection. Native hook
 entries use the ordinary installer ownership/uninstall path. Editing generated
 host settings is temporary; source setup will reapply its declared configuration.
 
 ## Verify the maintainer recipe
 
-Use the bootstrap-provisioned command interpreter for the test suite, then
-reapply `python3 scripts/install.py --target .` before running doctor. Some tests
-rebuild ignored aliases/native views using their own interpreter. Reapplication
-restores the normal source installation context; those generated views are not
-documentation inputs or versioned source. The README includes this sequence.
+Run `python3 -m unittest discover -s tests -v` from the checkout. Some tests
+rebuild ignored aliases or native views. `python3 scripts/install.py --target .`
+restores the normal source installation before doctor. Those generated views
+are not documentation inputs or versioned source. The README includes the
+maintainer preview, test, and docs commands.
 `tests/test_repo_quality.py` always checks the repo-quality harness shape.
 Ceiling assertions run only with `REPO_QUALITY_GATE=1`, and the promptfoo judge
 only with `RUN_JUDGE=1`, so a checkout below those ceilings still passes the

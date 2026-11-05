@@ -15,6 +15,7 @@ SPEC = importlib.util.spec_from_file_location("learn_helper", SCRIPT)
 learn = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(learn)
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 import steering_adapter
 
 

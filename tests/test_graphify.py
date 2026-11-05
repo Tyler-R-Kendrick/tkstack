@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'src'))
 import install
 import graphify_install
 import graphify_adapter
@@ -56,7 +57,7 @@ class GraphifyIntegrationTests(unittest.TestCase):
             self.assertNotIn('graphify-out', text)
             self.assertNotIn('uv tool install', text)
             self.assertNotIn('--break-system-packages', text)
-            self.assertIn('scripts/tool.py graphify query', text)
+            self.assertIn('src/tool.py graphify query', text)
             self.assertIn('scripts/python', files)
             self.assertEqual(sum(name.startswith('references/') for name in files), 8)
 
@@ -149,7 +150,7 @@ class NativeGraphifyTests(unittest.TestCase):
 
     @classmethod
     def invoke(cls, *args, input=None):
-        return subprocess.run([sys.executable, str(ROOT / 'scripts/tool.py'), 'graphify', *args],
+        return subprocess.run([sys.executable, str(ROOT / 'src/tool.py'), 'graphify', *args],
                               cwd=cls.fixture, env=cls.environment, input=input,
                               capture_output=True, text=True, timeout=90)
 
@@ -181,7 +182,7 @@ class NativeGraphifyTests(unittest.TestCase):
 
     def test_native_hook_nudges_without_denying_or_global_refresh(self):
         payload = {'session_id': 'tkstack-fixture', 'cwd': str(self.fixture), 'tool_name': 'Grep', 'tool_input': {'pattern': 'calculate'}}
-        command = [sys.executable, str(ROOT / 'scripts/run_hook.py'), 'graphify', 'claude', 'search']
+        command = [sys.executable, str(ROOT / 'src/run_hook.py'), 'graphify', 'claude', 'search']
         result = subprocess.run(command, cwd=self.fixture, env=self.environment, input=json.dumps(payload), capture_output=True, text=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         response = json.loads(result.stdout)
@@ -193,7 +194,7 @@ class NativeGraphifyTests(unittest.TestCase):
         other.mkdir()
         subprocess.run(['git', 'init', '-q', str(other)], check=True)
         (other / 'other.py').write_text('def triple(value):\n    return value * 3\n')
-        result = subprocess.run([sys.executable, str(ROOT / 'scripts/tool.py'), 'graphify', 'extract', str(other), '--code-only', '--no-cluster', '--max-workers', '2'],
+        result = subprocess.run([sys.executable, str(ROOT / 'src/tool.py'), 'graphify', 'extract', str(other), '--code-only', '--no-cluster', '--max-workers', '2'],
                                 cwd=other, env=self.environment, capture_output=True, text=True, timeout=90)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         program = r'''import asyncio,json,os,sys
@@ -219,7 +220,7 @@ async def run():
 asyncio.run(run())
 '''
         result = subprocess.run([str(ROOT / '.tkstack/runtime/graphify/bin/python'), '-B', '-c', program,
-                                 str(ROOT / 'scripts/tool.py'), str(self.fixture), str(other)],
+                                 str(ROOT / 'src/tool.py'), str(self.fixture), str(other)],
                                 env=self.environment, capture_output=True, text=True, timeout=90)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertTrue(json.loads(result.stdout)['unknown_tool_reported'])

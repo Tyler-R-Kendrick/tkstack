@@ -68,7 +68,7 @@ frontmatter, tool/model restrictions, imports, and other owners' managed blocks.
 Do not treat a role prompt as authorization to change permissions or spawn agents.
 
 In this dotfiles repository, standing startup pointers belong to
-`scripts/steering_adapter.py`, and the Cursor standing rule is sourced from
+`src/steering_adapter.py`, and the Cursor standing rule is sourced from
 `harnesses/cursor/tkstack-steering.mdc`. Installed links and generated settings
 are not their canonical editable source. A plain marketplace copy installs the
 skill; actual instruction authoring is a separate requested operation.

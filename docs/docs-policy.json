@@ -7,19 +7,20 @@
         ".devcontainer/**",
         "harnesses/bootstrap/**",
         "scripts/**",
+        "src/**",
         ".github/workflows/**",
         ".gitattributes"
       ],
       "exclude": [
-        "scripts/tkstack.py",
-        "scripts/tool.py",
-        "scripts/runtime_environment.py",
-        "scripts/run_hook.py",
-        "scripts/check_docs.py",
-        "scripts/docs_hook.py",
+        "src/tkstack.py",
+        "src/tool.py",
+        "src/runtime_environment.py",
+        "src/run_hook.py",
+        "src/check_docs.py",
+        "src/docs_hook.py",
         "scripts/setup_repo_hooks.py",
-        "scripts/sync_codify.py",
-        "scripts/evolve.py"
+        "src/sync_codify.py",
+        "src/evolve.py"
       ],
       "docs": [
         "README.md",
@@ -30,10 +31,10 @@
     },
     "execution": {
       "inputs": [
-        "scripts/tkstack.py",
-        "scripts/tool.py",
-        "scripts/runtime_environment.py",
-        "scripts/run_hook.py",
+        "src/tkstack.py",
+        "src/tool.py",
+        "src/runtime_environment.py",
+        "src/run_hook.py",
         "harnesses/runner.json"
       ],
       "docs": [
@@ -46,7 +47,7 @@
       "inputs": [
         "skills/learn/skills/codify/**",
         "skills/learn/skills/skillify/**",
-        "scripts/sync_codify.py"
+        "src/sync_codify.py"
       ],
       "docs": [
         "README.md",
@@ -77,7 +78,7 @@
       "inputs": [
         "skills/**",
         "evals/**",
-        "scripts/evolve.py"
+        "src/evolve.py"
       ],
       "exclude": [
         "skills/learn/skills/codify/**",
@@ -109,8 +110,8 @@
         "AGENTS.md",
         ".githooks/**",
         "docs/docs-policy.json",
-        "scripts/check_docs.py",
-        "scripts/docs_hook.py",
+        "src/check_docs.py",
+        "src/docs_hook.py",
         "scripts/setup_repo_hooks.py",
         "tests/**"
       ],

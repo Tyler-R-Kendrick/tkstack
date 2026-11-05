@@ -40,7 +40,7 @@ def evaluate(root, harness, event, cwd):
     errors = check(snapshot)
     if not errors:
         return {}
-    reason = 'Update this repository documentation before finishing.\n' + '\n'.join(errors[:12]) + '\nRun python3 scripts/check_docs.py check after reviewing/refreshing the named areas. Do not refresh without reviewing the docs.'
+    reason = 'Update this repository documentation before finishing.\n' + '\n'.join(errors[:12]) + '\nRun python3 src/check_docs.py check after reviewing/refreshing the named areas. Do not refresh without reviewing the docs.'
     return {'followup_message': reason} if harness == 'cursor' else {'decision': 'block', 'reason': reason}
 
 

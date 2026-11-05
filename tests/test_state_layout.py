@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 import tkstack_state as state
 
 
@@ -77,14 +78,14 @@ class StateLayoutTests(unittest.TestCase):
     def test_path_command_is_read_only_and_explicit_projects_are_exact(self):
         nested = self.project / "nested"
         nested.mkdir()
-        result = subprocess.run([sys.executable, str(ROOT / "scripts/tkstack_state.py"), "path",
+        result = subprocess.run([sys.executable, str(ROOT / "src/tkstack_state.py"), "path",
                                  "--project", str(nested), "--namespace", "sessions"],
                                 capture_output=True, text=True, check=True)
         self.assertEqual(result.stdout.strip(), str(nested / ".tkstack/sessions"))
         self.assertFalse((nested / ".tkstack").exists())
 
     def test_every_custom_skill_has_the_same_storage_primitive_and_reference(self):
-        canonical = (ROOT / "scripts/tkstack_state.py").read_bytes()
+        canonical = (ROOT / "src/tkstack_state.py").read_bytes()
         for entry in [*(ROOT / "skills").glob("*/SKILL.md"), *(ROOT / "skills").glob("*/skills/*/SKILL.md")]:
             with self.subTest(skill=entry.parent.name):
                 self.assertEqual((entry.parent / "scripts/tkstack_state.py").read_bytes(), canonical)
@@ -132,7 +133,7 @@ class StateLayoutTests(unittest.TestCase):
     def test_scoped_cli_and_session_paths_are_read_only_until_initialized(self):
         scoped = self.project / 'user/.tkstack'
         environment = {**os.environ, 'TKSTACK_USER_DIR': str(scoped)}
-        command = [sys.executable, str(ROOT / 'scripts/tkstack_state.py'), 'path', '--scope', 'user', '--session', 'one', '--namespace', 'sessions']
+        command = [sys.executable, str(ROOT / 'src/tkstack_state.py'), 'path', '--scope', 'user', '--session', 'one', '--namespace', 'sessions']
         result = subprocess.run(command, env=environment, capture_output=True, text=True, check=True)
         self.assertEqual(result.stdout.strip(), str(scoped / 'sessions/one'))
         self.assertFalse(scoped.exists())

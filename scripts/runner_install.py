@@ -9,6 +9,7 @@ import shlex
 import tempfile
 import sys
 import time
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
 from tkstack_state import ensure_state, state_root, SCOPES
 
@@ -18,7 +19,7 @@ def launcher_text(root):
         '# Generated tkstack runner; source ' + hashlib.sha256(str(root).encode()).hexdigest()[:16] + '\n' +
         'tkstack_python=' + shlex.quote(str(root / '.tkstack/runtime/command-schema/bin/python')) + '\n' +
         'if [ ! -x "$tkstack_python" ]; then tkstack_python="${TKSTACK_PYTHON:-python3}"; fi\n' +
-        'exec "$tkstack_python" -B ' + shlex.quote(str(root / 'scripts/tkstack.py')) + ' "$@"\n')
+        'exec "$tkstack_python" -B ' + shlex.quote(str(root / 'src/tkstack.py')) + ' "$@"\n')
 
 
 def plan(root, state):
@@ -44,6 +45,22 @@ def plan(root, state):
 def check(root, state):
     if plan(root, state)[-1]:
         raise ValueError('Scoped tkstack executable is missing or stale: ' + str(state / 'tkstack'))
+
+
+def remove(root, state, dry_run=False):
+    """Delete this checkout's launcher. Missing launchers are already uninstalled."""
+    target, receipt = state / 'tkstack', state / 'runner-owner.json'
+    if not os.path.lexists(target) and not os.path.lexists(receipt):
+        return False
+    plan(root, state)
+    print(('Would remove' if dry_run else 'remove') + ' launcher: ' + str(target))
+    if dry_run:
+        return True
+    if os.path.lexists(target):
+        target.unlink()
+    if os.path.lexists(receipt):
+        receipt.unlink()
+    return True
 
 
 def publish(root, state):

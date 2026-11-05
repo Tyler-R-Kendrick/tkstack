@@ -4,7 +4,8 @@ Use `/hill-climb <objective>` or `$hill-climb` for sustained improvement of a
 measurable outcome. The canonical package is
 [`skills/hill-climb`](../skills/hill-climb/SKILL.md), with a bounded plan template,
 measurement contract, source notes, and an optional offline comparison helper.
-It is user-invoked and installs in Codex, Claude Code, and Cursor; restart the
+It is user-invoked and installs into every selected harness; the default
+profile selects Codex, Claude Code, and Cursor. Restart the
 harness session to discover it. Installation does not start a run.
 
 The workflow combines Pstack's [newer Hillclimb playbook](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/poteto-mode/playbooks/hillclimb.md)

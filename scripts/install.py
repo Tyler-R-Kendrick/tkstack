@@ -9,22 +9,21 @@ from pathlib import Path
 import re
 import sys
 sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 import subprocess
 
 from tkstack_state import ensure_state
 from skill_roots import ADOPTED, nested, packages
 from runtime_environment import with_paths
+from harness_paths import HOOK_HARNESSES, SKILL_DIRECTORIES, skill_directory
 
 from steering_adapter import apply_instructions, instruction_plan
 from setup_integrations import apply_configuration, configuration_plan
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILL_PATHS = {
-    "codex": Path(".agents/skills"),
-    "claude": Path(".claude/skills"),
-    "cursor": Path(".cursor/skills"),
-}
+SKILL_PATHS = SKILL_DIRECTORIES
+DEFAULT_HARNESSES = ("codex", "claude", "cursor")
 # Committed third-party-derived packages; they install like a harness-independent source.
 ADOPTED_SOURCE = "adopted"
 AGENT_PATHS = {
@@ -206,11 +205,14 @@ def link_plan(root, target, harnesses):
     if harnesses and (principles / "SKILL.md").is_file():
         plan.append((principles.resolve(), target / ".agents/principles"))
     for harness in harnesses:
+        relative = skill_directory(harness)
+        if relative is None:
+            continue
         skills, agents = placed(root, "skills", harness), placed(root, "agents", harness)
         # A package committed at its own destination (self-install) needs no link.
-        plan.extend((source, target / SKILL_PATHS[harness] / name)
+        plan.extend((source, target / relative / name)
                     for name, source in skills.items()
-                    if (target / SKILL_PATHS[harness]).resolve() / name != source)
+                    if (target / relative).resolve() / name != source)
         if harness in AGENT_PATHS:
             plan.extend((source, target / AGENT_PATHS[harness] / name)
                         for name, source in agents.items())
@@ -229,8 +231,8 @@ def matches(destination, source):
 def stale_links(root, target, harnesses, plan):
     """This checkout's links in native directories that the plan no longer places."""
     planned = {destination for _, destination in plan}
-    directories = [SKILL_PATHS[h] for h in harnesses] + [AGENT_PATHS[h] for h in harnesses
-                                                          if h in AGENT_PATHS]
+    directories = [SKILL_PATHS[h] for h in harnesses if h in SKILL_PATHS]
+    directories += [AGENT_PATHS[h] for h in harnesses if h in AGENT_PATHS]
     if "cursor" in harnesses:
         directories.append(Path(".cursor/rules"))
     root = root.resolve()
@@ -264,7 +266,9 @@ def alias_migrations(root, target, harnesses):
         for path in (root / "vendor" / source / "skills").rglob("SKILL.md"):
             if path.parent.name in aliases:
                 for harness in harnesses:
-                    migrations[target / SKILL_PATHS[harness] / path.parent.name] = path.parent.resolve()
+                    relative = skill_directory(harness)
+                    if relative is not None:
+                        migrations[target / relative / path.parent.name] = path.parent.resolve()
     return migrations
 
 
@@ -346,13 +350,15 @@ def main():
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        harnesses = list(dict.fromkeys(args.harness or SKILL_PATHS))
+        harnesses = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         plan = link_plan(ROOT, target, harnesses)
         migrations = alias_migrations(ROOT, target, harnesses)
         instructions = instruction_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
-        configurations = configuration_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
+        configurations = configuration_plan(
+            ROOT, target, [harness for harness in harnesses if harness in HOOK_HARNESSES],
+            scope, uninstall=args.uninstall)
         if not args.uninstall:
             preflight(plan, migrations)
             from runner_install import plan as runner_plan

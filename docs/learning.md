@@ -184,7 +184,7 @@ memory store.
 
 After comparing SkillOpt, WikiSkill, Vally, and Waza, the selected revision
 engine for the custom `learn` and `sdlc` packages is SkillOpt-Sleep. The
-[`scripts/evolve.py`](../scripts/evolve.py) driver keeps evidence and steering
+[`src/evolve.py`](../src/evolve.py) driver keeps evidence and steering
 unchanged, turns off project-memory edits, and stages only skill proposals
 behind strict improvement and per-task no-regression gates. See
 [the comparison and initial trial](skill-evolution.md). WikiSkill remains

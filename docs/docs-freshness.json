@@ -4,27 +4,22 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "e202c618807c5158aa6671a612f1c5a011973776"
+          "oid": "9d01319f6a447d223d35dbcdf46ea0ed16cbf94d"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
         },
         "docs/skillify.md": {
           "mode": "100644",
-          "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
+          "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
       "inputs": {
-        "scripts/sync_codify.py": {
-          "mode": "100644",
-          "oid": "794405559ea28efc02c64d1e561f052b2378327a"
-        },
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
           "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
@@ -123,7 +118,7 @@
         },
         "skills/learn/skills/codify/references/reuse.md": {
           "mode": "100644",
-          "oid": "904b9941b6e2e6980db694574fe42ba245e0cb06"
+          "oid": "a471a076015f613ea57af4090fc872042bdfe167"
         },
         "skills/learn/skills/codify/references/sources.md": {
           "mode": "100644",
@@ -227,7 +222,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "c9ed23fc7d5ac6a674015ef0998777bc68b40071"
+          "oid": "00390b99adc8feeee739088f21a93961e431856f"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -536,35 +531,43 @@
         "skills/learn/skills/skillify/templates/verification.md.tmpl": {
           "mode": "100644",
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
+        },
+        "src/sync_codify.py": {
+          "mode": "100644",
+          "oid": "794405559ea28efc02c64d1e561f052b2378327a"
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
+          "oid": "a8f67dd89f60ba15c12d3a35bf69f6961d7a632a"
         }
       },
-      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
+      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
           "oid": "feb9c717b2c7a87bf30a8668ba962ca8f46df157"
+        },
+        ".claude-plugin/plugin.json": {
+          "mode": "100644",
+          "oid": "1c76ca53518176e714b0bb8a301157d52ad282fb"
         },
         "agents/README.md": {
           "mode": "100644",
@@ -572,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "d9c6a2c923f83053c2d88f9a7575c22dcf3aea8b"
+          "oid": "c39f202207654ceff0c53a758052e236b36933fd"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -620,7 +623,11 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "3fc5643e00450c4b35f3eac1f40f6acebaa92f44"
+          "oid": "da56f62912ce64de5f261b270ad4bfcb227ef91c"
+        },
+        "harnesses/t3code/README.md": {
+          "mode": "100644",
+          "oid": "0b6d4c059c6aadcf8f0fb8599067eb3d2c870e56"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -628,44 +635,44 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "0cbda95112f0d6c959f1fce94aca5a8deaa1ff67"
+          "oid": "ae58046e00bad23e7c4a76e08cebc47d24d0a7b9"
         }
       },
       "inputs": {
         ".githooks/pre-commit": {
           "mode": "100755",
-          "oid": "52da4cb2ed4658b87a69f2d7f2d4676e2b96393e"
+          "oid": "bb4a990deffd6ff3a19d11c26a1761e7a203b80e"
         },
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "f4735f0a026bdf3be25e63c1b79799381b851d33"
+          "oid": "662b0c27d6f7abac66344adbd8affdbcc64a01a7"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "defb5c1c1b66332bda9bba3e1de72f7eac81412e"
-        },
-        "scripts/check_docs.py": {
-          "mode": "100755",
-          "oid": "09786cea5e35c184a4615fc1e885605ee74ca792"
-        },
-        "scripts/docs_hook.py": {
-          "mode": "100755",
-          "oid": "d242ac5a34993bf5265386965903686409f6a143"
+          "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
         },
         "scripts/setup_repo_hooks.py": {
           "mode": "100755",
-          "oid": "f9f2a88a5bd2f0dcfb2b11ddf9ec92dfb07b642e"
+          "oid": "b6ebf7d39493d8b7b7aa71237f96ab2118df492f"
+        },
+        "src/check_docs.py": {
+          "mode": "100755",
+          "oid": "061079c4cd06e27922c983fb8d7f89e42a3e5b55"
+        },
+        "src/docs_hook.py": {
+          "mode": "100755",
+          "oid": "59a384671639f4f569dff1546443af488566d054"
         },
         "tests/test_authoring.py": {
           "mode": "100644",
@@ -673,11 +680,11 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "ee3363b28f65debce4ae9d66dded0326039441fa"
+          "oid": "29b4813b2fa0093ac1eec61fa00735c7e01b5f54"
         },
         "tests/test_caveman.py": {
           "mode": "100644",
-          "oid": "f3ffe5793eb6b708873310a5e687c3a3b0e12b68"
+          "oid": "100e597f781818b4683037d4cb146c1a62b162d1"
         },
         "tests/test_codify.py": {
           "mode": "100644",
@@ -689,7 +696,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "34e0aabc186617f62a6ead29c4ae0f090ceb5ee7"
+          "oid": "0c128f2317f63bd483bed2d7db7464c1515f6550"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -697,7 +704,7 @@
         },
         "tests/test_graphify.py": {
           "mode": "100644",
-          "oid": "06801353fb1643d3d9e5dd8e0ef3b0ced80bea71"
+          "oid": "b9ccc6278f824f84e88bbbe7251726aee8547d1c"
         },
         "tests/test_grok_learn.py": {
           "mode": "100644",
@@ -709,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "7a89eec28716fda3def201bddff3b5d8d9cf1ff2"
+          "oid": "016ad546db3673aaa3a77b77e153cd5d05680107"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -717,11 +724,11 @@
         },
         "tests/test_integrations.py": {
           "mode": "100644",
-          "oid": "1d4b96eb949db42a261957d07d0591c598c79c8c"
+          "oid": "02be0f6d1672e71a1e8ca1125a8da3e2fb72b4f4"
         },
         "tests/test_learn.py": {
           "mode": "100644",
-          "oid": "16b669195cfcac72d560879c3f8e2b14b876869d"
+          "oid": "85f3dafc291353374a1339f67ac1865224ec8f82"
         },
         "tests/test_learn_help.py": {
           "mode": "100644",
@@ -729,7 +736,7 @@
         },
         "tests/test_lever.py": {
           "mode": "100644",
-          "oid": "ca528153e015310909aeaa2dfb8ae9f17dca6a84"
+          "oid": "7b96b202cf41bc1067bdc66371a8428b54e44a15"
         },
         "tests/test_lintify.py": {
           "mode": "100644",
@@ -737,7 +744,7 @@
         },
         "tests/test_npm_runtime.py": {
           "mode": "100644",
-          "oid": "b0cffe8280ce71c3f7bbac68562039fd2a910c7b"
+          "oid": "1db737801a3c8396396f7a6dbfc364966119ac0b"
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
@@ -761,11 +768,11 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "b07f5ff842c05ca0a545d76da0a7fa85721517e7"
+          "oid": "9ca3f42c15bd95818cf00db624de9c8f788466b8"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "1570263b1a02a35b7b992fbd913bedb4695af440"
+          "oid": "408226708b8c98f3d90c07b64cd05ff6c5281080"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -773,11 +780,11 @@
         },
         "tests/test_stack_runner.py": {
           "mode": "100644",
-          "oid": "a1bc923917500fb242150ae17e15c1efb15f349b"
+          "oid": "b7e9560e5c5ef72045c0b9ef772c1145795882bb"
         },
         "tests/test_state_layout.py": {
           "mode": "100644",
-          "oid": "391592236c9a7f79ef75b9464fc02a98067be2bc"
+          "oid": "f49e6a64c2ef2e488a3f5db4a531a55aa49cbb9f"
         },
         "tests/test_unslop.py": {
           "mode": "100644",
@@ -785,69 +792,69 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented the tracked-file snapshot in the maintainer guide and covered it in the repo-quality tests."
+      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
+          "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
+      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
           "oid": "8c6960e1878beeb3d50ef59f9b93e4deda40772a"
         },
-        "scripts/run_hook.py": {
+        "src/run_hook.py": {
           "mode": "100755",
-          "oid": "45db26cad47cecdf42d9c2b6f8fc6d8fe75747cf"
+          "oid": "2ff3a0ffbcab5065c78c31edb4d5b89cc0eeeeef"
         },
-        "scripts/runtime_environment.py": {
+        "src/runtime_environment.py": {
           "mode": "100644",
           "oid": "f5b499932e3a6e3282b17da79a27f29160478f1c"
         },
-        "scripts/tkstack.py": {
+        "src/tkstack.py": {
           "mode": "100755",
-          "oid": "57d425f754d8509676b769864d9814f1e233dcdc"
+          "oid": "506b173a3213954d87abeb14e571190a49f95d6a"
         },
-        "scripts/tool.py": {
+        "src/tool.py": {
           "mode": "100755",
           "oid": "f9eaee5c81176a3475b24ec6e6db91b0832ca4ab"
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "5bd7760af893c73f5642440c3af2230219402cee"
+          "oid": "9ea2c69623306bf23efdd76997ddec70ebc819b5"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
         }
       },
-      "docs_refresh_reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree.",
+      "docs_refresh_reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -859,7 +866,7 @@
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
-          "oid": "b7ee5a221cf5271e724c38621b87eca8a025c05f"
+          "oid": "4ba51b38a1c5ca753b3a37e1d8f2a4a9af50f344"
         },
         "harnesses/bootstrap/profiles.json": {
           "mode": "100644",
@@ -879,11 +886,11 @@
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "6ce6b08398ea9aac930918a6df50069dccc1833c"
+          "oid": "cdd06ce47bf4ff032b816b856811c63d0c3b7058"
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
-          "oid": "e371952199522944e7ad424d2eae12f3acf7d7ce"
+          "oid": "8d413fc58a28afab9bd2a59fe02c37ba1a5a756e"
         },
         "scripts/bootstrap_profiles.py": {
           "mode": "100644",
@@ -891,15 +898,7 @@
         },
         "scripts/bootstrap_shell.py": {
           "mode": "100644",
-          "oid": "644f48c3a37bb6eabfb426d9c402069060b82d4d"
-        },
-        "scripts/bootstrap_toolchains.py": {
-          "mode": "100644",
-          "oid": "421d67d0dd6259bd6132ab1596dc6431400875ab"
-        },
-        "scripts/check_skills.py": {
-          "mode": "100644",
-          "oid": "dbb4793c1340d659d817ff47aa4d11b9af0c91d7"
+          "oid": "38e8696b09d7a2ba001a59e4c5d193b7dcede380"
         },
         "scripts/codex-cloud-setup.sh": {
           "mode": "100755",
@@ -911,73 +910,85 @@
         },
         "scripts/doctor.py": {
           "mode": "100755",
-          "oid": "9c1efc484c305d9e8633259df22e35ccc2422a29"
-        },
-        "scripts/graphify_adapter.py": {
-          "mode": "100644",
-          "oid": "9ba14c8d3814823c57702744023eb41d520d5312"
-        },
-        "scripts/graphify_install.py": {
-          "mode": "100644",
-          "oid": "9e2d0c140b53351b882450edece64a42ce6f2ebc"
+          "oid": "b22cd75241139c7f92e51f683cc4176e9e3101f4"
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "7ce5985b4f075fe0313647b65548a7ba0eedb825"
+          "oid": "01cec1096084e2f9f76f01708a5caed2ae771169"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "9172a320c7ac118ac231280fcefedb375ef7e86b"
-        },
-        "scripts/npm_runtime.py": {
-          "mode": "100644",
-          "oid": "f81064fed441e6c0283cc56613fbfbbdf67b24ba"
-        },
-        "scripts/python_runtime.py": {
-          "mode": "100644",
-          "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
+          "oid": "85ee489f774adf7c22e6d197343b8a5ed25aaf74"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
-          "oid": "25db58ef774ba9133ed35c4832bd09462a80c767"
+          "oid": "31e4fee4df10b7c4747fe45a07ab7cf3338b5ffc"
         },
         "scripts/setup_integrations.py": {
           "mode": "100755",
-          "oid": "fa39e40912b81187cdb2555c9556befb9e813c06"
+          "oid": "a598fb00f571bee73ca94243a877a8dc24c14d9d"
         },
-        "scripts/setup_lever.py": {
+        "src/README.md": {
           "mode": "100644",
-          "oid": "70e68bafb1b6be08dc7595b5f3f78e70292d6c20"
+          "oid": "94464d8ff75604da0ad8448a7f367c2368f01ad4"
         },
-        "scripts/skill_roots.py": {
+        "src/bootstrap_toolchains.py": {
+          "mode": "100644",
+          "oid": "421d67d0dd6259bd6132ab1596dc6431400875ab"
+        },
+        "src/check_skills.py": {
+          "mode": "100644",
+          "oid": "fe6d662f79a1941c8269ade2a636ee8f4e3577c4"
+        },
+        "src/graphify_adapter.py": {
+          "mode": "100644",
+          "oid": "9ba14c8d3814823c57702744023eb41d520d5312"
+        },
+        "src/graphify_install.py": {
+          "mode": "100644",
+          "oid": "5d9254218272334c0fde88af9409cf2593b535ac"
+        },
+        "src/npm_runtime.py": {
+          "mode": "100644",
+          "oid": "f81064fed441e6c0283cc56613fbfbbdf67b24ba"
+        },
+        "src/python_runtime.py": {
+          "mode": "100644",
+          "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
+        },
+        "src/setup_lever.py": {
+          "mode": "100644",
+          "oid": "698201967058b46a121c0e289707e9f79262bb9f"
+        },
+        "src/skill_roots.py": {
           "mode": "100644",
           "oid": "07c5b8be393fef36404b954e779e2b970f1a90ea"
         },
-        "scripts/steering_adapter.py": {
+        "src/steering_adapter.py": {
           "mode": "100644",
-          "oid": "4fe99318c7197f2d17cbc4577b76fca2effc8ada"
+          "oid": "dee8e3e52bef4793c807b3c8cd98413362393b87"
         },
-        "scripts/tkstack_state.py": {
+        "src/tkstack_state.py": {
           "mode": "100644",
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Reviewed the one-command installer, uninstall, harness placement, marketplace commands, hook ownership, and the split of installer programs in scripts/ from shared programs in src/. CI and the hook installer now call the shared programs in src/. Checkout fixtures copy src/ so a copied installer can import them."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "755e79acf45cd4056168b4056a4ace27d74f1b75"
+          "oid": "5ab57aff40863cc269610b9ffeff533e56bb2f53"
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "e8117dd2758d4881f50642c249bb1eff9c1a894f"
+          "oid": "24681e5b9aa4bc5e387dfd67b87f02542d523f0e"
         },
         "docs/flowify.md": {
           "mode": "100644",
-          "oid": "1785ae8493d15a2cfbda6bacabf19f8a8edf7738"
+          "oid": "ffb4224e2841715362944f794a2ed23f4318f66b"
         },
         "docs/grok-learn.md": {
           "mode": "100644",
@@ -985,15 +996,15 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "64bf90ed0caca6c07feadcdb9c86c0d666c67c62"
+          "oid": "e5fc1a4c35b035b0d7cc6ad622f9df702fe08022"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "5bdbf91bce6fb0cfdd88c0d3efd244add11ff14b"
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "a7190d8d9d1fe1e3ae0707fc542ac595b217df2e"
+          "oid": "6917e03fba588896b4dd3c9494ea4fcf65761970"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1001,7 +1012,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "c32b6307b9785551f41218458e8618c73824cd58"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1021,11 +1032,11 @@
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
-          "oid": "5102f47a6386f9c49253205aa52eaf5008bc93fa"
+          "oid": "ab91cdbc03ab602ffe3d2a25bc3bc4844e6008c1"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
+          "oid": "a8f67dd89f60ba15c12d3a35bf69f6961d7a632a"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1033,7 +1044,7 @@
         },
         "docs/state-layout.md": {
           "mode": "100644",
-          "oid": "dbe4cd941e7b70e7a623154271d92d58b564efdb"
+          "oid": "d0c075fdbb4e73fd482e821adce7cf1c0fd3e623"
         },
         "docs/unslop.md": {
           "mode": "100644",
@@ -1043,7 +1054,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a059b1a08dec3f1c4d1fc459cd35f229d4d2feee"
+          "oid": "496b7b4d73c0867c6d9e69a8903ba9787d3a6318"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1152,10 +1163,6 @@
         "evals/write/tasks.json": {
           "mode": "100644",
           "oid": "1714d25d186f4f1280b44748032d3fc493f71195"
-        },
-        "scripts/evolve.py": {
-          "mode": "100644",
-          "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         },
         "skills/README.md": {
           "mode": "100644",
@@ -1503,7 +1510,7 @@
         },
         "skills/learn/references/improvement.md": {
           "mode": "100644",
-          "oid": "fbcec2d37b80777200247d20b531e4a813bdf410"
+          "oid": "bc8e0ead1b1f549f08f35b4768833a39195093a1"
         },
         "skills/learn/references/operating-guide.md": {
           "mode": "100644",
@@ -1567,7 +1574,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "d45e98650b7a91cafdb07ebbb810be8c580b5a72"
+          "oid": "a484d376fbe5954e5955e00f874ffff1e6180ff9"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1879,7 +1886,7 @@
         },
         "skills/learn/skills/instructify/references/harnesses.md": {
           "mode": "100644",
-          "oid": "89df93231089e8b496e8626c2b2f0b85d1a5c3f3"
+          "oid": "3b255ff6015bc4d2396e592f00d5d46c869ed6a5"
         },
         "skills/learn/skills/instructify/references/manifest.md": {
           "mode": "100644",
@@ -1887,7 +1894,7 @@
         },
         "skills/learn/skills/instructify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "da83c2588aa1164ba54ef17aaacbecd74c89a1ec"
+          "oid": "3336da104c7280ee908244d5ebe5f43aeff49a7f"
         },
         "skills/learn/skills/instructify/references/storage.md": {
           "mode": "100644",
@@ -1927,7 +1934,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "6aea6dfb1f1b585a6a594483b69fe7c33cd34bda"
+          "oid": "14681967e5a978341c3aca4f0da43c1bea205147"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2728,16 +2735,20 @@
         "skills/write/scripts/workflow.lock.json": {
           "mode": "100644",
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
+        },
+        "src/evolve.py": {
+          "mode": "100644",
+          "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented that the repo-quality snapshot lists git-tracked files and keeps README.md ahead of the file tree."
+      "reason": "Recompiled the Learn, Codify, and Instructify workflow locks after their reference docs were updated to name src/evolve.py, src/sync_codify.py, and src/steering_adapter.py. The locks keep the same entrypoint, cases, and included paths."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "defb5c1c1b66332bda9bba3e1de72f7eac81412e"
+    "oid": "1f9dbe6902507e32f1733409d457f4ab9f0caa7d"
   },
   "version": 1
 }
