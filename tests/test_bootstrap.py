@@ -23,6 +23,7 @@ import bootstrap_shell
 import bootstrap_toolchains
 import harness_paths
 import setup_integrations
+import setup_repo_hooks
 import steering_adapter
 
 
@@ -83,6 +84,29 @@ class BootstrapTests(unittest.TestCase):
         again = self.invoke('--uninstall')
         self.assertEqual(again['status'], 'removed')
         self.assertTrue(foreign.is_symlink())
+
+    def test_uninstall_skips_the_hook_when_git_is_missing(self):
+        self.target.mkdir()
+        self.workspace.mkdir()
+        args = bootstrap.parser().parse_args([
+            '--target', str(self.target),
+            '--workspace', str(self.workspace),
+            '--uninstall',
+            '--no-copilot',
+            '--no-shell',
+        ])
+        buffer = io.StringIO()
+        with patch.object(bootstrap, 'execute'), \
+             patch.object(setup_repo_hooks, 'setup', side_effect=FileNotFoundError('git')), \
+             redirect_stdout(buffer):
+            code = bootstrap.uninstall(
+                args, self.workspace, False,
+                ['--target', str(self.target), '--scope', 'home'], [],
+            )
+        self.assertEqual(code, 0)
+        text = buffer.getvalue()
+        self.assertIn('skip git docs hook', text)
+        self.assertIn('git docs hook: skipped', text)
 
     def test_downloaded_installer_clones_into_the_user_share_directory(self):
         home = self.base / 'remote-home'

@@ -171,7 +171,7 @@ def uninstall(args, workspace, copilot, common, state_roots):
     import setup_repo_hooks
     try:
         hook = setup_repo_hooks.setup(ROOT, dry_run=args.dry_run, uninstall=True)
-    except ValueError as error:
+    except (OSError, ValueError) as error:
         print('skip git docs hook: ' + str(error))
         hook = {'status': 'skipped'}
     print('git docs hook: ' + hook.get('status', 'unchanged'))

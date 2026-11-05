@@ -256,3 +256,32 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertEqual(docs.check(self.snapshot(True)), [])
         path.write_text(path.read_text().replace('# Authored policy', '# Changed authored policy'))
         self.assertTrue(docs.check(self.snapshot()))
+
+    def test_missing_git_uninstall_is_not_a_checkout(self):
+        empty = self.root.parent / 'no-git'
+        empty.mkdir()
+        saved = os.environ.get('PATH')
+        os.environ['PATH'] = str(empty)
+        try:
+            result = setup_repo_hooks.setup(self.root, uninstall=True)
+        finally:
+            if saved is None:
+                os.environ.pop('PATH', None)
+            else:
+                os.environ['PATH'] = saved
+        self.assertEqual(result['status'], 'not-a-git-checkout')
+
+    def test_dry_run_uninstall_plans_the_hook_and_leaves_it_in_place(self):
+        installed = setup_repo_hooks.setup(self.root)
+        self.assertEqual(installed['status'], 'installed')
+        hook = Path(installed['hook'])
+        receipt = self.root / '.tkstack/git-hooks/ownership.json'
+        before_hook = hook.read_bytes()
+        before_receipt = receipt.read_bytes()
+        planned = setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)
+        self.assertEqual(planned['status'], 'planned')
+        self.assertEqual(hook.read_bytes(), before_hook)
+        self.assertEqual(receipt.read_bytes(), before_receipt)
+        self.assertEqual(setup_repo_hooks.setup(self.root, uninstall=True)['status'], 'removed')
+        self.assertFalse(receipt.exists())
+        self.assertEqual(setup_repo_hooks.setup(self.root, dry_run=True, uninstall=True)['status'], 'not-installed')

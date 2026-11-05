@@ -117,6 +117,9 @@ already owns, including one installed from another worktree of the same
 repository, is replaced and is never chained. Other hooks and Git configuration
 remain untouched. Shared/custom `core.hooksPath` managers are
 preserved; add the versioned handler to that manager rather than overwriting it.
+`--uninstall --dry-run` reports `planned` when this checkout's receipt exists
+and leaves the hook and receipt in place. A missing `git` binary is
+`not-a-git-checkout`, not a traceback.
 The installer reports that case explicitly. A source copy without Git metadata
 keeps the versioned files and reports that Git activation is deferred.
 

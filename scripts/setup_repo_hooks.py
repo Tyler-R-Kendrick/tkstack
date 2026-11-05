@@ -52,6 +52,8 @@ def plan(root):
         top = Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve()
     except ValueError:
         return {'status': 'not-a-git-checkout'}
+    except FileNotFoundError:
+        return {'status': 'not-a-git-checkout'}
     if top != root.resolve():
         return {'status': 'not-a-git-checkout'}
     directory = Path(git(root, 'rev-parse', '--path-format=absolute', '--git-path', 'hooks').decode().strip())
@@ -124,7 +126,7 @@ def setup(root, dry_run=False, check=False, uninstall=False):
                     if os.path.lexists(backup):
                         backup.unlink()
                 receipt.unlink()
-        return {'status': 'removed', 'hook': result['hook']}
+        return {'status': 'planned' if dry_run else 'removed', 'hook': result['hook']}
     if check:
         if result['status'] != 'installed':
             raise ValueError('Repository Git docs hook is missing or stale; rerun setup')

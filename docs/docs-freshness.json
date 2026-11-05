@@ -645,7 +645,7 @@
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "22c08ddae3e7fa54b91bc8e828e26f7a4b5e5fc1"
+          "oid": "9d8cc03b953e9a077fb002d633589421123a09a6"
         }
       },
       "inputs": {
@@ -664,7 +664,7 @@
         },
         "scripts/setup_repo_hooks.py": {
           "mode": "100755",
-          "oid": "9fe45fee233d2174822adc53bcd6044450afb5f3"
+          "oid": "be78ade0b482edbd556173e59b2611f50d5f5703"
         },
         "src/check_docs.py": {
           "mode": "100755",
@@ -680,7 +680,7 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "5b1b2104f643ed941215d31693e9efcb1bc2f7cd"
+          "oid": "81c6916d70597f98faa295f9bd4500b7e452b2e8"
         },
         "tests/test_caveman.py": {
           "mode": "100644",
@@ -696,7 +696,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "0c128f2317f63bd483bed2d7db7464c1515f6550"
+          "oid": "dacdaea0fc6fdff580833a19a312f89131d8d6a8"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -796,7 +796,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Cover installer trust, tarball symlink checks, and the Copilot and Muse link tests."
+      "reason": "A dry-run hook uninstall reports planned, and a missing git binary is not a checkout."
     },
     "execution": {
       "docs": {
@@ -847,7 +847,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "85e93d07ce6c3a2b0f4d029c2cf0109d37d9eb9a"
+          "oid": "eb32144afc297d10c0a9e618ccac43f63384adb9"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -893,7 +893,7 @@
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
-          "oid": "6aea6191f0430fd771d2a89b900fc089d1a353e5"
+          "oid": "01031bcc7dd34b595571d978c4cf75371d29a953"
         },
         "scripts/bootstrap_profiles.py": {
           "mode": "100644",
@@ -981,7 +981,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links."
+      "reason": "Document that a dry-run uninstall plans the git docs hook and a missing git binary does not abort uninstall."
     },
     "skills": {
       "docs": {

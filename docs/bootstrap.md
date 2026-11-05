@@ -48,7 +48,9 @@ instruction block. Foreign instructions in other targets remain protected.
 `--uninstall` deletes symlinks for every harness, launchers, and the owned git
 docs hook. It can run twice. It leaves shell startup files, foreign links, and
 `.github/lever.yml` repository dials in place. `--harness` does not limit it.
-`--dry-run` with `--uninstall` only prints the plan. Owned links left
+`--dry-run` with `--uninstall` only prints the plan. The git docs hook is
+reported as `planned` and is not removed. A host without `git` reports
+`not-a-git-checkout` and still removes links and launchers. Owned links left
 under `.muse/skills` by an older release are removed with the other harnesses.
 
 `--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
