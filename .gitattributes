@@ -4,7 +4,8 @@
 /tests/** text=auto eol=lf
 /evals/** text=auto eol=lf
 /docs/** text=auto eol=lf
-/harnesses/** text=auto eol=lf
+/.cursor/** text=auto eol=lf
+/src/** text=auto eol=lf
 /.github/** text=auto eol=lf
 /.claude-plugin/** text=auto eol=lf
 /*.md text eol=lf

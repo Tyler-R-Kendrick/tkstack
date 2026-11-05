@@ -1,16 +1,31 @@
-"""Validate this checkout as an Agent Plugins 1.0.0 package.
+"""Validate a directory against Agent Plugins 1.0.0.
 
 The vendored schemas are the published 1.0.0 documents from
 agentplugins/agent-plugins-spec (schemas/1.0.0/). The checker applies the
 subset of JSON Schema those files use, then the specification rules the
-schema does not express: command tokens, remote URLs, placeholder expansion,
-and Agent Skills frontmatter for skills discovered at skills/*/SKILL.md.
+schema does not express: command tokens, remote URLs, cwd containment, and
+Agent Skills frontmatter for skills discovered at skills/*/SKILL.md.
+
+This module does not pin the servers this repository ships. That policy
+lives in repo_mcp_policy.py. An absent mcp.json is not a spec error (§6.2).
+A known-credential-pattern check on env and headers does not prove §7.2.1
+or §9.2's "MUST NOT embed credentials".
+
+Frontmatter uses yaml.safe_load when PyYAML is installed, matching the Agent
+Skills YAML that §7.1 makes the source of truth (folded scalars and lists).
+Without PyYAML, _parse_frontmatter_subset accepts one-line scalars and
+one-level maps and rejects folded scalars and lists.
 """
 
 import json
 import re
 from pathlib import Path
 from urllib.parse import urlsplit
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover - the checkout's test runner has PyYAML
+    yaml = None
 
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
@@ -26,46 +41,11 @@ SKILL_FIELDS = {
 }
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 PLACEHOLDER = re.compile(r"\$\{([^{}]+)\}")
+# Known token shapes only. A miss does not prove the file embeds no credential.
 SECRET = re.compile(
     r"(?i)(?:\bsk-[A-Za-z0-9]|fc-[A-Za-z0-9]|ghp_[A-Za-z0-9]|github_pat_[A-Za-z0-9]"
     r"|xox[baprs]-[A-Za-z0-9]|AKIA[A-Z0-9]{8})"
 )
-EXPECTED_SERVERS = {
-    "serena": {
-        "type": "stdio",
-        "command": "uvx",
-        "args": [
-            "--from",
-            "git+https://github.com/oraios/serena",
-            "serena",
-            "start-mcp-server",
-            "--project-from-cwd",
-        ],
-    },
-    "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["@playwright/mcp@latest"],
-    },
-    "firecrawl": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "firecrawl-mcp"],
-    },
-    "mobbin": {
-        "type": "streamable-http",
-        "url": "https://api.mobbin.com/mcp",
-    },
-    "vercel": {
-        "type": "streamable-http",
-        "url": "https://mcp.vercel.com",
-    },
-    "graphify": {
-        "type": "stdio",
-        "command": "graphify-mcp",
-        "args": ["${PLUGIN_DATA}/graphify-out/graph.json"],
-    },
-}
 
 
 def load_schema(name):
@@ -158,14 +138,6 @@ def _json_object(path):
     return loaded, []
 
 
-def _placeholder_errors(text, label):
-    return [
-        f"{label} contains ${{{name}}}, which Agent Plugins 1.0 leaves literal"
-        for name in PLACEHOLDER.findall(text)
-        if name not in {"PLUGIN_ROOT", "PLUGIN_DATA"}
-    ]
-
-
 def _command_errors(command):
     if not command or any(character.isspace() for character in command) or "${" in command:
         return ["command must be one executable token and must not contain placeholders"]
@@ -205,11 +177,32 @@ def _url_errors(url):
 
 def _secret_errors(value, label):
     if SECRET.search(value):
-        return [f"{label} embeds a credential"]
+        return [f"{label} matches a known credential pattern"]
     return []
 
 
-def mcp_semantic_errors(document):
+def _plugin_rooted(value, root):
+    """Resolve a ./ or ${PLUGIN_ROOT} cwd. Other forms, including ${PLUGIN_DATA}, are None."""
+    if value == "${PLUGIN_ROOT}":
+        return root
+    if value.startswith("${PLUGIN_ROOT}/"):
+        return root / value[len("${PLUGIN_ROOT}/"):]
+    if value.startswith("./"):
+        return root / value[2:]
+    return None
+
+
+def _cwd_errors(value, root, label):
+    """§7.2.1: a ./ or ${PLUGIN_ROOT} cwd that escapes the plugin root is invalid."""
+    if not isinstance(value, str) or root is None:
+        return []
+    candidate = _plugin_rooted(value, Path(root))
+    if candidate is None or _inside(Path(root), candidate):
+        return []
+    return [f"{label}.cwd resolves outside the plugin root"]
+
+
+def mcp_semantic_errors(document, root=None):
     """Specification rules that the MCP schema leaves to prose."""
     servers = document.get("mcpServers")
     if not isinstance(servers, dict):
@@ -224,19 +217,12 @@ def mcp_semantic_errors(document):
             command = entry.get("command")
             if isinstance(command, str):
                 errors.extend(f"{label}.{item}" for item in _command_errors(command))
-            for field in ("args", "env", "cwd"):
-                value = entry.get(field)
-                if isinstance(value, str):
-                    errors.extend(_placeholder_errors(value, f"{label}.{field}"))
-                elif isinstance(value, list):
-                    for index, item in enumerate(value):
-                        if isinstance(item, str):
-                            errors.extend(_placeholder_errors(item, f"{label}.{field}[{index}]"))
-                elif isinstance(value, dict):
-                    for key, item in value.items():
-                        if isinstance(item, str):
-                            errors.extend(_placeholder_errors(item, f"{label}.env.{key}"))
-                            errors.extend(_secret_errors(item, f"{label}.env.{key}"))
+            env = entry.get("env")
+            if isinstance(env, dict):
+                for key, item in env.items():
+                    if isinstance(item, str):
+                        errors.extend(_secret_errors(item, f"{label}.env.{key}"))
+            errors.extend(_cwd_errors(entry.get("cwd"), root, label))
         elif transport in {"streamable-http", "sse"}:
             url = entry.get("url")
             if isinstance(url, str):
@@ -259,24 +245,6 @@ def mcp_semantic_errors(document):
     return errors
 
 
-def expected_server_errors(document):
-    servers = document.get("mcpServers")
-    if not isinstance(servers, dict):
-        return ["mcp.json has no mcpServers object"]
-    errors = []
-    for name, expected in EXPECTED_SERVERS.items():
-        entry = servers.get(name)
-        if not isinstance(entry, dict):
-            errors.append(f"mcp.json is missing server {name}")
-            continue
-        for key, value in expected.items():
-            if entry.get(key) != value:
-                errors.append(f"mcpServers.{name}.{key} is {entry.get(key)!r}, expected {value!r}")
-        if name == "firecrawl" and "env" in entry:
-            errors.append("mcpServers.firecrawl.env would overlay FIRECRAWL_API_KEY with a literal")
-    return errors
-
-
 def _unquote(value):
     text = value.strip()
     if len(text) >= 2 and text[0] == text[-1] and text[0] in {"'", '"'}:
@@ -284,13 +252,22 @@ def _unquote(value):
     return text
 
 
-def parse_frontmatter(text):
+def _frontmatter_block(text):
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
-        return None, ["missing YAML frontmatter"]
+        return None, None, ["missing YAML frontmatter"]
     end = next((index for index, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
     if end is None:
-        return None, ["unterminated YAML frontmatter"]
+        return None, None, ["unterminated YAML frontmatter"]
+    return lines, end, []
+
+
+def _parse_frontmatter_subset(lines, end):
+    """Line-oriented fallback used only when PyYAML is not installed.
+
+    Accepts one-line scalars and one-level indented maps. Rejects folded
+    scalars, lists, and any other YAML the Agent Skills spec allows.
+    """
     fields = {}
     errors = []
     index = 1
@@ -322,6 +299,24 @@ def parse_frontmatter(text):
         fields[key] = _unquote(rest)
         index += 1
     return fields, errors
+
+
+def parse_frontmatter(text):
+    lines, end, errors = _frontmatter_block(text)
+    if errors:
+        return None, errors
+    block = "\n".join(lines[1:end])
+    if yaml is None:
+        return _parse_frontmatter_subset(lines, end)
+    try:
+        loaded = yaml.safe_load(block) if block.strip() else {}
+    except yaml.YAMLError as error:
+        return None, [f"invalid YAML frontmatter: {error}"]
+    if loaded is None:
+        return {}, []
+    if not isinstance(loaded, dict):
+        return None, ["frontmatter is not a mapping"]
+    return loaded, []
 
 
 def skill_document_errors(directory, text):
@@ -376,7 +371,7 @@ def discovered_skill_errors(root):
     skills = Path(root) / "skills"
     if not skills.exists():
         return []
-    if skills.is_symlink() or not skills.is_dir() or not _inside(root, skills):
+    if not skills.is_dir() or not _inside(root, skills):
         return ["skills/ is not a directory inside the plugin root"]
     errors = []
     for child in sorted(skills.iterdir()):
@@ -386,7 +381,7 @@ def discovered_skill_errors(root):
         if not document.is_file():
             continue
         relative = document.relative_to(root).as_posix()
-        if document.is_symlink() or not _inside(root, document):
+        if not _inside(root, document):
             errors.append(f"{relative} resolves outside the plugin root")
             continue
         try:
@@ -413,10 +408,8 @@ def conformance_problems(root):
                 for item in validate_instance(plugin, load_schema(PLUGIN_SCHEMA_NAME))
             )
     mcp_path = root / "mcp.json"
-    if not mcp_path.is_file():
-        problems.append("missing mcp.json")
-        document = None
-    else:
+    # §6.2: an absent fixed location is not an error. A present file still has to parse.
+    if mcp_path.is_file():
         document, errors = _json_object(mcp_path)
         problems.extend(f"mcp.json: {item}" for item in errors)
         if document is not None:
@@ -424,7 +417,6 @@ def conformance_problems(root):
                 f"mcp.json: {item}"
                 for item in validate_instance(document, load_schema(MCP_SCHEMA_NAME))
             )
-            problems.extend(f"mcp.json: {item}" for item in mcp_semantic_errors(document))
-            problems.extend(f"mcp.json: {item}" for item in expected_server_errors(document))
+            problems.extend(f"mcp.json: {item}" for item in mcp_semantic_errors(document, root))
     problems.extend(discovered_skill_errors(root))
     return problems

@@ -409,7 +409,7 @@ class RepoQualityTests(unittest.TestCase):
             )
             problems = plugins.conformance_problems(root)
             text = "\n".join(problems)
-            self.assertIn("embeds a credential", text)
+            self.assertIn("known credential pattern", text)
             self.assertIn("disable-model-invocation", text)
 
     def test_agent_plugins_leaves_foreign_placeholders_literal(self):
@@ -423,8 +423,89 @@ class RepoQualityTests(unittest.TestCase):
             servers["mcpServers"]["firecrawl"]["env"] = {"FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"}
             (root / "mcp.json").write_text(json.dumps(servers) + "\n", encoding="utf-8")
             problems = plugins.conformance_problems(root)
-            self.assertTrue(any("FIRECRAWL_API_KEY" in item and "literal" in item for item in problems), problems)
-            self.assertTrue(any("would overlay" in item for item in problems), problems)
+            self.assertFalse(any("FIRECRAWL_API_KEY" in item for item in problems), problems)
+            directory = str(ROOT / "evals" / "repo-quality")
+            if directory not in sys.path:
+                sys.path.insert(0, directory)
+            import repo_mcp_policy
+            policy = repo_mcp_policy.policy_problems(root)
+            self.assertTrue(any("would overlay" in item for item in policy), policy)
+
+    def test_absent_mcp_json_is_policy_not_spec(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-absent-") as temporary:
+            root = Path(temporary)
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            problems = plugins.conformance_problems(root)
+            self.assertFalse(any("missing mcp.json" in item for item in problems), problems)
+            directory = str(ROOT / "evals" / "repo-quality")
+            if directory not in sys.path:
+                sys.path.insert(0, directory)
+            import repo_mcp_policy
+            self.assertIn("missing mcp.json", repo_mcp_policy.policy_problems(root))
+
+    def test_folded_skill_description_parses(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-yaml-") as temporary:
+            root = Path(temporary)
+            skill = root / "skills" / "demo"
+            skill.mkdir(parents=True)
+            text = (
+                "---\n"
+                "name: demo\n"
+                "description: >\n"
+                "  Folded line one\n"
+                "  folded line two\n"
+                "---\n\n"
+                "Body.\n"
+            )
+            (skill / "SKILL.md").write_text(text, encoding="utf-8")
+            fields, errors = plugins.parse_frontmatter(text)
+            self.assertEqual(errors, [])
+            self.assertIn("Folded line one", fields["description"])
+            self.assertIn("folded line two", fields["description"])
+            self.assertEqual(plugins.skill_document_errors(skill, text), [])
+
+    def test_cwd_escape_is_a_spec_error(self):
+        plugins = _load_agent_plugins()
+        document = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+        document["mcpServers"]["serena"]["cwd"] = "${PLUGIN_ROOT}/../outside"
+        escaped = plugins.mcp_semantic_errors(document, ROOT)
+        self.assertTrue(any("cwd resolves outside" in item for item in escaped), escaped)
+        document["mcpServers"]["serena"]["cwd"] = "./."
+        self.assertFalse(any("cwd" in item for item in plugins.mcp_semantic_errors(document, ROOT)))
+
+    def test_in_root_skill_symlink_stays_conformant(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-link-") as temporary:
+            base = Path(temporary)
+            root = base / "plugin"
+            payload = root / "payload" / "demo"
+            payload.mkdir(parents=True)
+            (payload / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            skills = root / "skills"
+            skills.mkdir()
+            (skills / "demo").symlink_to(payload, target_is_directory=True)
+            problems = plugins.conformance_problems(root)
+            self.assertFalse(any("outside" in item or "symlink" in item for item in problems), problems)
+            outside = base / "outside"
+            outside.mkdir()
+            (outside / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            (skills / "demo").unlink()
+            (skills / "demo").symlink_to(outside, target_is_directory=True)
+            escaped = plugins.conformance_problems(root)
+            self.assertTrue(any("outside the plugin root" in item for item in escaped), escaped)
 
     @GATE
     def test_harness_coverage(self):
@@ -466,7 +547,6 @@ class RepoQualityTests(unittest.TestCase):
             self.assertEqual(absent["value"], 0)
             self.assertEqual(absent["evidence"], ["absent: harnesses/"])
 
-    @GATE
     def test_no_harnesses_directory(self):
         self.assert_check(checks.no_harnesses_directory(ROOT))
 
@@ -523,8 +603,16 @@ class RepoQualityTests(unittest.TestCase):
             ".claude-plugin/plugin.json",
             "skills/skills.json",
             "docs/harnesses.md",
+            "docs/t3code.md",
         ):
             self.assertIn(relative, text)
+        harnesses = text.split("## docs/harnesses.md\n", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("delegate harnesses' placements", harnesses)
+        self.assertIn("| t3code |", harnesses)
+        t3code = text.split("## docs/t3code.md\n", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("T3 Code is an orchestrator", t3code)
+        self.assertIn("delegate", t3code)
+        self.assertNotIn("[truncated docs/t3code.md]", t3code)
         home = str(Path.home())
         if len(home) > 1:
             self.assertNotIn(home, text)

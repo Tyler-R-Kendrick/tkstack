@@ -10,8 +10,9 @@ published schemas are vendored at `evals/repo-quality/schemas/` and checked by
 plugin.json
 mcp.json
 skills/<name>/SKILL.md
-.claude-plugin/          Claude marketplace, outside the portable spec
-.cursor/rules/           Cursor-native rules, outside the portable spec
+.claude-plugin/          Claude marketplace, outside the portable spec (§4.2, §11.3)
+.cursor/rules/           Cursor-native rules, outside the portable spec (§4.2, §11.3)
+.agents/                 Installer links, outside the portable spec (§4.2, §11.3)
 ```
 
 `plugin.json` declares schema
@@ -30,10 +31,14 @@ it stays next to `src/tkstack.py`.
 Each discovered `SKILL.md` uses the Agent Skills frontmatter fields (`name`,
 `description`, `license`, `compatibility`, `metadata`, `allowed-tools`). The
 `name` matches the directory. `hill-climb` and `sdlc` keep
-`disable-model-invocation` in `metadata` because that top-level field is a
-Claude Code extension. The Agent Skills reference validator rejects it, and a
-conformant client would skip the skill. Claude Code does not read the
-metadata key, so those two skills can be auto-invoked there.
+`disable-model-invocation` inside `metadata`. The Agent Skills reference
+validator rejects that key at the top level, and §7.1 says a non-conforming
+skill must be skipped. Agent Plugins v1 has no skill-level extension point
+(§8 is manifest-level), so the portable file cannot keep Claude Code's
+top-level gate. Claude Code's skills reference treats `metadata` as an opaque
+map and does not act on its contents (checked 2026-11-05), so those two
+skills can still be auto-invoked there. Their descriptions say to invoke them
+only for an explicit `/hill-climb` or `/sdlc` request.
 
 `.agents/skills/` (`fal-ai`, `headroom`, `open-design`, `rtk`) stays on the
 Claude marketplace and the installer. Those packages are not immediate
@@ -49,18 +54,21 @@ executable token. No API key is stored in the file.
 | --- | --- | --- |
 | `serena` | `uvx --from git+https://github.com/oraios/serena serena start-mcp-server --project-from-cwd` | [Serena](https://github.com/oraios/serena) uvx quick start |
 | `playwright` | `npx` with `@playwright/mcp@latest` | [Playwright MCP](https://playwright.dev/docs/getting-started-mcp) standard config |
-| `firecrawl` | `npx -y firecrawl-mcp` | [Firecrawl local MCP](https://docs.firecrawl.dev/mcp-server/local) |
+| `firecrawl` | `npx -y firecrawl-mcp@3.33.2` | [Firecrawl local MCP](https://docs.firecrawl.dev/mcp-server/local) |
 | `mobbin` | `https://api.mobbin.com/mcp` (Streamable HTTP, OAuth) | [Mobbin MCP](https://mobbin.com/mcp) |
 | `vercel` | `https://mcp.vercel.com` (Streamable HTTP, OAuth) | [Vercel MCP](https://vercel.com/docs/agent-resources/vercel-mcp) |
 | `graphify` | `graphify-mcp ${PLUGIN_DATA}/graphify-out/graph.json` | [Graphify MCP](https://docs.graphify.com/open-source/mcp-server) |
 
 Agent Plugins expands only `${PLUGIN_ROOT}` and `${PLUGIN_DATA}` in `args`,
 `env` values, and `cwd`. A conformant client leaves `${FIRECRAWL_API_KEY}`
-as literal text and would replace an inherited key with that literal, so
-`mcp.json` does not set `env`. Export `FIRECRAWL_API_KEY` in the environment
-the client gives the stdio process. Firecrawl's cloud tools need it. The
-hosted keyless endpoint `https://mcp.firecrawl.dev/v2/mcp` is a separate
-Firecrawl mode and is not the shipped entry.
+as literal text (§9.2) and would replace an inherited key with that literal,
+so `mcp.json` does not set `env`. Put `FIRECRAWL_API_KEY` in the MCP client's
+environment UI for this server: Cursor's Settings → MCP env fields, Claude
+Code's server env in `/mcp` or `claude mcp`, or Codex's MCP server env block.
+A shell `export` reaches the process only when that client inherits the
+shell. Firecrawl's cloud tools need the key. The hosted keyless endpoint
+`https://mcp.firecrawl.dev/v2/mcp` is a separate Firecrawl mode and is not
+the shipped entry.
 
 Mobbin and Vercel authenticate in the client. Mobbin's server is on Pro,
 Team, and Enterprise plans. Vercel opens an OAuth consent screen. Neither URL
@@ -84,9 +92,16 @@ command needs `uv` and network access the first time it resolves the git URL.
 ## Client files that stay where the host reads them
 
 The spec puts client-specific plugin data under a reverse-domain `extensions`
-key and a top-level directory of that same name. No client this repo targets
-publishes a namespace it loads today. `plugin.json` therefore has no
+key and a top-level directory of that same name (§8). No client this repo
+targets publishes a namespace it loads today. `plugin.json` therefore has no
 `extensions` object.
+
+`.claude-plugin/`, `.cursor/rules/`, and `.agents/` sit outside those
+reverse-domain directories. That is not a conformance violation. §4.2's
+standard layout already shows extra files beside `plugin.json`, `skills/`,
+and `mcp.json`, and there is no closed-package rule that forbids them.
+§11.3 says a portable client ignores component types it does not implement,
+so those directories do not affect Agent Plugins loading.
 
 `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` stay.
 Marketplaces and install UX are outside the portable spec, so the Claude
@@ -96,21 +111,28 @@ schema.
 
 `.cursor/rules/` stays. Rules are outside v1, and Cursor reads
 `.cursor/rules`, not a reverse-domain directory. The installer still links
-the tracked `.mdc` files.
+the tracked `.mdc` files. `.agents/` stays for the installer's steering and
+principles links and for packages that are not immediate children of
+`skills/`.
 
 ## Serena during install
 
-On install, `scripts/install.py` runs, when `uvx` is on `PATH`:
+On install, `scripts/install.py` runs, when `uvx` is on `PATH`, with the
+working directory set to the indexed project (`--scope project` uses the
+install target; home scope uses this checkout):
 
 ```text
 uvx --from git+https://github.com/oraios/serena serena init
-uvx --from git+https://github.com/oraios/serena serena project index
+uvx --from git+https://github.com/oraios/serena serena project index <project>
 ```
 
-`serena init` is Serena's documented language-server setup. `serena project
-index` runs in the install target for `--scope project`, and in this checkout
-for a home install. It does not index the home directory. `--dry-run` prints
-both lines and does not run them. Uninstall prints `skip serena: uninstall`.
-A missing `uv`, a missing `uvx`, or any non-zero exit (including an offline
-fetch) prints `skip serena:` and the link step still finishes. The index can
-write `.serena/` in the indexed directory. That directory is gitignored.
+`serena init` is Serena's documented language-server setup. It also writes
+the user-global config at `~/.serena/serena_config.yml`. Setting the working
+directory keeps project files in the selected directory and does not stop
+that global write. `serena project index` receives `<project>` as its
+`[PROJECT]` path, so it does not use the caller's working directory. It does
+not index the home directory. `--dry-run` prints both lines and does not run
+them. Uninstall prints `skip serena: uninstall`. When `uvx` is not on `PATH`,
+or either command exits non-zero (including an offline fetch), install prints
+`skip serena:` and the link step still finishes. The index can write
+`.serena/` in the indexed directory. That directory is gitignored.

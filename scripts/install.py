@@ -63,15 +63,21 @@ def verify_vendor(root):
                 raise ValueError(f"Executable mode differs from lock: {path}")
 
 
-def skill_aliases(root):
+def _placement_doc(root):
+    """Load skills/skills.json once per call. Missing or non-object files are empty."""
     config = root / PLACEMENT
-    return json.loads(config.read_text()).get("aliases", {}) if config.exists() else {}
+    if not config.is_file():
+        return {}
+    loaded = json.loads(config.read_text())
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def skill_aliases(root):
+    return _placement_doc(root).get("aliases", {})
 
 
 def rewrite_callers(root, source):
-    config = root / PLACEMENT
-    return (json.loads(config.read_text()).get("rewrite_callers", {}).get(source, True)
-            if config.exists() else True)
+    return _placement_doc(root).get("rewrite_callers", {}).get(source, True)
 
 
 def placement(rules, kind, source):
@@ -239,8 +245,7 @@ def sourced(root, kind, harness=None):
 
 def placed(root, kind, harness):
     """Collected items that belong in one harness's native directory."""
-    config = root / PLACEMENT
-    rules = json.loads(config.read_text()).get("placement", {}) if config.exists() else {}
+    rules = _placement_doc(root).get("placement", {})
     return {name: path for name, (source, path) in sourced(root, kind, harness).items()
             if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
 
@@ -340,8 +345,16 @@ def remove_stale(paths, dry_run=False):
     return len(paths)
 
 
+# Cursor rules lived at harnesses/cursor/*.mdc before they moved to .cursor/rules.
+LEGACY_CURSOR_RULES = Path("harnesses/cursor")
+
+
 def alias_migrations(root, target, harnesses, scope="home"):
-    """Recognize only this checkout's former, unaliased upstream skill links."""
+    """Former links this checkout owns: steering, skill aliases, and Cursor rules.
+
+    A destination whose symlink still points at the previous source can be
+    replaced on install and removed on uninstall. A foreign target cannot.
+    """
     migrations = {}
     steering = target / ".agents/steering"
     if harnesses and matches(steering, (root / "steering").resolve()):
@@ -352,6 +365,15 @@ def alias_migrations(root, target, harnesses, scope="home"):
                 for harness in harnesses:
                     for relative in harness_skill_directories(harness, scope):
                         migrations[target / relative / path.parent.name] = path.parent.resolve()
+    if harnesses and "cursor" in harnesses:
+        rules = root / ".cursor" / "rules"
+        if rules.is_dir():
+            for rule in sorted(rules.glob("*.mdc")):
+                if rule.is_symlink():
+                    continue
+                migrations[target / ".cursor" / "rules" / rule.name] = (
+                    root / LEGACY_CURSOR_RULES / rule.name
+                ).resolve()
     return migrations
 
 
@@ -361,15 +383,18 @@ SERENA_FROM = "git+https://github.com/oraios/serena"
 def serena_steps(project):
     """Official uvx launch from oraios/serena, then init and project index.
 
-    `serena init` selects the language-server backend. `serena project index`
-    creates the project config when needed and indexes `project`. Home scope
-    indexes this checkout. Project scope indexes the install target. Neither
-    step indexes the user's home directory.
+    Both commands use `project` as their working directory. `serena init`
+    selects the language-server backend and also writes Serena's user-global
+    config (`~/.serena/serena_config.yml`); the working directory does not
+    move that file. `serena project index` receives `project` as its
+    `[PROJECT]` path so it does not fall back to the caller's directory.
+    Home scope indexes this checkout. Project scope indexes the install
+    target. Neither step indexes the user's home directory.
     """
     launch = ["uvx", "--from", SERENA_FROM, "serena"]
     return (
-        (launch + ["init"], None),
-        (launch + ["project", "index"], project),
+        (launch + ["init"], project),
+        (launch + ["project", "index", str(project)], project),
     )
 
 
@@ -378,11 +403,11 @@ def _run_serena(argv, cwd):
 
 
 def initialize_serena(root, target, scope, dry_run=False, runner=None, which=None):
-    """Index Serena's project. Skip when uv/uvx is missing or a command fails.
+    """Index Serena's project. Skip when uvx is missing or a command fails.
 
-    `--dry-run` prints the commands and does not execute them. A missing uv,
-    a missing uvx, or a non-zero exit (including an offline uvx fetch) prints
-    a skip line and leaves the rest of install in place.
+    `--dry-run` prints the commands and does not execute them. A missing uvx,
+    or a non-zero exit (including an offline uvx fetch), prints a skip line
+    and leaves the rest of install in place. `uv` alone is not enough.
     """
     project = target if scope == "project" else root
     steps = serena_steps(project)
@@ -446,11 +471,18 @@ def repo_hooks(root, dry_run=False, uninstall=False):
         _git_checked(root, "config", "core.hooksPath", ".githooks")
 
 
+def _owned_previous(destination, migrations):
+    """The former source when this checkout's link still points at it."""
+    previous = (migrations or {}).get(destination)
+    if previous is not None and matches(destination, previous):
+        return previous
+    return None
+
+
 def preflight(plan, migrations=None):
     """Check every destination before creating links or generated source views."""
     for source, destination in plan:
-        previous = (migrations or {}).get(destination)
-        migrating = previous is not None and matches(destination, previous)
+        migrating = _owned_previous(destination, migrations) is not None
         if (destination.exists() or destination.is_symlink()) and not matches(destination, source) and not migrating:
             raise ValueError(f"Refusing to replace existing path: {destination}")
         for parent in destination.parents:
@@ -463,17 +495,16 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
         preflight(plan, migrations)
     changes = 0
     for source, destination in plan:
+        previous = _owned_previous(destination, migrations)
         owned = matches(destination, source)
         if uninstall:
-            if not owned:
+            if not owned and previous is None:
                 continue
             action = "remove"
         elif owned:
             continue
         else:
-            previous = (migrations or {}).get(destination)
-            migrating = previous is not None and matches(destination, previous)
-            action = "migrate" if migrating else "link"
+            action = "migrate" if previous is not None else "link"
         print(f"{'Would ' if dry_run else ''}{action}: {destination}")
         if not dry_run:
             if uninstall:
@@ -482,7 +513,7 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if action == "migrate":
                     temporary = destination.with_name("." + destination.name + ".tkstack-next")
-                    temporary.symlink_to(source, target_is_directory=True)
+                    temporary.symlink_to(source, target_is_directory=source.is_dir())
                     try:
                         if not matches(destination, previous):
                             raise ValueError(f"Link changed during installation: {destination}")

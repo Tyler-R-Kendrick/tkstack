@@ -25,7 +25,7 @@ From a checkout of this repository, `./install.sh` installs that checkout instea
 of downloading another copy. The command links skills, agents, and rules for
 Codex, Claude Code, and Cursor, and sets this checkout's `core.hooksPath` to
 `.githooks`. It also runs Serena's `init` and `project index` when `uvx` is
-on `PATH`, and skips that step when `uv` is missing or the command fails.
+on `PATH`, and skips that step when `uvx` is not on `PATH` or the command fails.
 A conflicting foreign path stops setup. Keep the checkout, because
 the links point at it. `SCOPE.md` is the supported baseline. `sources.lock.json`
 pins every upstream snapshot under `vendor/`. Root `plugin.json` and `mcp.json`

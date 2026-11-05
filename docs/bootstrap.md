@@ -83,27 +83,29 @@ finishes. Dry-run prints the config change and does not run it.
 ## Serena
 
 After the links, install runs Serena's documented uvx setup when `uvx` is on
-`PATH`:
+`PATH`. Both commands use the indexed project as their working directory
+(the install target for `--scope project`, this checkout for home scope):
 
 ```text
 uvx --from git+https://github.com/oraios/serena serena init
-uvx --from git+https://github.com/oraios/serena serena project index
+uvx --from git+https://github.com/oraios/serena serena project index <project>
 ```
 
-`serena init` sets up the language-server backend. `serena project index`
-runs in the install target when the scope is `project`, and in this checkout
-when the scope is home. It does not walk the home directory. The index may
-create a gitignored `.serena/` directory in that project. `--dry-run` prints
-the two lines and does not execute them. Uninstall prints
-`skip serena: uninstall`. If `uv` or `uvx` is absent, or either command exits
-non-zero, install prints `skip serena:` and keeps the links it already made.
-That includes an offline `uvx` fetch. No API key is written.
+`serena init` sets up the language-server backend and also writes the
+user-global config at `~/.serena/serena_config.yml`. The working directory
+does not move that file. `serena project index` takes `<project>` as its
+`[PROJECT]` path and does not walk the home directory. The index may create
+a gitignored `.serena/` directory in that project. `--dry-run` prints the
+two lines and does not execute them. Uninstall prints `skip serena:
+uninstall`. When `uvx` is not on `PATH`, or either command exits non-zero,
+install prints `skip serena:` and keeps the links it already made. That
+includes an offline `uvx` fetch. No API key is written.
 
 Required environment for the shipped MCP servers, not for this index step:
 
 | Variable | Server | When it is required |
 | --- | --- | --- |
-| `FIRECRAWL_API_KEY` | `firecrawl` (`npx -y firecrawl-mcp`) | Cloud Firecrawl tools. Export it for the client process. `mcp.json` does not reference it, because Agent Plugins would pass `${FIRECRAWL_API_KEY}` through as literal text. |
+| `FIRECRAWL_API_KEY` | `firecrawl` (`npx -y firecrawl-mcp@3.33.2`) | Cloud Firecrawl tools. Set it in the MCP client's env UI for this server (Cursor Settings → MCP, Claude Code `/mcp` or `claude mcp`, or Codex's MCP server env). `mcp.json` does not reference it, because Agent Plugins would pass `${FIRECRAWL_API_KEY}` through as literal text. |
 | none | `serena`, `playwright`, `graphify` | Local commands. Playwright needs Node. Graphify needs `uv tool install "graphifyy[mcp]"` and a graph at `${PLUGIN_DATA}/graphify-out/graph.json`. |
 | none | `mobbin`, `vercel` | OAuth in the MCP client. Mobbin requires a paid Mobbin plan. |
 

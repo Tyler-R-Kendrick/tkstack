@@ -151,7 +151,8 @@ local runtimes; those additional checks are covered by the retained local run.
 
 Frozen source modes use Git-portable executable status, so secure checkout
 umasks do not invalidate identical code while changed executable status still
-does. Authored text uses LF attributes; pinned vendor bytes are excluded from
+does. Authored text uses LF attributes, including `.cursor/**` and `src/**`;
+pinned vendor bytes are excluded from
 normalization. A real commit/clone regression verifies cached artifact portability.
 Existing source/case/code drift still requires explicit recompilation.
 Learn, Codify, and Instructify workflow locks embed their reference docs.

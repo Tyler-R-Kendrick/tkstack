@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -12,13 +12,14 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
+          "oid": "60ed87bb655bbbaa75fb8e3d4dec55f2ccbf4a92"
         },
         "docs/skillify.md": {
           "mode": "100644",
           "oid": "0f8974bba2492c45134c40ccb2b278322c9f6db5"
         }
       },
+      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -544,37 +545,37 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
+          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
         },
         "docs/harnesses.md": {
           "mode": "100644",
-          "oid": "5a8ac459e7a5ecda50a0ddcff997b14cd088e19e"
+          "oid": "7069934406d258657d6e6e6fa79a31b3f27a3d98"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
+          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
+          "oid": "60ed87bb655bbbaa75fb8e3d4dec55f2ccbf4a92"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ec76484fd065e955026432ec507b91a77a6640e1"
+          "oid": "98e29b248eb16eb03ecbd40a0ec302fc73886fee"
         },
         "docs/t3code.md": {
           "mode": "100644",
-          "oid": "faa85c3afaf3df724f7c8fda7f4341d8cc73296c"
+          "oid": "eccf8e6df0484a974ae797454de10d4a09e593f9"
         }
       },
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "feb9c717b2c7a87bf30a8668ba962ca8f46df157"
+          "oid": "6fbe23e8df54b8c4c9b88bcfbb9b43523f2a7a40"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -582,7 +583,7 @@
         },
         ".cursor/rules/graphify.mdc": {
           "mode": "100644",
-          "oid": "832be8d5dec976d0c8f1f1b44596a4bef47f8117"
+          "oid": "709809ef7db699ef3a11fdd422bebe262aa6d12b"
         },
         ".cursor/rules/tkstack-steering.mdc": {
           "mode": "100644",
@@ -598,7 +599,7 @@
         },
         "mcp.json": {
           "mode": "100644",
-          "oid": "13d60ff41da8470af88103bc453263db3797e7bc"
+          "oid": "20f68e8499154cffec88b63646a4e06cb1a685d9"
         },
         "plugin.json": {
           "mode": "100644",
@@ -614,13 +615,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
+      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc, including the marketplace descriptions."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -635,7 +636,7 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "4b0e4df058a4c658a4171ef8313f60f569d633ab"
+          "oid": "7e2d876a5754e64bc7208a5d74c3f4bd2de75d40"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
@@ -687,7 +688,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "1476373919a961e498c4794fb2bc3381bbe44453"
+          "oid": "22c8b18a080f0491331a03438f8d15285ae96e17"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -711,7 +712,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "9220db56e1ae1d17c76d5cf3bb9dacbd34dfc818"
+          "oid": "8a59a5b2dd6959ba510708219204b5a6938bdb80"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -758,24 +759,25 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Initialize Serena from install.py. docs/bootstrap.md and docs/agent-plugins.md already describe init, project index, dry-run, and the skip path."
+      "no_doc_impact": false,
+      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
+          "oid": "60ed87bb655bbbaa75fb8e3d4dec55f2ccbf4a92"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "5a465d857d99c69f6b0a5b9bd9b8a504a2b217db"
         }
       },
+      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc.",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -793,23 +795,23 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
+          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "f4911d6160fb66c1f660c3d85f9188b66c35a4e2"
+          "oid": "538208c64e23bba3adf363ac2b03c8f95cfcb2f4"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
+          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
+          "oid": "60ed87bb655bbbaa75fb8e3d4dec55f2ccbf4a92"
         }
       },
       "inputs": {
@@ -819,7 +821,7 @@
         },
         ".gitattributes": {
           "mode": "100644",
-          "oid": "1e167a67322e76aa29e6c32005789bdfa7e1d6db"
+          "oid": "60b398b0ef43fb2b4f7dfb7d0795baf908571c58"
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
@@ -835,7 +837,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "569114e61c9e84863371bf3d8d8a95273d0a331e"
+          "oid": "c923bf54c70dcc4d8661b78c7a72c11584e005ce"
         },
         "src/README.md": {
           "mode": "100644",
@@ -858,18 +860,18 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Initialize Serena from install.py. docs/bootstrap.md and docs/agent-plugins.md already describe init, project index, dry-run, and the skip path."
+      "no_doc_impact": false,
+      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+          "oid": "5b253c347cfda5adf3bf843b17a5be0a762cdc22"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
+          "oid": "a2df71d828e6f2dc775dd1b7e808841f3c85687c"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -889,7 +891,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
+          "oid": "cfa9734f723914ff0efd7da7afe4f91aee97970f"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -901,7 +903,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
+          "oid": "60ed87bb655bbbaa75fb8e3d4dec55f2ccbf4a92"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -925,7 +927,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ec76484fd065e955026432ec507b91a77a6640e1"
+          "oid": "98e29b248eb16eb03ecbd40a0ec302fc73886fee"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -940,6 +942,7 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
+      "docs_refresh_reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc, including the marketplace descriptions.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -995,11 +998,11 @@
         },
         "evals/repo-quality/agent_plugins.py": {
           "mode": "100644",
-          "oid": "e4765b7685f7ad7314b012897754f407ddfa0914"
+          "oid": "106d1acd55d3623bb7dc5ba00235819d3b701903"
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "ac671c0a4b26b08ffbf27a66d2abf3c34043eb5a"
+          "oid": "3939e0f10f9c2ad6148b5737939fc14c0d604fe3"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -1008,6 +1011,10 @@
         "evals/repo-quality/judge.py": {
           "mode": "100644",
           "oid": "8898597a3304574ecbca7930576679bfd5f91222"
+        },
+        "evals/repo-quality/repo_mcp_policy.py": {
+          "mode": "100644",
+          "oid": "3b8cb95f58e6d66d551df2a912efe7325cc66d62"
         },
         "evals/repo-quality/results/archive/README.md": {
           "mode": "100644",
@@ -1031,7 +1038,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "9d2e09943940cba27dc41511a23283cbb98e6263"
+          "oid": "273d43bd3662ed219131da02a31226517488dd6f"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -1159,7 +1166,7 @@
         },
         "skills/hill-climb/SKILL.md": {
           "mode": "100644",
-          "oid": "26f4f5979dae7868d3a68bc6383c649f9cf742fa"
+          "oid": "cbecb691cd389dd6a64e088e98b28ce40970a1e5"
         },
         "skills/hill-climb/commands/help.md": {
           "mode": "100644",
@@ -1243,7 +1250,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ce0f711a411cd173ccf84eea6e558d0450a5c278"
+          "oid": "503dfe455e62e884426b3771dc171a508b642a5b"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2179,7 +2186,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "2e2d6512bbbb7652adc788e12006ad1b63f300b3"
+          "oid": "180644b3d20b4bfbb056d9774983ed52a1002b74"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2295,7 +2302,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "5cd1bc12a6efee6fec73f80cfeed47237040b30b"
+          "oid": "a3167d3617352cca7b55fd516be87bee178d46d8"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2351,7 +2358,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "5c7639c64407bb9ff297b8d26242a26c6b4f3efa"
+          "oid": "1741019feb5a7681e86a95956b7a531b7993dbbe"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2662,8 +2669,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Add the Agent Plugins schema check and its tests. docs/agent-plugins.md already names the check and the vendored schemas."
+      "no_doc_impact": false,
+      "reason": "Reviewed installer migration for former Cursor rule links, Serena project cwd and explicit index path, the split between Agent Plugins spec checks and repo MCP policy, the Firecrawl pin, t3code's orchestrator row in the harness snapshot, and explicit-trigger wording in hill-climb and sdlc."
     }
   },
   "object_format": "sha1",

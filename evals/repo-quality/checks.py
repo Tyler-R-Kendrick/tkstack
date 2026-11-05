@@ -878,36 +878,44 @@ def install_flags(root):
 
 
 def agent_plugins_conformance(root):
-    """Root plugin.json, mcp.json, and skills/*/SKILL.md match Agent Plugins 1.0."""
+    """Spec conformance, plus this checkout's separate shipped-MCP policy."""
     directory = Path(__file__).resolve().parent
     if str(directory) not in sys.path:
         sys.path.insert(0, str(directory))
     import agent_plugins
+    import repo_mcp_policy
 
-    problems = agent_plugins.conformance_problems(root)
+    spec = agent_plugins.conformance_problems(root)
+    policy = repo_mcp_policy.policy_problems(root)
+    problems = list(spec)
+    problems.extend(f"repo MCP policy: {item}" for item in policy)
     evidence = [
         "schemas: evals/repo-quality/schemas/plugin.schema.json",
         "schemas: evals/repo-quality/schemas/mcp.schema.json",
         "discovery: immediate skills/*/SKILL.md only",
+        "repo MCP policy: evals/repo-quality/repo_mcp_policy.py",
     ]
     if problems:
         evidence.extend(problems[:30])
     else:
         evidence.append(
-            "plugin.json, mcp.json, and discovered skills match the 1.0.0 schemas and spec rules"
+            "plugin.json and discovered skills match the 1.0.0 schemas and spec rules"
         )
+        evidence.append("mcp.json is present and matches the repo server policy")
     explanation = (
-        "A conforming package has root plugin.json and, when MCP servers ship, mcp.json. "
-        "Both documents match the vendored Agent Plugins 1.0.0 schemas. "
-        "stdio commands are single tokens, remote URLs are absolute https without secrets, "
-        "and only ${PLUGIN_ROOT} and ${PLUGIN_DATA} are placeholders. "
-        "Each immediate skills/*/SKILL.md follows the Agent Skills frontmatter rules. "
-        + ("The checkout conforms." if not problems else " ".join(problems[:8]) + ".")
+        "Spec conformance requires root plugin.json and checks mcp.json only when that file exists. "
+        "An absent mcp.json is not a spec error (Agent Plugins §6.2). "
+        "stdio commands are single tokens and remote URLs are absolute http(s) URLs. "
+        "Unrecognized placeholders stay literal (§9.2). "
+        "The spec check reports no known credential patterns in env/headers; "
+        "it does not prove a document embeds no credential. "
+        "A separate repo MCP policy requires this checkout to ship mcp.json and the pinned servers. "
+        + ("The checkout matches both." if not problems else " ".join(problems[:8]) + ".")
     )
     return result(
         "agent_plugins_conformance", "marketplace_install", not problems,
         "ok" if not problems else "; ".join(problems),
-        "Agent Plugins 1.0.0 plugin.json, mcp.json, and skills/*/SKILL.md",
+        "Agent Plugins 1.0.0 plugin.json and skills, plus this repo's mcp.json policy",
         explanation, evidence,
     )
 

@@ -120,8 +120,8 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
 - Use root `install.sh` to link this checkout into a home or project. It does
   not install private language runtimes, edit shell startup, register native
   hooks, or write a launcher. It does run Serena's `init` and `project index`
-  when `uvx` is on `PATH`, and skips that step when `uv` is missing, `uvx` is
-  missing, or the command fails. `--dry-run` prints the link plan and those
+  when `uvx` is on `PATH`, and skips that step when `uvx` is not on `PATH`
+  or the command fails. `--dry-run` prints the link plan and those
   Serena commands without running them. See `docs/bootstrap.md` and
   `docs/agent-plugins.md`. Keep manual application/account requirements explicit.
 - Invoke compiled skills/workflows with `python3 src/tkstack.py`. Reuse Codify's

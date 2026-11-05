@@ -20,7 +20,7 @@
     "firecrawl": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"]
+      "args": ["-y", "firecrawl-mcp@3.33.2"]
     },
     "mobbin": {
       "type": "streamable-http",

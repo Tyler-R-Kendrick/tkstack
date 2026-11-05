@@ -308,6 +308,47 @@ class InstallTests(unittest.TestCase):
             self.assertFalse(shared.is_symlink())
             self.assertTrue((ROOT / "skills/tkstack-principles/SKILL.md").is_file())
 
+    def test_reinstall_migrates_former_cursor_rule_links(self):
+        names = ("graphify.mdc", "tkstack-steering.mdc")
+        for name in names:
+            destination = self.target / ".cursor" / "rules" / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.symlink_to(ROOT / "harnesses" / "cursor" / name)
+        env = _env_without_uv()
+        command = [
+            sys.executable, str(ROOT / "scripts/install.py"),
+            "--target", str(self.target), "--harness", "cursor",
+        ]
+        preview = subprocess.run(command + ["--dry-run"], capture_output=True, text=True, env=env)
+        self.assertEqual(preview.returncode, 0, preview.stdout + preview.stderr)
+        for name in names:
+            self.assertIn(f"Would migrate: {self.target / '.cursor' / 'rules' / name}", preview.stdout)
+            self.assertEqual(
+                os.readlink(self.target / ".cursor" / "rules" / name),
+                str(ROOT / "harnesses" / "cursor" / name),
+            )
+        installed = subprocess.run(command, capture_output=True, text=True, env=env)
+        self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        for name in names:
+            link = self.target / ".cursor" / "rules" / name
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(link.resolve(), (ROOT / ".cursor" / "rules" / name).resolve())
+
+    def test_uninstall_removes_former_cursor_rule_links(self):
+        for name in ("graphify.mdc", "tkstack-steering.mdc"):
+            destination = self.target / ".cursor" / "rules" / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.symlink_to(ROOT / "harnesses" / "cursor" / name)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, check=False, env=_env_without_uv(),
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("skip serena: uninstall", completed.stdout)
+        for name in ("graphify.mdc", "tkstack-steering.mdc"):
+            link = self.target / ".cursor" / "rules" / name
+            self.assertFalse(link.exists() or link.is_symlink())
+
     def test_owned_cursor_rules_link_elsewhere_and_stay_files_in_the_checkout(self):
         rules = sorted((ROOT / ".cursor/rules").glob("*.mdc"))
         owned = [path for path in rules if not path.is_symlink()]
@@ -786,9 +827,12 @@ class SerenaInstallTests(unittest.TestCase):
             )
         text = stdout.getvalue()
         self.assertEqual(calls, [])
-        self.assertIn("Would run: uvx --from git+https://github.com/oraios/serena serena init", text)
         self.assertIn(
-            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena project index",
+            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena init",
+            text,
+        )
+        self.assertIn(
+            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena project index {project}",
             text,
         )
 
@@ -802,8 +846,8 @@ class SerenaInstallTests(unittest.TestCase):
             )
         self.assertEqual(calls[0][0][:4], ["uvx", "--from", "git+https://github.com/oraios/serena", "serena"])
         self.assertEqual(calls[0][0][4:], ["init"])
-        self.assertIsNone(calls[0][1])
-        self.assertEqual(calls[1][0][4:], ["project", "index"])
+        self.assertEqual(calls[0][1], str(ROOT))
+        self.assertEqual(calls[1][0][4:], ["project", "index", str(ROOT)])
         self.assertEqual(calls[1][1], str(ROOT))
 
     def test_missing_uv_skips_without_a_command(self):
@@ -852,6 +896,16 @@ class SerenaInstallTests(unittest.TestCase):
                 ROOT, ROOT, "project", runner=runner, which=lambda name: "/usr/bin/" + name,
             )
         self.assertIn("skip serena: offline", stdout.getvalue())
+
+    def test_uninstall_prints_skip_serena(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", temporary.name],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("skip serena: uninstall", completed.stdout)
 
 
 if __name__ == "__main__":

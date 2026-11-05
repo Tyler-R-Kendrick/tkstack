@@ -532,6 +532,7 @@ def snapshot():
         "Each block is that file's name and description.\n" + _skill_frontmatter(paths),
         "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md", tracked, DOC_CAP),
         "## docs/harnesses.md\n" + _read("docs/harnesses.md", tracked, HARNESS_README_CAP),
+        "## docs/t3code.md\n" + _read("docs/t3code.md", tracked, DOC_CAP),
     ])
     extras = [
         "## AGENTS.md\n" + _read_ends("AGENTS.md", tracked, AGENTS_CAP, AGENTS_HEAD, AGENTS_TAIL),

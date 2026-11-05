@@ -1,5 +1,17 @@
 # Harness preferences
 
+| Harness | Install path |
+| --- | --- |
+| Codex | `.agents/skills` |
+| Claude Code | `.claude/skills` |
+| Cursor | `.cursor/skills`, plus `.cursor/rules` |
+| Copilot | `~/.copilot/skills` at home, `.github/skills` in a project |
+| Grok | `.grok/skills` |
+| Kimi | `.kimi/skills` |
+| Muse | `~/.config/muse/skills` at home, `.agents/skills` in a project |
+| OpenCode | `.config/opencode/skills` at home, `.opencode/skills` in a project |
+| t3code | No skills directory. T3 Code is an orchestrator, so its skills come from the delegate harnesses' placements (`delegates.t3code`: Claude, Codex, Cursor, Copilot, and Grok). |
+
 `skills/skills.json` maps source-local skill names to installed aliases. Matt Pocock's
 `tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. Emil Kowalski's
 `prototype` is installed as `emil-prototype`, preserving Matt's `prototype`.

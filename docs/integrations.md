@@ -41,7 +41,8 @@ Install does not copy that file into `.cursor/mcp.json`, `.mcp.json`, or
 itself. OAuth for Mobbin and Vercel stays in the client.
 
 `python3 scripts/install.py` links skills, agents, Cursor rules, and shared
-steering, then runs Serena's `init` and `project index` when `uvx` works.
+steering, then runs Serena's `init` and `project index` when `uvx` is on
+`PATH`. It skips that step when `uvx` is not on `PATH`.
 Vendored hook files are linked only when they are part of a skill or agent
 tree. Install does not write a separate hook or MCP registration pass.
 
