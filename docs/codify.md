@@ -23,6 +23,16 @@ Private staging and publication locks stay inside `.tkstack/` and are ignored.
 `check` and `compile --dry-run` remain read-only. The runner rejects stale inputs;
 it never silently compiles, forwards the Markdown to a model, or substitutes a
 provider. The complete source tree remains necessary for freshness checks.
+`check` rebuilds the snapshot inventory from the entrypoint directory,
+`commands/` when present, the whole package when `scripts/contract.json`
+exists, and each `--include` path recorded in the lock. A file that belongs
+in that inventory but is missing from the lock is stale. Nested directories
+with their own `SKILL.md` stay on their own locks; `check` omits them before
+the 512-file and 16 MiB snapshot limits. A lock with no `includes` field was
+compiled before those paths were recorded. For that lock, `check` rebuilds
+the entrypoint directory, `commands/`, and the contract package root, and
+still compares every file the lock names. Recompile explicitly after adding
+a source file.
 
 Compilation requires positive and rejection cases; deterministic successes run
 twice. Verification uses bounded parallel workers with isolated working copies.

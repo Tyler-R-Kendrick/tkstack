@@ -2,8 +2,9 @@
 
 Personal agent dotfiles: portable skills, custom agents, harness settings, native
 hooks, and compiled workflow tools. Pinned upstream packages include Pstack by
-poteto, Theo's Tstack, Matt Pocock's skills, Impeccable, Caveman, Lever, Graphify,
-OpenWiki, and the design/media integrations listed in the [inventory](docs/skills.md).
+poteto, Theo's Tstack, Matt Pocock's skills, Emil Kowalski's design-engineering
+skills, Uncle Bob's ub-mode, Impeccable, Caveman, Lever, Graphify, OpenWiki, and
+the design/media integrations listed in the [inventory](docs/skills.md).
 
 ## Install
 
@@ -86,7 +87,10 @@ setup needs dependency network access; cached startup downloads nothing.
 
 Use `/skill-name` in Claude Code/Cursor, or `$skill-name` and the skill picker in
 Codex. The [skill inventory](docs/skills.md) and [personal standards](docs/standards.md)
-explain routing. Pstack owns `tdd`; Matt's version is `matt-tdd`.
+explain routing. Pstack owns `tdd`; Matt's version is `matt-tdd`. Emil Kowalski's
+UI prototype is `emil-prototype`; Matt's engineering `prototype` keeps that name.
+The [skill routing guide](skills/sdlc/references/skill-routing.md) maps every
+installed skill to an SDLC phase.
 
 [SDLC](docs/sdlc.md) coordinates durable task graphs in ignored local SQLite,
 with explicit requirement/ADR revisions when development findings change the plan.
@@ -166,6 +170,8 @@ For repository development, apply its project configuration:
 ```sh
 ./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline
 python3 scripts/check_docs.py check
+python3 scripts/routing_inventory.py check
+python3 scripts/tool.py command-schema -B scripts/check_skills.py
 .tkstack/runtime/command-schema/bin/python -m unittest discover -s tests -v
 python3 scripts/install.py --target .
 python3 scripts/doctor.py --target .

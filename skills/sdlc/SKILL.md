@@ -45,6 +45,7 @@ judgment, evidence, and authorized delivery described below.
 | Test or verify behavior | [Behavioral verification](references/behavioral-verification.md) |
 | Review only | [Review findings](references/review-findings.md) |
 | Deliver, modernize, babysit, or hand off | [Delivery and handoff](references/delivery-and-handoff.md) |
+| Choose which installed skill fits the work | [Skill routing](references/skill-routing.md) |
 
 | Deterministic subcommand | Tool/flag definition |
 | --- | --- |

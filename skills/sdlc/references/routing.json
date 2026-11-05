@@ -1,0 +1,932 @@
+{
+  "version": 1,
+  "phases": [
+    "discovery/requirements",
+    "design & UI polish",
+    "architecture",
+    "implementation",
+    "TDD/clean-code discipline",
+    "review",
+    "debugging",
+    "docs",
+    "release/ops",
+    "learning"
+  ],
+  "stacks": {
+    "developed": {
+      "title": "tkstack skills under development",
+      "best_for": "The owned lifecycle and the portable branches distilled from the pinned catalogs",
+      "summary": "Eight skills in skills/ plus Learn's seven subskills. sdlc coordinates requirements through delivery. investigate, write, document, unslop, hill-climb, learn, and tkstack-principles own the portable outcomes. The ___ify skills ship inside learn and run as /learn <name>."
+    },
+    "adopted": {
+      "title": "Third-party-derived packages",
+      "best_for": "Media, interface craft, context compression, and shell-output filtering",
+      "summary": "fal-ai, headroom, open-design, and rtk live in .agents/skills and keep the shared typed contract. They wrap outside tools. The matching vendor snapshots (headroom, open-design, rtk) stay pinned beside them and are not a second copy of the skill."
+    },
+    "pstack": {
+      "title": "Pstack",
+      "best_for": "Deep-first implementation, principles, and explicit TDD",
+      "summary": "poteto's deep-first workflows and engineering principles. poteto-mode is the preferred engineering entry. pstack owns the installed name tdd. Its prose skill is pstack-unslop so the personal unslop skill keeps the short name. Cursor-only placement. The principles are the discipline layer underneath the workflows."
+    },
+    "cursor-team-kit": {
+      "title": "Cursor Team Kit",
+      "best_for": "CI, PR mechanics, UI/CLI harnesses, and code cleanup",
+      "summary": "Companion package Pstack calls for deslop, control-cli, and control-ui, plus PR, CI, smoke-test, and strict maintainability skills. Cursor-only, same pin as Pstack."
+    },
+    "tstack": {
+      "title": "Tstack",
+      "best_for": "Pull-request lifecycle",
+      "summary": "Theo's PR workflows: file, babysit, comment, modernize, and take over. full-stop reaches the human merge gate. full-send merges only when explicitly requested. council and sol-loop need the models they name."
+    },
+    "matt-pocock": {
+      "title": "Matt Pocock",
+      "best_for": "Specs, tickets, domain design, and implementation handoffs",
+      "summary": "Engineering, productivity, misc, and beta skills for grilling, specs, tickets, domain modeling, implementation, and review. ask-matt routes inside this set. Matt's TDD skill is installed as matt-tdd. prototype here is a throwaway that answers one design question."
+    },
+    "emil-kowalski": {
+      "title": "Emil Kowalski",
+      "best_for": "Design engineering, UI polish, and animation",
+      "summary": "Interface taste and motion from Emil Kowalski's design-engineering practice: whether to animate, how a group moves, performance, native-feeling web, Swift, and UI library choice. emil-design-eng is the default. The UI variant picker is emil-prototype so Matt's prototype keeps its name. Shared .agents/skills placement. MIT."
+    },
+    "ub-mode": {
+      "title": "ub-mode",
+      "best_for": "Clean-code and TDD discipline",
+      "summary": "Robert C. Martin's reduced skill: make it work, make it right, then practice, with a failing test first. Companion crapper, dryer, and mutator repos are not vendored. It does not replace Pstack's tdd. Upstream Practice says to commit often and push to the main line; tkstack commits only when asked and uses stacked PRs instead. Shared .agents/skills. MIT."
+    },
+    "impeccable": {
+      "title": "Impeccable",
+      "best_for": "Frontend polish",
+      "summary": "One interface-craft skill with a native build for Codex, Claude Code, and Cursor. Use it to design, critique, or finish a UI surface. The engine binary is a separate runtime from the pinned skill files."
+    },
+    "ponytail": {
+      "title": "Ponytail",
+      "best_for": "The smallest change that still solves the task",
+      "summary": "Lazy-senior mode: subtract before adding, keep the diff reviewable, and audit a repo or a change for risk, debt, and lines that do not earn their place."
+    },
+    "higgsfield": {
+      "title": "Higgsfield",
+      "best_for": "Generated images, video, brand, and thumbnails",
+      "summary": "Nine media skills driven through the Higgsfield CLI: brand kits, product photos, faceless video, thumbnails, websites, and identity-faithful generation. Account authentication stays a host requirement. fal-ai does not substitute for an explicit Higgsfield request."
+    },
+    "wikiskill": {
+      "title": "WikiSkill",
+      "best_for": "Evidence, wiki patterns, and gated skill evolution",
+      "summary": "An independent implementation of the WikiSkill loop: raw traces, a maintainer wiki, and gated skill proposals, plus a few narrow debugging patterns (binary search misses, literal spec execution, launch-failure traces). It does not replace learn's steering store."
+    },
+    "rtk": {
+      "title": "Rust Token Killer",
+      "best_for": "Shorter shell output",
+      "summary": "Pinned RTK source, hooks, and license. The user skill is the adopted rtk package, not a second skill inside this snapshot. paths.skills is null so the vendor tree is not installed as skills."
+    },
+    "headroom": {
+      "title": "Headroom",
+      "best_for": "Reversible context compression",
+      "summary": "Pinned Headroom source and license. The user skill is the adopted headroom package. The local proxy is an explicit runtime, separate from these files."
+    },
+    "stitch-design-md": {
+      "title": "Google Stitch design-md",
+      "best_for": "Semantic design systems",
+      "summary": "The design-md skill from google-labs-code/stitch-skills. It writes DESIGN.md from a Stitch project. Stitch access and STITCH_API_KEY remain host requirements. Only this skill is vendored from that repository."
+    },
+    "open-design": {
+      "title": "OpenDesign",
+      "best_for": "Local design-tool integration",
+      "summary": "Pinned plugin manifest and license. The user skill is the adopted open-design package. The vendor snapshot does not itself install a skill. The official app and OPEN_DESIGN_CLI stay host requirements."
+    },
+    "skillopt": {
+      "title": "SkillOpt Sleep",
+      "best_for": "Offline skill consolidation",
+      "summary": "Microsoft's SkillOpt sleep package, pinned for tkstack's evolution driver. skillopt-sleep is in the snapshot and is not placed into harness skill directories. learn remains the user-facing improvement skill."
+    },
+    "lever": {
+      "title": "GitHub Lever",
+      "best_for": "Feedback loops, experiments, and delivery coordination",
+      "summary": "Sixteen Copilot-oriented skills. /lever is the menu; the other skills are verbs with upstream user-invocable metadata preserved. Native plugin sessions, models, and automations need the Copilot host. See docs/lever.md."
+    },
+    "openwiki": {
+      "title": "OpenWiki",
+      "best_for": "Repository wiki retrieval and updates",
+      "summary": "LangChain's official skill for searching, generating, and updating a repository wiki through its resumable MCP lifecycle. document remains the portable documentation skill when that lifecycle is not selected."
+    },
+    "caveman": {
+      "title": "Caveman",
+      "best_for": "Terse agent output and token-cheap exploration",
+      "summary": "Official Caveman skills and Cavecrew delegation. The voice modes (caveman, megacave, ultracave) change how work is said, not which engineering workflow runs. Explore, review, commit, and learn skills cover the narrower jobs. Native hooks are documented in docs/caveman.md."
+    },
+    "graphify": {
+      "title": "Graphify",
+      "best_for": "Architecture questions against an extracted code graph",
+      "summary": "Official Graphify skill, rendered per harness from the pinned templates. Use it to query structure, communities, and paths before guessing how a codebase fits together. Indexing is a separate explicit runtime step."
+    }
+  },
+  "skills": {
+    "animate": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to implement one web animation, from whether it should move through how it exits. choreograph coordinates a group; review-animations only critiques."
+    },
+    "animate-expo": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for React Native and Expo motion, gestures, and haptics. animate is the web path; mobile-native is phone-browser CSS, not Reanimated."
+    },
+    "animation-performance": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this when frames drop or motion must stay on the compositor. improve-animations plans a broader audit; this is the frame budget."
+    },
+    "animation-vocabulary": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this only to name an effect the user can describe but not term. animate builds it; this does not design or implement the motion."
+    },
+    "apple-design": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for interruptible, gesture-driven, Apple-like web materials. emil-design-eng is the general polish default; mobile-native is the installed-site feel."
+    },
+    "architect": {
+      "phase": "architecture",
+      "strengths": "Choose this to lock types and module shape before code. codebase-design is Matt's deep-module vocabulary; graphify answers from an extracted graph."
+    },
+    "arena": {
+      "phase": "review",
+      "strengths": "Choose this to spawn parallel attempts and graft the strongest parts into one base. council and cross-model-review judge one artifact; they do not merge attempts."
+    },
+    "ask-matt": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to pick among Matt's grilling, spec, ticket, and implementation skills. The SDLC routing guide is the cross-stack index; this stays inside Matt's set."
+    },
+    "ask-sonner": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this when Sonner is already the toast library and the work is wiring or a toast that misbehaves. pick-ui-library is the earlier choice of which library."
+    },
+    "automate-it": {
+      "phase": "implementation",
+      "strengths": "Choose this to turn a repeated hand task into a paused Copilot automation. hookify is a local tool-event gate; this needs the Copilot host and an explicit ask."
+    },
+    "automate-me": {
+      "phase": "learning",
+      "strengths": "Choose this to turn how the user works into a personal -mode skill. workflow-from-chats mines Cursor chats; instructify writes repository instruction files."
+    },
+    "autonomous-delivery": {
+      "phase": "release/ops",
+      "strengths": "Choose this for multi-lane delivery that lands through one release train, and only on an explicit deliver request. sdlc is the BDD task graph; this is Lever's overnight coordinator."
+    },
+    "autonomy-dial": {
+      "phase": "implementation",
+      "strengths": "Choose this to decide how far an agent may go, from propose to release, using the repo's real GitHub rules. full-send is an explicit merge phrase; other Lever skills call this dial."
+    },
+    "babysit-pr": {
+      "phase": "release/ops",
+      "strengths": "Choose this to stay with one pull request through review and CI. pr-shepherd is Lever's event-driven lander and can merge; this watches."
+    },
+    "break-ui": {
+      "phase": "review",
+      "strengths": "Choose this to feed worst-case data to a component and report what broke. control-ui drives a live UI; review-animations judges motion craft."
+    },
+    "brief": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to turn a short intent into an unattended brief with a done-when and a stop. ask-matt routes to a skill; this writes the brief those skills can run."
+    },
+    "cavecrew": {
+      "phase": "implementation",
+      "strengths": "Choose this to delegate locate, a one-or-two-file edit, or a diff review to a compressed subagent. caveman is the voice; caveman-explore is the read-only search."
+    },
+    "caveman": {
+      "phase": "implementation",
+      "strengths": "Choose this for terse voice while some other skill does the work. megacave and ultracave are tighter registers; ponytail is about the size of the diff, not the voice."
+    },
+    "caveman-commit": {
+      "phase": "release/ops",
+      "strengths": "Choose this for a Conventional Commit squeezed to intent. It writes the message. caveman-review is the diff review in the same voice."
+    },
+    "caveman-compress": {
+      "phase": "docs",
+      "strengths": "Choose this to compress a memory file and keep a readable backup. caveman is the live voice; this rewrites a file such as CLAUDE.md."
+    },
+    "caveman-discover": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to label LLM workflows so spend is grouped. caveman-evidence-review reads the cost evidence; this finds the workflows."
+    },
+    "caveman-evidence-review": {
+      "phase": "review",
+      "strengths": "Choose this for a read-only look at Caveman Cloud cost, traces, and savings. caveman-learn applies cost fixes with consent; this only reads."
+    },
+    "caveman-explore": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this for a read-only cold-start search that returns path:line citations. Skip it when the symbol is already named. graphify answers from a graph; how is a walkthrough."
+    },
+    "caveman-help": {
+      "phase": "docs",
+      "strengths": "Choose this for the caveman command card. ponytail-help is the other quick reference; this one is only the caveman skills."
+    },
+    "caveman-learn": {
+      "phase": "learning",
+      "strengths": "Choose this to act on a Caveman cost report and trim token sinks with per-edit consent. learn is tkstack's correction store; this is Caveman's spend report."
+    },
+    "caveman-manage": {
+      "phase": "release/ops",
+      "strengths": "Choose this to start, approve, cancel, or roll back a Caveman experiment. caveman-optimize prepares a candidate; this is the lifecycle gate."
+    },
+    "caveman-optimize": {
+      "phase": "learning",
+      "strengths": "Choose this to turn a Caveman optimization observation into a candidate with a paired baseline. It needs approval. hill-climb is tkstack's measured loop."
+    },
+    "caveman-review": {
+      "phase": "review",
+      "strengths": "Choose this for one compressed line per finding. code-review is the spec-and-standards pass; ponytail-review is plain language without this register."
+    },
+    "caveman-setup": {
+      "phase": "release/ops",
+      "strengths": "Choose this to send LLM traffic through the Caveman Cloud gateway without changing behavior. git-guardrails-claude-code blocks destructive git; this measures spend."
+    },
+    "caveman-stats": {
+      "phase": "learning",
+      "strengths": "Choose this for this session's token and mode numbers. caveman-evidence-review is the cloud evidence; weekly-review is commit history."
+    },
+    "check-compiler-errors": {
+      "phase": "debugging",
+      "strengths": "Choose this to run the local compile and type-check and report failures. fix-ci reads a red pull-request check; this never leaves the workstation."
+    },
+    "chief-of-staff": {
+      "phase": "implementation",
+      "strengths": "Choose this to pursue one long-running goal by coordinating subagents in a single session. wayfinder maps decision tickets across sessions."
+    },
+    "choreograph": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this when several elements must read as one motion. animate builds a single element; find-animation-opportunities only proposes places to move."
+    },
+    "claude-handoff": {
+      "phase": "docs",
+      "strengths": "Choose this to hand the conversation to a fresh background agent that continues immediately. handoff writes a document another agent can read later."
+    },
+    "code-review": {
+      "phase": "review",
+      "strengths": "Choose this to review a diff against repo standards and the originating spec. thermo-nuclear-code-quality-review is maintainability only; ponytail-review is a plain-language change review."
+    },
+    "codebase-design": {
+      "phase": "architecture",
+      "strengths": "Choose this for deep-module vocabulary and where a seam goes. architect sketches types before code; graphify queries an extracted graph; setup-ts-deep-modules wires the checker."
+    },
+    "codify": {
+      "phase": "implementation",
+      "strengths": "Choose this to compile a prompt or Markdown procedure into a lock, and for the shared engine skillify uses. skillify packages a skill; this is the procedure that is not already one."
+    },
+    "control-cli": {
+      "phase": "debugging",
+      "strengths": "Choose this to drive an interactive CLI or TUI in a local harness. control-ui is the browser harness; rtk only filters shell output."
+    },
+    "control-ui": {
+      "phase": "debugging",
+      "strengths": "Choose this to drive a web, IDE, or Electron UI in a local browser harness. break-ui feeds worst-case data; this reproduces, screenshots, and profiles."
+    },
+    "council": {
+      "phase": "review",
+      "strengths": "Choose this when the user says council and the named models are available. Do not swap in a substitute. cross-model-review keeps agreement; interrogate is Pstack's stress test."
+    },
+    "cross-model-review": {
+      "phase": "review",
+      "strengths": "Choose this for a blind multi-provider review that keeps agreement and contradiction-tested findings. council is Tstack's named panel; interrogate is Pstack's stress test."
+    },
+    "design-md": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to turn a Stitch project into DESIGN.md. emil-design-eng polishes a UI; this captures the semantic system. Stitch access stays a host requirement."
+    },
+    "deslop": {
+      "phase": "review",
+      "strengths": "Choose this for Cursor Team Kit's cleanup of AI-generated code slop. unslop grades across artifact types; pstack-unslop is prose only."
+    },
+    "diagnosing-bugs": {
+      "phase": "debugging",
+      "strengths": "Choose this for a hard bug or regression that should be reproduced, localized, and then fixed. investigate can stop at the cited cause; principle-fix-root-causes is the rule."
+    },
+    "document": {
+      "phase": "docs",
+      "strengths": "Choose this for source-grounded repository docs, glossaries, ADRs, and handoffs. write is a human-facing draft; openwiki is the wiki runtime; instructify is agent policy."
+    },
+    "domain-modeling": {
+      "phase": "architecture",
+      "strengths": "Choose this to sharpen glossary and ADR language. document can record them; grill-with-docs interviews and writes those docs as it goes."
+    },
+    "emil-design-eng": {
+      "phase": "design & UI polish",
+      "strengths": "Start here for UI polish and the small decisions agents miss. impeccable is the broader frontend critique; Matt's prototype answers one question and is thrown away."
+    },
+    "emil-prototype": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for several live UI variants behind a picker, and only when explicitly invoked. Matt's prototype is one throwaway that answers a single design question."
+    },
+    "experiment-arms": {
+      "phase": "learning",
+      "strengths": "Choose this to measure single-hypothesis pull requests that are not for merge until they clear a bar set in advance. hill-climb is one local hypothesis loop."
+    },
+    "fal-ai": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for fal.ai or a provider-neutral media brief. An explicit Higgsfield request stays on that stack; this does not substitute for it."
+    },
+    "figure-it-out": {
+      "phase": "debugging",
+      "strengths": "Choose this when no narrower playbook fits a large or unattended change. investigate-first is an ambiguous bug; sdlc is the full lifecycle."
+    },
+    "file-pr": {
+      "phase": "release/ops",
+      "strengths": "Choose this to open a concise pull request. pr writes the body; new-branch-and-pr also creates the branch and finishes the work."
+    },
+    "find-animation-opportunities": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to search for motion that is missing, without editing. improve-animations audits motion that already exists; animate implements one animation."
+    },
+    "find-the-loop": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to write the measurement card before optimizing. hill-climb runs the loop; this stops an iteration that has no instrument yet."
+    },
+    "fix-ci": {
+      "phase": "release/ops",
+      "strengths": "Choose this when one pull-request check is red and the log should drive a focused fix. loop-on-ci keeps watching until the whole suite is green."
+    },
+    "fix-merge-conflicts": {
+      "phase": "release/ops",
+      "strengths": "Choose this to resolve conflicts without an interactive mergetool. modernize rebases an old pull request; this is the conflict itself."
+    },
+    "flowify": {
+      "phase": "implementation",
+      "strengths": "Choose this when the reusable workflow should stay MAF YAML or Rhai. skillify and codify freeze Python or Node instead of a host DSL."
+    },
+    "full-send": {
+      "phase": "release/ops",
+      "strengths": "Choose this only when the user explicitly asks for full send. It merges. full-stop stops at the human gate."
+    },
+    "full-stop": {
+      "phase": "release/ops",
+      "strengths": "Choose this to reach the human merge gate and stop. full-send is the path that merges, and only on an explicit ask."
+    },
+    "get-pr-comments": {
+      "phase": "review",
+      "strengths": "Choose this to fetch and summarize review comments. leaving-pr-comments writes them; this only reads."
+    },
+    "git-guardrails-claude-code": {
+      "phase": "release/ops",
+      "strengths": "Choose this to add Claude Code hooks that block destructive git commands. Installing the skill does not enable the hook. caveman-setup measures spend; this blocks push and reset."
+    },
+    "graphify": {
+      "phase": "architecture",
+      "strengths": "Choose this when architecture or dependency questions should start from an extracted graph. architect sketches a design; how walks the code. Indexing is a separate step."
+    },
+    "grill-me": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this for a relentless interview that sharpens a plan before a spec exists. grill-with-docs also writes ADRs; grilling is the short trigger for the same stress test."
+    },
+    "grill-with-docs": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this when the interview should create ADRs and glossary entries as it goes. grill-me only sharpens the plan; document writes docs without the interview."
+    },
+    "grilling": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this when the user says grill and wants the thinking stress-tested. to-spec publishes after the conversation is already done; grill-me is the interview without a docs side effect."
+    },
+    "handoff": {
+      "phase": "docs",
+      "strengths": "Choose this to compact the conversation into a document for a later agent. claude-handoff starts a background agent now; document's handoff is the repository knowledge form."
+    },
+    "headroom": {
+      "phase": "implementation",
+      "strengths": "Choose this when context must be compressed and still recoverable. rtk only filters shell output; caveman changes the voice."
+    },
+    "higgsfield-brandkit": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for a full visual brand system and brandbook through Higgsfield. higgsfield-generate makes one asset; design-md writes a semantic DESIGN.md from Stitch."
+    },
+    "higgsfield-faceless-video": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for a finished narrated faceless video. higgsfield-generate is a single clip or still; higgsfield-video-explainer only continues the old entry point."
+    },
+    "higgsfield-generate": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for one Higgsfield image, video, 3D, or audio generation. Faceless video, product stills, thumbnails, and brand kits are the specialized skills. fal-ai does not stand in when Higgsfield was named."
+    },
+    "higgsfield-marketplace-cards": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for marketplace listing images and A+ modules. higgsfield-product-photoshoot is the brand or lifestyle still; this one follows listing compliance."
+    },
+    "higgsfield-product-photoshoot": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for studio, lifestyle, and ad stills of a product. higgsfield-marketplace-cards is the marketplace set; higgsfield-generate is the general generator."
+    },
+    "higgsfield-soul-id": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to train a face once and reuse that identity. higgsfield-generate consumes the reference; this only trains it."
+    },
+    "higgsfield-video-explainer": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this only to continue the old explainer workflow. New faceless explainers go to higgsfield-faceless-video."
+    },
+    "higgsfield-websites": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to build or deploy a site, app, or game through the Higgsfield website CLI. open-design and impeccable design a surface; this ships the Higgsfield worker app."
+    },
+    "higgsfield-youtube-thumbnail": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for a thumbnail or Shorts cover with identity and logo constraints. higgsfield-generate is a general image and does not own that cover format."
+    },
+    "hill-climb": {
+      "phase": "learning",
+      "strengths": "Choose this for one measured keep-or-revert hypothesis against a frozen evaluation. find-the-loop only writes the card; experiment-arms uses do-not-merge pull requests."
+    },
+    "hookify": {
+      "phase": "implementation",
+      "strengths": "Choose this to intercept a tool event. lintify writes a CLI lint rule; this does not author a linter."
+    },
+    "how": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this for a code walkthrough and which layer should own a change. why is the decision's history; graphify is the extracted graph."
+    },
+    "impeccable": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to critique or finish a frontend surface across layout, type, and motion. emil-design-eng is Emil's taste; open-design is the portable brief. The engine binary is a separate runtime."
+    },
+    "implement": {
+      "phase": "implementation",
+      "strengths": "Choose this to build one spec or ticket set. implement-spec is specifically the output of to-spec and to-tickets; sdlc is the outer swarm."
+    },
+    "implement-spec": {
+      "phase": "implementation",
+      "strengths": "Choose this to implement what to-spec and to-tickets just produced. implement is Matt's general implementation entry when the input is not that pair."
+    },
+    "improve-animations": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for a read-only motion audit and plans another agent can execute. review-animations flags against the craft bar; this does not apply the edits."
+    },
+    "improve-codebase-architecture": {
+      "phase": "architecture",
+      "strengths": "Choose this to scan for deepening opportunities, show an HTML report, and grill the one you pick. codebase-design is the vocabulary; this finds the candidates."
+    },
+    "instructify": {
+      "phase": "docs",
+      "strengths": "Choose this for AGENTS.md, CLAUDE.md, and other durable agent instructions. document owns repository knowledge; write owns human-facing prose."
+    },
+    "interrogate": {
+      "phase": "review",
+      "strengths": "Choose this for an adversarial multi-model stress test. code-review checks a diff against a spec; council is Tstack's named-model panel."
+    },
+    "investigate": {
+      "phase": "debugging",
+      "strengths": "Choose this to explain or diagnose from traces and sources, and stop there. diagnosing-bugs and investigate-first continue into a fix."
+    },
+    "investigate-first": {
+      "phase": "debugging",
+      "strengths": "Choose this to rank hypotheses before editing an ambiguous failure. investigate can stop at a cited explanation; diagnosing-bugs continues into the fix."
+    },
+    "keep-the-pool-full": {
+      "phase": "implementation",
+      "strengths": "Choose this to file ready, independent issues so a delivery pool stays full, and only when asked. triage processes issues that already exist."
+    },
+    "landing-plan": {
+      "phase": "release/ops",
+      "strengths": "Choose this to order a set of open pull requests into merge batches. pr-shepherd drives one pull request; file-pr opens one."
+    },
+    "lean-build": {
+      "phase": "implementation",
+      "strengths": "Choose this for new behavior where overbuilding is the risk and an explicit stop matters. ponytail shrinks any change; this is the feature-slice guard."
+    },
+    "learn": {
+      "phase": "learning",
+      "strengths": "Choose this for a user correction or session lesson that should become steering. skillopt-sleep and the WikiSkill skills are pinned experiments, not this store."
+    },
+    "leaving-pr-comments": {
+      "phase": "release/ops",
+      "strengths": "Choose this when the work is writing the GitHub comments. get-pr-comments only reads and summarizes them."
+    },
+    "lever": {
+      "phase": "implementation",
+      "strengths": "Choose this as the menu that picks a Lever verb. The other skills are those verbs. Native Copilot behavior still needs that host."
+    },
+    "lintify": {
+      "phase": "review",
+      "strengths": "Choose this to author a native CLI lint rule. hookify is the tool-event gate; this is the linter."
+    },
+    "loop-me": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to be grilled about workflow specs inside this workspace. grill-me is a general plan interview; loop-me is about workflows you want to build here."
+    },
+    "loop-on-ci": {
+      "phase": "release/ops",
+      "strengths": "Choose this to watch pull-request checks and fix until green. babysit-pr also stays for review comments, not only CI."
+    },
+    "make-pr-easy-to-review": {
+      "phase": "review",
+      "strengths": "Choose this to clean history and annotate a diff without changing behavior. pr writes Matt's pull-request body; this prepares the branch for a reviewer."
+    },
+    "matt-tdd": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this for test-first work inside Matt's implementation skills. Pstack's tdd keeps the short name; ub-mode is the discipline layer around both."
+    },
+    "megacave": {
+      "phase": "implementation",
+      "strengths": "Choose this only for /megacave or caveman wenyan. caveman is the default terse voice; ultracave is fragment compression. Technical terms stay verbatim."
+    },
+    "migrate-to-shoehorn": {
+      "phase": "implementation",
+      "strengths": "Choose this to replace `as` assertions in tests with shoehorn. It is not a general TypeScript migration. setup-ts-deep-modules is the module-boundary tool."
+    },
+    "migration": {
+      "phase": "implementation",
+      "strengths": "Choose this for a reversible schema, API, or data transition with a rollback. principle-migrate-callers-then-delete-legacy-apis deletes the old API in the same wave."
+    },
+    "mobile-native": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for the CSS and meta-tag fixes that make a site feel installed on a phone. animate-expo is actual React Native; apple-design is gesture and material craft."
+    },
+    "modernize": {
+      "phase": "release/ops",
+      "strengths": "Choose this to bring an old pull request up to date, including a rebase. fix-merge-conflicts handles the conflicts that rebase may produce."
+    },
+    "new-branch-and-pr": {
+      "phase": "release/ops",
+      "strengths": "Choose this to finish work on a fresh branch and open the pull request in Cursor. file-pr is Tstack's concise opener and assumes the branch already exists."
+    },
+    "open-design": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for a portable UI brief and artifact review. impeccable is the interface-craft pass; emil-design-eng is Emil's taste. Do not claim the OpenDesign app ran unless that runtime is there."
+    },
+    "openwiki": {
+      "phase": "docs",
+      "strengths": "Choose this to search or update a repository wiki through its page-job lifecycle. document is the portable documentation skill when that lifecycle is not selected."
+    },
+    "pick-ui-library": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this only when explicitly invoked, to pick a library from Emil's list. ask-sonner is Sonner after that choice; emil-design-eng does not select dependencies."
+    },
+    "ponytail": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when the win is the smallest diff that still solves the task. principle-laziness-protocol is the Pstack rule; ponytail-review checks a change after the fact."
+    },
+    "ponytail-audit": {
+      "phase": "review",
+      "strengths": "Choose this for a one-shot repository audit that changes nothing. ponytail-review is one change; thermo-nuclear-code-quality-review is the harsh maintainability pass."
+    },
+    "ponytail-debt": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this to list shortcut comments without editing them. ponytail-audit is the broader repository finding list; steer-once turns a repeated correction into a fix."
+    },
+    "ponytail-gain": {
+      "phase": "learning",
+      "strengths": "Choose this to display the benchmark's measured savings. It does not change code. hill-climb runs a new measurement loop."
+    },
+    "ponytail-help": {
+      "phase": "docs",
+      "strengths": "Choose this for the ponytail level and command card. caveman-help is the other terse-voice card; this one is only ponytail."
+    },
+    "ponytail-review": {
+      "phase": "review",
+      "strengths": "Choose this for a plain-language review of one change, including code the diff calls. code-review checks spec and standards; ponytail-audit covers the whole repository."
+    },
+    "poteto-mode": {
+      "phase": "implementation",
+      "strengths": "Choose this as Pstack's deep-first working style. ub-mode is Uncle Bob's reduced sequence; ponytail is the smallest diff."
+    },
+    "pr": {
+      "phase": "release/ops",
+      "strengths": "Choose this when the work is the pull-request body. file-pr opens the pull request; make-pr-easy-to-review cleans the branch without rewriting the prose as its main job."
+    },
+    "pr-review-canvas": {
+      "phase": "review",
+      "strengths": "Choose this when the user pasted a pull-request URL and wants an HTML walkthrough. code-review is Matt's standards-and-spec pass; this is the visual canvas."
+    },
+    "pr-shepherd": {
+      "phase": "release/ops",
+      "strengths": "Choose this to drive one open pull request until it lands, including pushes and a possible merge, and only on an explicit shepherd request. babysit-pr watches without being this lander."
+    },
+    "principle-boundary-discipline": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when guards belong only at the edge of the system. principle-type-system-discipline makes illegal values unrepresentable; this one places the checks."
+    },
+    "principle-build-the-lever": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a reviewer should rerun a tool you built instead of watching a hand edit. reusify extracts a third copy; this builds the one-off lever."
+    },
+    "principle-encode-lessons-in-structure": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when the same instruction would be written a second time. steer-once opens a PR for a repeated correction; this encodes the rule as lint, metadata, or a script."
+    },
+    "principle-exhaust-the-design-space": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to compare two or three prototypes before committing to a novel interaction. emil-prototype is a live UI picker; this is the decision rule."
+    },
+    "principle-experience-first": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this when user delight and fewer polished features beat a larger rough set. emil-design-eng is the craft pass; this is the product tradeoff."
+    },
+    "principle-fix-root-causes": {
+      "phase": "debugging",
+      "strengths": "Choose this while debugging so a guard does not hide the crash. investigate finds the cause; this is the rule that the fix has to hit it."
+    },
+    "principle-foundational-thinking": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this before writing logic, while the data shape is still open. architect sketches modules; this is the data-structure rule."
+    },
+    "principle-guard-the-context-window": {
+      "phase": "implementation",
+      "strengths": "Choose this when bulk output would fill the main thread. caveman shortens the voice; this routes the payload to a subagent."
+    },
+    "principle-laziness-protocol": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a diff is growing abstractions. ponytail is the workflow that applies the bias; this is the Pstack rule that prefers deletion."
+    },
+    "principle-make-operations-idempotent": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a command, lifecycle step, or retry can run twice and must converge. principle-separate-before-serializing-shared-state decides who may write."
+    },
+    "principle-migrate-callers-then-delete-legacy-apis": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a new internal API still has old callers that should die in the same wave. migration is Caveman's reversible transition and keeps a compatibility proof."
+    },
+    "principle-minimize-reader-load": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a reviewer would have to hold hidden state to follow the code. thermo-nuclear-code-quality-review is the harsh audit; this is the shaping rule."
+    },
+    "principle-never-block-on-the-human": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this for reversible work you would otherwise stop to ask about. full-send and destructive git still wait for an explicit request."
+    },
+    "principle-outcome-oriented-execution": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this during a planned rewrite so throwaway compatibility code does not preserve a midpoint. principle-sequence-verifiable-units is how the steps are stacked."
+    },
+    "principle-prove-it-works": {
+      "phase": "review",
+      "strengths": "Choose this before calling work done, against the real artifact rather than a proxy. verify-this returns verified or not; this is the Pstack habit of looking at the thing itself."
+    },
+    "principle-redesign-from-first-principles": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when a new requirement is about to be bolted on. architect sketches the new shape; this says to redesign as if the requirement had always been there."
+    },
+    "principle-separate-before-serializing-shared-state": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when two actors would write the same file, branch, or object. tkstack-principles states the concurrency rule for this repo; this is the Pstack wording."
+    },
+    "principle-sequence-verifiable-units": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this to stack commits and PRs so each unit ends in a checkable state. sdlc owns the task graph; this is the sequencing rule."
+    },
+    "principle-subtract-before-you-add": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this before an addition or rewrite so dead weight comes out first. ponytail is the mode that applies it; remove-animations is the motion version."
+    },
+    "principle-type-system-discipline": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when designing types so illegal states cannot be written. principle-boundary-discipline is where external data is parsed; this is the type shape."
+    },
+    "progress-contract": {
+      "phase": "release/ops",
+      "strengths": "Choose this so a long run reports milestones without being polled. show-me-your-work is a local decision log; this is the status contract for delegated work."
+    },
+    "prompt-mirror": {
+      "phase": "learning",
+      "strengths": "Choose this to score how you direct agents from your own Copilot history, and only when asked. reflect mines the active transcript; this reads private history."
+    },
+    "prototype": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this for one throwaway that answers a design question, then park the code. emil-prototype keeps several live variants behind a picker."
+    },
+    "pstack-unslop": {
+      "phase": "review",
+      "strengths": "Choose this for Pstack's prose-only anti-slop rules. Personal unslop grades every artifact kind; deslop cleans code in Cursor Team Kit."
+    },
+    "refactor-pipeline": {
+      "phase": "implementation",
+      "strengths": "Choose this for a huge mechanical refactor split across producer, packager, and shepherd lanes. safe-refactor is one behavior-preserving restructure."
+    },
+    "reflect": {
+      "phase": "learning",
+      "strengths": "Choose this to mine the active transcript and edit an existing skill. retro is Matt's session retrospective; learn records a user correction."
+    },
+    "remove-animations": {
+      "phase": "design & UI polish",
+      "strengths": "Choose this to delete motion that has no purpose. It does not retune what remains. animation-performance fixes jank; improve-animations plans a broader set of changes."
+    },
+    "research": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to gather primary-source findings into a Markdown file. investigate can diagnose a system; why asks why a decision already exists."
+    },
+    "retro": {
+      "phase": "learning",
+      "strengths": "Choose this for a retrospective of one coding session. reflect edits skills from the transcript; weekly-review summarizes a week of commits."
+    },
+    "reusify": {
+      "phase": "implementation",
+      "strengths": "Choose this when the same code shape is about to exist a third time. ponytail only shrinks a change; this extracts the shared asset."
+    },
+    "review-and-ship": {
+      "phase": "release/ops",
+      "strengths": "Choose this to review, test, commit, and open or update a pull request as one Cursor flow. full-send merges; this stops at the pull request."
+    },
+    "review-animations": {
+      "phase": "review",
+      "strengths": "Choose this for a strict motion review that defaults to flagging. improve-animations writes a fix roadmap; animate implements the motion."
+    },
+    "rtk": {
+      "phase": "implementation",
+      "strengths": "Choose this to shorten noisy shell output and show the token savings. headroom compresses model context; caveman changes how the answer is phrased."
+    },
+    "run-health-review": {
+      "phase": "review",
+      "strengths": "Choose this when unattended delivery stalled and you need one proposed change or an explicit no-change. loop-on-ci fixes red checks; this classifies the stall."
+    },
+    "run-smoke-tests": {
+      "phase": "release/ops",
+      "strengths": "Choose this for Playwright smoke tests. verify-this checks one claim; this runs the smoke suite and debugs its failures."
+    },
+    "safe-refactor": {
+      "phase": "implementation",
+      "strengths": "Choose this to restructure while behavior stays pinned. refactor-pipeline is the multi-lane pull-request stack; surgical-patch is a narrow bugfix."
+    },
+    "scaffold-exercises": {
+      "phase": "docs",
+      "strengths": "Choose this to stub a course section with problems, solutions, and explainers. teach is the teaching session; this only creates the directories."
+    },
+    "script-exec-blocked": {
+      "phase": "debugging",
+      "strengths": "Choose this when the sandbox blocks execute_code and python3 -c. It is a narrow workaround, not a general debugging skill. search-miss-binary is the empty-search trap."
+    },
+    "sdlc": {
+      "phase": "implementation",
+      "strengths": "Choose this for the outer requirements-to-delivery loop or one scoped branch. Name a specialist when the user asked for that workflow instead."
+    },
+    "search-miss-binary": {
+      "phase": "debugging",
+      "strengths": "Choose this when a search returns nothing and the file may have been skipped as binary. trace-harness-launch-failure is an empty session, not an empty search."
+    },
+    "setup-matt-pocock-skills": {
+      "phase": "release/ops",
+      "strengths": "Choose this once, to set the issue tracker, triage labels, and domain-doc layout. setup-pstack sets models; triage runs after this layout exists."
+    },
+    "setup-pre-commit": {
+      "phase": "release/ops",
+      "strengths": "Choose this to add Husky, lint-staged, typecheck, and tests at commit time. Installing the skill does not add Husky by itself. git-guardrails-claude-code blocks dangerous git commands."
+    },
+    "setup-pstack": {
+      "phase": "release/ops",
+      "strengths": "Choose this to choose Pstack's per-role models. setup-matt-pocock-skills sets the issue tracker and domain docs, not model slugs."
+    },
+    "setup-ts-deep-modules": {
+      "phase": "architecture",
+      "strengths": "Choose this to wire dependency-cruiser so each package is reached only through its entry point. codebase-design decides the seam; this installs the check."
+    },
+    "show-me-your-work": {
+      "phase": "review",
+      "strengths": "Choose this to keep a TSV decision trail for unattended work. figure-it-out is the playbook that logs through it; progress-contract is Lever's status report."
+    },
+    "skillify": {
+      "phase": "learning",
+      "strengths": "Choose this to package, adapt, or update an owned skill. codify compiles a procedure that is not a skill; learn decides whether a correction should become one."
+    },
+    "skillopt-sleep": {
+      "phase": "learning",
+      "strengths": "Choose this for the pinned offline sleep cycle. It is vendored and not installed as a user skill. learn is the improvement skill people invoke."
+    },
+    "sol-loop": {
+      "phase": "implementation",
+      "strengths": "Choose this only when the user says sol loop. It requires Sol and rejects a substitute. hill-climb is the measured loop that does not need that model."
+    },
+    "spec-literal-execution": {
+      "phase": "implementation",
+      "strengths": "Choose this when each input record must map to its own output line with no dedup or cleanup. to-spec writes the spec; this stops the implementation from improving on it."
+    },
+    "steer-once": {
+      "phase": "learning",
+      "strengths": "Choose this to turn a repeated correction into the cheapest durable layer and re-measure it. learn stores the correction; principle-encode-lessons-in-structure is the Pstack rule. This one opens the pull request."
+    },
+    "surgical-patch": {
+      "phase": "debugging",
+      "strengths": "Choose this for a bug or small behavior change at the narrowest layer. safe-refactor moves structure; lean-build is new behavior."
+    },
+    "takeover": {
+      "phase": "release/ops",
+      "strengths": "Choose this to take over an existing pull request, branch, or agent thread. modernize only refreshes an old pull request you already have."
+    },
+    "tdd": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this when the user asked for TDD by name. matt-tdd is Matt's workflow under another name; ub-mode is the broader discipline and does not take this name."
+    },
+    "teach": {
+      "phase": "learning",
+      "strengths": "Choose this to teach a concept inside this workspace. scaffold-exercises builds the exercise tree; teach is the session."
+    },
+    "thermo-nuclear-code-quality-review": {
+      "phase": "review",
+      "strengths": "Choose this for a harsh maintainability audit of giant files and tangled conditions. code-review checks spec fit; ponytail-review asks whether every line is needed."
+    },
+    "tkstack-principles": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this for tkstack's own deterministic-first and concurrency rules. ub-mode and the Pstack principles are upstream disciplines, not this personal index."
+    },
+    "to-questionnaire": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this when you cannot answer a decision and someone else must fill in the questions. to-spec publishes a spec from a finished conversation instead."
+    },
+    "to-spec": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to publish a spec from the conversation you already had, without another interview. grill-me is that interview; to-tickets splits the spec afterward."
+    },
+    "to-tickets": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to split a spec into tracer-bullet tickets with blocking edges. wayfinder is the map for work that will not fit in one session."
+    },
+    "trace-harness-launch-failure": {
+      "phase": "debugging",
+      "strengths": "Choose this when a session trace is empty because launch failed. investigate assumes there is behavior to explain; this checks the counters first."
+    },
+    "triage": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this to move issues through triage roles and write an agent-ready brief. setup-matt-pocock-skills creates the labels; this uses them."
+    },
+    "typescript-best-practices": {
+      "phase": "implementation",
+      "strengths": "Choose this while editing TypeScript day to day. Deep-module boundaries belong in setup-ts-deep-modules or codebase-design, not this general practice list."
+    },
+    "ub-mode": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this for make-it-work, then make-it-right, then practice, with a failing test first. Do not follow its upstream commit-often and push-to-main Practice; tkstack commits only when asked and delivers stacked PRs. Pstack's tdd keeps that name."
+    },
+    "ultracave": {
+      "phase": "implementation",
+      "strengths": "Choose this only for /ultracave. megacave is Classical Chinese; caveman is the default terse voice. Each fact is said once."
+    },
+    "unslop": {
+      "phase": "review",
+      "strengths": "Choose this to grade slop across writing, code, tests, and media. pstack-unslop is prose-only; deslop is Cursor Team Kit code cleanup."
+    },
+    "verify-and-stop": {
+      "phase": "review",
+      "strengths": "Choose this to prove acceptance conditions without expanding scope. verify-this falsifies one claim; review-and-ship continues into commit and pull request."
+    },
+    "verify-output-readback": {
+      "phase": "review",
+      "strengths": "Choose this to re-read a file just written before finishing. verify-this tests a claim; principle-prove-it-works is the general habit."
+    },
+    "verify-this": {
+      "phase": "review",
+      "strengths": "Choose this to turn one claim into a falsifiable comparison with a verified, not-verified, or inconclusive result. principle-prove-it-works is the habit; this is the procedure."
+    },
+    "wait-what": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this when the last message did not land and should be re-pitched. It is not research or a spec. how and why explain the system; this restarts the explanation."
+    },
+    "wayfinder": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this for a shared map of decision tickets when the work will not fit in one session. to-tickets breaks one spec; chief-of-staff coordinates inside one session."
+    },
+    "weekly-review": {
+      "phase": "learning",
+      "strengths": "Choose this for a weekly commit synthesis split into bugfix, debt, and net-new. what-did-i-get-done is any window the user names; retro is one session."
+    },
+    "what-did-i-get-done": {
+      "phase": "learning",
+      "strengths": "Choose this to summarize authored commits over a window the user names. weekly-review is the fixed weekly shape with bugfix, debt, and net-new buckets."
+    },
+    "why": {
+      "phase": "discovery/requirements",
+      "strengths": "Choose this for why a decision exists, with evidence from trackers and history. how explains the runtime path; research writes a fresh primary-source note."
+    },
+    "wikiskill-evolve": {
+      "phase": "learning",
+      "strengths": "Choose this for the gated WikiSkill evolution loop. learn is the user-facing store; skillopt-sleep is the other pinned experiment."
+    },
+    "wikiskill-maintainer": {
+      "phase": "learning",
+      "strengths": "Choose this to fold traces into the WikiSkill wiki. wikiskill-proposer writes skills from those patterns; openwiki is a different repository wiki."
+    },
+    "wikiskill-proposer": {
+      "phase": "learning",
+      "strengths": "Choose this to propose skills from WikiSkill patterns. skillify packages an owned skill; this only proposes inside that loop."
+    },
+    "wizard": {
+      "phase": "implementation",
+      "strengths": "Choose this for steps only a human can perform, as an interactive bash wizard. Do not use it for work the agent can do. setup-pre-commit and the git guardrails are specific setups, not a general walkthrough."
+    },
+    "workflow-from-chats": {
+      "phase": "learning",
+      "strengths": "Choose this to mine recent Cursor chats into skills, rules, or workflow docs. automate-me builds a personal -mode skill; instructify edits instruction files directly."
+    },
+    "write": {
+      "phase": "docs",
+      "strengths": "Choose this for a human-facing article or argument. document maintains the repository; unslop grades; writing-shape is Matt's paragraph pass."
+    },
+    "write-swift": {
+      "phase": "implementation",
+      "strengths": "Choose this for Swift modeling and Swift 6 concurrency, not web motion. mobile-native and animate-expo are the UI skills in the same catalog."
+    },
+    "writing-beats": {
+      "phase": "docs",
+      "strengths": "Choose this to turn raw material into a journey of beats, defining each term before a beat uses it. writing-fragments only mines scraps; writing-shape writes the paragraphs."
+    },
+    "writing-for-agents": {
+      "phase": "docs",
+      "strengths": "Choose this when the reader is an agent: a skill, AGENTS.md, or CLAUDE.md. instructify is tkstack's instruction editor; write is for human readers."
+    },
+    "writing-fragments": {
+      "phase": "docs",
+      "strengths": "Choose this to mine raw fragments before any structure exists. writing-beats and writing-shape are the later passes that impose a shape."
+    },
+    "writing-shape": {
+      "phase": "docs",
+      "strengths": "Choose this to shape material into an article paragraph by paragraph. write is tkstack's human-facing draft; this is Matt's pass after fragments exist."
+    }
+  }
+}
