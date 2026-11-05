@@ -11,7 +11,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SPEC = importlib.util.spec_from_file_location("routing_inventory", ROOT / "src/routing_inventory.py")
+SPEC = importlib.util.spec_from_file_location("routing_inventory", ROOT / "skills/sdlc/scripts/routing_inventory.py")
 routing = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(routing)
 
@@ -63,7 +63,7 @@ class RoutingInventoryTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, "-c",
              "import importlib.util; from pathlib import Path; "
-             "p = Path('src/routing_inventory.py'); "
+             "p = Path('skills/sdlc/scripts/routing_inventory.py'); "
              "spec = importlib.util.spec_from_file_location('routing_inventory_fresh', p); "
              "module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module); "
              "print(module.install.sourced.__name__)"],

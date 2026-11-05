@@ -21,6 +21,7 @@ import bootstrap_shell
 from runtime_environment import with_paths
 import bootstrap_toolchains
 from tkstack_state import ensure_state, state_root
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'skills/learn/skills/skillify/scripts'))
 from sync_codify import sync as check_codify_release
 
 ROOT = Path(__file__).resolve().parent.parent

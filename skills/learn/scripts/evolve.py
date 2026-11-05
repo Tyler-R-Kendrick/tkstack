@@ -11,12 +11,12 @@ import os
 from pathlib import Path
 import sys
 from types import SimpleNamespace
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+ROOT = Path(__file__).resolve().parents[3]
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(ROOT / "src"))
 from tkstack_state import ensure_state
 from skill_roots import owned
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / "vendor/skillopt"))
 
 from skillopt_sleep.__main__ import _run_handoff, _print_run_report

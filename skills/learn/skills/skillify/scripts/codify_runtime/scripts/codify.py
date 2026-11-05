@@ -446,7 +446,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
             'entrypoint': entrypoint.relative_to(root).as_posix(), 'runtime': 'python' if entrypoint.suffix == '.py' else 'node',
             'includes': recorded_includes,
             'inference': {'mode': 'explicit' if profile_names else 'none', 'profiles': profile_names},
-            'files': snapshot(root, [entrypoint.parent, *includes], output),
+            'files': snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root)),
             'verification': {'status': 'passed', 'case_ids': [case['id'] for case in contract], 'repeat_successes': 1 if profile_names else 2}}
     if lock['entrypoint'] not in lock['files']:
         raise ValueError("Entrypoint was excluded from the artifact")
@@ -482,7 +482,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
                 failures.append(str(error))
         if failures:
             raise ValueError('; '.join(failures))
-    current = snapshot(root, [entrypoint.parent, *includes], output)
+    current = snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
     if current != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
         raise ValueError("Build inputs changed during verification")
     lock_id = digest(str(output).encode())[:16]
@@ -490,7 +490,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     writer.mkdir()
     temporary = None
     try:
-        if snapshot(root, [entrypoint.parent, *includes], output) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+        if snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root)) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
             raise ValueError("Build inputs changed before publication")
         if (output.read_bytes() if output.exists() else None) != before:
             raise ValueError("Lock artifact changed during compilation")

@@ -18,6 +18,7 @@ from setup_integrations import configuration_plan, status
 from graphify_install import check_views
 from runtime_environment import with_paths
 from tkstack_state import policy_plan
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'skills/learn/skills/skillify/scripts'))
 from sync_codify import sync as check_codify_release
 
 

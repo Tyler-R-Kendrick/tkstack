@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+ROOT = HERE.parents[2]
 SCRIPTS = ROOT / "scripts"
 for directory in (HERE, SCRIPTS):
     if str(directory) not in sys.path:
@@ -364,7 +364,7 @@ def render_inventory(skills, catalog):
     lines = [
         "Generated from the installed skill set, Learn subskills, unplaced vendored",
         "skills, and `harnesses/` packages. Do not edit this region by hand. Run",
-        "`python3 src/routing_inventory.py render` after adding a skill and its",
+        "`python3 skills/sdlc/scripts/routing_inventory.py render` after adding a skill and its",
         "routing entry.",
         "",
         "| Stack | Best starting point | What this stack is for |",
@@ -415,7 +415,7 @@ def check(root=ROOT):
     inventory = render_inventory(skills, catalog)
     _head, body, _tail = split_guide(guide_text(root))
     if body.strip() != inventory.strip():
-        raise ValueError("skill-routing.md inventory is stale; run python3 src/routing_inventory.py render")
+        raise ValueError("skill-routing.md inventory is stale; run python3 skills/sdlc/scripts/routing_inventory.py render")
     return {"skills": len(skills), "stacks": len(catalog["stacks"])}
 
 

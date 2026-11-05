@@ -70,7 +70,7 @@ if __name__ == '__main__':
     try:
         rows = check()
         spec = importlib.util.spec_from_file_location(
-            'routing_inventory', Path(__file__).resolve().parent / 'routing_inventory.py')
+            'routing_inventory', ROOT / 'skills/sdlc/scripts/routing_inventory.py')
         routing_inventory = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(routing_inventory)
         routing_inventory.check(ROOT)

@@ -1,16 +1,13 @@
 # Shared programs
 
-`scripts/` is the dotfiles installer. This directory holds the programs that
-installer calls and that maintainers run directly:
+`scripts/install.py` is the linker `install.sh` execs. This directory holds the
+programs the repository runs directly:
 
 - `tkstack.py` runs compiled skills and workflows.
-- `tool.py` and `run_hook.py` launch pinned runtimes and native hooks.
-- `check_docs.py` and `docs_hook.py` review documentation freshness.
-- `check_skills.py` checks owned skill contracts, and `routing_inventory.py`
-  checks the SDLC routing catalog against the installed skill set.
+- `check_docs.py` checks the documentation ledger. `check_skills.py` checks owned skill contracts and the SDLC routing inventory.
 - `tkstack_state.py` is the canonical state helper copied into each skill.
-- `python_runtime.py`, `npm_runtime.py`, and `bootstrap_toolchains.py` install
-  pinned language tools when setup asks for them.
-- `setup_lever.py` installs Lever's Copilot project layout.
+- `skill_roots.py` lists owned skill packages.
 
-Run them as `python3 src/<name>.py`.
+Skill-owned programs live with those skills: `skills/sdlc/scripts/routing_inventory.py`, `skills/learn/scripts/evolve.py`, and `skills/learn/skills/skillify/scripts/sync_codify.py`.
+
+Run a program here as `python3 src/<name>.py`.
