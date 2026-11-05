@@ -13,6 +13,9 @@ Bash and curl are the only host prerequisites. Git clones the checkout when it
 is on PATH; otherwise the installer downloads the GitHub tarball with curl.
 Python 3.11+ is used when it is already installed. Otherwise the installer
 downloads uv 0.12.23, checks its sha256, and installs Python 3.12.15.
+A directory that already exists at `TKSTACK_HOME` is not run unless its git
+origin matches the repository or `TKSTACK_TRUST_HOME=1`. `TKSTACK_TARBALL`,
+when set, must be an `https://` URL. That archive has no content hash.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
@@ -128,7 +131,8 @@ If none of those is Python 3.11+, it downloads uv 0.12.23 from
 `https://astral.sh/uv/0.12.23/install.sh`, requires sha256
 `b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491`, and runs
 `uv python install 3.12.15`, then `uv run --python 3.12.15`. The download is
-saved to a temporary file and checked before it runs. A caller-supplied
+saved to a temporary file and checked before it runs. The uv installer's
+stdout is discarded so only `$HOME/.local/bin/uv` is executed. A caller-supplied
 `UV_INSTALL_DIR` is ignored; the installer execs `$HOME/.local/bin/uv`.
 Rotate the pin by changing `UV_VERSION`, `UV_INSTALLER_URL`,
 `UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together.
@@ -137,22 +141,33 @@ bootstraps the host interpreter. Setup still provisions private Node and the
 pinned uv when those tools are missing.
 
 `TKSTACK_HOME` chooses the checkout directory (default `~/.local/share/tkstack`).
-The installer runs an existing checkout only when its git `origin` matches
-`TKSTACK_REPO` (default `https://github.com/Tyler-R-Kendrick/tkstack.git`,
-ignoring a trailing `.git`) or its tarball receipt
-(`.tkstack/source-receipt.txt`) matches that repository and the archive URL.
-Anything else is refused. `TKSTACK_REPO` chooses the Git URL. Without Git, a
-GitHub HTTPS remote is downloaded from codeload
+This run executes a checkout it just cloned or unpacked. A directory that
+already exists was not created by this run, and a receipt inside it
+(`.tkstack/source-receipt.txt`) is not proof: the directory can write that
+file itself. The installer runs that directory only when its git `origin`
+matches `TKSTACK_REPO` (default
+`https://github.com/Tyler-R-Kendrick/tkstack.git`, ignoring a trailing `.git`)
+or `TKSTACK_TRUST_HOME=1`. A matching origin is fast-forwarded with
+`git pull --ff-only`, which stops with a commit-or-stash message when that
+fails. The origin check compares the remote URL, not the tree contents.
+`TKSTACK_TRUST_HOME=1` on a non-git checkout downloads the archive again and
+keeps `.tkstack`; it does not run the previous `install.sh`. The same flag on
+a git checkout whose origin does not match runs the existing `install.sh` and
+does not pull. `TKSTACK_REPO` chooses the Git URL. Without Git, a GitHub HTTPS
+remote is downloaded from codeload
 (`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` for the
-default repository). Set `TKSTACK_TARBALL` to override that archive URL. The
-download is checked for curl failure, one top-level directory, and members or
-symlinks that escape the extract directory, then extracted with
-`--no-same-owner` and `--no-same-permissions`. A later run updates a Git
-checkout with `git pull --ff-only` and stops with a commit-or-stash message
-when that fast-forward fails. A tarball checkout is frozen between runs: there
-is no git fast-forward, and the next installer run downloads it again. That
-re-download keeps the existing `.tkstack` directory. Fixes in a tarball
-checkout arrive only when the installer runs.
+default repository). Set `TKSTACK_TARBALL` to an `https://` archive URL to
+override that. Any other scheme is refused. There is no content hash for the
+repository tarball: this script cannot pin its own bytes, and `tar.gz/main`
+is a mutable branch tip. HTTPS checks the transport, not that the bytes still
+match a review. The download is checked for curl failure, one top-level
+directory, and members or symlinks that escape the extract directory, then
+extracted with `--no-same-owner` and `--no-same-permissions`. Symlink checks
+walk the path in bash and do not need `realpath`. Replacing a tarball
+checkout copies `.tkstack` into the new tree before the old directory moves,
+and puts the old directory back if that move fails. A later trusted run of a
+tarball checkout downloads it again because there is no git fast-forward.
+Fixes in a tarball checkout arrive only when the installer runs.
 
 ### Verify the installer first
 
@@ -180,8 +195,11 @@ bash /tmp/tkstack-install.sh
 and the owned git docs hook this checkout owns, even when `--harness` is also
 passed. It leaves shell startup files, foreign links, and repository Lever dials
 in `.github/lever.yml`. `--dry-run --uninstall` prints that plan and writes
-nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|opencode`
-to select hosts for installation. The default profile selects Codex, Claude Code, and Cursor.
+nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|opencode|copilot|muse`
+to select hosts for installation. Copilot links `~/.copilot/skills` at home and
+`.github/skills` in a project. Muse links `~/.config/muse/skills` at home and
+does not follow `XDG_CONFIG_HOME`; a project install uses `.agents/skills`.
+The default profile selects Codex, Claude Code, and Cursor.
 `--no-shell` leaves shell startup files alone; source the generated environment
 yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
 harness after setup. Codex may require reviewing new hook definitions with
@@ -292,7 +310,7 @@ active development live in `skills/`; third-party-derived packages live in
 `.agents/skills/`; shared agents live in `agents/`; host settings live in
 `harnesses/`. Personal skills join every selected harness. Upstream skills in
 `placement.default`, including Emil Kowalski and ub-mode, go to Codex, Grok,
-Kimi, and OpenCode. Muse is experimental and is not linked. Pstack and
+Kimi, OpenCode, Copilot, and Muse. Pstack and
 Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and

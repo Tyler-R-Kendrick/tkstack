@@ -9,9 +9,11 @@ what runs mechanically and what still requires actual semantic/provider work.
 Skills install by origin. Personal skills in `skills/` join every selected
 harness; Learn's 7 subskills install inside Learn. `placement.default` in
 `harnesses/skills.json` sends other upstream skills to Codex
-(`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), and OpenCode
-(`.config/opencode/skills` at home, `.opencode/skills` in a project) when those
-harnesses are selected. Muse is experimental and is not linked. The default `./install.sh` profile selects Codex, Claude Code,
+(`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), OpenCode
+(`.config/opencode/skills` at home, `.opencode/skills` in a project), GitHub
+Copilot (`~/.copilot/skills` at home, `.github/skills` in a project), and Muse
+(`~/.config/muse/skills` at home, `.agents/skills` in a project) when those
+harnesses are selected. Muse does not follow `XDG_CONFIG_HOME`. The default `./install.sh` profile selects Codex, Claude Code,
 and Cursor, so that default set lands in the shared Codex directory unless you
 pass `--harness`. Pstack and Cursor Team Kit install only to `.cursor/skills/`.
 Graphify and Impeccable keep Codex, Claude Code, and Cursor, including the

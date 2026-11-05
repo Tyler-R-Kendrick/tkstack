@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command.",
+      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,11 +545,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -557,10 +557,9 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "795496fddb7d81db78846b8f43672601c4121fbc"
+          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
         }
       },
-      "docs_refresh_reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -576,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "4d8ad9ae0e80abb4f4a33db5d2063dda898cfa99"
+          "oid": "4e605bfc4840bb76aaa8bac0481e4d253b9af795"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -624,7 +623,7 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "5969cc0e7c467b422bbc1da6d41f2c92fa23be45"
+          "oid": "802e70a70f8028ea3bdca92d3fff2cea15a0ada9"
         },
         "harnesses/t3code/README.md": {
           "mode": "100644",
@@ -636,20 +635,19 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
+      "reason": "Record Copilot and Muse native skill directories and leave t3code uncounted at 8 of 9."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/documentation.md": {
           "mode": "100644",
           "oid": "22c08ddae3e7fa54b91bc8e828e26f7a4b5e5fc1"
         }
       },
-      "docs_refresh_reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command.",
       "inputs": {
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -718,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "9e8c0c73eddb015669422be31317aa78af4cad56"
+          "oid": "af0abb291da0a7722c38e0108ea010b8916c6b9e"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -750,7 +748,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "75fe2a866e41ee15229dfe84e2cec2acd12b38d2"
+          "oid": "db9246fc5ef5d4a39d669976e6a5df9f423919b4"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -797,14 +795,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Snapshot tests now require Install options, a deep SKILL.md path, the source-pin table, and the install.sh main call. No documentation guide change."
+      "no_doc_impact": false,
+      "reason": "Cover installer trust, tarball symlink checks, and the Copilot and Muse link tests."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -815,7 +813,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command.",
+      "docs_refresh_reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -845,22 +843,21 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "569b42ec51dc5f869ef54f2e14af28db5c971410"
+          "oid": "85e93d07ce6c3a2b0f4d029c2cf0109d37d9eb9a"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/normalization.md": {
           "mode": "100644",
           "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         }
       },
-      "docs_refresh_reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -892,7 +889,7 @@
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "07d214a00a4f57e9379e1bece058bed7ac504e68"
+          "oid": "5058c77ef03afe88b9a2896827582e33bb14e689"
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
@@ -920,11 +917,11 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "8450cdf23babc7bfce361b60b6386f428a3f2599"
+          "oid": "f56a01dc9ba328225dbad03904ca992498a1466d"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "3ddd5aa8e4848f84be5b507ba803c5767b8765c1"
+          "oid": "717bd1360c108751dee8aabab5ae3d68944476fa"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
@@ -984,13 +981,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
+      "reason": "Document https-only tarball residual risk, pre-existing checkout trust, bash symlink checks, and Copilot and Muse skill links."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7fe26bb249a2859f453575ba1c510cf4882ea4a5"
+          "oid": "6596eed843565fc795933cc630c00141c5aab9a0"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1010,7 +1007,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
+          "oid": "0108545b0e2e7ccc216cddf33d0a8fefa7979bb7"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -1046,7 +1043,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "795496fddb7d81db78846b8f43672601c4121fbc"
+          "oid": "583932d1809ea0d4f8a7cac20294172ec6764523"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1116,7 +1113,7 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "3d98ffc83cfb84bbba324419f7e7d2648dffd13c"
+          "oid": "96f192ad19de6e0f0a2be7535a8237ba0d50e21d"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -2400,7 +2397,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "ab157cbc81292cd0347560542f39f5cce1849f3a"
+          "oid": "c6a0a9ca8e7722b8dd735b7ce7b0ba610d075dca"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2452,7 +2449,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "3830ea21396b0abf67688d465aa5eef539adbbbd"
+          "oid": "ac95d0a07bf85cccc3dae398ec5d46b350c694e5"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2763,8 +2760,8 @@
           "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Archived the pre-move repo-quality baselines under evals/repo-quality/results/archive/. They are not a measurement of this tree, and no skill documentation changed."
+      "no_doc_impact": false,
+      "reason": "Parse harness skill links without importing the checkout and name Copilot and Muse in placement."
     }
   },
   "object_format": "sha1",

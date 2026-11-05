@@ -48,7 +48,8 @@ instruction block. Foreign instructions in other targets remain protected.
 `--uninstall` deletes symlinks for every harness, launchers, and the owned git
 docs hook. It can run twice. It leaves shell startup files, foreign links, and
 `.github/lever.yml` repository dials in place. `--harness` does not limit it.
-`--dry-run` with `--uninstall` only prints the plan.
+`--dry-run` with `--uninstall` only prints the plan. Owned links left
+under `.muse/skills` by an older release are removed with the other harnesses.
 
 `--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
 independent runtime installations (default 4); `--runtime-timeout 10..1800`
@@ -151,18 +152,28 @@ and ignores a caller-supplied `UV_INSTALL_DIR`. It then runs
 `UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together; uv 0.12.23
 ships CPython 3.12.15. The script's body is `main`, called on the last line, so
 a truncated `curl | bash` does not run a prefix. Outside a checkout, Git clones
-or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. An existing
-checkout is executed only when `origin` matches `TKSTACK_REPO` or the tarball
-receipt matches that repository and archive URL. A failed `git pull --ff-only`
-stops and says to commit or stash so the fast-forward can succeed. When Git is
+or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. A directory
+that already exists at `TKSTACK_HOME` is not executed unless its git `origin`
+matches `TKSTACK_REPO` or `TKSTACK_TRUST_HOME=1`. The tarball receipt inside
+that directory is not a trust signal. A failed `git pull --ff-only`
+stops and says to commit or stash so the fast-forward can succeed.
+`TKSTACK_TRUST_HOME=1` re-downloads a non-git checkout and keeps `.tkstack`;
+it runs a non-matching git checkout in place and does not pull. When Git is
 absent, curl downloads
 `https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` (or the
-codeload archive for another GitHub `TKSTACK_REPO`, or `TKSTACK_TARBALL`) to a
+codeload archive for another GitHub `TKSTACK_REPO`, or an `https://`
+`TKSTACK_TARBALL`) to a
 file, rejects archives with more than one top-level directory or members and
 symlinks that escape the extract directory, and unpacks with
-`tar --no-same-owner --no-same-permissions`. A tarball checkout is frozen
-between runs and is downloaded again on the next installer run; that
-re-download keeps `.tkstack`. When needed, bootstrap installs **uv 0.12.23**
+`tar --no-same-owner --no-same-permissions`. `TKSTACK_TARBALL` must use
+`https://`. Any other scheme is refused. The repository tarball has no content
+hash: `tar.gz/main` is a mutable ref, and HTTPS does not pin those bytes.
+Symlink checks walk paths in bash and do not need `realpath`. A replacement
+copies `.tkstack` into the new tree first and restores the old directory if
+the swap fails. A tarball checkout is frozen
+between runs; the next trusted installer run downloads it again and keeps
+`.tkstack`. The uv installer's stdout is discarded so the bootstrap executes
+only `$HOME/.local/bin/uv`. When needed, bootstrap installs **uv 0.12.23**
 from a hash-locked Python wheel and **Node 24.19.0** from an official
 SHA-256-verified archive, privately under `.tkstack/runtime/toolchains/`. That
 pinned uv is separate from the standalone uv used only to get a host Python.

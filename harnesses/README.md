@@ -14,24 +14,36 @@ before changing its alias names.
 `placement` decides which harness directories receive each upstream source.
 Personal skills in `skills/` join every selected harness.
 `scripts/harness_paths.py` places those skills in Codex (`.agents/skills`),
-Claude Code (`.claude/skills`), Cursor (`.cursor/skills`), Grok
-(`.grok/skills`, the directory Grok Build reads), Kimi (`.kimi/skills`, the
+Claude Code (`.claude/skills`), Cursor (`.cursor/skills`), GitHub Copilot
+(`~/.copilot/skills` at home and `.github/skills` in a project; [Copilot CLI
+skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills)),
+Grok (`.grok/skills`, the directory Grok Build reads), Kimi (`.kimi/skills`, the
 kimi-cli directory; Kimi Code CLI's `~/.kimi-code/skills` is not installed),
-and OpenCode (`.config/opencode/skills` at home, `.opencode/skills` in a
-project). Muse is experimental: Muse Code has no separate skills directory
-and is not linked. Paths are relative to the install target, so a
+Muse, and OpenCode (`.config/opencode/skills` at home, `.opencode/skills` in a
+project). Muse Code 1.4.14 (`muse skills install --scope user`) writes
+`$XDG_CONFIG_HOME/muse/skills` when that variable is set, and otherwise
+`~/.config/muse/skills`. This installer links the default
+`~/.config/muse/skills` path and does not follow `XDG_CONFIG_HOME`, so an
+isolated target stays inside that target. Project Muse skills use
+`.agents/skills`, the same directory as Codex. `muse skills --help` does not
+print the directory; the 1.4.14 install result and the binary's
+`$CONFIG_DIR/skills` string do. Paths are relative to the install target, so a
 home install puts Claude Code in `~/.claude/skills`. `placement.default` is
-Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), and
-OpenCode (`.config/opencode/skills` or `.opencode/skills`). Emil Kowalski and
-ub-mode use that default, so a default profile install lands them in the
-shared Codex directory unless you also select the other harnesses. Pstack and Cursor Team Kit are Cursor packages
-and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
-ship per-harness builds for Codex, Claude Code (`.claude/skills`), and Cursor
-(`.cursor/skills`). Graphify also keeps a generic agent-skills view at
+Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`),
+OpenCode (`.config/opencode/skills` or `.opencode/skills`), Copilot, and Muse.
+Emil Kowalski and ub-mode use that default, so a default profile install lands
+them in the shared Codex directory unless you also select the other harnesses.
+Pstack and Cursor Team Kit are Cursor packages and go only to `.cursor/`
+(skills, agents, and rules). Graphify and Impeccable ship per-harness builds
+for Codex, Claude Code (`.claude/skills`), and Cursor (`.cursor/skills`).
+Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
 and Cursor views. t3code does not get a skills directory. It runs on Claude,
 Codex, Cursor, Copilot, or Grok and reads that host's skills.
 `scripts/harness_paths.py` records that delegation. See `t3code/README.md`.
+The repo-quality harness count stays 8 of 9 because of that: t3code is one of
+the nine hosts and has no native skills directory to link. The check still
+requires all nine; it is not rescoped to hide the missing directory.
 `./install.sh --uninstall` removes this checkout's links for every harness,
 its launchers, and its owned git docs hook. Reinstalling also removes this checkout's links that fall
 outside their placement; doctor reports any left. `sources.lock.json` pins the
@@ -57,11 +69,11 @@ skills and Node lifecycle-hook adapters. It is vendored so setup links the
 bytes locked in `sources.lock.json` instead of cloning upstream. It is not a
 harness directory.
 
-`copilot/lever.yml` supplies initial Lever repository defaults. Copilot is not a
-`--harness` skills directory. The separate `src/setup_lever.py` installs Lever's
-documented project Copilot layout, linking its skills into `.github/skills`, and
-creates `.github/lever.yml` only when absent. It preserves existing dials and
-leaves personal `~/.copilot/lever.yml` alone. See `docs/lever.md`.
+`copilot/lever.yml` supplies initial Lever repository defaults. `--harness
+copilot` links skills into `~/.copilot/skills` or `.github/skills`. The
+separate `src/setup_lever.py` also links Lever's skills into `.github/skills`
+and creates `.github/lever.yml` only when absent. It preserves existing dials
+and leaves personal `~/.copilot/lever.yml` alone. See `docs/lever.md`.
 
 The root `install.sh` is the dotfiles bootstrap: profiles for user installation,
 devcontainers, and Codex cloud startup coordinate these configurations with all

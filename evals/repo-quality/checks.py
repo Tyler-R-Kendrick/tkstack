@@ -6,7 +6,7 @@ Each check returns one JSON object. The process prints a JSON array and exits
 checkout can still fail them.
 """
 
-import importlib.util
+import ast
 import json
 import os
 import re
@@ -376,21 +376,177 @@ def marketplace_manifests(root):
     )
 
 
-def _installer_skill_directory(root):
-    """skill_directory from the checkout under test, or None when it cannot load."""
+class _Unstatic(Exception):
+    """The installer function is not a static lookup the grader can read."""
+
+
+def _literal_string(node):
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    return None
+
+
+def _path_literal(node):
+    text = _literal_string(node)
+    if text is not None:
+        return text
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "Path"
+        and len(node.args) == 1
+        and not node.keywords
+    ):
+        return _literal_string(node.args[0])
+    return None
+
+
+def _static_strings(node):
+    if not isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+        return None
+    values = []
+    for item in node.elts:
+        text = _literal_string(item)
+        if text is None:
+            return None
+        values.append(text)
+    return values
+
+
+def _assignment_value(node):
+    path = _path_literal(node)
+    if path is not None:
+        return path
+    if not isinstance(node, ast.Dict):
+        return None
+    if node.keys and any(key is None for key in node.keys):
+        return None
+    value = {}
+    for key, item in zip(node.keys, node.values):
+        name = _literal_string(key)
+        if name is None:
+            return None
+        nested = _path_literal(item)
+        if nested is None:
+            nested = _static_strings(item)
+        if nested is None:
+            return None
+        value[name] = nested
+    return value
+
+
+def _eval_static(node, env):
+    if isinstance(node, ast.Constant):
+        return node.value
+    if isinstance(node, ast.Name):
+        if node.id not in env:
+            raise _Unstatic()
+        return env[node.id]
+    if isinstance(node, ast.Subscript):
+        return _eval_static(node.value, env)[_eval_static(node.slice, env)]
+    if isinstance(node, ast.Compare):
+        left = _eval_static(node.left, env)
+        for op, comparator in zip(node.ops, node.comparators):
+            right = _eval_static(comparator, env)
+            if isinstance(op, ast.In):
+                ok = left in right
+            elif isinstance(op, ast.NotIn):
+                ok = left not in right
+            elif isinstance(op, ast.Eq):
+                ok = left == right
+            elif isinstance(op, ast.NotEq):
+                ok = left != right
+            else:
+                raise _Unstatic()
+            if not ok:
+                return False
+            left = right
+        return True
+    if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.And):
+        return all(_eval_static(item, env) for item in node.values)
+    if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+        return any(_eval_static(item, env) for item in node.values)
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        return not _eval_static(node.operand, env)
+    raise _Unstatic()
+
+
+_NO_RETURN = object()
+
+
+def _eval_block(body, env):
+    for stmt in body:
+        if isinstance(stmt, ast.Pass):
+            continue
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+            continue
+        if isinstance(stmt, ast.If):
+            if not isinstance(_eval_static(stmt.test, env), bool):
+                raise _Unstatic()
+            taken = stmt.body if _eval_static(stmt.test, env) else stmt.orelse
+            result = _eval_block(taken, env)
+            if result is not _NO_RETURN:
+                return result
+            continue
+        if isinstance(stmt, ast.Return):
+            if stmt.value is None:
+                return None
+            return _eval_static(stmt.value, env)
+        raise _Unstatic()
+    return _NO_RETURN
+
+
+def _home_skill_directories(root):
+    """Home-scope links declared by harness_paths.py. Parse only; never import it."""
     path = root / "scripts" / "harness_paths.py"
     if not path.is_file():
         return None
-    spec = importlib.util.spec_from_file_location("repo_quality_harness_paths", path)
-    if spec is None or spec.loader is None:
-        return None
-    module = importlib.util.module_from_spec(spec)
     try:
-        spec.loader.exec_module(module)
-    except Exception:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, SyntaxError, UnicodeError):
         return None
-    function = getattr(module, "skill_directory", None)
-    return function if callable(function) else None
+    env = {}
+    function = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            parsed = _assignment_value(node.value)
+            if parsed is None:
+                continue
+            env[node.targets[0].id] = parsed
+        elif isinstance(node, ast.FunctionDef) and node.name == "skill_directory":
+            function = node
+    if function is None or "SKILL_DIRECTORIES" not in env or not isinstance(env["SKILL_DIRECTORIES"], dict):
+        return None
+    for node in ast.walk(function):
+        if node is function:
+            continue
+        if isinstance(node, (ast.Call, ast.Attribute, ast.Import, ast.ImportFrom, ast.Lambda,
+                             ast.FunctionDef, ast.ClassDef, ast.Await, ast.Yield, ast.YieldFrom)):
+            return None
+    args = function.args
+    if args.vararg or args.kwarg or args.kwonlyargs or args.posonlyargs or not args.args:
+        return None
+    names = [arg.arg for arg in args.args]
+    defaults = [None] * (len(names) - len(args.defaults)) + list(args.defaults)
+    linked = {}
+    for harness in env["SKILL_DIRECTORIES"]:
+        local = dict(env)
+        local[names[0]] = harness
+        for name, default in zip(names[1:], defaults[1:]):
+            if default is None:
+                return None
+            try:
+                local[name] = _eval_static(default, env)
+            except _Unstatic:
+                return None
+        try:
+            relative = _eval_block(function.body, local)
+        except (_Unstatic, KeyError, TypeError):
+            return None
+        if relative is _NO_RETURN or not isinstance(relative, str) or not relative or relative.startswith("/"):
+            continue
+        linked[harness] = relative
+    return linked
 
 
 def _linked_placements(root):
@@ -415,21 +571,17 @@ def _linked_placements(root):
             for name in names:
                 if isinstance(name, str):
                     listed.append((name, f"harnesses/skills.json placement.sources.{source}"))
-    skill_directory = _installer_skill_directory(root)
+    directories = _home_skill_directories(root)
     linked = {}
-    if skill_directory is None:
+    if directories is None:
         return linked, experimental
     for name, label in listed:
         if name not in HARNESSES or name in experimental or name in linked:
             continue
-        try:
-            relative = skill_directory(name)
-        except Exception:
-            relative = None
-        if relative is None:
+        relative = directories.get(name)
+        if not relative:
             continue
-        text = relative.as_posix() if hasattr(relative, "as_posix") else str(relative)
-        linked[name] = f"{label}; installer links {text}"
+        linked[name] = f"{label}; installer links {relative}"
     return linked, experimental
 
 
@@ -437,7 +589,6 @@ def harness_coverage(root):
     """Count a harness only when skills.json placement is a directory the installer links."""
     linked, experimental = _linked_placements(root)
     notes = {
-        "copilot": "not counted; lever.yml is not a skills.json placement",
         "t3code": "not counted; no skills directory of its own",
     }
     evidence = []

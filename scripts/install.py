@@ -24,6 +24,8 @@ from setup_integrations import apply_configuration, configuration_plan
 ROOT = Path(__file__).resolve().parent.parent
 SKILL_PATHS = SKILL_DIRECTORIES
 DEFAULT_HARNESSES = ("codex", "claude", "cursor")
+# Releases before Muse moved to ~/.config/muse/skills linked .muse/skills.
+LEGACY_SKILL_DIRECTORIES = (Path(".muse/skills"),)
 # Committed third-party-derived packages; they install like a harness-independent source.
 ADOPTED_SOURCE = "adopted"
 AGENT_PATHS = {
@@ -198,10 +200,19 @@ def placed(root, kind, harness):
 
 
 def harness_skill_directories(harness, scope="home"):
-    """Skill directories this installer links. scope None scans every OpenCode scope."""
-    if harness == "opencode" and scope is None:
-        return [Path(".config/opencode/skills"), Path(".opencode/skills")]
-    relative = skill_directory(harness, "home" if scope is None else scope)
+    """Skill directories this installer links.
+
+    scope None scans home and project. Uninstall uses that so a project
+    Copilot, Muse, or OpenCode link is removed with the home link.
+    """
+    if scope is None:
+        found = []
+        for scope_name in ("home", "project"):
+            relative = skill_directory(harness, scope_name)
+            if relative is not None and relative not in found:
+                found.append(relative)
+        return found
+    relative = skill_directory(harness, scope)
     return [] if relative is None else [relative]
 
 
@@ -230,7 +241,15 @@ def link_plan(root, target, harnesses, scope="home"):
                         for name, source in placed(root, "rules", harness).items())
             for rule in sorted((root / "harnesses/cursor").glob("*.mdc")):
                 plan.append((rule.resolve(), target / ".cursor/rules" / rule.name))
-    return plan
+    # Project Muse shares Codex's .agents/skills, so the same link can be planned twice.
+    unique = []
+    seen = set()
+    for item in plan:
+        if item in seen:
+            continue
+        seen.add(item)
+        unique.append(item)
+    return unique
 
 
 def matches(destination, source):
@@ -246,6 +265,7 @@ def stale_links(root, target, harnesses, plan, scope="home"):
     directories += [AGENT_PATHS[h] for h in harnesses if h in AGENT_PATHS]
     if "cursor" in harnesses:
         directories.append(Path(".cursor/rules"))
+    directories.extend(LEGACY_SKILL_DIRECTORIES)
     root = root.resolve()
     stale = []
     for relative in directories:
