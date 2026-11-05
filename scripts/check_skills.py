@@ -70,6 +70,8 @@ def check(root=ROOT, jobs=4):
 if __name__ == '__main__':
     try:
         rows = check()
+        import routing_inventory
+        routing_inventory.check(ROOT)
         print(json.dumps({'status': 'pass', 'skills': len(rows), 'results': rows,
                           'limits': 'Conformance is not a semantic/model-quality score or native provider activation proof.'}, indent=2))
     except (OSError, ValueError, KeyError, TypeError) as error:

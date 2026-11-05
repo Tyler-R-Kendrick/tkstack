@@ -11,6 +11,12 @@ select the matching reference and keep that boundary; review alone does not
 start worktrees, agents, publication, or merging. A full implementation request
 loads the complete operating guide and retains all lifecycle requirements below.
 
+Which installed skill fits a phase is
+[the routing guide](../skills/sdlc/references/skill-routing.md). The SDLC skill
+links that guide from its request table and keeps this page on the outer loop.
+`python3 scripts/routing_inventory.py check` fails when a skill has no routing
+entry or an entry names a missing skill.
+
 The outer loop defines the outcome, decomposes it, challenges the result, and
 delivers it. Each worker runs an inner red → green → refactor loop at a public
 behavior or contract seam. Given/When/Then scenarios and real consumer/provider

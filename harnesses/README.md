@@ -1,16 +1,22 @@
 # Harness preferences
 
 `skills.json` maps source-local skill names to installed aliases. Matt Pocock's
-`tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. The installer
-generates a copy of Matt's skill tree with declarations and invocation
-references rewritten; relative reference paths and invocation-policy metadata
-stay intact. Remove an existing installation before changing its alias names.
+`tdd` is installed as `matt-tdd`, preserving Pstack's `tdd`. Emil Kowalski's
+`prototype` is installed as `emil-prototype`, preserving Matt's `prototype`.
+The installer generates a copy of each aliased source's skill tree with
+declarations and invocation references rewritten; relative reference paths and
+invocation-policy metadata stay intact. Emil's generated view rewrites quoted
+`prototype` calls, including the one in `break-ui`. Pstack keeps
+`rewrite_callers` off, so only `unslop` becomes `pstack-unslop` and its other
+callers still resolve to the personal `unslop`. Remove an existing installation
+before changing its alias names.
 
 `placement` decides which harness directories receive each upstream source.
 Personal skills in `skills/` join every selected harness. By default, upstream
 skills and the committed third-party-derived packages in `.agents/skills/` go
 only to the shared `.agents/skills/` directory (the `codex` slot, which other
-Agent Skills hosts also read). Pstack and Cursor Team Kit are Cursor packages
+Agent Skills hosts also read). Emil Kowalski and ub-mode use that default.
+Pstack and Cursor Team Kit are Cursor packages
 and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
 ship per-harness builds and keep every harness. Reinstalling removes this
 checkout's links that fall outside their placement; doctor reports any left.

@@ -246,7 +246,9 @@ class CommandSchemaTests(unittest.TestCase):
         (self.root / 'commands').rename(hidden)
         self.compile()
         hidden.rename(self.root / 'commands')
-        self.assertIn('not bound', self.cli_error('invoke', self.root, '--', 'repeat', 'x'))
+        error = self.cli_error('invoke', self.root, '--', 'repeat', 'x')
+        self.assertIn('Stale workflow inventory', error)
+        self.assertIn('commands/run.md', error)
 
     def cli_error(self, *args):
         result = subprocess.run([sys.executable, '-B', str(SCRIPT), *map(str, args)],

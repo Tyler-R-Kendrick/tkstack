@@ -4494,6 +4494,173 @@
           "mode": "100644"
         }
       }
+    },
+    "emil-kowalski": {
+      "repository": "https://github.com/emilkowalski/skills",
+      "revision": "c8a79627b59d72d764d6ab6f2c87c09a48169833",
+      "path": ".",
+      "license": "MIT",
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        ".gitattributes": {
+          "git_blob": "a0652a605e6b418261a2b4fb1ad82576be0c3b53",
+          "mode": "100644"
+        },
+        ".gitignore": {
+          "git_blob": "e43b0f988953ae3a84b00331d0ccf5f7d51cb3cf",
+          "mode": "100644"
+        },
+        ".pl": {
+          "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "57b46f1fd11dc62351ea548104a88aa3f659c11b",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "e77e3dbb87c3349e323cbebd46d91fd7dbdc5b1b",
+          "mode": "100644"
+        },
+        "performance-cheatsheet.md": {
+          "git_blob": "15f73d24a3b0e8a44d96d16d996719565b3ab7d5",
+          "mode": "100644"
+        },
+        "skills/animate-expo/RECIPES.md": {
+          "git_blob": "a02e6b80f9dec86f196590f2f7a4fe3310ea1cb4",
+          "mode": "100644"
+        },
+        "skills/animate-expo/SKILL.md": {
+          "git_blob": "78b39e1d22e8c3c15be96ccebe04bf39792f3455",
+          "mode": "100644"
+        },
+        "skills/animate/RECIPES.md": {
+          "git_blob": "6744891261bdf0bb0473d77f2cc706f2d78b574e",
+          "mode": "100644"
+        },
+        "skills/animate/SKILL.md": {
+          "git_blob": "2d3b63acc5e2afcbf54b5ba59792e69fa51bcb0d",
+          "mode": "100644"
+        },
+        "skills/animation-performance/SKILL.md": {
+          "git_blob": "74c421e4e673cab84490f8b17b89735c30b0f555",
+          "mode": "100644"
+        },
+        "skills/animation-vocabulary/SKILL.md": {
+          "git_blob": "5ab2976514c74a194ebf069506d95ff3a5a0084f",
+          "mode": "100644"
+        },
+        "skills/apple-design/SKILL.md": {
+          "git_blob": "adf68c517f2d7d2781587d619de07f4de286da57",
+          "mode": "100644"
+        },
+        "skills/ask-sonner/API.md": {
+          "git_blob": "d2b0f3cf93d9495a8496275dc6e70199302df0f1",
+          "mode": "100644"
+        },
+        "skills/ask-sonner/SKILL.md": {
+          "git_blob": "6cf9217f409315466ecfd7796de4591879983637",
+          "mode": "100644"
+        },
+        "skills/break-ui/CATALOG.md": {
+          "git_blob": "46962bb89445b8526ea94994a79b49508573b5fd",
+          "mode": "100644"
+        },
+        "skills/break-ui/SKILL.md": {
+          "git_blob": "091a28d488662d2451131f1aaa60a6dcd2391932",
+          "mode": "100644"
+        },
+        "skills/choreograph/RECIPES.md": {
+          "git_blob": "17936a9cfc3e26224c5b4555f5a239758718815c",
+          "mode": "100644"
+        },
+        "skills/choreograph/SKILL.md": {
+          "git_blob": "9fef0048d260be7bc05a909a03b52627bb3ccf37",
+          "mode": "100644"
+        },
+        "skills/emil-design-eng/SKILL.md": {
+          "git_blob": "dc063c2a861922c1c9f2412b824b0862746304f5",
+          "mode": "100644"
+        },
+        "skills/find-animation-opportunities/SKILL.md": {
+          "git_blob": "d3b030fbca9abad9220a032f72d425c6b7fa2de8",
+          "mode": "100644"
+        },
+        "skills/improve-animations/AUDIT.md": {
+          "git_blob": "0862c446eea250326cdd2054fc3492c6707f4cf7",
+          "mode": "100644"
+        },
+        "skills/improve-animations/PLAN-TEMPLATE.md": {
+          "git_blob": "239026b91f8032df191dde2085fd796b8c116d91",
+          "mode": "100644"
+        },
+        "skills/improve-animations/SKILL.md": {
+          "git_blob": "d6e77f37272329af0cc36f9eeedbe5226e86ce63",
+          "mode": "100644"
+        },
+        "skills/mobile-native/SKILL.md": {
+          "git_blob": "94bba21fcb990b850e06effbf5709c96a07446ad",
+          "mode": "100644"
+        },
+        "skills/pick-ui-library/SKILL.md": {
+          "git_blob": "5e0028e988b88d2a88a019fdc978b4732243e467",
+          "mode": "100644"
+        },
+        "skills/prototype/PICKER.md": {
+          "git_blob": "aaa88c0eba38eb01c00d4eb2b144e39f808fc26a",
+          "mode": "100644"
+        },
+        "skills/prototype/SKILL.md": {
+          "git_blob": "dbcc1a23c66933f7372c0aacbce2b0d7cc6100b6",
+          "mode": "100644"
+        },
+        "skills/remove-animations/SKILL.md": {
+          "git_blob": "100b7b7666f7d09c69a75ebb793e30e607058e77",
+          "mode": "100644"
+        },
+        "skills/review-animations/SKILL.md": {
+          "git_blob": "591397b5308266f76671dacc3e44830a3e3e535f",
+          "mode": "100644"
+        },
+        "skills/review-animations/STANDARDS.md": {
+          "git_blob": "67b6edb5ed45aeafe7e3706bb76e27f3bd209a92",
+          "mode": "100644"
+        },
+        "skills/write-swift/SKILL.md": {
+          "git_blob": "a09a8f693304fe1c04ed56d61dde9833a516849e",
+          "mode": "100644"
+        },
+        "ui-cheatsheet.md": {
+          "git_blob": "a5c803280b82f72dd11ed2136caaf0ea8c139a5c",
+          "mode": "100644"
+        }
+      }
+    },
+    "ub-mode": {
+      "repository": "https://github.com/unclebob/ub-mode",
+      "revision": "3da62bf3fcfd2034de41f30d920d2739e566171f",
+      "path": ".",
+      "license": "MIT",
+      "paths": {
+        "skills": "."
+      },
+      "evaluation": "source-reviewed",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        "LICENSE": {
+          "git_blob": "28dd8b5d6311ca1aaa71276043c0e975dc9e9766",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "c54164fb5a21a0f917e081fd54c959d4d235ea01",
+          "mode": "100644"
+        },
+        "SKILL.md": {
+          "git_blob": "9ac940b23b61d77e8e5192721d7b6066357f892c",
+          "mode": "100644"
+        }
+      }
     }
   }
 }

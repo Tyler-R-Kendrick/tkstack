@@ -4,15 +4,15 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "e202c618807c5158aa6671a612f1c5a011973776"
+          "oid": "d6b8190321bff3557aa0bb3d8fc8a85d97bdf6c6"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -98,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "cdc69f72b1aca8ba334d8ec80ac3fe4dc6dbd133"
+          "oid": "fe1f7c355a129c98d9b13975e2b0aa493fec3b30"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -106,7 +106,7 @@
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
-          "oid": "f5b751f77361bc453b8a31f1cc5fdd1646506d35"
+          "oid": "b2a8b3dbf6baee21698f8702dd642f0ac76da540"
         },
         "skills/learn/skills/codify/references/compilation.md": {
           "mode": "100644",
@@ -182,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -226,7 +226,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "c9ed23fc7d5ac6a674015ef0998777bc68b40071"
+          "oid": "7832cc6887d67d98c49b32a39d9697789b699234"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -414,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "beec87ee0bc9223dbc429bc33750191a61b7c1ca"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "1ce48c01e6ac8c91af3c8b2bb9a8acbea9a24ed9"
+          "oid": "a4f9d751d1562bbfca3a861383f27605d426f3bd"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -537,26 +537,26 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "no_doc_impact": true,
+      "reason": "Recompiled the codify and skillify locks after recording --include paths and applying parent inventory limits after nested skill packages are omitted. The authoring docs already describe that contract."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
+          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
         }
       },
       "inputs": {
@@ -570,7 +570,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "d9c6a2c923f83053c2d88f9a7575c22dcf3aea8b"
+          "oid": "2c39cc8ed20e8dc1fd3df7d67b05ca54e079a64c"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -618,21 +618,21 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "3fc5643e00450c4b35f3eac1f40f6acebaa92f44"
+          "oid": "e401f919f465188961b89d6bb6ef7f8aabe170a7"
         },
         "sources.lock.json": {
           "mode": "100644",
-          "oid": "76b93e7db565fc8bd04c7c531bcff2abbe046775"
+          "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Emil Kowalski is the complete 33-file upstream tree. The pin is 19 sources and 1094 files, with no selection field."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -647,7 +647,7 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "f4735f0a026bdf3be25e63c1b79799381b851d33"
+          "oid": "de6229a37be6dfff619e494766d53139286e6af3"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
@@ -679,11 +679,11 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "7256d2fe1b19eb8763e73ff1222c2be7e1a8dc09"
+          "oid": "19895586a75d35485deffcfdebf2635eb98103d7"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
-          "oid": "5ee7173583538fdf85d434948ab760f8402bfbbe"
+          "oid": "ae5fac132493f1287b1c7bcb302773e991c8409d"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -707,7 +707,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "7a89eec28716fda3def201bddff3b5d8d9cf1ff2"
+          "oid": "0678dbd235970eb82a1aa4e6ef8504d2adef253b"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -761,6 +761,10 @@
           "mode": "100644",
           "oid": "1570263b1a02a35b7b992fbd913bedb4695af440"
         },
+        "tests/test_skill_routing.py": {
+          "mode": "100644",
+          "oid": "ab8999d27143a67765198ba523ddf02647b02ab8"
+        },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
           "oid": "40e486488580aa65a14a972e0fc9c74bc966cd58"
@@ -778,18 +782,18 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "no_doc_impact": true,
+      "reason": "Codify tests cover nested-package inventory limits and recorded include directories. The contract text is in the authoring docs."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
         },
         "docs/runner.md": {
           "mode": "100644",
@@ -819,25 +823,25 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "README now runs check_skills through the managed command-schema runtime. Runner behavior is unchanged."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "5bd7760af893c73f5642440c3af2230219402cee"
+          "oid": "0225921bbe6d3a7f643f5c6091516731bded634a"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
         }
       },
       "inputs": {
@@ -891,7 +895,7 @@
         },
         "scripts/check_skills.py": {
           "mode": "100644",
-          "oid": "dbb4793c1340d659d817ff47aa4d11b9af0c91d7"
+          "oid": "cac7fe6d6509917e97ed6505a5e5289c5f1f3511"
         },
         "scripts/codex-cloud-setup.sh": {
           "mode": "100755",
@@ -929,6 +933,10 @@
           "mode": "100644",
           "oid": "bec87a94504ba528f4d34843dcb4bdd4ed12b576"
         },
+        "scripts/routing_inventory.py": {
+          "mode": "100644",
+          "oid": "779d0c37e68d5080a0a43bf649f05eae16a50b28"
+        },
         "scripts/runner_install.py": {
           "mode": "100644",
           "oid": "25db58ef774ba9133ed35c4832bd09462a80c767"
@@ -955,13 +963,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Corrected the README skill check to the managed command-schema interpreter after the routing inventory script change."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -981,7 +989,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "f194efd6ab516f3e33f701f4ff133c60d0bcda73"
+          "oid": "f50d6c81fe2978274227ffa1ce8182096db0209f"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -993,7 +1001,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
+          "oid": "96eb4aa81add9fad0ec4302ebc4cdb29e830cc0e"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1005,7 +1013,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "42bb5bfc3aec28ab28cbc1167366d903a2db4280"
+          "oid": "14df3d9b3efab318e0c1789d878250b8bd84b836"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -1017,11 +1025,11 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
+          "oid": "19e2b1bffed6dbdbb984da667056f5910dcfa333"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "adaa6b25c845fc446b0c1c7636cb95367cd80669"
+          "oid": "27ddd9b6058a41389ab39b3303e6cbb18558ce30"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -2231,7 +2239,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "fabc50c606ac14e3c049964473690baa960a49a3"
+          "oid": "05d5fa1162383e56762ac25418009316bdb3886a"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2341,6 +2349,14 @@
           "mode": "100644",
           "oid": "428deea952d93b122257a354a9de5b1c47f9036b"
         },
+        "skills/sdlc/references/routing.json": {
+          "mode": "100644",
+          "oid": "c6db289b1638e09b92709827dcd00bc730c4b969"
+        },
+        "skills/sdlc/references/skill-routing.md": {
+          "mode": "100644",
+          "oid": "bc6f41fdf6e8b1339b9e69793c7f54dddf9a9203"
+        },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
           "oid": "a8f364a8cb24785ed4d359cd7fbc7a5780aa91b2"
@@ -2391,7 +2407,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "187ecccb5e337cfa5c246ccc826e319af7b6515b"
+          "oid": "fdb9d131dd3591f71e72c9733781281f458a8b9d"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2699,7 +2715,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "The SDLC routing guide contrasts every skill, rejects unlisted duplicate names, and notes that ub-mode does not authorize push-to-main."
     }
   },
   "object_format": "sha1",
