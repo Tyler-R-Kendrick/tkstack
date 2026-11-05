@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,6 +19,7 @@
           "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
         }
       },
+      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
       "inputs": {
         "scripts/sync_codify.py": {
           "mode": "100644",
@@ -544,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -559,6 +560,7 @@
           "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
         }
       },
+      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -632,11 +634,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "7890533ae1b10f88fd945d111c9b6e061bd05c6e"
+          "oid": "f83aed8b4aa4dc6343ce81be11bb74e93292ecb8"
         }
       },
       "inputs": {
@@ -737,6 +739,10 @@
           "mode": "100644",
           "oid": "b0cffe8280ce71c3f7bbac68562039fd2a910c7b"
         },
+        "tests/test_repo_quality.py": {
+          "mode": "100644",
+          "oid": "c4f83c45ef412798c9b09b9b830e92192ec1d1f1"
+        },
         "tests/test_reusify.py": {
           "mode": "100644",
           "oid": "c486238606c7933564fe18c8a390a8a9938ea767"
@@ -779,13 +785,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "reason": "Documented tests/test_repo_quality.py ceiling and judge gates in the maintainer guide and documentation page"
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -796,6 +802,7 @@
           "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
         }
       },
+      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -825,7 +832,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -840,6 +847,7 @@
           "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
         }
       },
+      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -961,7 +969,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "f7a96a0e858028fc3af7382af16b503ec6691cb0"
+          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -977,7 +985,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "95a7c2637f5b93458b9814597a3e6881c29b8645"
+          "oid": "64bf90ed0caca6c07feadcdb9c86c0d666c67c62"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1035,7 +1043,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a78686d645f192c7acd2dce280b92d757ce8bdb1"
+          "oid": "1587d0963f5707a687faaf395089bd944880d074"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1084,6 +1092,30 @@
         "evals/open-design/tasks.json": {
           "mode": "100644",
           "oid": "6a900d9520b9796f7de5b64185b72c8fcdab9fa9"
+        },
+        "evals/repo-quality/checks.py": {
+          "mode": "100644",
+          "oid": "d613ec2248a17939ac25dc158f8e23735d323c81"
+        },
+        "evals/repo-quality/eval.yaml": {
+          "mode": "100644",
+          "oid": "7aa0ee5b86aaf98203341d787b6c950a43753e92"
+        },
+        "evals/repo-quality/judge.py": {
+          "mode": "100644",
+          "oid": "e309659f92a0bb6f5ccafe2046607535472dcd8d"
+        },
+        "evals/repo-quality/results/baseline-checks.json": {
+          "mode": "100644",
+          "oid": "c8f073b5ed5cfbc96dfa93f99b571c78bb2b3730"
+        },
+        "evals/repo-quality/results/baseline-reasons.md": {
+          "mode": "100644",
+          "oid": "496c6b5e570993cc2d0caab8b05b84fc54735489"
+        },
+        "evals/repo-quality/snapshot.py": {
+          "mode": "100644",
+          "oid": "86f5f3f8da827dc7903a4c11c0216e0ff1d209fe"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2698,8 +2730,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Moved the seven ___ify skills under skills/learn/skills as Learn subskills, added Codify mounted-subskill commands and Skillify subskills profiles, and updated the catalog, marketplace, runner, normalization, learning, and authoring docs to match."
+      "no_doc_impact": true,
+      "reason": "dropped bulky raw promptfoo output from results/; docs already describe the harness"
     }
   },
   "object_format": "sha1",

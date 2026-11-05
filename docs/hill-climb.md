@@ -34,6 +34,9 @@ or keyword scores cannot establish a design win. A fixed unslop rubric snapshot
 is hashed with the run; new user corrections change the rubric and require a
 fresh comparison. For skill-prompt changes, the configured `learn improve` and
 SkillOpt adoption gate still applies when its real suite is available.
+Checkout-level grades live in [`evals/repo-quality`](../evals/repo-quality/)
+([Repository quality](../evals/README.md)). That promptfoo rubric is not this
+skill's JSONL comparison helper and does not adopt a patch.
 
 Independent candidates can use separate worktrees and authorized subagents.
 Concurrent timing measurements must not contaminate one another. An explicitly

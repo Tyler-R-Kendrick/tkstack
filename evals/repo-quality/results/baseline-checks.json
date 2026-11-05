@@ -1,0 +1,104 @@
+[
+  {
+    "name": "scripts_loc",
+    "metric": "minimal_code",
+    "pass": false,
+    "value": 3117,
+    "limit": 1500,
+    "explanation": "scripts/ has 3117 non-blank lines. The best-practice ceiling for dotfiles glue is 1500.",
+    "evidence": [
+      "scripts/install.py: 329 non-blank lines",
+      "scripts/setup_integrations.py: 312 non-blank lines",
+      "scripts/check_docs.py: 268 non-blank lines",
+      "scripts/bootstrap.py: 257 non-blank lines",
+      "scripts/tkstack.py: 247 non-blank lines",
+      "scripts/tkstack_state.py: 202 non-blank lines",
+      "scripts/evolve.py: 131 non-blank lines",
+      "scripts/setup_repo_hooks.py: 128 non-blank lines"
+    ]
+  },
+  {
+    "name": "quickstart_commands",
+    "metric": "minimal_setup",
+    "pass": false,
+    "value": 4,
+    "limit": 1,
+    "explanation": "The README quickstart has 4 commands. Best practice is a single install command (limit 1).",
+    "evidence": [
+      "README.md: git clone https://github.com/Tyler-R-Kendrick/tkstack.git \"$HOME/.local/share/tkstack\"",
+      "README.md: cd \"$HOME/.local/share/tkstack\"",
+      "README.md: ./install.sh",
+      "README.md: . .tkstack/bootstrap/env.sh"
+    ]
+  },
+  {
+    "name": "marketplace_manifests",
+    "metric": "marketplace_install",
+    "pass": false,
+    "value": "missing .claude-plugin/plugin.json",
+    "limit": "valid marketplace.json, valid plugin.json, skill name+description frontmatter",
+    "explanation": "Marketplace install needs valid .claude-plugin/marketplace.json and .claude-plugin/plugin.json, and name plus description frontmatter on every owned skill. missing .claude-plugin/plugin.json.",
+    "evidence": [
+      ".claude-plugin/marketplace.json: valid JSON object",
+      "absent: .claude-plugin/plugin.json",
+      "19 SKILL.md files under skills/ and .agents/skills/ have name and description"
+    ]
+  },
+  {
+    "name": "harness_coverage",
+    "metric": "cross_harness",
+    "pass": false,
+    "value": 7,
+    "limit": 9,
+    "explanation": "7 of 9 harnesses (claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) are mentioned in harnesses/README.md or docs/.",
+    "evidence": [
+      "claude: harnesses/README.md",
+      "codex: harnesses/README.md",
+      "cursor: harnesses/README.md",
+      "copilot: harnesses/README.md",
+      "grok: docs/adr/0003-separate-procedural-experience.md",
+      "kimi: not mentioned in harnesses/README.md or docs/",
+      "muse: not mentioned in harnesses/README.md or docs/",
+      "opencode: docs/caveman.md",
+      "t3code: docs/evaluation.md"
+    ]
+  },
+  {
+    "name": "install_flags",
+    "metric": "dotfiles",
+    "pass": false,
+    "value": [
+      "--dry-run"
+    ],
+    "limit": [
+      "--dry-run",
+      "--uninstall"
+    ],
+    "explanation": "install.sh must accept --dry-run and --uninstall, in that file or in the Python entrypoint it execs. Supported flags: --dry-run.",
+    "evidence": [
+      "install.sh",
+      "scripts/bootstrap.py",
+      "missing --uninstall"
+    ]
+  },
+  {
+    "name": "top_level_files",
+    "metric": "conventions",
+    "pass": true,
+    "value": 10,
+    "limit": 12,
+    "explanation": "The repository root has 10 files. Best practice for a scannable dotfiles root is at most 12.",
+    "evidence": [
+      ".gitattributes",
+      ".gitignore",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "GLOSSARY.md",
+      "LICENSE",
+      "README.md",
+      "SCOPE.md",
+      "install.sh",
+      "sources.lock.json"
+    ]
+  }
+]
