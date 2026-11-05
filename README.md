@@ -12,7 +12,7 @@ One command obtains `~/.local/share/tkstack` and installs it into your home.
 Bash and curl are the only host prerequisites. Git clones the checkout when it
 is on PATH; otherwise the installer downloads the GitHub tarball with curl.
 Python 3.11+ is used when it is already installed. Otherwise the installer
-bootstraps uv and installs Python 3.12 itself.
+downloads uv 0.12.23, checks its sha256, and installs Python 3.12.15.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
@@ -108,22 +108,53 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `devcontainer` | Codex, Claude Code, Cursor | Selected workspace |
 | `codex-cloud` | Codex | Off |
 
-The host needs Bash and curl. Missing Python **3.11+** is installed with the official uv installer (`uv python install 3.12`). Missing Git is replaced by a curl tarball of the GitHub repository.
+The host needs Bash and curl. Missing Python **3.11+** is installed with uv **0.12.23** (`uv python install 3.12.15`) after that installer sha256 is checked. Missing Git is replaced by a curl tarball of the GitHub repository.
 Setup can provision private Node **24.19.0** and uv **0.12.23** when needed.
 <!-- tkstack:profiles:end -->
 
 `install.sh` uses `TKSTACK_PYTHON` when that executable is Python 3.11+.
 Otherwise it tries `python3`, `python3.13`, `python3.12`, and `python3.11`.
-If none of those is Python 3.11+, it installs uv with
-`curl -LsSf https://astral.sh/uv/install.sh | sh` and runs
-`uv python install 3.12`, then `uv run --python 3.12`. That uv only bootstraps
-the host interpreter. Setup still provisions private Node and the pinned uv
-when those tools are missing. Set `TKSTACK_HOME` to choose the checkout
-directory and `TKSTACK_REPO` to choose the Git URL. Without Git, a GitHub HTTPS
-remote is downloaded from codeload (`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main`
-for the default repository). Set `TKSTACK_TARBALL` to override that archive URL.
-A later run updates a Git checkout with `git pull --ff-only`. A checkout obtained
-without Git is reused as it is.
+If none of those is Python 3.11+, it downloads uv 0.12.23 from
+`https://astral.sh/uv/0.12.23/install.sh`, requires sha256
+`b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491`, and runs
+`uv python install 3.12.15`, then `uv run --python 3.12.15`. The download is
+saved to a temporary file and checked before it runs. A caller-supplied
+`UV_INSTALL_DIR` is ignored; the installer execs `$HOME/.local/bin/uv`.
+Rotate the pin by changing `UV_VERSION`, `UV_INSTALLER_URL`,
+`UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together.
+uv 0.12.23 ships CPython 3.12.15 and does not ship 3.12.16. That uv only
+bootstraps the host interpreter. Setup still provisions private Node and the
+pinned uv when those tools are missing.
+
+`TKSTACK_HOME` chooses the checkout directory (default `~/.local/share/tkstack`).
+The installer runs an existing checkout only when its git `origin` matches
+`TKSTACK_REPO` (default `https://github.com/Tyler-R-Kendrick/tkstack.git`,
+ignoring a trailing `.git`) or its tarball receipt
+(`.tkstack/source-receipt.txt`) matches that repository and the archive URL.
+Anything else is refused. `TKSTACK_REPO` chooses the Git URL. Without Git, a
+GitHub HTTPS remote is downloaded from codeload
+(`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` for the
+default repository). Set `TKSTACK_TARBALL` to override that archive URL. The
+download is checked for curl failure, one top-level directory, and members or
+symlinks that escape the extract directory, then extracted with
+`--no-same-owner` and `--no-same-permissions`. A later run updates a Git
+checkout with `git pull --ff-only` and stops with a commit-or-stash message
+when that fast-forward fails. A tarball checkout is frozen between runs: there
+is no git fast-forward, and the next installer run downloads it again. That
+re-download keeps the existing `.tkstack` directory. Fixes in a tarball
+checkout arrive only when the installer runs.
+
+### Verify the installer first
+
+The one-line command under [Install](#install) is the supported quickstart.
+`install.sh` wraps its work in `main` and calls it on the last line, so a
+truncated download does not run a prefix. To inspect the file before running it:
+
+```sh
+curl -fsSL -o /tmp/tkstack-install.sh https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh
+# Compare /tmp/tkstack-install.sh with install.sh from a checkout you already trust, then:
+bash /tmp/tkstack-install.sh
+```
 
 ```sh
 ./install.sh --profile codex-cloud       # Codex-only host configuration

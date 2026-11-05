@@ -133,7 +133,7 @@ def profile_block(snapshot):
     rows = [START, '| Profile | Harness configuration | Lever Copilot layout |', '| --- | --- | --- |']
     for name, settings in profiles.items():
         rows.append('| `' + name + '` | ' + ', '.join(names[harness] for harness in settings['harnesses']) + ' | ' + ('Selected workspace' if settings['copilot'] else 'Off') + ' |')
-    rows.extend(['', 'The host needs Bash and curl. Missing Python **' + toolchains['python_minimum'] + '+** is installed with the official uv installer (`uv python install 3.12`). Missing Git is replaced by a curl tarball of the GitHub repository.',
+    rows.extend(['', 'The host needs Bash and curl. Missing Python **' + toolchains['python_minimum'] + '+** is installed with uv **' + toolchains['uv_version'] + '** (`uv python install 3.12.15`) after that installer sha256 is checked. Missing Git is replaced by a curl tarball of the GitHub repository.',
         'Setup can provision private Node **' + toolchains['node_version'] + '** and uv **' + toolchains['uv_version'] + '** when needed.', END])
     return '\n'.join(rows)
 

@@ -142,16 +142,26 @@ is part of bootstrap.
 
 Bash and curl are the host prerequisites. `install.sh` uses Python 3.11+ when
 `TKSTACK_PYTHON`, `python3`, `python3.13`, `python3.12`, or `python3.11` is new
-enough (Python 3.12 preferred). Otherwise it installs uv with the official
-standalone installer (`curl -LsSf https://astral.sh/uv/install.sh | sh`, honoring
-`UV_INSTALL_DIR`, without editing shell startup files) and runs the bootstrap
-through `uv python install 3.12` and `uv run --python 3.12`. Outside a checkout,
-Git clones or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. When
-Git is absent, curl downloads
+enough. Otherwise it downloads the uv 0.12.23 installer to a temporary file,
+requires sha256 `b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491`,
+and ignores a caller-supplied `UV_INSTALL_DIR`. It then runs
+`uv python install 3.12.15` and `uv run --python 3.12.15` from
+`$HOME/.local/bin/uv`. Rotate `UV_VERSION`, `UV_INSTALLER_URL`,
+`UV_INSTALLER_SHA256`, and `PYTHON_VERSION` in `install.sh` together; uv 0.12.23
+ships CPython 3.12.15. The script's body is `main`, called on the last line, so
+a truncated `curl | bash` does not run a prefix. Outside a checkout, Git clones
+or fast-forwards `~/.local/share/tkstack` when `git` is on PATH. An existing
+checkout is executed only when `origin` matches `TKSTACK_REPO` or the tarball
+receipt matches that repository and archive URL. A failed `git pull --ff-only`
+stops and says to commit or stash so the fast-forward can succeed. When Git is
+absent, curl downloads
 `https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main` (or the
-codeload archive for another GitHub `TKSTACK_REPO`, or `TKSTACK_TARBALL`) and
-unpacks it with `tar`. A checkout obtained that way is reused on the next run;
-it is not rewritten in place. When needed, bootstrap installs **uv 0.12.23**
+codeload archive for another GitHub `TKSTACK_REPO`, or `TKSTACK_TARBALL`) to a
+file, rejects archives with more than one top-level directory or members and
+symlinks that escape the extract directory, and unpacks with
+`tar --no-same-owner --no-same-permissions`. A tarball checkout is frozen
+between runs and is downloaded again on the next installer run; that
+re-download keeps `.tkstack`. When needed, bootstrap installs **uv 0.12.23**
 from a hash-locked Python wheel and **Node 24.19.0** from an official
 SHA-256-verified archive, privately under `.tkstack/runtime/toolchains/`. That
 pinned uv is separate from the standalone uv used only to get a host Python.

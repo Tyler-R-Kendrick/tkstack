@@ -1,8 +1,11 @@
 """Exercise installation against temporary targets, never the user's home."""
 
+import hashlib
 import importlib.util
+import io
 import os
 import re
+import tarfile
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
@@ -383,29 +386,35 @@ printf '%s\\n' "$*" >> "$UV_LOG"
 exit 0
 """
 
-_CURL_UV = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$CURL_LOG"
-url=
-for arg in "$@"; do
-  case "$arg" in
-    https://*|http://*) url=$arg ;;
-  esac
-done
-case "$url" in
-  https://astral.sh/uv/install.sh) ;;
-  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
-esac
-cat << 'INSTALLER'
-#!/bin/sh
+_UV_INSTALLER_BODY = """#!/bin/sh
 bindir="${UV_INSTALL_DIR:-$HOME/.local/bin}"
 mkdir -p "$bindir"
 cat > "$bindir/uv" << 'UV'
 #!/bin/sh
-printf '%s\n' "$*" >> "$UV_LOG"
+printf '%s\\n' "$*" >> "$UV_LOG"
 exit 0
 UV
 chmod +x "$bindir/uv"
-INSTALLER
+"""
+
+_CURL_UV = r"""#!/bin/sh
+printf '%s\n' "$*" >> "$CURL_LOG"
+out=
+url=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) out=$2; shift 2 ;;
+    -o*) out=${1#-o}; shift ;;
+    https://*|http://*) url=$1; shift ;;
+    *) shift ;;
+  esac
+done
+case "$url" in
+  https://astral.sh/uv/0.12.23/install.sh) ;;
+  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
+esac
+[ -n "$out" ] || { printf '%s\n' 'missing -o' >&2; exit 1; }
+cat "$UV_INSTALLER_FILE" > "$out"
 """
 
 _CURL_TARBALL = r"""#!/bin/sh
@@ -425,6 +434,10 @@ case "$url" in
   *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
 esac
 [ -n "$out" ] || exit 1
+if [ -n "${BAD_TAR:-}" ]; then
+  cat "$BAD_TAR" > "$out"
+  exit 0
+fi
 work=$(mktemp -d)
 mkdir -p "$work/tkstack-main/scripts"
 printf '%s\n' 'print(1)' > "$work/tkstack-main/scripts/bootstrap.py"
@@ -459,24 +472,75 @@ class InstallerPrerequisiteTests(unittest.TestCase):
             "UV_LOG": str(self.uv_log),
             "CURL_LOG": str(self.curl_log),
             "INSTALL_LOG": str(self.install_log),
+            "GIT_LOG": str(self.base / "git.log"),
         })
         environment.pop("TKSTACK_PYTHON", None)
         environment.pop("UV_INSTALL_DIR", None)
         environment.pop("TKSTACK_HOME", None)
         environment.pop("TKSTACK_REPO", None)
         environment.pop("TKSTACK_TARBALL", None)
+        environment.pop("BAD_TAR", None)
+        environment.pop("UV_INSTALLER_FILE", None)
         return environment
 
-    def _run(self, script, path, *arguments):
+    def _installer_body(self):
+        path = self.base / "uv-installer.sh"
+        path.write_text(_UV_INSTALLER_BODY)
+        return path
+
+    def _pinned_checkout(self, digest=None):
+        checkout = self.base / "checkout"
+        (checkout / "scripts").mkdir(parents=True)
+        text = (ROOT / "install.sh").read_text()
+        if digest:
+            pin = "UV_INSTALLER_SHA256=b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491"
+            text = text.replace(pin, "UV_INSTALLER_SHA256=" + digest, 1)
+        script = checkout / "install.sh"
+        script.write_text(text)
+        script.chmod(0o755)
+        (checkout / "scripts" / "bootstrap.py").write_text("raise SystemExit(0)\n")
+        return script
+
+    def _run(self, script, path, *arguments, extra=None):
+        environment = self._env(path)
+        if extra:
+            environment.update(extra)
         return subprocess.run(
             ["bash", str(script), *arguments],
             cwd=self.base,
-            env=self._env(path),
+            env=environment,
             capture_output=True,
             text=True,
             timeout=20,
             check=False,
         )
+
+    def test_readme_pins_match_the_installer(self):
+        script = (ROOT / "install.sh").read_text()
+        readme = (ROOT / "README.md").read_text()
+        bootstrap = (ROOT / "docs" / "bootstrap.md").read_text()
+        for token in (
+            "0.12.23",
+            "3.12.15",
+            "b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491",
+        ):
+            self.assertIn(token, script)
+            self.assertIn(token, readme)
+            self.assertIn(token, bootstrap)
+        self.assertTrue(script.rstrip().endswith('main "$@"'))
+        self.assertNotIn("uv/install.sh |", script)
+        install = readme.split("## Develop", 1)[0]
+        self.assertEqual(install.count("```sh"), 1)
+
+    def test_truncated_installer_does_not_run_a_prefix(self):
+        text = (ROOT / "install.sh").read_text()
+        partial = self.base / "partial.sh"
+        partial.write_text(text[:text.rfind('main "$@"')])
+        path = _stub_path(self.base / "bins", ("python", "uv", "git"), {"curl": _CURL_TARBALL})
+        result = self._run(partial, path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse((self.home / ".local" / "share" / "tkstack").exists())
+        self.assertFalse(self.curl_log.exists())
 
     def test_missing_python_uses_uv_without_installing_uv(self):
         path = _stub_path(self.base / "bins", ("python", "uv"), {"uv": _UV_STUB, "curl": "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$CURL_LOG\"\nexit 1\n"})
@@ -484,24 +548,44 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         result = self._run(ROOT / "install.sh", path, "--dry-run", "--offline", "--target", str(target))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         log = self.uv_log.read_text()
-        self.assertIn("python install 3.12", log)
-        self.assertIn("run --python 3.12 --no-project -- python -B ", log)
+        self.assertIn("python install 3.12.15", log)
+        self.assertIn("run --python 3.12.15 --no-project -- python -B ", log)
         self.assertIn(str(ROOT / "scripts" / "bootstrap.py"), log)
         self.assertIn("--dry-run", log)
         self.assertIn("--offline", log)
         self.assertNotIn("requires Python 3.11+", result.stderr)
         self.assertFalse(self.curl_log.exists())
 
-    def test_missing_python_and_uv_bootstraps_the_official_uv_installer(self):
+    def test_missing_python_and_uv_bootstraps_the_pinned_uv_installer(self):
+        body = self._installer_body()
+        digest = hashlib.sha256(body.read_bytes()).hexdigest()
         path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV})
-        result = self._run(ROOT / "install.sh", path, "--dry-run", "--target", str(self.base / "target"))
+        poison = self.base / "poison-bin"
+        script = self._pinned_checkout(digest)
+        result = self._run(
+            script, path, "--dry-run", "--target", str(self.base / "target"),
+            extra={"UV_INSTALLER_FILE": str(body), "UV_INSTALL_DIR": str(poison)},
+        )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("https://astral.sh/uv/install.sh", self.curl_log.read_text())
+        self.assertIn("https://astral.sh/uv/0.12.23/install.sh", self.curl_log.read_text())
+        self.assertIn(" -o ", " " + self.curl_log.read_text())
         log = self.uv_log.read_text()
-        self.assertIn("python install 3.12", log)
-        self.assertIn("run --python 3.12", log)
-        self.assertTrue((self.home / ".local" / "bin" / "uv").is_file())
+        self.assertIn("python install 3.12.15", log)
+        self.assertIn("run --python 3.12.15", log)
+        installed = self.home / ".local" / "bin" / "uv"
+        self.assertTrue(installed.is_file())
+        self.assertFalse(poison.exists())
         self.assertNotIn("requires Python 3.11+", result.stderr)
+
+    def test_uv_installer_sha256_mismatch_does_not_run_it(self):
+        body = self._installer_body()
+        path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV, "sh": "#!/bin/sh\nprintf '%s\\n' ran-sh >> \"$UV_LOG\"\nexit 0\n"})
+        script = self._pinned_checkout()
+        result = self._run(script, path, extra={"UV_INSTALLER_FILE": str(body)})
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("sha256", result.stderr)
+        self.assertFalse((self.home / ".local" / "bin" / "uv").exists())
+        self.assertFalse(self.uv_log.exists())
 
     def test_missing_git_downloads_the_repository_tarball(self):
         path = _stub_path(self.base / "bins", ("git",), {"curl": _CURL_TARBALL})
@@ -512,11 +596,66 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main", self.curl_log.read_text())
         self.assertIn("local-install --offline", self.install_log.read_text())
-        self.assertTrue((self.home / ".local" / "share" / "tkstack" / "install.sh").is_file())
+        checkout = self.home / ".local" / "share" / "tkstack"
+        self.assertTrue((checkout / "install.sh").is_file())
+        receipt = (checkout / ".tkstack" / "source-receipt.txt").read_text()
+        self.assertIn("kind=tarball", receipt)
+        (checkout / ".tkstack" / "keep").write_text("state\n")
         again = self._run(script, path, "--check")
         self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
-        self.assertEqual(self.curl_log.read_text().count("codeload.github.com"), 1)
+        self.assertIn("frozen", again.stderr)
+        self.assertEqual(self.curl_log.read_text().count("codeload.github.com"), 2)
         self.assertIn("local-install --check", self.install_log.read_text())
+        self.assertEqual((checkout / ".tkstack" / "keep").read_text(), "state\n")
+
+    def _bad_archive(self, name, build):
+        archive = self.base / name
+        with tarfile.open(archive, "w:gz") as tar:
+            build(tar)
+        return archive
+
+    def _reject_archive(self, archive):
+        path = _stub_path(self.base / "bins-bad", ("git",), {"curl": _CURL_TARBALL})
+        script = self.base / "downloaded-install.sh"
+        if not script.exists():
+            script.write_text((ROOT / "install.sh").read_text())
+            script.chmod(0o755)
+        result = self._run(script, path, extra={"BAD_TAR": str(archive)})
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse((self.home / ".local" / "share" / "tkstack" / "install.sh").exists())
+        return result
+
+    def test_tarball_rejects_multiple_top_level_directories(self):
+        def build(tar):
+            for name in ("one/install.sh", "one/scripts/bootstrap.py", "two/extra.txt"):
+                data = b"x\n"
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+        result = self._reject_archive(self._bad_archive("multi.tar.gz", build))
+        self.assertIn("more than one top-level", result.stderr)
+
+    def test_tarball_rejects_parent_directory_members(self):
+        def build(tar):
+            data = b"nope\n"
+            info = tarfile.TarInfo("../escape.txt")
+            info.size = len(data)
+            tar.addfile(info, io.BytesIO(data))
+        result = self._reject_archive(self._bad_archive("escape.tar.gz", build))
+        self.assertIn("escapes", result.stderr)
+
+    def test_tarball_rejects_a_symlink_that_leaves_the_extract_directory(self):
+        def build(tar):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+                info = tarfile.TarInfo(name)
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+            link = tarfile.TarInfo("tkstack-main/outside")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "/tmp"
+            tar.addfile(link)
+        result = self._reject_archive(self._bad_archive("link.tar.gz", build))
+        self.assertIn("symlink escapes", result.stderr)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
+      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -560,6 +560,7 @@
           "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
         }
       },
+      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -641,7 +642,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -668,7 +669,7 @@
         },
         "src/check_docs.py": {
           "mode": "100755",
-          "oid": "6c3fb508968997fcf5c54fb6165e4d9c8b7ff567"
+          "oid": "9aba4faaa29d1337880e406528c6b9af87b725b4"
         },
         "src/docs_hook.py": {
           "mode": "100755",
@@ -680,7 +681,7 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "29b4813b2fa0093ac1eec61fa00735c7e01b5f54"
+          "oid": "5b1b2104f643ed941215d31693e9efcb1bc2f7cd"
         },
         "tests/test_caveman.py": {
           "mode": "100644",
@@ -716,7 +717,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "e7d1c183d16f04b5631262d28c823006e87ae053"
+          "oid": "7ef976c88a1f8316f23e1c9c058a1a00583d5064"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -796,13 +797,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs."
+      "reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -813,7 +814,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
+      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -843,11 +844,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "d657e9eeb0e2aaf2c2de707dc73ce059528c7b01"
+          "oid": "a134c8b50344c1dae3c36bb038bc67f017fc59d1"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -858,7 +859,6 @@
           "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         }
       },
-      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -890,7 +890,7 @@
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "3a37c564b146748ab99b3a6bd2358b157656b78d"
+          "oid": "07d214a00a4f57e9379e1bece058bed7ac504e68"
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
@@ -982,13 +982,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources."
+      "reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
+          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1059,6 +1059,7 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
+      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
