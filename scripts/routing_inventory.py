@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""Generate and check the SDLC skill-routing inventory.
+
+The inventory is the installed skill set plus Learn subskills, vendored skills
+that are intentionally not placed, and any SKILL.md under harnesses/. Routing
+entries live in skills/sdlc/references/routing.json. The rendered table is the
+marked region of skills/sdlc/references/skill-routing.md.
+"""
+
+import importlib.util
+import json
+import re
+import sys
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parent.parent
+CATALOG = Path("skills/sdlc/references/routing.json")
+GUIDE = Path("skills/sdlc/references/skill-routing.md")
+START = "<!-- tkstack:routing-inventory:start -->"
+END = "<!-- tkstack:routing-inventory:end -->"
+PHASES = (
+    "discovery/requirements",
+    "design & UI polish",
+    "architecture",
+    "implementation",
+    "TDD/clean-code discipline",
+    "review",
+    "debugging",
+    "docs",
+    "release/ops",
+    "learning",
+)
+
+
+def _load(name, filename):
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+install = _load("tkstack_install", "install.py")
+skill_roots = _load("tkstack_skill_roots", "skill_roots.py")
+
+
+def description(text):
+    """Return the skill's frontmatter description as one line."""
+    if not text.startswith("---"):
+        return ""
+    front = text.split("---", 2)[1]
+    lines = front.splitlines()
+    for index, line in enumerate(lines):
+        if not line.startswith("description:"):
+            continue
+        rest = line[len("description:"):].strip()
+        if rest in {">", "|", ">-", "|-", ">+", "|+"}:
+            chunks = []
+            for nxt in lines[index + 1:]:
+                if nxt.startswith((" ", "\t")):
+                    chunks.append(nxt.strip())
+                elif not nxt.strip():
+                    continue
+                else:
+                    break
+            rest = " ".join(chunks)
+        if len(rest) >= 2 and rest[0] == rest[-1] and rest[0] in {'"', "'"}:
+            rest = rest[1:-1]
+        return re.sub(r"\s+", " ", rest).strip()
+    return ""
+
+
+def _declared_name(path):
+    match = re.search(r"^name:\s*(.+)$", path.read_text(errors="replace"), re.M)
+    return match.group(1).strip().strip("\"'") if match else path.parent.name
+
+
+def _upstream_text(root, source, installed):
+    """Read the pinned skill text, not a generated alias or Graphify view."""
+    if source == "graphify":
+        lock = json.loads((root / "sources.lock.json").read_text())
+        relative = lock["sources"]["graphify"]["skill_templates"]["default"]["entrypoint"]
+        return (root / "vendor" / "graphify" / relative).read_text(errors="replace")
+    view = root / ".tkstack" / str(source) / "skills"
+    try:
+        relative = installed.relative_to(view)
+    except ValueError:
+        return (installed / "SKILL.md").read_text(errors="replace")
+    return (root / "vendor" / source / "skills" / relative / "SKILL.md").read_text(errors="replace")
+
+
+def _placement(rules, source):
+    selected = install.placement(rules, "skills", source)
+    if selected is None:
+        return "Codex, Claude Code, and Cursor"
+    if selected == {"codex"}:
+        return "shared .agents/skills only"
+    if selected == {"cursor"}:
+        return "Cursor only"
+    labels = {"codex": "shared .agents/skills", "claude": "Claude Code", "cursor": "Cursor"}
+    return ", ".join(labels[name] for name in ("codex", "claude", "cursor") if name in selected)
+
+
+def discover(root=ROOT):
+    """Map every routed skill name to its stack, purpose, and placement.
+
+    This read does not generate alias or Graphify views. Doctor runs the check
+    through the managed command-schema interpreter, and Graphify views embed the
+    installer interpreter. Rewriting them here would make the next doctor fail.
+    """
+    root = Path(root)
+    rules_path = root / "harnesses/skills.json"
+    rules = json.loads(rules_path.read_text()).get("placement", {}) if rules_path.is_file() else {}
+    found = {}
+
+    def add(name, record):
+        if name in found:
+            raise ValueError("Duplicate routing skill name: " + name)
+        purpose = description(record.pop("text"))
+        if not purpose:
+            raise ValueError("Skill has no description: " + name)
+        record["purpose"] = purpose
+        found[name] = record
+
+    for name, (source, path) in install.sourced(root, "skills").items():
+        group = "developed" if source is None else source
+        add(name, {
+            "group": group,
+            "stack": "skills/" if source is None else source,
+            "placement": _placement(rules, source),
+            "text": _upstream_text(root, source, path),
+            "path": path,
+        })
+    for parent_name, parent in skill_roots.all_packages(root).items():
+        for name, path in skill_roots.subskills(parent).items():
+            add(name, {
+                "group": "developed",
+                "stack": parent_name + " subskill",
+                "placement": "installed only through " + parent_name,
+                "text": (path / "SKILL.md").read_text(errors="replace"),
+                "path": path,
+            })
+    known_names = set(found)
+    known_dirs = {record["path"].resolve() for record in found.values()}
+    for skill in sorted((root / "vendor").rglob("SKILL.md")):
+        if skill.parent.resolve() in known_dirs:
+            continue
+        declared = _declared_name(skill)
+        if declared in known_names or declared in found:
+            continue
+        source = skill.relative_to(root / "vendor").parts[0]
+        add(declared, {
+            "group": source,
+            "stack": source,
+            "placement": "vendored, not installed",
+            "text": skill.read_text(errors="replace"),
+            "path": skill.parent,
+        })
+    harnesses = root / "harnesses"
+    if harnesses.is_dir():
+        for skill in sorted(harnesses.rglob("SKILL.md")):
+            if skill.parent.resolve() in known_dirs:
+                continue
+            declared = _declared_name(skill)
+            add(declared, {
+                "group": "harness",
+                "stack": "harnesses/",
+                "placement": "harness package",
+                "text": skill.read_text(errors="replace"),
+                "path": skill.parent,
+            })
+    return found
+
+
+def load_catalog(root=ROOT):
+    return json.loads((Path(root) / CATALOG).read_text())
+
+
+def stack_names(root=ROOT, skills=None):
+    root = Path(root)
+    names = set(json.loads((root / "sources.lock.json").read_text())["sources"])
+    names.update(("developed", "adopted"))
+    if skills and any(item["group"] == "harness" for item in skills.values()):
+        names.add("harness")
+    return names
+
+
+def inventory_errors(skills, catalog, stacks):
+    """Return human-readable mismatches. Empty means the catalog matches."""
+    if catalog.get("version") != 1 or tuple(catalog.get("phases", ())) != PHASES:
+        return ["routing catalog phases or version do not match the SDLC phase list"]
+    errors = []
+    names = set(skills)
+    entries = set(catalog.get("skills", {}))
+    missing = sorted(names - entries)
+    extra = sorted(entries - names)
+    if missing:
+        errors.append("skills without a routing entry: " + ", ".join(missing))
+    if extra:
+        errors.append("routing entries with no skill: " + ", ".join(extra))
+    allowed = set(PHASES)
+    bad_phase, empty = [], []
+    for name, entry in catalog.get("skills", {}).items():
+        if not isinstance(entry, dict) or entry.get("phase") not in allowed:
+            bad_phase.append(name)
+        elif not str(entry.get("strengths", "")).strip():
+            empty.append(name)
+    if bad_phase:
+        errors.append("routing entries with an unknown phase: " + ", ".join(sorted(bad_phase)))
+    if empty:
+        errors.append("routing entries with empty strengths: " + ", ".join(sorted(empty)))
+    recorded = set(catalog.get("stacks", {}))
+    if missing_stacks := sorted(stacks - recorded):
+        errors.append("stacks without an overview: " + ", ".join(missing_stacks))
+    if extra_stacks := sorted(recorded - stacks):
+        errors.append("stack overviews with no source: " + ", ".join(extra_stacks))
+    for name, entry in catalog.get("stacks", {}).items():
+        if not isinstance(entry, dict) or not str(entry.get("title", "")).strip() or not str(entry.get("summary", "")).strip():
+            errors.append("incomplete stack overview: " + name)
+    return errors
+
+
+def _cell(text):
+    text = re.sub(r"\s+", " ", str(text)).strip()
+    if len(text) > 420:
+        text = text[:417].rstrip() + "..."
+    return text.replace("|", "\\|")
+
+
+def render_inventory(skills, catalog):
+    """Markdown for the marked region: stack overviews, then one row per skill."""
+    order = list(catalog["stacks"])
+    rank = {name: index for index, name in enumerate(order)}
+    lines = [
+        "Generated from the installed skill set, Learn subskills, unplaced vendored",
+        "skills, and `harnesses/` packages. Do not edit this region by hand. Run",
+        "`python3 scripts/routing_inventory.py render` after adding a skill and its",
+        "routing entry.",
+        "",
+        "| Stack | Best starting point | What this stack is for |",
+        "| --- | --- | --- |",
+    ]
+    for name, entry in catalog["stacks"].items():
+        lines.append("| " + " | ".join(_cell(value) for value in (entry["title"], entry.get("best_for", ""), entry["summary"])) + " |")
+    lines.extend([
+        "",
+        "| Skill | Stack | What it is for | Strengths | Best SDLC phase | Placement |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ])
+    def sort_key(item):
+        name, record = item
+        return (rank.get(record["group"], len(rank)), record["stack"], name)
+    for name, record in sorted(skills.items(), key=sort_key):
+        entry = catalog["skills"][name]
+        lines.append("| " + " | ".join(_cell(value) for value in (
+            f"`{name}`", record["stack"], record["purpose"], entry["strengths"], entry["phase"], record["placement"],
+        )) + " |")
+    return "\n".join(lines) + "\n"
+
+
+def guide_text(root=ROOT):
+    return (Path(root) / GUIDE).read_text()
+
+
+def split_guide(text):
+    if text.count(START) != 1 or text.count(END) != 1 or text.index(START) > text.index(END):
+        raise ValueError("skill-routing.md must contain one routing inventory region")
+    head, rest = text.split(START, 1)
+    body, tail = rest.split(END, 1)
+    return head, body, tail
+
+
+def rendered_guide(text, inventory):
+    head, _body, tail = split_guide(text)
+    return head + START + "\n" + inventory + END + tail
+
+
+def check(root=ROOT):
+    root = Path(root)
+    skills = discover(root)
+    catalog = load_catalog(root)
+    errors = inventory_errors(skills, catalog, stack_names(root, skills))
+    if errors:
+        raise ValueError("; ".join(errors))
+    inventory = render_inventory(skills, catalog)
+    _head, body, _tail = split_guide(guide_text(root))
+    if body.strip() != inventory.strip():
+        raise ValueError("skill-routing.md inventory is stale; run python3 scripts/routing_inventory.py render")
+    return {"skills": len(skills), "stacks": len(catalog["stacks"])}
+
+
+def render(root=ROOT):
+    root = Path(root)
+    skills = discover(root)
+    catalog = load_catalog(root)
+    errors = inventory_errors(skills, catalog, stack_names(root, skills))
+    if errors:
+        raise ValueError("; ".join(errors))
+    path = root / GUIDE
+    path.write_text(rendered_guide(path.read_text(), render_inventory(skills, catalog)))
+    return check(root)
+
+
+def main(argv=None):
+    command = (argv or sys.argv[1:] or ["check"])[0]
+    try:
+        if command == "check":
+            result = check()
+        elif command == "render":
+            result = render()
+        else:
+            raise ValueError("Use check or render")
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        print("routing: " + str(error), file=sys.stderr)
+        return 1
+    print(json.dumps({"status": "pass", **result}))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

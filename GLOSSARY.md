@@ -9,7 +9,7 @@
 | Code-mode prompt | A skill's thin discovery/invocation context that directs the agent to call an executable tool rather than reconstruct its procedure |
 | Executable skill workflow | The canonical workflow definition and bindings in a skill's `scripts/`, with validated inputs/outputs, gates, effects, and failure behavior |
 | Inference profile | Explicit provider/model/API or harness configuration for residual inference; separate from deterministic workflow control flow |
-| Alias | An installed skill name used to resolve an upstream name collision |
+| Alias | An installed skill name used to resolve an upstream name collision. Matt's `tdd` is `matt-tdd`, Pstack's `unslop` is `pstack-unslop`, and Emil Kowalski's `prototype` is `emil-prototype` |
 | View | A generated copy of a source's skill tree with aliases and calls rewritten |
 | Harness | An agent host such as Codex, Claude Code, or Cursor |
 | Target | A home or project directory receiving the installation links |

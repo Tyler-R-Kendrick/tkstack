@@ -24,6 +24,29 @@ and symlink targets. Matt's collection includes the 27 promoted skills, four
 misc skills, and all seven beta skills currently present upstream. Beta skills
 can change or disappear upstream; their pinned versions remain reproducible.
 
+## Later sources
+
+Sources pinned after this initial review are recorded in
+[integrations](integrations.md) and [the skill inventory](skills.md). Two
+packages were added with the same snapshot rules: copy skills, agents, LICENSE,
+and README only; pin the git blob and mode of every retained file; stop if the
+upstream repository has no license.
+
+| Source | Pinned revision | Skills | Snapshot files | License |
+| --- | --- | ---: | ---: | --- |
+| Emil Kowalski skills | `c8a79627b59d72d764d6ab6f2c87c09a48169833` | 17 | 28 | MIT |
+| ub-mode | `3da62bf3fcfd2034de41f30d920d2739e566171f` | 1 | 3 | MIT |
+
+Emil Kowalski's collection is design engineering, UI polish, and animation.
+`emil-design-eng` is the default. His `prototype` installs as `emil-prototype`
+so Matt's `prototype` keeps its name. The generated view rewrites that skill's
+name and quoted calls, including the call from `break-ui`. Upstream bytes stay
+unchanged. Neither package has a version file or agents. ub-mode is Robert C.
+Martin's reduced make-it-work, make-it-right, then practice skill. Its
+`SKILL.md` is at the repository root, so `paths.skills` is `.`. The companion
+crapper, dryer, and mutator repositories are not vendored. Both install only
+into shared `.agents/skills`. The current pin is 19 sources and 1089 files.
+
 ## Findings and decisions
 
 ### Pstack and Cursor Team Kit

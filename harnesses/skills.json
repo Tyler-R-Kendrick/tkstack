@@ -5,6 +5,9 @@
     },
     "matt-pocock": {
       "tdd": "matt-tdd"
+    },
+    "emil-kowalski": {
+      "prototype": "emil-prototype"
     }
   },
   "rewrite_callers": {"pstack": false},
