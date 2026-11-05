@@ -1126,11 +1126,15 @@
           "mode": "100644",
           "oid": "8898597a3304574ecbca7930576679bfd5f91222"
         },
-        "evals/repo-quality/results/baseline-checks.json": {
+        "evals/repo-quality/results/archive/README.md": {
+          "mode": "100644",
+          "oid": "029df5ab0a1d635ce2748c4322a35eaf988347b6"
+        },
+        "evals/repo-quality/results/archive/baseline-checks.json": {
           "mode": "100644",
           "oid": "31bafa3d4baaaa24a360efa9b40a87aeedbf6878"
         },
-        "evals/repo-quality/results/baseline-reasons.md": {
+        "evals/repo-quality/results/archive/baseline-reasons.md": {
           "mode": "100644",
           "oid": "2b727b4eeb24d48a5d22199d7a4082a160b4df8d"
         },
@@ -2759,8 +2763,8 @@
           "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Marketplace install commands follow skills 1.7.6 --help (owner/repo and --skill for the SKILL.md name) and keep the tree path skills/investigate, which --list resolves. The snapshot excerpt includes that path command."
+      "no_doc_impact": true,
+      "reason": "Archived the pre-move repo-quality baselines under evals/repo-quality/results/archive/. They are not a measurement of this tree, and no skill documentation changed."
     }
   },
   "object_format": "sha1",
