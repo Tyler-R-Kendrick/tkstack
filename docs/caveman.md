@@ -17,11 +17,10 @@ duplicate plugin bundle.
 
 ```sh
 python3 scripts/install.py --target .
-python3 scripts/doctor.py --target .
 ```
 
-The managed installation links the official skills and agents and registers
-the official hook scripts through the existing adapters. It does not invoke a
+The installer links the official skills and agents. It does not register
+Caveman's hook scripts. It does not invoke a
 native marketplace CLI or claim a native plugin-cache install. Claude/Cursor
 CLIs are absent in this workspace; loading these files in a real host requires
 a restart and any host-required trust. Do not additionally enable Caveman's

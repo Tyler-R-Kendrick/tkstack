@@ -68,11 +68,9 @@ The dotfiles route installs all pinned and owned skills into selected harnesses:
 
 ```sh
 python3 scripts/install.py --target /path/to/project
-python3 scripts/doctor.py --target /path/to/project
 ```
 
-Standalone packages cannot assume sibling skills, vendor trees, or the dotfiles
-launchers exist. Guidance is portable; actual helpers, models, native adapters,
+Standalone packages cannot assume sibling skills or vendor trees exist. Guidance is portable; actual helpers, models, native adapters,
 provider services, COW volumes, and credentials must be available for their
 respective execution paths. A copied skill does not activate those capabilities.
 Keep absent evidence and runtime requirements explicit.

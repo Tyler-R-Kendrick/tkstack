@@ -6,20 +6,14 @@ integration is installed for Codex, Claude Code, and Cursor. Its PyPI package is
 The runtime includes the local MCP extra. No cloud account is needed for local
 code extraction or graph queries.
 
-Use `$graphify` in Codex or `/graphify` in slash-command harnesses. The installed
-native skill carries its eight reference pages and selects the matching Codex,
-Claude, or generic Agent Skills build (Cursor). It uses tkstack's pinned runtime
-rather than installing/upgrading packages in your home or system Python.
+Use `$graphify` in Codex or `/graphify` in slash-command harnesses. Install
+copies each host's upstream skill file to
+`.tkstack/skill-views/graphify/<host>/graphify/SKILL.md`, plus that host's
+reference pages. The copy is the upstream bytes. It does not rewrite commands,
+install `graphifyy`, or start an index.
 
-For deterministic code-only indexing and querying:
-
-```sh
-python3 src/tool.py graphify extract /path/to/project --code-only --max-workers 4
-# Query from that project directory, using the absolute tkstack launcher path:
-python3 /path/to/tkstack/src/tool.py graphify query 'authentication flow'
-python3 /path/to/tkstack/src/tool.py graphify path 'Caller' 'Callee'
-python3 /path/to/tkstack/src/tool.py graphify explain 'Symbol'
-```
+When `graphify` is on PATH, the upstream skill's own commands are the interface.
+tkstack does not wrap them.
 
 Code parsing uses the native tree-sitter extractors. Preserve `EXTRACTED` versus
 `INFERRED` relationship labels and verify current source. Semantic extraction
@@ -44,8 +38,8 @@ this repository's installer for owned integration files, and explicit graphs or
 MCP project selection for repository context. Native global graph storage uses
 `~/.graphify`, which is outside the managed state convention.
 
-The local stdio MCP connection is named **`graphify-local`** in all three host
-configurations. It launches `graphify-mcp` through `src/tool.py graphify mcp`.
+Install does not register a Graphify MCP server. `harnesses/integrations.json`
+may still name `graphify-local`; that record is not applied.
 The default relative output path preserves native `project_path` selection;
 explicit absolute/shared output overrides select a fixed graph instead. This is
 separate from Graphify's hosted OAuth service; no hosted account, workspace,
@@ -73,11 +67,10 @@ project supports more Python versions; this dependency lock was resolved and
 verified for 3.12. Runtime/interpreter downloads stay under ignored `.tkstack/`.
 
 ```sh
-python3 scripts/setup_integrations.py --target . --install-runtimes --runtime graphify
-python3 scripts/install.py --target .
-python3 scripts/doctor.py --target .
+python3 scripts/install.py --target . --harness codex --harness claude --harness cursor
 ```
 
+That links the three host views. It does not install the lock below.
 The recipe is `harnesses/graphify/requirements.in` plus `requirements.lock`:
 **59 exact dependency versions** with SHA-256 distribution hashes, including
 MCP 2.3.0. Installation accepts wheels only and enforces those hashes. A single

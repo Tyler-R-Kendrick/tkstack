@@ -46,3 +46,12 @@ def nested(path, root):
     path, root = Path(path), Path(root)
     return any((parent / "SKILL.md").is_file() for parent in path.parents
                if parent != root and parent.is_relative_to(root))
+
+
+def load(name, path):
+    """Import one Python file by path."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module

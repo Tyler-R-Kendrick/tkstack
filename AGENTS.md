@@ -95,15 +95,14 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
 - The ___ify skills (codify, flowify, hookify, instructify, lintify, reusify,
   skillify) are Learn subskills at `skills/learn/skills/<name>/`. They ship and
   install only with Learn; invoke them as `/learn <name>` or
-  `.tkstack/tkstack skills learn -- <name> ...`. Each stays a complete package
+  `python3 src/tkstack.py skills learn -- <name> ...`. Each stays a complete package
   with its own lock, and Learn's `commands/<name>.md` mounts it. See
   `skills/README.md`.
-- Verify changes with `python3 -m unittest discover -s tests -v`,
-  `./install.sh --dry-run`, and `python3 scripts/doctor.py --target .`.
-  Tests use temporary installation targets and may regenerate the ignored alias
-  view; leave the user's home and existing configuration alone. Reapply
-  `python3 scripts/install.py --target .` after the suite and before doctor so
-  generated views match the installation context.
+- Verify changes with `python3 -m unittest discover -s tests -v` and
+  `./install.sh --dry-run`. Tests use temporary installation targets and may
+  regenerate the ignored alias view; leave the user's home and existing
+  configuration alone. Reapply `python3 scripts/install.py --target .` after
+  the suite so generated views match the installation context.
   Asyncio thread tests require local IPC: restricted sandboxes may deny their
   wake-up socket. Use a test environment that permits local socket operations;
   do not replace the production scheduler to work around that restriction.
@@ -112,25 +111,22 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   Keep procedural task/tool experiences separate from user authority. Explicit
   `learn` report/audit requests are read-only; skill edits follow their requested
   change scope and the improvement workflow in `skills/learn/references/`.
-- Use root `install.sh` for full dotfiles provisioning: private prerequisites,
-  pinned runtime installation, source/file setup, scoped initialization, optional
-  Copilot integration, and verification. Preserve read-only dry-run/check and
-  no-download offline startup. Environment hooks use the devcontainer config or
-  Codex setup/startup wrappers; see `docs/bootstrap.md`. Reuse the narrow installers
-  and keep manual application/account requirements explicit.
-- Invoke compiled skills/workflows through `.tkstack/tkstack` (or its PATH
-  shim). Reuse Codify's command schema, binding/freshness checks, and frozen
-  execution; uncompiled skills have no prompt/inference fallback. Keep registry
-  and model/provider configuration scoped, preserve named Vercel AI SDK profiles,
-  and leave help/list/export/check read-only. See `docs/runner.md`.
-- Native hooks and MCP entries come from `harnesses/integrations.json` through
-  `scripts/setup_integrations.py`. Keep binary readiness distinct from file setup.
-- Graphify supplies local structural code graphs through the official native
-  skill, pinned CLI, and graphify-local MCP connection. Use existing graph
-  context when relevant; preserve extracted/inferred distinctions and verify
-  current source. Invoke its CLI through `src/tool.py graphify`; graph state
-  stays in `.tkstack/graphify/`. Installation starts no indexing, watcher, model,
-  or delegated extraction. See `docs/graphify.md`.
+- Use root `install.sh` to link this checkout into a home or project. It does
+  not install private language runtimes, edit shell startup, register native
+  hooks, or write a launcher. `--dry-run` previews the links. See
+  `docs/bootstrap.md`. Keep manual application/account requirements explicit.
+- Invoke compiled skills/workflows with `python3 src/tkstack.py`. Reuse Codify's
+  command schema, binding/freshness checks, and frozen execution; uncompiled
+  skills have no prompt/inference fallback. Keep registry and model/provider
+  configuration scoped, preserve named Vercel AI SDK profiles, and leave
+  help/list/export/check read-only. See `docs/runner.md`.
+- `harnesses/integrations.json` records runtime versions and service
+  specifications. Install does not apply that file. A host still needs its own
+  hook and MCP configuration.
+- Graphify's installed skill is a byte copy of the upstream skill text. Use the
+  upstream `graphify` command when that package is installed. Installation
+  starts no indexing, watcher, model, or delegated extraction. See
+  `docs/graphify.md`.
 - OpenWiki supplies repository wiki retrieval and maintenance through its official
   skill and local MCP runtime. Use it for concrete questions or explicit wiki
   requests; keep user corrections in `learn`. See `docs/openwiki.md`.
@@ -156,14 +152,14 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   Use `skillify normalize` from its explicit authored profile, canonical Codify
   runtime/JSON helpers, reserved help/version and a current executable lock.
   Preserve native helper ownership and declared semantic/provider boundaries.
-  Run `python3 src/tool.py command-schema -B src/check_skills.py`;
-  doctor and CI use that same read-only gate. See `docs/normalization.md`.
+  Run `python3 src/check_skills.py`. CI uses that same read-only gate. See
+  `docs/normalization.md`.
 - Keep README installation/use and the mapped documentation current. Run
   `python3 src/check_docs.py check`; after reviewing changed sources, update
   their docs and explicitly refresh the named areas with an actual reason.
   Use `--no-doc-impact` only for justified internal-only changes. Never refresh
-  merely to silence a gate. Native repo Stop hooks share this check; Git
-  pre-commit validates the staged snapshot, including the reviewed ledger.
+  merely to silence a gate. Git pre-commit, via `core.hooksPath=.githooks`,
+  validates the staged snapshot, including the reviewed ledger.
   See `docs/documentation.md`.
 
 ## Agent skills

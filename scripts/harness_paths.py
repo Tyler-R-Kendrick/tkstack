@@ -34,14 +34,13 @@ COPILOT_PROJECT = Path(".github/skills")
 MUSE_PROJECT = Path(".agents/skills")
 # Hosts that receive native hook and MCP files. Other skill hosts are links only.
 HOOK_HARNESSES = ("codex", "claude", "cursor")
-# t3code runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
-# It has no skills directory of its own.
-DELEGATED_HARNESSES = {"t3code": ("claude", "codex", "cursor", "copilot", "grok")}
+# t3code is an orchestrator with no skills directory. skills.json delegates
+# names the hosts it runs. It is intentionally absent from SKILL_DIRECTORIES.
 
 
 def skill_directory(harness, scope="home"):
     """Native skills directory, or None when this installer does not link one."""
-    if harness in DELEGATED_HARNESSES or harness not in SKILL_DIRECTORIES:
+    if harness not in SKILL_DIRECTORIES:
         return None
     if harness == "opencode" and scope == "project":
         return OPENCODE_PROJECT

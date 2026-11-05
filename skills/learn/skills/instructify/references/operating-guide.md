@@ -108,9 +108,10 @@ with dedicated native rule files. Follow [operational limits](../references/mani
 for external writers, crash recovery, and rollback; do not describe a batch as
 a filesystem transaction.
 
-In tkstack, existing installer-owned startup blocks remain controlled by
-`src/steering_adapter.py`; Cursor's standing rule is sourced in `harnesses/`.
-Change those sources for their content, rather than adding a competing generated
+In tkstack, the installer links skills and the Cursor rules under
+`harnesses/`. It does not apply instruction files or own startup blocks.
+Change `harnesses/cursor/tkstack-steering.mdc` for that standing rule, and
+author other guidance here, rather than adding a competing generated
 section or patching ignored installation outputs. Never edit vendor snapshots.
 
 ## 5. Verify discovery, meaning, and delivery

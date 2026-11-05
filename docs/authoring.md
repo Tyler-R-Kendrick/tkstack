@@ -128,12 +128,11 @@ the skill. See [policy](../skills/learn/skills/hookify/references/policy.md) and
 [adapter contracts](../skills/learn/skills/hookify/references/adapters.md).
 
 `emit` returns a settings fragment only. Merge an actual requested registration
-at its canonical configuration boundary, preserve unrelated entries, and verify
-reload/activation with a harmless native operation when possible. In tkstack,
-standing hooks belong in `scripts/setup_integrations.py`'s ownership-aware
-configuration path. No demonstration or new standing policy is registered by
-installing these skills. New rules are reread per callback only after a working
-registration exists.
+at the host's own configuration boundary, preserve unrelated entries, and verify
+reload/activation with a harmless native operation when possible. tkstack's
+installer does not register hooks. No demonstration or new standing policy is
+registered by installing these skills. New rules are reread per callback only
+after a working registration exists.
 
 ## Instructify
 
@@ -174,10 +173,10 @@ targets, dedicated native-file collisions, and nonempty Codex overrides that
 would shadow a new AGENTS file. See the [manifest contract](../skills/learn/skills/instructify/references/manifest.md)
 and [native discovery details and sources](../skills/learn/skills/instructify/references/harnesses.md).
 
-Within tkstack, existing installer-owned instruction pointers remain controlled
-by `src/steering_adapter.py` and `harnesses/cursor/tkstack-steering.mdc`.
-Creating this skill registers no demonstration instructions and rewrites no
-unrelated project or home instruction files. Local tests establish file-level
+Within tkstack, install links `.agents/steering` and `.agents/principles` and
+Cursor's committed `harnesses/cursor/tkstack-steering.mdc`. It does not rewrite
+`AGENTS.md` or `CLAUDE.md`. Creating this skill registers no demonstration
+instructions and rewrites no unrelated project or home instruction files. Local tests establish file-level
 behavior, not native loading or model compliance.
 
 ## Flowify

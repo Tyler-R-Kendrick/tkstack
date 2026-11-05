@@ -12,40 +12,21 @@ All selected upstream bytes and executable modes stay unchanged.
 
 ## Installed layouts
 
-The normal installer links the 16 skills into `.agents/skills`, `.claude/skills`,
-and `.cursor/skills`. The complete upstream tree stays behind those links, so
-sibling skills and `../../docs`, templates, config, and automation references
-resolve. This adds 48 links to the main installation. Restart the harness so
-it discovers the new skills.
+The installer links the 16 skills into the selected harness skill directories.
+The complete upstream tree stays behind those links, so sibling skills and
+`../../docs`, templates, config, and automation references resolve. Restart the
+harness so it discovers the new skills.
 
-The separate project setup follows Lever's
-[documented per-repo installation](../vendor/lever/README.md):
+`--harness copilot --scope project` puts those same skill links in
+`.github/skills`. Install does not create `.github/docs`, templates, config,
+automations, or `.github/lever.yml`.
+[`harnesses/copilot/lever.yml`](../harnesses/copilot/lever.yml) is an example
+you can copy. Lever's own
+[per-repo installation](../vendor/lever/README.md) remains upstream's procedure.
 
-```sh
-python3 src/setup_lever.py --target . --dry-run
-python3 src/setup_lever.py --target .
-python3 src/setup_lever.py --target . --check
-```
-
-It creates 16 skill links under `.github/skills` and four support-directory
-links under `.github/`: `docs`, `templates`, `config`, and `automations`.
-Those generated paths are ignored; fresh clones run setup to recreate them.
-The pinned canonical sources remain tracked under `vendor/lever`.
-
-The script creates `.github/lever.yml` from
-[`harnesses/copilot/lever.yml`](../harnesses/copilot/lever.yml) only if absent.
-Existing settings and foreign links/directories are preserved. A resource-name
-collision stops setup before links or dials change. It refuses a parent symlink
-that would redirect writes outside the selected project.
-
-Remove only owned Copilot links with:
-
-```sh
-python3 src/setup_lever.py --target . --uninstall
-```
-
-Repository dials and unrelated skills are retained. Remove the main three
-harness installations through the normal installer and its harness selection.
+Remove this checkout's links with `./install.sh --uninstall`. That removes
+every harness, not only Copilot. Unrelated files, including a `lever.yml` you
+wrote, stay.
 
 ## Current repository defaults
 

@@ -1,7 +1,6 @@
 """Exercise installation against temporary targets, never the user's home."""
 
 import hashlib
-import importlib.util
 import io
 import os
 import re
@@ -15,13 +14,23 @@ import subprocess
 import sys
 import unittest
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from installer_stubs import (  # noqa: E402
+    CURL_TARBALL as _CURL_TARBALL,
+    CURL_UV as _CURL_UV,
+    GIT_ORIGIN_STUB,
+    UV_INSTALLER_BODY as _UV_INSTALLER_BODY,
+    UV_STUB as _UV_STUB,
+    stub_path as _stub_path,
+)
+
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "src"))
-SPEC = importlib.util.spec_from_file_location("install", ROOT / "scripts/install.py")
-install = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(install)
+from skill_roots import load  # noqa: E402
+
+install = load("install", ROOT / "scripts/install.py")
 
 
 class InstallTests(unittest.TestCase):
@@ -180,16 +189,6 @@ class InstallTests(unittest.TestCase):
             self.assertFalse(destination.exists() or destination.is_symlink())
         self.assertTrue(foreign.is_symlink())
 
-    def test_foreign_runner_is_skipped(self):
-        import runner_install
-        state = self.target / "runner-state"
-        state.mkdir()
-        launcher = state / "tkstack"
-        launcher.write_text("not ours\n")
-        (state / "runner-owner.json").write_text('{"version": 1, "source": "/other", "sha256": "abc"}\n')
-        self.assertFalse(runner_install.remove(ROOT, state))
-        self.assertEqual(launcher.read_text(), "not ours\n")
-
     def test_opencode_project_scope_uses_the_project_skills_directory(self):
         project = self.target / "project"
         plan = install.link_plan(ROOT, project, ["opencode"], "project")
@@ -287,119 +286,12 @@ class InstallTests(unittest.TestCase):
             self.assertFalse((target / ".agents/skills").exists())
             for relative in re.findall(r"\]\((references/[^)]+)\)", (shared / "SKILL.md").read_text()):
                 self.assertTrue((shared / relative).is_file())
-            if harness == "claude":
-                from steering_adapter import apply_instructions, instruction_plan
-                apply_instructions(instruction_plan(ROOT, target, [harness], "project"))
-                self.assertIn(str(shared / "SKILL.md"), (target / "CLAUDE.md").read_text())
-            else:
+            if harness == "cursor":
                 self.assertIn(".agents/principles/SKILL.md", (target / ".cursor/rules/tkstack-steering.mdc").read_text())
             self.assertEqual(install.apply(plan), 0)
             install.apply(plan, uninstall=True)
             self.assertFalse(shared.is_symlink())
             self.assertTrue((ROOT / "skills/tkstack-principles/SKILL.md").is_file())
-
-    def test_principles_pointer_roundtrip_preserves_home_instructions(self):
-        from steering_adapter import apply_instructions, instruction_plan
-        for path in (self.target / ".codex/AGENTS.md", self.target / ".claude/CLAUDE.md"):
-            path.parent.mkdir(parents=True)
-            path.write_text("Keep my existing instructions.\n")
-        harnesses = ["codex", "claude"]
-        apply_instructions(instruction_plan(ROOT, self.target, harnesses, "home"))
-        self.assertEqual(instruction_plan(ROOT, self.target, harnesses, "home"), [])
-        apply_instructions(instruction_plan(ROOT, self.target, harnesses, "home", uninstall=True))
-        for path in (self.target / ".codex/AGENTS.md", self.target / ".claude/CLAUDE.md"):
-            self.assertEqual(path.read_text(), "Keep my existing instructions.\n")
-
-    def test_self_project_steering_survives_relocation_and_keeps_foreign_ownership(self):
-        from steering_adapter import apply_instructions, instruction_plan
-        root = self.target / 'dotfiles'
-        for name in ('learn', 'tkstack-principles', 'unslop'):
-            directory = root / 'skills' / name
-            directory.mkdir(parents=True)
-            (directory / 'SKILL.md').write_text('Fixture skill\n')
-        (root / 'skills/learn/scripts').mkdir()
-        (root / 'skills/learn/scripts/learn.py').write_text('# Fixture helper\n')
-        (root / 'AGENTS.md').write_text('Keep repository guidance.\n')
-        (root / 'CLAUDE.md').write_text('@AGENTS.md\n')
-        apply_instructions(instruction_plan(root, root, ['codex', 'claude'], 'project'))
-        for name in ('AGENTS.md', 'CLAUDE.md'):
-            text = (root / name).read_text()
-            self.assertIn('tkstack:steering:source repository', text)
-            self.assertNotIn(str(root), text)
-            self.assertIn('`.agents/steering/rules.md`', text)
-            self.assertIn('skills/learn/scripts/learn.py', text)
-            self.assertIn('generated and gitignored', text)
-        relocated = self.target / 'relocated'
-        shutil.copytree(root, relocated)
-        self.assertEqual(instruction_plan(relocated, relocated, ['codex', 'claude'], 'project'), [])
-        foreign = self.target / 'foreign'
-        foreign.mkdir()
-        shutil.copyfile(relocated / 'AGENTS.md', foreign / 'AGENTS.md')
-        before = (foreign / 'AGENTS.md').read_bytes()
-        with self.assertRaisesRegex(ValueError, 'another checkout'):
-            instruction_plan(relocated, foreign, ['codex'], 'project')
-        self.assertEqual((foreign / 'AGENTS.md').read_bytes(), before)
-        self.assertEqual(instruction_plan(relocated, foreign, ['codex'], 'project', uninstall=True), [])
-
-    def test_generated_instruction_paths_name_their_tracked_sources(self):
-        from steering_adapter import instruction_plan
-        root = self.target / 'checkout'
-        for relative in (
-            'skills/learn/SKILL.md',
-            'skills/learn/scripts/learn.py',
-            'skills/tkstack-principles/SKILL.md',
-            'skills/unslop/SKILL.md',
-            'skills/unslop/scripts/unslop.py',
-            'skills/unslop/catalog/seeds.json',
-        ):
-            path = root / relative
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text('fixture\n')
-        (root / 'AGENTS.md').write_text('# Guide\n')
-        plan = instruction_plan(root, root, ['codex'], 'project')
-        text = plan[0][2]
-        self.assertIn('`.agents/steering/rules.md`', text)
-        self.assertIn('skills/learn/scripts/learn.py render', text)
-        self.assertIn('`.agents/principles/SKILL.md`', text)
-        self.assertIn('skills/tkstack-principles/SKILL.md', text)
-        self.assertIn('`.agents/steering/unslop/patterns.md`', text)
-        self.assertIn('skills/unslop/catalog/seeds.json', text)
-        self.assertIn('skills/unslop/scripts/unslop.py render', text)
-        self.assertNotIn(str(root), text)
-
-    def test_self_project_migrates_only_its_own_legacy_steering_block(self):
-        import hashlib
-        from steering_adapter import apply_instructions, instruction_plan
-        root = self.target / 'dotfiles'
-        (root / 'skills/learn').mkdir(parents=True)
-        (root / 'skills/learn/SKILL.md').write_text('Fixture skill\n')
-        identity = hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:16]
-        path = root / 'AGENTS.md'
-        path.write_text('Keep guidance.\n<!-- tkstack:steering:start -->\n<!-- tkstack:steering:source ' + identity + ' -->\nOld pointer\n<!-- tkstack:steering:end -->\n')
-        apply_instructions(instruction_plan(root, root, ['codex'], 'project'))
-        self.assertIn('tkstack:steering:source repository', path.read_text())
-        self.assertTrue(path.read_text().startswith('Keep guidance.\n'))
-        path.write_text(path.read_text().replace('source repository', 'source unrelated-checkout'))
-        before = path.read_bytes()
-        with self.assertRaisesRegex(ValueError, 'another checkout'):
-            instruction_plan(root, root, ['codex'], 'project')
-        self.assertEqual(path.read_bytes(), before)
-
-    def test_rendered_learning_command_executes_from_a_source_path_with_spaces(self):
-        import json
-        import shlex
-        from steering_adapter import instruction_plan
-        source = self.target / 'dotfiles source'
-        helper = source / 'skills/learn/scripts/learn.py'
-        helper.parent.mkdir(parents=True)
-        (source / 'skills/learn/SKILL.md').write_text('Fixture skill\n')
-        helper.write_text('import json,sys\nprint(json.dumps(sys.argv[1:]))\n')
-        changes = instruction_plan(source, self.target / 'installed home', ['codex'], 'home')
-        line = next(line for line in changes[0][2].splitlines() if line.startswith('Use `python3 '))
-        command = line[len('Use `'):].split('` for layered steering.')[0]
-        executed = subprocess.run(shlex.split(command), capture_output=True, text=True)
-        self.assertEqual(executed.returncode, 0, executed.stderr)
-        self.assertEqual(json.loads(executed.stdout), ['show', '--all-scopes'])
 
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
@@ -416,9 +308,7 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
         for name, data in before.items():
             self.assertEqual((checkout / name).read_bytes(), data)
-        checked = subprocess.run([sys.executable, str(checkout / 'scripts/doctor.py'), '--target', str(checkout),
-                                  '--harness', 'codex', '--harness', 'claude'], capture_output=True, text=True, timeout=60)
-        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+        self.assertTrue((checkout / '.agents/principles').is_symlink())
 
     def test_unslop_personal_ownership_preserves_pstack_and_migrates_only_owned_links(self):
         skills = install.collect(ROOT, "skills")
@@ -456,124 +346,10 @@ class InstallTests(unittest.TestCase):
         self.assertFalse(target.exists())
         subprocess.run(command, check=True, capture_output=True)
         self.assertTrue((target / ".agents/skills/matt-tdd/SKILL.md").is_file())
-        result = subprocess.run([sys.executable, str(checkout / "scripts/doctor.py"),
-                                 "--target", str(target)], check=True,
-                                capture_output=True, text=True)
-        self.assertIn("installed links", result.stdout)
-        self.assertTrue((target / ".agents/steering/rules.md").is_file())
-        self.assertIn("tkstack:steering:start", (target / "AGENTS.md").read_text())
+        self.assertTrue((target / ".agents/steering").is_symlink())
         again = subprocess.run(command, check=True, capture_output=True, text=True)
         self.assertIn("0 link(s) changed.", again.stdout)
 
-
-def _stub_path(root, hide_prefixes, stubs):
-    """Build a PATH whose stub executables hide selected real commands."""
-    root.mkdir(parents=True, exist_ok=True)
-    bindir = root / "stubs"
-    system = root / "system-bin"
-    bindir.mkdir()
-    system.mkdir()
-    hidden = set()
-    for name, text in stubs.items():
-        path = bindir / name
-        path.write_text(text)
-        path.chmod(0o755)
-        hidden.add(name)
-    seen = set(hidden)
-    for directory in os.environ["PATH"].split(os.pathsep):
-        try:
-            entries = list(Path(directory).iterdir())
-        except OSError:
-            continue
-        for source in entries:
-            name = source.name
-            if name in seen or any(name == prefix or name.startswith(prefix) for prefix in hide_prefixes):
-                continue
-            if not source.is_file() or not os.access(source, os.X_OK):
-                continue
-            try:
-                (system / name).symlink_to(source)
-            except FileExistsError:
-                continue
-            seen.add(name)
-    return str(bindir) + os.pathsep + str(system)
-
-
-_UV_STUB = """#!/bin/sh
-printf '%s\\n' "$*" >> "$UV_LOG"
-exit 0
-"""
-
-_UV_INSTALLER_BODY = """#!/bin/sh
-bindir="${UV_INSTALL_DIR:-$HOME/.local/bin}"
-mkdir -p "$bindir"
-cat > "$bindir/uv" << 'UV'
-#!/bin/sh
-printf '%s\\n' "$*" >> "$UV_LOG"
-exit 0
-UV
-chmod +x "$bindir/uv"
-"""
-
-_CURL_UV = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$CURL_LOG"
-out=
-url=
-while [ $# -gt 0 ]; do
-  case "$1" in
-    -o) out=$2; shift 2 ;;
-    -o*) out=${1#-o}; shift ;;
-    https://*|http://*) url=$1; shift ;;
-    *) shift ;;
-  esac
-done
-case "$url" in
-  https://astral.sh/uv/0.12.23/install.sh) ;;
-  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
-esac
-[ -n "$out" ] || { printf '%s\n' 'missing -o' >&2; exit 1; }
-cat "$UV_INSTALLER_FILE" > "$out"
-"""
-
-_CURL_TARBALL = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$CURL_LOG"
-out=
-url=
-while [ $# -gt 0 ]; do
-  case "$1" in
-    -o) out=$2; shift 2 ;;
-    -o*) out=${1#-o}; shift ;;
-    https://*|http://*) url=$1; shift ;;
-    *) shift ;;
-  esac
-done
-case "$url" in
-  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main) ;;
-  *)
-    if [ -n "${CURL_ACCEPT:-}" ] && [ "$url" = "$CURL_ACCEPT" ]; then
-      :
-    else
-      printf '%s\n' "unexpected url: $url" >&2
-      exit 1
-    fi
-    ;;
-esac
-[ -n "$out" ] || exit 1
-if [ -n "${BAD_TAR:-}" ]; then
-  cat "$BAD_TAR" > "$out"
-  exit 0
-fi
-work=$(mktemp -d)
-mkdir -p "$work/tkstack-main/scripts"
-printf '%s\n' 'print(1)' > "$work/tkstack-main/scripts/bootstrap.py"
-cat > "$work/tkstack-main/install.sh" << 'END'
-#!/bin/sh
-printf '%s\n' "local-install $*" >> "$INSTALL_LOG"
-END
-chmod +x "$work/tkstack-main/install.sh"
-tar -czf "$out" -C "$work" tkstack-main
-rm -rf "$work"
-"""
 
 
 class InstallerPrerequisiteTests(unittest.TestCase):
@@ -628,7 +404,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         script = checkout / "install.sh"
         script.write_text(text)
         script.chmod(0o755)
-        (checkout / "scripts" / "bootstrap.py").write_text("raise SystemExit(0)\n")
+        (checkout / "scripts" / "install.py").write_text("raise SystemExit(0)\n")
         return script
 
     def _run(self, script, path, *arguments, extra=None):
@@ -677,14 +453,13 @@ class InstallerPrerequisiteTests(unittest.TestCase):
     def test_missing_python_uses_uv_without_installing_uv(self):
         path = _stub_path(self.base / "bins", ("python", "uv"), {"uv": _UV_STUB, "curl": "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$CURL_LOG\"\nexit 1\n"})
         target = self.base / "target"
-        result = self._run(ROOT / "install.sh", path, "--dry-run", "--offline", "--target", str(target))
+        result = self._run(ROOT / "install.sh", path, "--dry-run", "--target", str(target))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         log = self.uv_log.read_text()
         self.assertIn("python install 3.12.15", log)
         self.assertIn("run --python 3.12.15 --no-project -- python -B ", log)
-        self.assertIn(str(ROOT / "scripts" / "bootstrap.py"), log)
+        self.assertIn(str(ROOT / "scripts" / "install.py"), log)
         self.assertIn("--dry-run", log)
-        self.assertIn("--offline", log)
         self.assertNotIn("requires Python 3.11+", result.stderr)
         self.assertFalse(self.curl_log.exists())
 
@@ -724,10 +499,10 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        result = self._run(script, path, "--offline")
+        result = self._run(script, path, "--dry-run")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main", self.curl_log.read_text())
-        self.assertIn("local-install --offline", self.install_log.read_text())
+        self.assertIn("local-install --dry-run", self.install_log.read_text())
         checkout = self.home / ".local" / "share" / "tkstack"
         self.assertTrue((checkout / "install.sh").is_file())
         receipt = (checkout / ".tkstack" / "source-receipt.txt").read_text()
@@ -766,7 +541,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
 
     def test_tarball_rejects_multiple_top_level_directories(self):
         def build(tar):
-            for name in ("one/install.sh", "one/scripts/bootstrap.py", "two/extra.txt"):
+            for name in ("one/install.sh", "one/scripts/install.py", "two/extra.txt"):
                 data = b"x\n"
                 info = tarfile.TarInfo(name)
                 info.size = len(data)
@@ -785,7 +560,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
 
     def test_tarball_rejects_a_symlink_that_leaves_the_extract_directory(self):
         def build(tar):
-            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/install.py", b"print(1)\n")):
                 info = tarfile.TarInfo(name)
                 info.size = len(data)
                 tar.addfile(info, io.BytesIO(data))
@@ -798,7 +573,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
 
     def test_tarball_rejects_a_relative_symlink_that_leaves_the_extract_directory(self):
         def build(tar):
-            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/install.py", b"print(1)\n")):
                 info = tarfile.TarInfo(name)
                 info.size = len(data)
                 tar.addfile(info, io.BytesIO(data))
@@ -811,14 +586,14 @@ class InstallerPrerequisiteTests(unittest.TestCase):
 
     def test_tarball_accepts_a_symlink_inside_the_extract_directory(self):
         def build(tar):
-            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/bootstrap.py", b"print(1)\n")):
+            for name, data in (("tkstack-main/install.sh", b"#!/bin/sh\n"), ("tkstack-main/scripts/install.py", b"print(1)\n")):
                 info = tarfile.TarInfo(name)
                 info.size = len(data)
                 info.mode = 0o755
                 tar.addfile(info, io.BytesIO(data))
             link = tarfile.TarInfo("tkstack-main/inside")
             link.type = tarfile.SYMTYPE
-            link.linkname = "scripts/bootstrap.py"
+            link.linkname = "scripts/install.py"
             tar.addfile(link)
         archive = self._bad_archive("inside-link.tar.gz", build)
         path = _stub_path(self.base / "bins-inside", ("git", "realpath"), {"curl": _CURL_TARBALL})
@@ -847,7 +622,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
     def test_receipt_alone_does_not_run_a_preexisting_checkout(self):
         dest = self.home / ".local" / "share" / "tkstack"
         (dest / "scripts").mkdir(parents=True)
-        (dest / "scripts" / "bootstrap.py").write_text("print(1)\n")
+        (dest / "scripts" / "install.py").write_text("print(1)\n")
         (dest / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' PLANTED >> \"$INSTALL_LOG\"\n")
         (dest / "install.sh").chmod(0o755)
         (dest / ".tkstack").mkdir()
@@ -876,32 +651,25 @@ class InstallerPrerequisiteTests(unittest.TestCase):
     def test_matching_git_origin_runs_without_trust_and_a_mismatch_does_not(self):
         dest = self.home / ".local" / "share" / "tkstack"
         (dest / "scripts").mkdir(parents=True)
-        (dest / "scripts" / "bootstrap.py").write_text("print(1)\n")
+        (dest / "scripts" / "install.py").write_text("print(1)\n")
         (dest / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' \"PLANTED $*\" >> \"$INSTALL_LOG\"\n")
         (dest / "install.sh").chmod(0o755)
         (dest / ".git").mkdir()
-        git = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$GIT_LOG"
-if [ "$1" = -C ]; then shift 2; fi
-if [ "$1" = remote ]; then printf '%s\n' "$GIT_ORIGIN"; fi
-if [ "$1" = pull ]; then exit 0; fi
-exit 0
-"""
-        path = _stub_path(self.base / "bins-origin", ("git",), {"git": git})
+        path = _stub_path(self.base / "bins-origin", ("git",), {"git": GIT_ORIGIN_STUB})
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        mismatch = self._run(script, path, "--offline", extra={"GIT_ORIGIN": "https://example.com/other.git"})
+        mismatch = self._run(script, path, "--dry-run", extra={"GIT_ORIGIN": "https://example.com/other.git"})
         self.assertNotEqual(mismatch.returncode, 0, mismatch.stdout + mismatch.stderr)
         self.assertIn("Refusing to run it", mismatch.stderr)
         self.assertFalse(self.install_log.exists())
         self.assertNotIn("pull", (self.base / "git.log").read_text())
         trusted = self._run(
-            script, path, "--offline",
+            script, path, "--dry-run",
             extra={"GIT_ORIGIN": "https://example.com/other.git", "TKSTACK_TRUST_HOME": "1"},
         )
         self.assertEqual(trusted.returncode, 0, trusted.stdout + trusted.stderr)
-        self.assertIn("PLANTED --offline", self.install_log.read_text())
+        self.assertIn("PLANTED --dry-run", self.install_log.read_text())
         self.assertNotIn("pull", (self.base / "git.log").read_text())
         self.install_log.unlink()
         matched = self._run(
@@ -917,7 +685,7 @@ exit 0
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        first = self._run(script, path, "--offline")
+        first = self._run(script, path, "--dry-run")
         self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
         checkout = self.home / ".local" / "share" / "tkstack"
         (checkout / ".tkstack" / "keep").write_text("state\n")
@@ -943,7 +711,7 @@ exec "$REAL_MV" "$@"
             {"curl": _CURL_TARBALL, "mv": blocker},
         )
         failed = self._run(
-            script, blocked, "--offline",
+            script, blocked, "--dry-run",
             extra={
                 "TKSTACK_TRUST_HOME": "1",
                 "FAIL_MV_DEST": str(checkout),

@@ -34,7 +34,7 @@ revision; they are not claimed to be in the PyPI 0.2.0 wheel. Research code,
 datasets, WebUI, global plugins, transcript harvesting, and scheduling are not
 required by this integration.
 
-[`src/evolve.py`](../src/evolve.py) targets any owned `skills/<name>/SKILL.md`, with isolated state under `.tkstack/evolution/`.
+[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) targets any owned `skills/<name>/SKILL.md`, with isolated state under `.tkstack/evolution/`.
 It ignores global Sleep configuration, disables memory evolution and automatic
 adoption, limits the edit budget to one, and enables strict improvement plus
 per-task no-regression gates. Input hashes pin the live skill, tasks, optimizer
@@ -42,10 +42,10 @@ preferences, backend, and engine revision; changed inputs require a new run
 directory. Upstream bytes remain unchanged.
 
 ```sh
-python3 src/evolve.py learn --backend mock --dry-run
-python3 src/evolve.py sdlc --backend mock --dry-run
-python3 src/evolve.py learn
-python3 src/evolve.py sdlc
+python3 skills/learn/scripts/evolve.py learn --backend mock --dry-run
+python3 skills/learn/scripts/evolve.py sdlc --backend mock --dry-run
+python3 skills/learn/scripts/evolve.py learn
+python3 skills/learn/scripts/evolve.py sdlc
 ```
 
 `mock` only checks wiring. The default `handoff` backend emits actual model

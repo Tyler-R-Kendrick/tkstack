@@ -75,7 +75,7 @@ and per-task no-regression gates. A missing validator, exhausted budget, or
 unanswered model prompt is pending evidence. A tie gives no measured reason to
 replace the baseline. Keep evidence IDs with the candidate and final decision.
 
-The repository's `src/evolve.py` supports the configured learn/sdlc decision
+The repository's `skills/learn/scripts/evolve.py` supports the configured learn/sdlc decision
 regressions; broader or newly created skills need real task adapters and cases.
 Do not call those small decision tests proof of full workflow performance.
 An explicitly requested feature implementation may be validated by meaningful

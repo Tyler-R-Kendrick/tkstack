@@ -1,8 +1,9 @@
 # t3code
 
-t3code does not have its own skills directory. It runs on Claude, Codex, Cursor,
-Copilot, or Grok and reads the skills that host already loaded.
+t3code does not have its own skills directory. It is an orchestrator: it runs
+Claude, Codex, Cursor, Copilot, or Grok and reads the skills that host already
+loaded.
 
-Install one of those harnesses. `scripts/harness_paths.py` records the
-delegation and returns no separate t3code skills path. t3code is not a
-skills.json placement.
+`harnesses/skills.json` `delegates.t3code` names those hosts. The installer
+does not create a t3code skills path. Repo-quality counts t3code as covered
+when every named host is itself a harness the installer links.

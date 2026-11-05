@@ -343,5 +343,13 @@ export async function execute(input: z.infer<typeof inputSchema>, _inference: In
         self.assertEqual(json.loads(run.stdout), {'labels': ['a', 'z']})
 
 
+class CodifyReleaseTests(unittest.TestCase):
+    def test_sync_check_passes_on_the_tree(self):
+        sys.path.insert(0, str(ROOT / 'src'))
+        from skill_roots import load
+        sync_codify = load('sync_codify_release', ROOT / 'skills/learn/skills/skillify/scripts/sync_codify.py')
+        self.assertEqual(sync_codify.sync(check=True), [])
+
+
 if __name__ == '__main__':
     unittest.main()

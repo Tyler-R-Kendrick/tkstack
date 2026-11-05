@@ -55,7 +55,9 @@ and [helper commands](../skills/learn/skills/skillify/references/commands.md).
 ## Shared compiler and executable lock
 
 [Codify](codify.md) now owns the templates, compiler/runner, and optional AI SDK
-runtime. Skillify consumes a generated standalone release, checked by doctor.
+runtime. Skillify consumes a generated standalone release.
+`python3 skills/learn/skills/skillify/scripts/sync_codify.py --check` rejects
+drift between that release and canonical Codify source.
 After implementing the workflow and real contract cases, run:
 
 ```sh
@@ -145,4 +147,5 @@ and residual semantic limits. Native helper policy stays with its original code.
 Generation tracks relative owned output hashes and rejects modified generated
 sources before overwrite/removal. Recompile actual code/cases after changes.
 [All-skill normalization and maintenance](normalization.md) contains the complete
-procedure and coverage; `src/check_skills.py` and doctor enforce conformance.
+procedure and coverage; `python3 skills/learn/skills/skillify/scripts/sync_codify.py --check`
+and `src/check_skills.py` enforce the release-copy and skill-conformance gates.

@@ -45,23 +45,22 @@ valid constraints. Concurrent execution must preserve deterministic fan-in.
 
 ## Loading and distribution
 
-The full installer provides `.agents/principles` as a shared link to the
-canonical package, including for a Claude-only or Cursor-only installation.
-Codex and Claude native instruction blocks point at its `SKILL.md`; Cursor's
-always-applied steering rule uses the same project/home path. Each selected
-harness also receives the `tkstack-principles` skill in its normal skill folder.
-Pstack's `poteto-mode` and upstream principles remain unchanged.
+The installer links `.agents/principles` at the canonical package, including
+for a Claude-only or Cursor-only installation. Cursor's committed steering rule
+reads that path. The installer does not rewrite Codex or Claude instruction
+files. Each selected harness also receives the `tkstack-principles` skill in
+its normal skill folder. Pstack's `poteto-mode` and upstream principles remain
+unchanged.
 
 ```sh
 python3 scripts/install.py --target . --dry-run
 python3 scripts/install.py --target .
-python3 scripts/doctor.py --target .
 ```
 
 The root marketplace also distributes this self-contained Markdown package.
 For a standalone skill installation, add a pointer to that installed package's
-index in the harness instructions when automatic loading is desired. Full
-dotfiles installation creates the shared link and native pointers automatically.
+index in the harness instructions when automatic loading is desired. A full
+dotfiles install creates the shared link.
 
 The user's exact request is preserved as a `preference` in the shared learn
 ledger, with two active personal reasoning rules that point back to these

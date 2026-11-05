@@ -31,8 +31,8 @@ than implementing another executor, signature format, or inference configuration
 For portable independent installation, Skillify carries a generated release
 copy at `scripts/codify_runtime/`, including only compiler/template/runtime code
 and license. It is not a separately maintained implementation. In this source
-repository `python3 src/sync_codify.py` publishes the release;
-`python3 src/sync_codify.py --check` and doctor reject drift. Edit canonical
+repository `python3 skills/learn/skills/skillify/scripts/sync_codify.py` publishes the release;
+`python3 skills/learn/skills/skillify/scripts/sync_codify.py --check` rejects drift. Edit canonical
 Codify source first. The generated copy never imports the original repository
 or assumes a sibling skill, plugin cache path, network, or home directory.
 

@@ -7,19 +7,13 @@ entries live in skills/sdlc/references/routing.json. The rendered table is the
 marked region of skills/sdlc/references/skill-routing.md.
 """
 
-import importlib.util
 import json
 import re
 import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
-SCRIPTS = ROOT / "scripts"
-for directory in (HERE, SCRIPTS):
-    if str(directory) not in sys.path:
-        sys.path.insert(0, str(directory))
+ROOT = Path(__file__).resolve().parents[3]
 CATALOG = Path("skills/sdlc/references/routing.json")
 GUIDE = Path("skills/sdlc/references/skill-routing.md")
 START = "<!-- tkstack:routing-inventory:start -->"
@@ -107,15 +101,17 @@ DUPLICATE_SKILL_PATHS = frozenset({
 })
 
 
-def _load(name, path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-install = _load("tkstack_install", ROOT / "scripts" / "install.py")
-skill_roots = _load("tkstack_skill_roots", ROOT / "src" / "skill_roots.py")
+def _placement_tools(root):
+    """Load installer placement when the skill runs a check, not at import."""
+    root = Path(root)
+    for directory in (root / "scripts", root / "src"):
+        entry = str(directory)
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from skill_roots import load
+    import skill_roots
+    install = load("tkstack_install", root / "scripts" / "install.py")
+    return install, skill_roots
 
 
 def _unescape_double_quoted(value):
@@ -209,7 +205,7 @@ def _join_labels(names):
     return ", ".join(names[:-1]) + ", and " + names[-1]
 
 
-def _placement(rules, source):
+def _placement(install, rules, source):
     """Describe install.placement. None means every harness the user selected."""
     selected = install.placement(rules, "skills", source)
     if selected is None:
@@ -227,11 +223,12 @@ def _placement(rules, source):
 def discover(root=ROOT):
     """Map every routed skill name to its stack, purpose, and placement.
 
-    This read does not generate alias or Graphify views. Doctor runs the check
-    through the managed command-schema interpreter, and Graphify views embed the
-    installer interpreter. Rewriting them here would make the next doctor fail.
+    This read does not generate alias or Graphify views. SDLC runs it through
+    this script. The installer writes those views. Generating them here would
+    change the checkout the check reads.
     """
     root = Path(root)
+    install, skill_roots = _placement_tools(root)
     rules_path = root / "harnesses/skills.json"
     rules = json.loads(rules_path.read_text()).get("placement", {}) if rules_path.is_file() else {}
     found = {}
@@ -250,7 +247,7 @@ def discover(root=ROOT):
         add(name, {
             "group": group,
             "stack": "skills/" if source is None else source,
-            "placement": _placement(rules, source),
+            "placement": _placement(install, rules, source),
             "text": _upstream_text(root, source, path),
             "path": path,
         })
@@ -364,7 +361,7 @@ def render_inventory(skills, catalog):
     lines = [
         "Generated from the installed skill set, Learn subskills, unplaced vendored",
         "skills, and `harnesses/` packages. Do not edit this region by hand. Run",
-        "`python3 src/routing_inventory.py render` after adding a skill and its",
+        "`python3 skills/sdlc/scripts/routing_inventory.py render` after adding a skill and its",
         "routing entry.",
         "",
         "| Stack | Best starting point | What this stack is for |",
@@ -415,7 +412,7 @@ def check(root=ROOT):
     inventory = render_inventory(skills, catalog)
     _head, body, _tail = split_guide(guide_text(root))
     if body.strip() != inventory.strip():
-        raise ValueError("skill-routing.md inventory is stale; run python3 src/routing_inventory.py render")
+        raise ValueError("skill-routing.md inventory is stale; run python3 skills/sdlc/scripts/routing_inventory.py render")
     return {"skills": len(skills), "stacks": len(catalog["stacks"])}
 
 

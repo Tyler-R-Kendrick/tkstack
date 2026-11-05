@@ -2,7 +2,7 @@
 
 Use this guide to choose an installed skill. The owned `sdlc` skill still runs the lifecycle the user asked for. This page only decides which procedure fits the work. Installing or reading a skill does not run it.
 
-The inventory is generated from the real skill set: every package under `skills/` (including Learn subskills), every adopted package under `.agents/skills/`, every skill the installer places from `vendor/`, vendored skills that are intentionally not placed, and any `SKILL.md` under `harnesses/`. `harnesses/skills.json` decides placement. It does not ship a separate skill package today. `python3 src/routing_inventory.py check` fails when a skill has no routing entry, an entry names a missing skill, or this file's generated region is stale. A vendored `SKILL.md` that redeclares an installed name is an error unless that path is on the duplicate allowlist in `src/routing_inventory.py`. The allowlist is only Caveman's plugin mirror, Impeccable's per-harness builds, and vendor trees whose installer view is the routed copy.
+The inventory is generated from the real skill set: every package under `skills/` (including Learn subskills), every adopted package under `.agents/skills/`, every skill the installer places from `vendor/`, vendored skills that are intentionally not placed, and any `SKILL.md` under `harnesses/`. `harnesses/skills.json` decides placement. It does not ship a separate skill package today. `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing entry, an entry names a missing skill, or this file's generated region is stale. A vendored `SKILL.md` that redeclares an installed name is an error unless that path is on the duplicate allowlist in `skills/sdlc/scripts/routing_inventory.py`. The allowlist is only Caveman's plugin mirror, Impeccable's per-harness builds, and vendor trees whose installer view is the routed copy.
 
 ## Decision guide
 
@@ -31,14 +31,14 @@ Three names collide. The installer keeps the preferred skill's name and rewrites
 | `unslop` | Personal `unslop` | Pstack's prose skill is `pstack-unslop`. Pstack's other callers still say `unslop` on purpose |
 | `prototype` | Matt's throwaway prototype | Emil's UI variant picker is `emil-prototype`. Emil's quoted call in `break-ui` is rewritten in the generated view |
 
-Skills under `skills/` join every selected harness. Learn subskills are not separate installs. Harness-independent upstream skills, including Emil Kowalski, ub-mode, and the adopted packages, follow `placement.default`: Codex (`.agents/skills`), Grok, Kimi, OpenCode, GitHub Copilot (`~/.copilot/skills` or `.github/skills`), and Muse (`~/.config/muse/skills`, or `.agents/skills` in a project) when those harnesses are selected. The Muse home link does not follow `XDG_CONFIG_HOME`. The default install profile selects Codex, Claude Code, and Cursor, so that set lands in the shared Codex directory unless you pass `--harness`. Pstack and Cursor Team Kit are Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor. t3code has no skills directory of its own. `harnesses/skills.json` is the placement record.
+Skills under `skills/` join every selected harness. Learn subskills are not separate installs. Harness-independent upstream skills, including Emil Kowalski, ub-mode, and the adopted packages, follow `placement.default`: Codex (`.agents/skills`), Grok, Kimi, OpenCode, GitHub Copilot (`~/.copilot/skills` or `.github/skills`), and Muse (`~/.config/muse/skills`, or `.agents/skills` in a project) when those harnesses are selected. The Muse home link does not follow `XDG_CONFIG_HOME`. The default install selects Codex, Claude Code, and Cursor, so that set lands in the shared Codex directory unless you pass `--harness`. Pstack and Cursor Team Kit are Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor. t3code has no skills directory of its own. `harnesses/skills.json` `delegates.t3code` names the hosts it runs, and the same file is the placement record.
 
 ## Per-stack overview and skill inventory
 
 <!-- tkstack:routing-inventory:start -->
 Generated from the installed skill set, Learn subskills, unplaced vendored
 skills, and `harnesses/` packages. Do not edit this region by hand. Run
-`python3 src/routing_inventory.py render` after adding a skill and its
+`python3 skills/sdlc/scripts/routing_inventory.py render` after adding a skill and its
 routing entry.
 
 | Stack | Best starting point | What this stack is for |

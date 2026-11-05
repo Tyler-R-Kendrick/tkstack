@@ -145,5 +145,5 @@ model panels were not exercised. No PR was created or merged to test a workflow.
 Model access, browser tooling, and target-project dependencies remain properties
 of the harness and project using the installed skills.
 
-Run `python3 scripts/doctor.py --target .` to verify this checkout's current
-installation without changing it.
+Run `./install.sh --dry-run` to preview this checkout's links without changing
+them.

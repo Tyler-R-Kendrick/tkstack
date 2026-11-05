@@ -11,6 +11,9 @@
     }
   },
   "rewrite_callers": {"pstack": false},
+  "delegates": {
+    "t3code": ["claude", "codex", "cursor", "copilot", "grok"]
+  },
   "placement": {
     "default": ["codex", "grok", "kimi", "opencode", "copilot", "muse"],
     "sources": {

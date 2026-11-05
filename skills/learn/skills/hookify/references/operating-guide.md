@@ -94,9 +94,10 @@ Merge the reviewed entries into the requested project scope, preserving unrelate
 hooks/settings and exact ownership of entries you add. Compare current bytes
 with the inspected baseline before writing; serialize this shared configuration
 update or use a transaction/lock. Do not replace the whole settings file with
-the fragment. In this dotfiles repository, integrate standing registrations
-through the canonical `scripts/setup_integrations.py` configuration path rather
-than editing ignored installed settings as their source of truth.
+the fragment. The tkstack installer links skills and sets `core.hooksPath` for
+the docs pre-commit hook. It does not register these agent hooks. The host
+owns that configuration; do not treat an ignored installed settings file as
+the source of truth.
 
 For an update/remove request, remove only the exact owned entries/policy targeted
 by the request. Preserve user edits and foreign registrations. Emit is read-only;

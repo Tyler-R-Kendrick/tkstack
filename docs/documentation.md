@@ -18,8 +18,8 @@ python3 src/check_docs.py check
 The policy in `docs/docs-policy.json` maps source paths to documentation owners.
 The error identifies affected areas and pages. Compare the source change to
 those pages, update actual instructions/examples, and verify relevant commands.
-`render` updates only the README's managed profile/toolchain block from the
-same JSON manifests used by setup. It preserves all other prose.
+`render` updates only the README's install-pin block from `PYTHON_VERSION`,
+`UV_VERSION`, and `UV_INSTALLER_SHA256` in `install.sh`. It preserves all other prose.
 
 `refresh` records the reviewed source/doc contents and executable modes in
 `docs/docs-freshness.json`. It requires an actual reason and does not update
@@ -46,7 +46,7 @@ requires reviewing all areas. Saved history remains in normal Git history.
 ## What the checks establish
 
 - Source hashes, paths, and executable modes match an explicitly reviewed documentation snapshot.
-- README profile/toolchain facts match the actual bootstrap manifests.
+- README install-pin facts match `install.sh`.
 - Local inline Markdown links in README, glossary, and `docs/` point to files/directories in the same snapshot.
 - New/deleted/renamed matched sources are detected, independent of timestamps.
 
@@ -86,7 +86,7 @@ success. Other upstream hook adapters retain their existing behavior.
 Apply project configuration with:
 
 ```sh
-./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline
+./install.sh --target "$PWD" --scope project
 ```
 
 Registration is separate from observed native activation. Reload/restart the
@@ -97,32 +97,22 @@ The adapters follow the current documented
 [Claude hooks protocol](https://code.claude.com/docs/en/hooks), and
 [Cursor stop protocol](https://cursor.com/docs/agent/hooks).
 
-## Git pre-commit installation
+## Git pre-commit
 
-Full setup installs the source repository's Git hook. Narrow maintenance uses:
+`scripts/install.py` sets `core.hooksPath=.githooks` on this checkout. Git then
+runs `.githooks/pre-commit` and ignores `.git/hooks`. There is no chained
+dispatcher and no ownership receipt. A `core.hooksPath` that already points
+somewhere else is replaced. Uninstall unsets the key only when the value is
+still `.githooks`. Dry-run prints `Would set` or `Would unset` and does not
+change config. A missing `git` binary, or a directory that is not a checkout,
+prints `skip git docs hook: not a git checkout`.
 
 ```sh
-python3 scripts/setup_repo_hooks.py --dry-run
-python3 scripts/setup_repo_hooks.py
-python3 scripts/setup_repo_hooks.py --check
+python3 scripts/install.py --target .
 python3 src/check_docs.py check --staged
 ```
 
-Invoked as a script, `scripts/setup_repo_hooks.py` imports the docs checker and
-the state helper from `src/`. The versioned handler is `.githooks/pre-commit`. The ownership receipt is
-`.tkstack/git-hooks/ownership.json` and stays gitignored. Installation places
-an owned dispatcher in the repository's effective default Git hooks directory.
-A foreign pre-commit is preserved and chained. A dispatcher this project
-already owns, including one installed from another worktree of the same
-repository, is replaced and is never chained. Other hooks and Git configuration
-remain untouched. Shared/custom `core.hooksPath` managers are
-preserved; add the versioned handler to that manager rather than overwriting it.
-`--uninstall --dry-run` reports `planned` when this checkout's receipt exists
-and leaves the hook and receipt in place. A missing `git` binary is
-`not-a-git-checkout`, not a traceback.
-The installer reports that case explicitly. A source copy without Git metadata
-keeps the versioned files and reports that Git activation is deferred.
-
+`.githooks/pre-commit` execs `src/check_docs.py --repo <toplevel> check --staged`.
 The Git callback checks the actual **index**: policy, docs, source identities,
 and generated README facts all come from staged blobs. Unstaged fixes cannot
 satisfy a staged source change. Sparse checkouts use complete index entries;
@@ -131,17 +121,9 @@ The dispatcher follows the active worktree's Git index while retaining a usable
 checker from the durable source checkout. Git hooks can be skipped by Git's
 normal override mechanisms; no server-side CI enforcement is claimed here.
 
-To restore the previous owned pre-commit setup:
-
-```sh
-python3 scripts/setup_repo_hooks.py --uninstall
-```
-
-Removal restores a foreign saved predecessor. A missing or tkstack-owned backup
-is deleted with the dispatcher instead of being executed.
-Foreign or modified installed hooks are preserved for inspection. Native hook
-entries use the ordinary installer ownership/uninstall path. Editing generated
-host settings is temporary; source setup will reapply its declared configuration.
+`./install.sh --uninstall` unsets `core.hooksPath` when it is `.githooks`.
+It does not restore a previous hook path. Set that path again yourself if
+another tool should own hooks.
 
 ## Verify the maintainer recipe
 
@@ -150,7 +132,7 @@ uses the Python that runs it. CI installs the locked PyYAML/jsonschema packages
 into `.tkstack/runtime/command-schema` and runs the same suite with that
 interpreter. Some tests rebuild ignored aliases or native views.
 `python3 scripts/install.py --target .` restores the normal source installation
-before `python3 src/tool.py command-schema -B src/check_skills.py` and doctor.
+before `python3 src/check_skills.py`.
 Those generated views are not documentation inputs or versioned source. The
 README Develop section has copy-paste commands for
 `python3 -m unittest discover -s tests`,

@@ -23,6 +23,7 @@ Long file excerpts are capped. Generated lock JSON is summarized instead of
 inlined, and download records (urls, hashes) inside manifests are omitted.
 """
 
+import importlib.util
 import json
 import os
 import re
@@ -187,7 +188,26 @@ def _loc_report(paths):
             for relative, count in sorted(entries, key=lambda item: (-item[1], item[0])):
                 if count:
                     lines.append(f"  {relative}: {count}")
+    reached = _checks_module().reached_skill_scripts(ROOT)
+    reached_total = sum(count for _, count in reached)
+    lines.append(
+        "skill scripts used only by scripts/, src/, CI, or tests: "
+        f"{reached_total} non-blank lines"
+    )
+    for relative, count in reached:
+        lines.append(f"  {relative}: {count}")
     return "\n".join(lines)
+
+
+def _checks_module():
+    """Load the deterministic checks without running them."""
+    if getattr(_checks_module, "module", None) is None:
+        path = Path(__file__).with_name("checks.py")
+        spec = importlib.util.spec_from_file_location("repo_quality_checks_for_snapshot", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _checks_module.module = module
+    return _checks_module.module
 
 
 def _tree(paths):

@@ -15,7 +15,7 @@ Subskills install and publish only inside their parent, which mounts each one as
 a subcommand: list them in the parent contract's `subskills` map and run
 Skillify normalize to generate `commands/<subskill>.md`. Learn packages the seven
 ___ify skills this way (`/learn skillify ...`, or
-`.tkstack/tkstack skills learn -- skillify ...`).
+`python3 src/tkstack.py skills learn -- skillify ...`).
 
 Keep upstream edits out of this directory and out of `vendor/`. Configure a
 name collision in `harnesses/skills.json`; the installer generates the adapted

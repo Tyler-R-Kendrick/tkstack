@@ -74,6 +74,44 @@ def failure_message(result):
     return result["explanation"] + "\n" + evidence
 
 
+def write_glue_and_skill_scripts(root):
+    """scripts/, src/, one root-only skill script, and one the skill names."""
+    root = Path(root)
+    (root / "scripts").mkdir()
+    (root / "src").mkdir()
+    (root / "scripts" / "glue.py").write_text("print('glue')\n", encoding="utf-8")
+    (root / "src" / "gate.py").write_text(
+        "load('hidden', 'skills/demo/scripts/hidden.py')\n"
+        "load('owned', 'skills/demo/scripts/owned.py')\n",
+        encoding="utf-8",
+    )
+    skill = root / "skills" / "demo"
+    (skill / "scripts").mkdir(parents=True)
+    (skill / "references").mkdir()
+    (skill / "SKILL.md").write_text(
+        "Run scripts/owned.py for the skill's own engine.\n",
+        encoding="utf-8",
+    )
+    (skill / "references" / "guide.md").write_text(
+        "The workflow calls scripts/owned.py.\n",
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "workflow.lock.json").write_text(
+        '{"files": {"scripts/owned.py": {}}}\n',
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "hidden.py").write_text(
+        "".join(f"value_{index} = {index}\n" for index in range(20)),
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "owned.py").write_text(
+        "".join(f"kept_{index} = {index}\n" for index in range(15)),
+        encoding="utf-8",
+    )
+    (skill / "scripts" / "engine.py").write_text("print('skill engine')\n", encoding="utf-8")
+    return root
+
+
 def load_eval_config(path):
     text = path.read_text(encoding="utf-8")
     try:
@@ -229,6 +267,109 @@ class RepoQualityTests(unittest.TestCase):
     def test_scripts_loc(self):
         self.assert_check(checks.scripts_loc(ROOT))
 
+    def test_scripts_loc_counts_root_only_skill_scripts_not_skill_owned_ones(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = write_glue_and_skill_scripts(temporary)
+            result = checks.scripts_loc(root)
+            evidence = "\n".join(result["evidence"])
+            self.assertIn("skills/demo/scripts/hidden.py: 20 non-blank lines", evidence)
+            self.assertNotIn("skills/demo/scripts/owned.py: 15 non-blank lines", evidence)
+            self.assertNotIn("engine.py", evidence)
+            self.assertIn("SKILL.md", result["explanation"])
+            self.assertIn("references", result["explanation"])
+            self.assertIn("workflow", result["explanation"])
+            self.assertEqual(result["value"], 1 + 2 + 20)
+            self.assertTrue(result["pass"], evidence)
+
+    def test_scripts_loc_relative_root_matches_resolved_root(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = write_glue_and_skill_scripts(temporary)
+            absolute = checks.scripts_loc(root)
+            previous = os.getcwd()
+            try:
+                os.chdir(root.parent)
+                from_parent = checks.scripts_loc(Path(root.name))
+                os.chdir(root)
+                from_dot = checks.scripts_loc(Path("."))
+                os.chdir(root / "scripts")
+                from_parent_dir = checks.scripts_loc(Path(".."))
+            finally:
+                os.chdir(previous)
+            self.assertEqual(absolute["value"], 1 + 2 + 20)
+            self.assertIn(
+                "skills/demo/scripts/owned.py: excluded because the skill mentions it",
+                absolute["evidence"],
+            )
+            for relative in (from_parent, from_dot, from_parent_dir):
+                self.assertEqual(relative["value"], absolute["value"])
+                self.assertEqual(relative["evidence"], absolute["evidence"])
+
+    def test_scripts_loc_lists_reached_skill_scripts_the_skill_mentions(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = Path(temporary)
+            (root / "scripts").mkdir()
+            (root / "src").mkdir()
+            (root / "scripts" / "glue.py").write_text("print('glue')\n", encoding="utf-8")
+            (root / "src" / "gate.py").write_text(
+                "load('hidden', 'skills/demo/scripts/hidden.py')\n"
+                "load('owned', 'skills/demo/scripts/owned.py')\n"
+                "load('also', 'skills/demo/scripts/also.py')\n",
+                encoding="utf-8",
+            )
+            skill = root / "skills" / "demo"
+            (skill / "scripts").mkdir(parents=True)
+            (skill / "references").mkdir()
+            (skill / "SKILL.md").write_text(
+                "Run scripts/owned.py for the skill's own engine.\n"
+                "scripts/also.py is also part of the skill.\n"
+                "scripts/quiet.py is documented but root code never calls it.\n",
+                encoding="utf-8",
+            )
+            (skill / "references" / "guide.md").write_text(
+                "The workflow calls scripts/owned.py.\n",
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "workflow.lock.json").write_text(
+                '{"files": {"scripts/owned.py": {}}}\n',
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "hidden.py").write_text(
+                "".join(f"value_{index} = {index}\n" for index in range(20)),
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "owned.py").write_text(
+                "".join(f"kept_{index} = {index}\n" for index in range(15)),
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "also.py").write_text(
+                "".join(f"also_{index} = {index}\n" for index in range(4)),
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "engine.py").write_text("print('skill engine')\n", encoding="utf-8")
+            (skill / "scripts" / "quiet.py").write_text("print('unreached')\n", encoding="utf-8")
+            result = checks.scripts_loc(root)
+            excluded = [
+                line for line in result["evidence"]
+                if line.endswith(": excluded because the skill mentions it")
+            ]
+            self.assertEqual(
+                excluded,
+                [
+                    "skills/demo/scripts/also.py: excluded because the skill mentions it",
+                    "skills/demo/scripts/owned.py: excluded because the skill mentions it",
+                ],
+            )
+            evidence = "\n".join(result["evidence"])
+            self.assertNotIn("quiet.py", evidence)
+            self.assertNotIn("engine.py", evidence)
+            self.assertNotIn("hidden.py: excluded", evidence)
+            self.assertEqual(result["value"], 1 + 3 + 20)
+
+    def test_named_skill_engines_are_not_repo_glue(self):
+        reached = [path for path, _count in checks.reached_skill_scripts(ROOT)]
+        for name in ("codify.py", "skillify.py", "evolve.py", "sync_codify.py", "routing_inventory.py"):
+            self.assertFalse(any(path.endswith("/" + name) or path.endswith(name) for path in reached), reached)
+
     @GATE
     def test_quickstart_commands(self):
         self.assert_check(checks.quickstart_commands(ROOT))
@@ -316,7 +457,7 @@ class RepoQualityTests(unittest.TestCase):
     def test_generated_lock_json_is_summarized(self):
         self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
         self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/bootstrap/requirements.lock"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/graphify/requirements.lock"))
         self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
         lockfile = json.dumps({
             "name": "demo",
@@ -420,14 +561,16 @@ class RepoQualityTests(unittest.TestCase):
         import install
         covered = checks.harness_coverage(ROOT)
         counted = [line.split(":", 1)[0] for line in covered["evidence"] if "installer links " in line]
-        self.assertEqual(covered["value"], len(counted))
+        orchestrators = [line.split(":", 1)[0] for line in covered["evidence"] if "orchestrator; skills.json delegates" in line]
+        self.assertEqual(covered["value"], len(counted) + len(orchestrators))
         self.assertEqual(
             counted,
             ["claude", "codex", "cursor", "copilot", "grok", "kimi", "muse", "opencode"],
         )
-        self.assertEqual(covered["value"], 8)
-        self.assertFalse(covered["pass"])
-        self.assertIn("t3code: not counted; no skills directory of its own", covered["evidence"][-1])
+        self.assertEqual(covered["value"], 9)
+        self.assertTrue(covered["pass"], covered["evidence"])
+        self.assertIn("t3code: orchestrator; skills.json delegates to ", covered["evidence"][-1])
+        self.assertIn("which are linked", covered["evidence"][-1])
         self.assertFalse(any("experimental" in line for line in covered["evidence"]))
         target = Path("/tmp/tkstack-coverage-target")
         parents = {
@@ -464,6 +607,60 @@ class RepoQualityTests(unittest.TestCase):
             self.assertFalse(marker.exists())
             self.assertEqual(covered["value"], 0, covered["evidence"])
             self.assertIn("codex: no skills.json placement path the installer links", covered["evidence"])
+
+    def test_orchestrator_counts_only_when_every_delegate_is_linked(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-orchestrator-") as temporary:
+            root = Path(temporary)
+            (root / "harnesses").mkdir()
+            (root / "scripts").mkdir()
+            (root / "scripts" / "harness_paths.py").write_text(
+                "from pathlib import Path\n"
+                "SKILL_DIRECTORIES = {\n"
+                "    'claude': Path('.claude/skills'),\n"
+                "    'codex': Path('.agents/skills'),\n"
+                "}\n"
+                "def skill_directory(harness, scope='home'):\n"
+                "    if harness not in SKILL_DIRECTORIES:\n"
+                "        return None\n"
+                "    return SKILL_DIRECTORIES[harness]\n",
+                encoding="utf-8",
+            )
+            skills = root / "harnesses" / "skills.json"
+            skills.write_text(
+                '{"delegates": {"t3code": ["claude", "codex"]}, '
+                '"placement": {"default": ["claude", "codex"]}}\n',
+                encoding="utf-8",
+            )
+            covered = checks.harness_coverage(root)
+            t3 = next(line for line in covered["evidence"] if line.startswith("t3code:"))
+            self.assertIn("orchestrator", t3)
+            self.assertIn("which are linked", t3)
+            skills.write_text(
+                '{"delegates": {"t3code": ["claude", "grok"]}, '
+                '"placement": {"default": ["claude", "codex"]}}\n',
+                encoding="utf-8",
+            )
+            partial = checks.harness_coverage(root)
+            missed = next(line for line in partial["evidence"] if line.startswith("t3code:"))
+            self.assertIn("unlinked", missed)
+            self.assertNotIn("which are linked", missed)
+            skills.write_text('{"placement": {"default": ["claude", "codex"]}}\n', encoding="utf-8")
+            absent = checks.harness_coverage(root)
+            plain = next(line for line in absent["evidence"] if line.startswith("t3code:"))
+            self.assertIn("no skills.json placement path", plain)
+            malformed = {
+                "list": '{"delegates": ["claude", "codex"], "placement": {"default": ["claude", "codex"]}}\n',
+                "empty": '{"delegates": {"t3code": []}, "placement": {"default": ["claude", "codex"]}}\n',
+                "number": '{"delegates": {"t3code": ["claude", 1]}, "placement": {"default": ["claude", "codex"]}}\n',
+                "blank": '{"delegates": {"t3code": [""]}, "placement": {"default": ["claude", "codex"]}}\n',
+            }
+            for label, body in malformed.items():
+                skills.write_text(body, encoding="utf-8")
+                covered = checks.harness_coverage(root)
+                line = next(item for item in covered["evidence"] if item.startswith("t3code:"))
+                self.assertIn("no skills.json placement path", line, label)
+                self.assertNotIn("which are linked", line, label)
+                self.assertNotIn("orchestrator", line, label)
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"

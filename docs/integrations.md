@@ -63,24 +63,15 @@ configuration. Headroom and OpenDesign MCP entries are activated when their
 local runtimes are available. No placeholder executable is registered as a
 working server.
 
-## Runtime commands
+## What install does
 
-```sh
-python3 scripts/setup_integrations.py --status
-python3 scripts/setup_integrations.py --target . --dry-run
-python3 src/tool.py wikiskill status tkstack --ws .tkstack/wikiskill
-```
+`python3 scripts/install.py --target .` links skills, agents, rules, and the
+steering and principles directories. It does not register hooks or MCP servers
+and it does not download the runtimes named in `harnesses/integrations.json`.
+Those records stay as pins and host requirements.
 
-The runtime installer is an explicit network operation:
-
-```sh
-python3 scripts/setup_integrations.py --target . --install-runtimes
-```
-
-It uses pinned release URLs and SHA-256 digests for RTK, Higgsfield, and the
-Impeccable engine. It installs Headroom's pinned Python requirement into an
-isolated environment. Linux x86-64/arm64 and macOS Intel/Apple Silicon assets
-are recorded. Runtime files stay under `.tkstack/` and are not committed.
+Linux x86-64/arm64 and macOS Intel/Apple Silicon assets
+are recorded. Runtime files, when a host installs them itself, stay under `.tkstack/` and are not committed.
 Headroom requires Python 3.11+. Dependencies resolved by its Python installer
 are not claimed to be a complete transitive lock.
 
@@ -107,12 +98,12 @@ and `wrap` flows are explicit. No API account or provider URL was redirected.
   OpenCode, GitHub Copilot (`~/.copilot/skills` or `.github/skills`), and Muse
   (`~/.config/muse/skills`, or `.agents/skills` in a project) when those
   harnesses are selected. The Muse home link does not follow `XDG_CONFIG_HOME`.
-  The default profile
+  The default install
   selects Codex, Claude Code, and Cursor, so that set lands in shared
   `.agents/skills` unless you pass `--harness`. Pstack and Cursor Team Kit stay
   Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor.
   Learn's 7 subskills install only through `learn`.
-  Lever's separate Copilot layout adds its project links and initial repository dials.
+  Lever's skills link with the other skills. Install does not write a Copilot project layout.
 - Exercised fresh-checkout installation, provider-specific skill discovery,
   native configuration preservation, repeatability, scoped learning records,
   rule retirement, and selective removal in automated tests.
@@ -131,8 +122,8 @@ rule. See [Graphify](graphify.md) for source pins, native evidence, and limits.
 
 ## Shared command tooling
 
-The automatic `command-schema` runtime is installed privately from Codify's
-hash-locked PyYAML/jsonschema recipe. Bootstrap generates `codify` and `skillify`
-shims using its interpreter. No account or model is needed for command discovery,
+CI creates `.tkstack/runtime/command-schema` from Codify's hash-locked
+PyYAML/jsonschema recipe and runs `src/check_skills.py` with it. Install does
+not create that environment. No account or model is needed for command discovery,
 OpenAI-compatible schema exports, typed argument validation, or pure-code locks.
 See [the command contract](../skills/learn/skills/codify/references/command-definitions.md).
