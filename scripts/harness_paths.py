@@ -3,28 +3,36 @@ import os
 from pathlib import Path
 
 
-# Skill directories are relative to the install target. Home install therefore
-# uses ~/.grok/skills, ~/.kimi/skills, ~/.muse/skills, and
-# ~/.config/opencode/skills. Project scope stays inside the selected target.
+# Verified skill directories, relative to the install target.
+# Grok Build reads .grok/skills (user guide: project .grok/skills and ~/.grok/skills).
+# kimi-cli reads .kimi/skills (project and ~/.kimi/skills). Kimi Code CLI uses
+# ~/.kimi-code/skills and is a different layout; this installer does not write it.
+# OpenCode reads .config/opencode/skills for a home install and .opencode/skills
+# for a project install (OpenCode skills docs).
+# Muse has no verified skills directory of its own. Muse Code installs skills
+# into ~/.agents/skills, which is the Codex directory. Muse is experimental and
+# is not linked.
 SKILL_DIRECTORIES = {
     "codex": Path(".agents/skills"),
     "claude": Path(".claude/skills"),
     "cursor": Path(".cursor/skills"),
     "grok": Path(".grok/skills"),
     "kimi": Path(".kimi/skills"),
-    "muse": Path(".muse/skills"),
     "opencode": Path(".config/opencode/skills"),
 }
+OPENCODE_PROJECT = Path(".opencode/skills")
 # Hosts that receive native hook and MCP files. Other skill hosts are links only.
 HOOK_HARNESSES = ("codex", "claude", "cursor")
 # t3code runs Claude, Codex, Cursor, Copilot, or Grok and reads that host's skills.
 DELEGATED_HARNESSES = {"t3code": ("claude", "codex", "cursor", "copilot", "grok")}
 
 
-def skill_directory(harness):
-    """Native skills directory, or None when the host delegates to another harness."""
-    if harness in DELEGATED_HARNESSES:
+def skill_directory(harness, scope="home"):
+    """Native skills directory, or None when this installer does not link one."""
+    if harness in DELEGATED_HARNESSES or harness not in SKILL_DIRECTORIES:
         return None
+    if harness == "opencode" and scope == "project":
+        return OPENCODE_PROJECT
     return SKILL_DIRECTORIES[harness]
 
 

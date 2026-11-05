@@ -197,7 +197,15 @@ def placed(root, kind, harness):
             if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
 
 
-def link_plan(root, target, harnesses):
+def harness_skill_directories(harness, scope="home"):
+    """Skill directories this installer links. scope None scans every OpenCode scope."""
+    if harness == "opencode" and scope is None:
+        return [Path(".config/opencode/skills"), Path(".opencode/skills")]
+    relative = skill_directory(harness, "home" if scope is None else scope)
+    return [] if relative is None else [relative]
+
+
+def link_plan(root, target, harnesses, scope="home"):
     plan = []
     if harnesses and ((root / "skills/learn/SKILL.md").is_file() or (root / ".tkstack/steering").is_dir()):
         plan.append(((root / ".tkstack/steering").resolve(), target / ".agents/steering"))
@@ -205,14 +213,15 @@ def link_plan(root, target, harnesses):
     if harnesses and (principles / "SKILL.md").is_file():
         plan.append((principles.resolve(), target / ".agents/principles"))
     for harness in harnesses:
-        relative = skill_directory(harness)
-        if relative is None:
+        relatives = harness_skill_directories(harness, scope)
+        if not relatives:
             continue
         skills, agents = placed(root, "skills", harness), placed(root, "agents", harness)
-        # A package committed at its own destination (self-install) needs no link.
-        plan.extend((source, target / relative / name)
-                    for name, source in skills.items()
-                    if (target / relative).resolve() / name != source)
+        for relative in relatives:
+            # A package committed at its own destination (self-install) needs no link.
+            plan.extend((source, target / relative / name)
+                        for name, source in skills.items()
+                        if (target / relative).resolve() / name != source)
         if harness in AGENT_PATHS:
             plan.extend((source, target / AGENT_PATHS[harness] / name)
                         for name, source in agents.items())
@@ -228,10 +237,12 @@ def matches(destination, source):
     return destination.is_symlink() and destination.resolve() == source
 
 
-def stale_links(root, target, harnesses, plan):
+def stale_links(root, target, harnesses, plan, scope="home"):
     """This checkout's links in native directories that the plan no longer places."""
     planned = {destination for _, destination in plan}
-    directories = [SKILL_PATHS[h] for h in harnesses if h in SKILL_PATHS]
+    directories = []
+    for harness in harnesses:
+        directories.extend(harness_skill_directories(harness, scope))
     directories += [AGENT_PATHS[h] for h in harnesses if h in AGENT_PATHS]
     if "cursor" in harnesses:
         directories.append(Path(".cursor/rules"))
@@ -256,7 +267,7 @@ def remove_stale(paths, dry_run=False):
     return len(paths)
 
 
-def alias_migrations(root, target, harnesses):
+def alias_migrations(root, target, harnesses, scope="home"):
     """Recognize only this checkout's former, unaliased upstream skill links."""
     migrations = {}
     steering = target / ".agents/steering"
@@ -266,8 +277,7 @@ def alias_migrations(root, target, harnesses):
         for path in (root / "vendor" / source / "skills").rglob("SKILL.md"):
             if path.parent.name in aliases:
                 for harness in harnesses:
-                    relative = skill_directory(harness)
-                    if relative is not None:
+                    for relative in harness_skill_directories(harness, scope):
                         migrations[target / relative / path.parent.name] = path.parent.resolve()
     return migrations
 
@@ -353,8 +363,8 @@ def main():
         harnesses = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
-        plan = link_plan(ROOT, target, harnesses)
-        migrations = alias_migrations(ROOT, target, harnesses)
+        plan = link_plan(ROOT, target, harnesses, scope)
+        migrations = alias_migrations(ROOT, target, harnesses, scope)
         instructions = instruction_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
         configurations = configuration_plan(
             ROOT, target, [harness for harness in harnesses if harness in HOOK_HARNESSES],
@@ -367,7 +377,7 @@ def main():
                 initialize_state(ROOT)
                 prepare_aliases(ROOT)
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
-        changes += remove_stale(stale_links(ROOT, target, harnesses, plan), dry_run=args.dry_run)
+        changes += remove_stale(stale_links(ROOT, target, harnesses, plan, scope), dry_run=args.dry_run)
         apply_instructions(instructions, dry_run=args.dry_run)
         apply_configuration(configurations, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError) as error:

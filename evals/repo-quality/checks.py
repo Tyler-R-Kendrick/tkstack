@@ -6,6 +6,7 @@ Each check returns one JSON object. The process prints a JSON array and exits
 checkout can still fail them.
 """
 
+import importlib.util
 import json
 import os
 import re
@@ -29,21 +30,6 @@ HARNESSES = (
     "opencode",
     "t3code",
 )
-# Path components that name a harness. "open-code" and "t3-code" are the same
-# harnesses as the metric tokens. A prose mention is not placement.
-HARNESS_PATH_NAMES = {
-    "claude": "claude",
-    "codex": "codex",
-    "cursor": "cursor",
-    "copilot": "copilot",
-    "grok": "grok",
-    "kimi": "kimi",
-    "muse": "muse",
-    "opencode": "opencode",
-    "open-code": "opencode",
-    "t3code": "t3code",
-    "t3-code": "t3code",
-}
 _HEADING = re.compile(
     r"(?i)(?<!un)(?<!un-)(?<!un )\b(?:quickstart|getting started|install)\b"
 )
@@ -390,87 +376,87 @@ def marketplace_manifests(root):
     )
 
 
-def _record_harness(hits, name, evidence):
-    if name in hits and not hits[name]:
-        hits[name] = evidence
+def _installer_skill_directory(root):
+    """skill_directory from the checkout under test, or None when it cannot load."""
+    path = root / "scripts" / "harness_paths.py"
+    if not path.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("repo_quality_harness_paths", path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        return None
+    function = getattr(module, "skill_directory", None)
+    return function if callable(function) else None
 
 
-def _record_name_list(hits, value, label):
-    if not isinstance(value, list):
-        return
-    for item in value:
-        if isinstance(item, str):
-            _record_harness(hits, item, label)
-
-
-def _walk_args_by_harness(value, hits):
-    if isinstance(value, dict):
-        args = value.get("args_by_harness")
-        if isinstance(args, dict):
-            for name in args:
-                _record_harness(hits, name, "harnesses/integrations.json args_by_harness." + name)
-        for child in value.values():
-            _walk_args_by_harness(child, hits)
-    elif isinstance(value, list):
-        for child in value:
-            _walk_args_by_harness(child, hits)
-
-
-def _placement_from_manifests(root, hits):
+def _linked_placements(root):
+    """Harnesses skills.json lists and scripts/harness_paths.py actually links."""
     skills, _detail = _json_object(root / "harnesses" / "skills.json")
-    if isinstance(skills, dict):
-        placement = skills.get("placement")
-        if isinstance(placement, dict):
-            _record_name_list(hits, placement.get("default"), "harnesses/skills.json placement.default")
-            sources = placement.get("sources")
-            if isinstance(sources, dict):
-                for source, names in sources.items():
-                    _record_name_list(
-                        hits, names, f"harnesses/skills.json placement.sources.{source}"
-                    )
-    integrations, _detail = _json_object(root / "harnesses" / "integrations.json")
-    if isinstance(integrations, dict):
-        _walk_args_by_harness(integrations, hits)
-
-
-def _placement_from_paths(root, hits):
-    if all(hits.values()):
-        return
-    skip = SKIP_NAMES | {"vendor"}
-    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
-        dirnames[:] = [name for name in dirnames if name not in skip]
-        relative = Path(dirpath).relative_to(root)
-        for part in relative.parts:
-            name = HARNESS_PATH_NAMES.get(part.lower())
-            if name:
-                _record_harness(hits, name, relative.as_posix() + "/")
-        for filename in filenames:
-            name = HARNESS_PATH_NAMES.get(filename.lower())
-            if name:
-                _record_harness(hits, name, (relative / filename).as_posix())
-        if all(hits.values()):
-            return
+    placement = skills.get("placement") if isinstance(skills, dict) else None
+    if not isinstance(placement, dict):
+        placement = {}
+    experimental = placement.get("experimental")
+    experimental = {str(item) for item in experimental} if isinstance(experimental, list) else set()
+    listed = []
+    default = placement.get("default")
+    if isinstance(default, list):
+        for name in default:
+            if isinstance(name, str):
+                listed.append((name, "harnesses/skills.json placement.default"))
+    sources = placement.get("sources")
+    if isinstance(sources, dict):
+        for source, names in sources.items():
+            if not isinstance(names, list):
+                continue
+            for name in names:
+                if isinstance(name, str):
+                    listed.append((name, f"harnesses/skills.json placement.sources.{source}"))
+    skill_directory = _installer_skill_directory(root)
+    linked = {}
+    if skill_directory is None:
+        return linked, experimental
+    for name, label in listed:
+        if name not in HARNESSES or name in experimental or name in linked:
+            continue
+        try:
+            relative = skill_directory(name)
+        except Exception:
+            relative = None
+        if relative is None:
+            continue
+        text = relative.as_posix() if hasattr(relative, "as_posix") else str(relative)
+        linked[name] = f"{label}; installer links {text}"
+    return linked, experimental
 
 
 def harness_coverage(root):
-    """Each harness has a placement entry, args_by_harness key, or config path."""
-    hits = {name: "" for name in HARNESSES}
-    _placement_from_manifests(root, hits)
-    _placement_from_paths(root, hits)
+    """Count a harness only when skills.json placement is a directory the installer links."""
+    linked, experimental = _linked_placements(root)
+    notes = {
+        "copilot": "not counted; lever.yml is not a skills.json placement",
+        "t3code": "not counted; no skills directory of its own",
+    }
     evidence = []
     found = 0
     for name in HARNESSES:
-        if hits[name]:
+        if name in experimental:
+            evidence.append(f"{name}: experimental, not counted")
+            continue
+        if name in linked:
             found += 1
-            evidence.append(f"{name}: {hits[name]}")
-        else:
-            evidence.append(f"{name}: no placement, args_by_harness entry, or config path")
+            evidence.append(f"{name}: {linked[name]}")
+            continue
+        evidence.append(f"{name}: {notes.get(name, 'no skills.json placement path the installer links')}")
     ok = found == len(HARNESSES)
     explanation = (
         f"{found} of {len(HARNESSES)} harnesses "
         "(claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) "
-        "have a skills.json placement, an integrations.json args_by_harness entry, "
-        "or a config path whose component is that harness."
+        "have a skills.json placement path that scripts/harness_paths.py links. "
+        "Experimental harnesses and bare directory names are not counted."
     )
     return result(
         "harness_coverage", "cross_harness", ok, found, len(HARNESSES), explanation, evidence

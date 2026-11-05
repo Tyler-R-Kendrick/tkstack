@@ -15,11 +15,14 @@ before changing its alias names.
 Personal skills in `skills/` join every selected harness.
 `scripts/harness_paths.py` places those skills in Codex (`.agents/skills`),
 Claude Code (`.claude/skills`), Cursor (`.cursor/skills`), Grok
-(`.grok/skills`), Kimi (`.kimi/skills`), Muse (`.muse/skills`), and OpenCode
-(`.config/opencode/skills`). Paths are relative to the install target, so a
+(`.grok/skills`, the directory Grok Build reads), Kimi (`.kimi/skills`, the
+kimi-cli directory; Kimi Code CLI's `~/.kimi-code/skills` is not installed),
+and OpenCode (`.config/opencode/skills` at home, `.opencode/skills` in a
+project). Muse is experimental: Muse Code has no separate skills directory
+and is not linked. Paths are relative to the install target, so a
 home install puts Claude Code in `~/.claude/skills`. `placement.default` is
-Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), Muse
-(`.muse/skills`), and OpenCode (`.config/opencode/skills`). Emil Kowalski and
+Codex (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), and
+OpenCode (`.config/opencode/skills` or `.opencode/skills`). Emil Kowalski and
 ub-mode use that default, so a default profile install lands them in the
 shared Codex directory unless you also select the other harnesses. Pstack and Cursor Team Kit are Cursor packages
 and go only to `.cursor/` (skills, agents, and rules). Graphify and Impeccable
@@ -27,8 +30,9 @@ ship per-harness builds for Codex, Claude Code (`.claude/skills`), and Cursor
 (`.cursor/skills`). Graphify also keeps a generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`; installed links use the Codex, Claude,
 and Cursor views. t3code does not get a skills directory. It runs on Claude,
-Codex, Cursor, Copilot, or Grok and reads that host's skills. See
-`t3code/README.md`. `./install.sh --uninstall` removes only this checkout's
+Codex, Cursor, Copilot, or Grok and reads that host's skills.
+`scripts/harness_paths.py` records that delegation. See `t3code/README.md`.
+`./install.sh --uninstall` removes only this checkout's
 links and launchers. Reinstalling also removes this checkout's links that fall
 outside their placement; doctor reports any left. `sources.lock.json` pins the
 upstream bytes, and `SCOPE.md` names the supported baseline.

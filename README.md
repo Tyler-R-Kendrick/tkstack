@@ -169,7 +169,7 @@ bash /tmp/tkstack-install.sh
 `--uninstall` is idempotent. It removes symlinks and launchers this checkout
 owns and leaves shell startup files, foreign links, and repository Lever dials
 in `.github/lever.yml`. `--dry-run --uninstall` prints that plan and writes
-nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|muse|opencode`
+nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|opencode`
 to select hosts. The default profile selects Codex, Claude Code, and Cursor.
 `--no-shell` leaves shell startup files alone; source the generated environment
 yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
@@ -281,7 +281,7 @@ active development live in `skills/`; third-party-derived packages live in
 `.agents/skills/`; shared agents live in `agents/`; host settings live in
 `harnesses/`. Personal skills join every selected harness. Upstream skills in
 `placement.default`, including Emil Kowalski and ub-mode, go to Codex, Grok,
-Kimi, Muse, and OpenCode. Pstack and
+Kimi, and OpenCode. Muse is experimental and is not linked. Pstack and
 Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and

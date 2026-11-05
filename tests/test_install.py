@@ -48,7 +48,7 @@ class InstallTests(unittest.TestCase):
                                        Path(".cursor/skills"), Path(".claude/agents"),
                                        Path(".cursor/agents"), Path(".cursor/rules"),
                                        Path(".agents"), Path(".grok/skills"),
-                                       Path(".kimi/skills"), Path(".muse/skills"),
+                                       Path(".kimi/skills"),
                                        Path(".config/opencode/skills")})
 
     def test_install_preserves_references_and_is_repeatable(self):
@@ -89,7 +89,9 @@ class InstallTests(unittest.TestCase):
         self.assertIn("matt-tdd", grok)
         self.assertNotIn("architect", grok)
         self.assertIsNone(install.skill_directory("t3code"))
+        self.assertIsNone(install.skill_directory("muse"))
         self.assertEqual(install.skill_directory("opencode"), Path(".config/opencode/skills"))
+        self.assertEqual(install.skill_directory("opencode", "project"), Path(".opencode/skills"))
 
     def test_reinstall_removes_links_outside_their_new_placement(self):
         install.apply(self.plan)
@@ -141,6 +143,13 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(install.apply(self.plan, uninstall=True), self.expected_links - 1)
         self.assertEqual(destination.read_text(), "replacement agent")
         self.assertEqual(install.apply(self.plan, uninstall=True), 0)
+
+    def test_opencode_project_scope_uses_the_project_skills_directory(self):
+        project = self.target / "project"
+        plan = install.link_plan(ROOT, project, ["opencode"], "project")
+        parents = {destination.parent.relative_to(project) for _, destination in plan}
+        self.assertIn(Path(".opencode/skills"), parents)
+        self.assertNotIn(Path(".config/opencode/skills"), parents)
 
     def test_personal_skills_and_agents_join_the_installation(self):
         personal = self.target / "dotfiles"

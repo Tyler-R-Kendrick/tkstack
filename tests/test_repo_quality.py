@@ -385,13 +385,46 @@ class RepoQualityTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (root / "harnesses").mkdir()
+            (root / "harnesses" / "muse").mkdir()
+            (root / "harnesses" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
             (root / "harnesses" / "skills.json").write_text(
-                '{"placement": {"default": ["codex"]}}\n', encoding="utf-8"
+                '{"placement": {"default": ["codex"], "experimental": ["muse"]}}\n',
+                encoding="utf-8",
             )
-            (root / "harnesses" / "integrations.json").write_text("{}\n", encoding="utf-8")
+            (root / "scripts").mkdir()
+            (root / "scripts" / "harness_paths.py").write_text(
+                "from pathlib import Path\n"
+                "SKILL_DIRECTORIES = {'codex': Path('.agents/skills')}\n"
+                "def skill_directory(harness, scope='home'):\n"
+                "    return SKILL_DIRECTORIES.get(harness)\n",
+                encoding="utf-8",
+            )
             covered = checks.harness_coverage(root)
             self.assertEqual(covered["value"], 1, covered["evidence"])
             self.assertFalse(covered["pass"])
+            self.assertIn("muse: experimental, not counted", covered["evidence"])
+            self.assertFalse(any("harnesses/muse" in line for line in covered["evidence"]))
+
+    def test_counted_harnesses_are_directories_the_installer_links(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import install
+        covered = checks.harness_coverage(ROOT)
+        counted = [line.split(":", 1)[0] for line in covered["evidence"] if "installer links " in line]
+        self.assertEqual(covered["value"], len(counted))
+        self.assertEqual(counted, ["claude", "codex", "cursor", "grok", "kimi", "opencode"])
+        self.assertIn("muse: experimental, not counted", covered["evidence"])
+        self.assertIn("copilot: not counted", covered["evidence"][3])
+        self.assertIn("t3code: not counted", covered["evidence"][-1])
+        target = Path("/tmp/tkstack-coverage-target")
+        parents = {
+            destination.parent.relative_to(target)
+            for _, destination in install.link_plan(ROOT, target, list(install.SKILL_PATHS), "home")
+        }
+        for line in covered["evidence"]:
+            if "installer links " not in line:
+                continue
+            linked = Path(line.split("installer links ", 1)[1])
+            self.assertIn(linked, parents)
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"

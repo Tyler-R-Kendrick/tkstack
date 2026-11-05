@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
+      "docs_refresh_reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,11 +545,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
+          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -557,10 +557,9 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
+          "oid": "795496fddb7d81db78846b8f43672601c4121fbc"
         }
       },
-      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -576,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "3310ddda4cfa67a80ca4605beb5354e62e659d96"
+          "oid": "e54abcb524facc86ef408fb4e8c20386f143c18f"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -624,11 +623,11 @@
         },
         "harnesses/skills.json": {
           "mode": "100644",
-          "oid": "d252ccd9583904ab05850156eb760b8ea122bffd"
+          "oid": "5969cc0e7c467b422bbc1da6d41f2c92fa23be45"
         },
         "harnesses/t3code/README.md": {
           "mode": "100644",
-          "oid": "0b6d4c059c6aadcf8f0fb8599067eb3d2c870e56"
+          "oid": "41884bd05e775ea72ba807d7f6eb7f6208500fa7"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -636,13 +635,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs."
+      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -717,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "7ef976c88a1f8316f23e1c9c058a1a00583d5064"
+          "oid": "ad3af11cf2290d10074f3d6df40cc5934d294385"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -749,7 +748,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "721629741f6ace886a977bb74718777cca9d6911"
+          "oid": "8a82534fb96de5552e4d9ace3452e27271ab43b1"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -797,13 +796,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec."
+      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -814,7 +813,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
+      "docs_refresh_reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -844,7 +843,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -852,7 +851,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
+          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -914,15 +913,15 @@
         },
         "scripts/doctor.py": {
           "mode": "100755",
-          "oid": "b22cd75241139c7f92e51f683cc4176e9e3101f4"
+          "oid": "f2a85820f4e0b5629db5f4ef3975be080f144b80"
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "01cec1096084e2f9f76f01708a5caed2ae771169"
+          "oid": "8450cdf23babc7bfce361b60b6386f428a3f2599"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "d3cb773d0113b67dae138ec74c0e8c66c9324260"
+          "oid": "d8ad794d41b72e29bb91d2a96776e3547b4aecc0"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
@@ -982,13 +981,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec."
+      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "ee7d1c90eeefc7ed6beda255971a958f7264648f"
+          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1008,7 +1007,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "24eae738f9055eb2dbc761535288b13918e9c125"
+          "oid": "87ed386119de57a60bd5ad43c697f42f60052199"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -1044,7 +1043,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "75272edd85cdf368417966e7dde2cf75945806fd"
+          "oid": "795496fddb7d81db78846b8f43672601c4121fbc"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1059,7 +1058,6 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
-      "docs_refresh_reason": "Installer pins uv 0.12.23 and Python 3.12.15, checks the uv installer sha256 before running it, wraps install.sh in main, and verifies tarball and git checkouts before exec.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -1115,7 +1113,7 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "a66032de396615a9e6e28b4e8661c2b8e78f8fc3"
+          "oid": "3d98ffc83cfb84bbba324419f7e7d2648dffd13c"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -2395,7 +2393,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "b9e63f1ea82355bf467741172f603418898da7df"
+          "oid": "ab157cbc81292cd0347560542f39f5cce1849f3a"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2758,8 +2756,8 @@
           "oid": "2482de22dc384d6ac4f4e96b3da871870ea9dc09"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Repo-quality glue metric now counts scripts/ plus src/ non-blank lines and lists src/ per file. Eval rubric wording matches. No skill documentation change."
+      "no_doc_impact": false,
+      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
     }
   },
   "object_format": "sha1",

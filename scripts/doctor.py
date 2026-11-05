@@ -58,16 +58,16 @@ def main():
                 if not match or match[1].strip().strip('\"\'') != name:
                     raise ValueError(f"Skill name does not match installed name: {name} ({harness})")
         target = args.target.expanduser().resolve()
-        plan = install.link_plan(install.ROOT, target, harnesses)
+        scope = args.scope or ("home" if target == Path.home().resolve() else "project")
+        plan = install.link_plan(install.ROOT, target, harnesses, scope)
         missing = [str(destination) for source, destination in plan
                    if not source.exists() or not install.matches(destination, source)]
         if missing:
             raise ValueError("Missing or mismatched installation: " + ", ".join(missing))
-        stale = install.stale_links(install.ROOT, target, harnesses, plan)
+        stale = install.stale_links(install.ROOT, target, harnesses, plan, scope)
         if stale:
             raise ValueError("Stale links outside their placement; rerun the installer: "
                              + ", ".join(map(str, stale)))
-        scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if instruction_plan(install.ROOT, target, harnesses, scope):
             raise ValueError("Native steering pointers are missing or stale; rerun the installer")
         if configuration_plan(install.ROOT, target, harnesses, scope):

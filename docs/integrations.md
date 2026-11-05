@@ -104,7 +104,8 @@ and `wrap` flows are explicit. No API account or provider URL was redirected.
 - Placement follows `harnesses/skills.json`. Personal skills install into every
   selected harness. `placement.default` sends other upstream skills, including
   Emil Kowalski (17) and ub-mode (1), to Codex (`.agents/skills/`), Grok, Kimi,
-  Muse, and OpenCode when those harnesses are selected. The default profile
+  and OpenCode when those harnesses are selected. Muse is experimental and is
+  not linked. The default profile
   selects Codex, Claude Code, and Cursor, so that set lands in shared
   `.agents/skills` unless you pass `--harness`. Pstack and Cursor Team Kit stay
   Cursor-only. Graphify and Impeccable keep Codex, Claude Code, and Cursor.

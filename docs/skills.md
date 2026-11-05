@@ -9,15 +9,15 @@ what runs mechanically and what still requires actual semantic/provider work.
 Skills install by origin. Personal skills in `skills/` join every selected
 harness; Learn's 7 subskills install inside Learn. `placement.default` in
 `harnesses/skills.json` sends other upstream skills to Codex
-(`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), Muse
-(`.muse/skills`), and OpenCode (`.config/opencode/skills`) when those harnesses
-are selected. The default `./install.sh` profile selects Codex, Claude Code,
+(`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), and OpenCode
+(`.config/opencode/skills` at home, `.opencode/skills` in a project) when those
+harnesses are selected. Muse is experimental and is not linked. The default `./install.sh` profile selects Codex, Claude Code,
 and Cursor, so that default set lands in the shared Codex directory unless you
 pass `--harness`. Pstack and Cursor Team Kit install only to `.cursor/skills/`.
 Graphify and Impeccable keep Codex, Claude Code, and Cursor, including the
 generic view at `.tkstack/skill-views/graphify/default/`. t3code has no skills
 directory; it reads the skills of Claude, Codex, Cursor, Copilot, or Grok.
-See `harnesses/t3code/README.md`. Links point to source instructions.
+`scripts/harness_paths.py` records that delegation. See `harnesses/t3code/README.md`. Links point to source instructions.
 Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
 preserve upstream `disable-model-invocation: true` policy.
 
