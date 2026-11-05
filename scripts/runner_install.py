@@ -52,7 +52,11 @@ def remove(root, state, dry_run=False):
     target, receipt = state / 'tkstack', state / 'runner-owner.json'
     if not os.path.lexists(target) and not os.path.lexists(receipt):
         return False
-    plan(root, state)
+    try:
+        plan(root, state)
+    except ValueError as error:
+        print('skip foreign runner: ' + str(error))
+        return False
     print(('Would remove' if dry_run else 'remove') + ' launcher: ' + str(target))
     if dry_run:
         return True

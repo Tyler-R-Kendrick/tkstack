@@ -47,7 +47,7 @@ def parser():
     copilot.add_argument('--no-copilot', dest='copilot', action='store_false')
     result.set_defaults(copilot=None)
     result.add_argument('--no-shell', action='store_true', help='Do not add home bash/login pointers; env.sh is still generated')
-    result.add_argument('--uninstall', action='store_true', help='Remove only this checkout\'s links and launchers')
+    result.add_argument('--uninstall', action='store_true', help='Remove this checkout\'s links, launchers, and owned git docs hook')
     result.add_argument('--jobs', type=int, default=4, help='Independent runtime workers, 1..8 (default 4)')
     result.add_argument('--runtime-timeout', type=int, default=900, help='Deadline per runtime in seconds (10..1800)')
     return result
@@ -168,6 +168,13 @@ def uninstall(args, workspace, copilot, common, state_roots):
     flag = ['--dry-run'] if args.dry_run else []
     environment = os.environ.copy()
     execute(command('install.py', *common, '--uninstall', *flag), environment)
+    import setup_repo_hooks
+    try:
+        hook = setup_repo_hooks.setup(ROOT, dry_run=args.dry_run, uninstall=True)
+    except ValueError as error:
+        print('skip git docs hook: ' + str(error))
+        hook = {'status': 'skipped'}
+    print('git docs hook: ' + hook.get('status', 'unchanged'))
     if copilot:
         execute(command('setup_lever.py', '--target', workspace, '--uninstall', *flag), environment)
     for state in dict.fromkeys(state_roots):

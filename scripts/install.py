@@ -351,20 +351,30 @@ def main():
     parser.add_argument("--target", type=Path, default=Path.home(),
                         help="Home or project root to install into (default: your home)")
     parser.add_argument("--harness", action="append", choices=tuple(SKILL_PATHS),
-                        help="Harness to install; repeat to select several (default: all)")
+                        help="Harness to install; repeat to select several (default: codex, claude, cursor)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without changing files")
-    parser.add_argument("--uninstall", action="store_true", help="Remove only this checkout's links")
+    parser.add_argument("--uninstall", action="store_true",
+                        help="Remove this checkout's links for every harness")
     parser.add_argument("--scope", choices=("home", "project"),
                         help="Instruction placement (default: home for your home directory, else project)")
     args = parser.parse_args()
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        harnesses = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
+        selected = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
-        plan = link_plan(ROOT, target, harnesses, scope)
-        migrations = alias_migrations(ROOT, target, harnesses, scope)
+        if args.uninstall:
+            harnesses = list(SKILL_PATHS)
+            link_scope = None
+            if args.harness:
+                print("tkstack: --uninstall removes this checkout's links for every harness; --harness does not limit it.",
+                      file=sys.stderr)
+        else:
+            harnesses = selected
+            link_scope = scope
+        plan = link_plan(ROOT, target, harnesses, link_scope)
+        migrations = alias_migrations(ROOT, target, harnesses, link_scope)
         instructions = instruction_plan(ROOT, target, harnesses, scope, uninstall=args.uninstall)
         configurations = configuration_plan(
             ROOT, target, [harness for harness in harnesses if harness in HOOK_HARNESSES],
@@ -377,7 +387,7 @@ def main():
                 initialize_state(ROOT)
                 prepare_aliases(ROOT)
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
-        changes += remove_stale(stale_links(ROOT, target, harnesses, plan, scope), dry_run=args.dry_run)
+        changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
         apply_instructions(instructions, dry_run=args.dry_run)
         apply_configuration(configurations, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError) as error:

@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed.",
+      "docs_refresh_reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -575,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "e54abcb524facc86ef408fb4e8c20386f143c18f"
+          "oid": "4d8ad9ae0e80abb4f4a33db5d2063dda898cfa99"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -635,13 +635,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
+      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -664,7 +664,7 @@
         },
         "scripts/setup_repo_hooks.py": {
           "mode": "100755",
-          "oid": "b6ebf7d39493d8b7b7aa71237f96ab2118df492f"
+          "oid": "9fe45fee233d2174822adc53bcd6044450afb5f3"
         },
         "src/check_docs.py": {
           "mode": "100755",
@@ -716,7 +716,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "ad3af11cf2290d10074f3d6df40cc5934d294385"
+          "oid": "9e8c0c73eddb015669422be31317aa78af4cad56"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -796,13 +796,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
+      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -813,7 +813,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed.",
+      "docs_refresh_reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -843,11 +843,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "a134c8b50344c1dae3c36bb038bc67f017fc59d1"
+          "oid": "569b42ec51dc5f869ef54f2e14af28db5c971410"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -893,7 +893,7 @@
         },
         "scripts/bootstrap.py": {
           "mode": "100755",
-          "oid": "8d413fc58a28afab9bd2a59fe02c37ba1a5a756e"
+          "oid": "6aea6191f0430fd771d2a89b900fc089d1a353e5"
         },
         "scripts/bootstrap_profiles.py": {
           "mode": "100644",
@@ -921,11 +921,11 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "d8ad794d41b72e29bb91d2a96776e3547b4aecc0"
+          "oid": "3ddd5aa8e4848f84be5b507ba803c5767b8765c1"
         },
         "scripts/runner_install.py": {
           "mode": "100644",
-          "oid": "31e4fee4df10b7c4747fe45a07ab7cf3338b5ffc"
+          "oid": "e6acd4662c2d8a348a0abb783a655f9f8fd8256f"
         },
         "scripts/setup_integrations.py": {
           "mode": "100755",
@@ -981,13 +981,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Harness coverage counts only skills.json placements the installer links. Muse is experimental and not linked. OpenCode uses .opencode/skills for project scope. Grok and kimi-cli paths stay. placement.delegated is removed."
+      "reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "188c07a690e43478ff0b664aa1da8d10d01634b6"
+          "oid": "59e1c5160c15bbe547e11608e6c0f490b4b6cab6"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1058,6 +1058,7 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
+      "docs_refresh_reason": "Uninstall removes every harness link this checkout owns, skips a foreign runner, uninstalls the owned git docs hook, and the --harness help names the codex, claude, and cursor default.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",

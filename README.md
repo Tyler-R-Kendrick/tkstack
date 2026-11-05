@@ -163,14 +163,15 @@ bash /tmp/tkstack-install.sh
 ./install.sh --check                    # read-only verification
 ./install.sh --dry-run                  # read-only plan and collision checks
 ./install.sh --strict                   # fail for known unresolved prerequisites
-./install.sh --uninstall                # remove only this checkout's links and launchers
+./install.sh --uninstall                # remove this checkout's links, launchers, and git docs hook
 ```
 
-`--uninstall` is idempotent. It removes symlinks and launchers this checkout
-owns and leaves shell startup files, foreign links, and repository Lever dials
+`--uninstall` is idempotent. It removes symlinks for every harness, launchers,
+and the owned git docs hook this checkout owns, even when `--harness` is also
+passed. It leaves shell startup files, foreign links, and repository Lever dials
 in `.github/lever.yml`. `--dry-run --uninstall` prints that plan and writes
 nothing. Use repeated `--harness codex|claude|cursor|grok|kimi|opencode`
-to select hosts. The default profile selects Codex, Claude Code, and Cursor.
+to select hosts for installation. The default profile selects Codex, Claude Code, and Cursor.
 `--no-shell` leaves shell startup files alone; source the generated environment
 yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
 harness after setup. Codex may require reviewing new hook definitions with
@@ -286,8 +287,9 @@ Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
 `.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
 `harnesses/README.md`. Reinstalling removes this checkout's links that no
-longer match that placement. `./install.sh --uninstall` removes only this
-checkout's links and launchers. Preserve `vendor/` snapshots and update
+longer match that placement. `./install.sh --uninstall` removes this
+checkout's links for every harness, its launchers, and its owned git docs hook.
+Preserve `vendor/` snapshots and update
 `sources.lock.json` when updating an upstream revision. The
 [maintainer guides](docs/authoring.md) and [bootstrap reference](docs/bootstrap.md)
 describe narrower installation tools.

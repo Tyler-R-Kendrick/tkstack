@@ -144,6 +144,41 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(destination.read_text(), "replacement agent")
         self.assertEqual(install.apply(self.plan, uninstall=True), 0)
 
+    def test_uninstall_preserves_a_foreign_symlink_at_a_planned_destination(self):
+        install.apply(self.plan)
+        source, destination = next(pair for pair in self.plan if pair[1].parent.name == "skills" and ".grok" in pair[1].parts)
+        destination.unlink()
+        foreign = self.target / "not-this-checkout"
+        destination.symlink_to(foreign)
+        removed = install.apply(self.plan, uninstall=True)
+        self.assertEqual(removed, self.expected_links - 1)
+        self.assertTrue(destination.is_symlink())
+        self.assertEqual(os.readlink(destination), str(foreign))
+
+    def test_default_uninstall_removes_links_from_every_harness(self):
+        install.apply(self.plan)
+        foreign = self.target / ".grok" / "skills" / "foreign-skill"
+        foreign.parent.mkdir(parents=True, exist_ok=True)
+        foreign.symlink_to(self.target, target_is_directory=True)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        for _, destination in self.plan:
+            self.assertFalse(destination.exists() or destination.is_symlink())
+        self.assertTrue(foreign.is_symlink())
+
+    def test_foreign_runner_is_skipped(self):
+        import runner_install
+        state = self.target / "runner-state"
+        state.mkdir()
+        launcher = state / "tkstack"
+        launcher.write_text("not ours\n")
+        (state / "runner-owner.json").write_text('{"version": 1, "source": "/other", "sha256": "abc"}\n')
+        self.assertFalse(runner_install.remove(ROOT, state))
+        self.assertEqual(launcher.read_text(), "not ours\n")
+
     def test_opencode_project_scope_uses_the_project_skills_directory(self):
         project = self.target / "project"
         plan = install.link_plan(ROOT, project, ["opencode"], "project")

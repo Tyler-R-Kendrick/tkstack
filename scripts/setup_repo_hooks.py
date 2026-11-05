@@ -85,7 +85,7 @@ def plan(root):
     preserve = state is None and existing and not hook_owned
     chain = preserve or (backup_exists and not backup_owned)
     expected = wrapper(root, backup, chain)
-    changed = state is None or not existing or hook_owned and backup_owned or hook.read_text() != expected or hook.stat().st_mode & 0o777 != 0o755
+    changed = state is None or not existing or (hook_owned and backup_owned) or hook.read_text() != expected or hook.stat().st_mode & 0o777 != 0o755
     return {'status': 'planned' if changed else 'installed', 'hook': str(hook), 'backup': str(backup),
             'receipt': str(receipt), 'text': expected, 'preserve': preserve, 'drop_backup': backup_owned}
 

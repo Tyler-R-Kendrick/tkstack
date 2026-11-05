@@ -42,12 +42,13 @@ instruction block. Foreign instructions in other targets remain protected.
 ./install.sh --check                   # verify without changing files
 ./install.sh --dry-run                 # inspect plan/preflight without changing files
 ./install.sh --strict                  # fail for known unresolved manual prerequisites too
-./install.sh --uninstall               # remove only this checkout's links and launchers
+./install.sh --uninstall               # remove this checkout's links, launchers, and git docs hook
 ```
 
-`--uninstall` deletes symlinks and launchers owned by this checkout. It can
-run twice. It leaves shell startup files, foreign links, and `.github/lever.yml`
-repository dials in place. `--dry-run` with `--uninstall` only prints the plan.
+`--uninstall` deletes symlinks for every harness, launchers, and the owned git
+docs hook. It can run twice. It leaves shell startup files, foreign links, and
+`.github/lever.yml` repository dials in place. `--harness` does not limit it.
+`--dry-run` with `--uninstall` only prints the plan.
 
 `--harness` and `--runtime` are repeatable selections. `--jobs 1..8` bounds
 independent runtime installations (default 4); `--runtime-timeout 10..1800`

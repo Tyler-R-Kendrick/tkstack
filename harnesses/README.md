@@ -32,8 +32,8 @@ ship per-harness builds for Codex, Claude Code (`.claude/skills`), and Cursor
 and Cursor views. t3code does not get a skills directory. It runs on Claude,
 Codex, Cursor, Copilot, or Grok and reads that host's skills.
 `scripts/harness_paths.py` records that delegation. See `t3code/README.md`.
-`./install.sh --uninstall` removes only this checkout's
-links and launchers. Reinstalling also removes this checkout's links that fall
+`./install.sh --uninstall` removes this checkout's links for every harness,
+its launchers, and its owned git docs hook. Reinstalling also removes this checkout's links that fall
 outside their placement; doctor reports any left. `sources.lock.json` pins the
 upstream bytes, and `SCOPE.md` names the supported baseline.
 
