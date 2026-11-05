@@ -22,10 +22,6 @@
       "command": "npx",
       "args": ["-y", "firecrawl-mcp@3.33.2"]
     },
-    "mobbin": {
-      "type": "streamable-http",
-      "url": "https://api.mobbin.com/mcp"
-    },
     "vercel": {
       "type": "streamable-http",
       "url": "https://mcp.vercel.com"

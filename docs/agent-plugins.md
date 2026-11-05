@@ -57,7 +57,6 @@ executable token. No API key is stored in the file.
 | `serena` | `uvx --from git+https://github.com/oraios/serena serena start-mcp-server --project-from-cwd` | [Serena](https://github.com/oraios/serena) uvx quick start |
 | `playwright` | `npx` with `@playwright/mcp@latest` | [Playwright MCP](https://playwright.dev/docs/getting-started-mcp) standard config |
 | `firecrawl` | `npx -y firecrawl-mcp@3.33.2` | [Firecrawl local MCP](https://docs.firecrawl.dev/mcp-server/local) |
-| `mobbin` | `https://api.mobbin.com/mcp` (Streamable HTTP, OAuth) | [Mobbin MCP](https://mobbin.com/mcp) |
 | `vercel` | `https://mcp.vercel.com` (Streamable HTTP, OAuth) | [Vercel MCP](https://vercel.com/docs/agent-resources/vercel-mcp) |
 | `graphify` | `graphify-mcp ${PLUGIN_DATA}/graphify-out/graph.json` | [Graphify MCP](https://docs.graphify.com/open-source/mcp-server) |
 
@@ -72,9 +71,8 @@ shell. Firecrawl's cloud tools need the key. The hosted keyless endpoint
 `https://mcp.firecrawl.dev/v2/mcp` is a separate Firecrawl mode and is not
 the shipped entry.
 
-Mobbin and Vercel authenticate in the client. Mobbin's server is on Pro,
-Team, and Enterprise plans. Vercel opens an OAuth consent screen. Neither URL
-carries a token.
+Vercel authenticates in the client and opens an OAuth consent screen. The URL
+does not carry a token.
 
 Graphify's local server is the `graphify-mcp` command from
 `uv tool install "graphifyy[mcp]"`. The argument is the spec's portable

@@ -33,12 +33,12 @@ Only the requested `design-md` skill is selected from that repository.
 ## Portable MCP servers
 
 Root `mcp.json` is the Agent Plugins MCP document. It ships Serena,
-Playwright, Firecrawl, Mobbin, Vercel, and Graphify. Commands and URLs, the
+Playwright, Firecrawl, Vercel, and Graphify. Commands and URLs, the
 `FIRECRAWL_API_KEY` requirement, and the decision not to write
 `${FIRECRAWL_API_KEY}` into `env` are in [Agent Plugins](agent-plugins.md).
 Install does not copy that file into `.cursor/mcp.json`, `.mcp.json`, or
 `.codex/config.toml`. A client that loads Agent Plugins reads `mcp.json`
-itself. OAuth for Mobbin and Vercel stays in the client.
+itself. OAuth for Vercel stays in the client.
 
 `python3 scripts/install.py` links skills, agents, Cursor rules, and shared
 steering, then runs Serena's `init` and `project index` when `uvx` is on
