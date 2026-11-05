@@ -24,9 +24,12 @@ curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/insta
 From a checkout of this repository, `./install.sh` installs that checkout instead
 of downloading another copy. The command links skills, agents, and rules for
 Codex, Claude Code, and Cursor, and sets this checkout's `core.hooksPath` to
-`.githooks`. A conflicting foreign path stops setup. Keep the checkout, because
+`.githooks`. It also runs Serena's `init` and `project index` when `uvx` is
+on `PATH`, and skips that step when `uv` is missing or the command fails.
+A conflicting foreign path stops setup. Keep the checkout, because
 the links point at it. `SCOPE.md` is the supported baseline. `sources.lock.json`
-pins every upstream snapshot under `vendor/`.
+pins every upstream snapshot under `vendor/`. Root `plugin.json` and `mcp.json`
+are the Agent Plugins package. See [Agent Plugins](docs/agent-plugins.md).
 
 ## Develop
 
@@ -84,13 +87,14 @@ Other manifest packages and their tree paths are `document`
 
 OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
 needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
-The installer only links files. It does not authenticate accounts, start a
-proxy, redirect providers, run models, or index repositories. See
-[install details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
+The installer links files and, when `uvx` works, initializes Serena for the
+selected project. It does not authenticate accounts, start a proxy, redirect
+providers, or run models. See [install details](docs/bootstrap.md),
+[Agent Plugins](docs/agent-plugins.md), and [integration readiness](docs/integrations.md).
 
 ## Repository layout
 
-Tracked directories (`git ls-files`). Root files beside them include `install.sh`, `sources.lock.json`, `SCOPE.md`, `AGENTS.md`, `CLAUDE.md`, and `GLOSSARY.md`.
+Tracked directories (`git ls-files`). Root files beside them include `plugin.json`, `mcp.json`, `install.sh`, `sources.lock.json`, `SCOPE.md`, `AGENTS.md`, `CLAUDE.md`, and `GLOSSARY.md`.
 
 | Path | Contents |
 | --- | --- |
@@ -105,7 +109,7 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `docs/` | Focused install, skill, harness, and maintainer guides, including `docs/harnesses.md` and `docs/t3code.md`. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
 | `scripts/` | The linker. `install.sh` calls `scripts/install.py`. |
-| `skills/` | Owned skills and the placement registry `skills/skills.json`. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
+| `skills/` | Owned Agent Skills and the placement registry `skills/skills.json`. Clients discover only immediate `skills/*/SKILL.md` directories. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
 | `src/` | Shared command, state, and documentation programs, plus the runner source registry `src/runner.json`. See `src/README.md`. |
 | `tests/` | Unittest suite. |
 | `vendor/` | Pinned upstream snapshots named in `sources.lock.json`. |

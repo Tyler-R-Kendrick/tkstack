@@ -30,46 +30,39 @@ The WikiSkill repository is an independent paper implementation, not a Google
 product. The Google Stitch skill is from Google's `google-labs-code` repository.
 Only the requested `design-md` skill is selected from that repository.
 
-## Native configuration
+## Portable MCP servers
 
-`python3 scripts/install.py --target .` now installs skills and shared steering,
-then configures the native hooks and available MCP connections. Source paths
-in the lock select Impeccable's distinct builds for each harness. Existing
-settings and unrelated MCP servers remain in place; conflicting server names
-stop setup before configuration is written.
+Root `mcp.json` is the Agent Plugins MCP document. It ships Serena,
+Playwright, Firecrawl, Mobbin, Vercel, and Graphify. Commands and URLs, the
+`FIRECRAWL_API_KEY` requirement, and the decision not to write
+`${FIRECRAWL_API_KEY}` into `env` are in [Agent Plugins](agent-plugins.md).
+Install does not copy that file into `.cursor/mcp.json`, `.mcp.json`, or
+`.codex/config.toml`. A client that loads Agent Plugins reads `mcp.json`
+itself. OAuth for Mobbin and Vercel stays in the client.
 
-- Codex: `.codex/hooks.json` and a marked MCP block in `.codex/config.toml`.
-- Claude Code: `.claude/settings.json` and project `.mcp.json`.
-- Cursor: `.cursor/hooks.json` and `.cursor/mcp.json`.
-- Home installs use Claude's `.claude.json` for its user MCP connections.
+`python3 scripts/install.py` links skills, agents, Cursor rules, and shared
+steering, then runs Serena's `init` and `project index` when `uvx` works.
+Vendored hook files are linked only when they are part of a skill or agent
+tree. Install does not write a separate hook or MCP registration pass.
 
-Hook adapters point at pinned source files. Missing RTK or Impeccable binaries
-leave tool calls untouched instead of triggering downloads from hooks. Native
-Codex may require reviewing and trusting hook registrations through `/hooks`.
-Ponytail's optional Claude UI band is not installed through these lifecycle
-adapters. Actual native Cursor/Claude sessions were not exercised here.
+The `fal` server remains the first-party Streamable HTTP OAuth endpoint
+documented at [fal's Codex setup](https://fal.ai/docs/documentation/setting-up/mcp/codex-cli).
+It is not an entry in `mcp.json`. A host that wants it adds the connection
+and runs `codex mcp login fal` on a normal local installation.
 
-The `fal` server uses the first-party Streamable HTTP OAuth endpoint documented
-at [fal's Codex setup](https://fal.ai/docs/documentation/setting-up/mcp/codex-cli).
-After the host connection is added, `codex mcp login fal` starts its browser
-sign-in on a normal local installation. Host-managed plugin connections and
-standalone CLI OAuth stores do not automatically share credentials.
-
-Stitch's endpoint and header are confirmed by the official
+Stitch's endpoint is confirmed by the official
 [Gemini Stitch extension](https://github.com/gemini-cli-extensions/stitch/blob/main/gemini-extension.json).
-When `STITCH_API_KEY` exists in the launching environment, rerunning setup adds
-the server with an environment reference. The value is never written into
-configuration. Headroom and OpenDesign MCP entries are activated when their
-local runtimes are available. No placeholder executable is registered as a
-working server.
+`STITCH_API_KEY` stays in the environment. It is not written into `mcp.json`.
 
 ## What install does
 
 `python3 scripts/install.py --target .` links skills, agents, rules, and the
-steering and principles directories. It does not register hooks or MCP servers
-and it does not download tool runtimes. Versions of vendored sources are in
+steering and principles directories, then initializes Serena as
+[bootstrap](bootstrap.md) describes. It does not download Playwright, Firecrawl,
+Graphify, or other CLIs. Versions of vendored sources are in
 `sources.lock.json`. A host that wants a CLI installs that package itself.
 Runtime files, when a host installs them, stay under `.tkstack/` and are not committed.
+Serena's project index may write a gitignored `.serena/` directory.
 
 OpenDesign's local app and provider account sign-ins remain host requirements.
 The isolated MAF validation runtime described in [flowify](flowify.md) is separate.
@@ -109,8 +102,9 @@ The [learning guide](learning.md) explains how `/learn` uses the shared store an
 how WikiSkill can evaluate proposed changes without replacing that format.
 
 Graphify 0.9.97 has native platform skills, Claude query guidance hooks, and a
-Cursor rule. This repo does not commit a Python runtime lock or apply an MCP
-entry. See [Graphify](graphify.md) for source pins, native evidence, and limits.
+Cursor rule. `mcp.json` declares the local `graphify-mcp` command. This repo
+does not commit a Python runtime lock or install the `graphifyy[mcp]` extra.
+See [Graphify](graphify.md) for source pins, native evidence, and limits.
 
 ## Shared command tooling
 

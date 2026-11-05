@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -538,13 +538,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+        },
+        "docs/agent-plugins.md": {
+          "mode": "100644",
+          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
         },
         "docs/harnesses.md": {
           "mode": "100644",
@@ -552,7 +556,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
+          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -560,7 +564,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "60a8e124eed96457b2ecdf68c389d53539d752b4"
+          "oid": "ec76484fd065e955026432ec507b91a77a6640e1"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -592,6 +596,14 @@
           "mode": "100644",
           "oid": "294de2a868bc1dbd051ef975b446c6a5e96bdc8f"
         },
+        "mcp.json": {
+          "mode": "100644",
+          "oid": "13d60ff41da8470af88103bc453263db3797e7bc"
+        },
+        "plugin.json": {
+          "mode": "100644",
+          "oid": "0b04dc5894fbe2a11cf72b031abb0e0b5992231e"
+        },
         "skills/skills.json": {
           "mode": "100644",
           "oid": "3066ebc8e05b6b7a5e61efbaa00aebf31fdfa3f9"
@@ -602,13 +614,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -623,11 +635,11 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "c6b8d257dd847d131120888966f350492e8f6171"
+          "oid": "4b0e4df058a4c658a4171ef8313f60f569d633ab"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "a8cb8840b5fbf0567bdabc9dce4bf0b201175aaa"
+          "oid": "8c99797862d43d7764668f141c7c672fd8b401d4"
         },
         "src/check_docs.py": {
           "mode": "100755",
@@ -746,14 +758,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "The owned Cursor rule test checks link_plan only. Fixing it does not change documented install behavior."
+      "no_doc_impact": false,
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -775,21 +787,25 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+        },
+        "docs/agent-plugins.md": {
+          "mode": "100644",
+          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "ac5a6e992c473d66a707508ad605167b9605a3f1"
+          "oid": "f4911d6160fb66c1f660c3d85f9188b66c35a4e2"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
+          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -843,13 +859,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "c06c0c333e316c4687f801cca3ed1aa12797dd3c"
+          "oid": "bc8a180285c34cef1e3f254b5517e8dce0caf710"
+        },
+        "docs/agent-plugins.md": {
+          "mode": "100644",
+          "oid": "ae79f2ac0fbdcb2834e0b12a9413b661661f931b"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -869,7 +889,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "ef9b17a859645c24826f3b37a5c771f8622a9ea1"
+          "oid": "5eea46f1dd6347af9c31a87bca3e691171eb8f4d"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -905,7 +925,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "60a8e124eed96457b2ecdf68c389d53539d752b4"
+          "oid": "ec76484fd065e955026432ec507b91a77a6640e1"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1127,7 +1147,7 @@
         },
         "skills/hill-climb/SKILL.md": {
           "mode": "100644",
-          "oid": "30aa8a04ad3bd252a5c4e11728e0c6fc2bb1cd7e"
+          "oid": "26f4f5979dae7868d3a68bc6383c649f9cf742fa"
         },
         "skills/hill-climb/commands/help.md": {
           "mode": "100644",
@@ -1211,7 +1231,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "739deebe6415819461243aba424d496318640436"
+          "oid": "ce0f711a411cd173ccf84eea6e558d0450a5c278"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2147,7 +2167,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "05d5fa1162383e56762ac25418009316bdb3886a"
+          "oid": "2e2d6512bbbb7652adc788e12006ad1b63f300b3"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2319,7 +2339,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "69361a67637b1d5d4763f980acef527175381522"
+          "oid": "5c7639c64407bb9ff297b8d26242a26c6b4f3efa"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2631,13 +2651,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed the top-level harnesses directory. Placement is skills/skills.json, runner defaults are src/runner.json, owned Cursor rules are .cursor/rules, and host notes are docs/harnesses.md and docs/t3code.md."
+      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "a8cb8840b5fbf0567bdabc9dce4bf0b201175aaa"
+    "oid": "8c99797862d43d7764668f141c7c672fd8b401d4"
   },
   "version": 1
 }

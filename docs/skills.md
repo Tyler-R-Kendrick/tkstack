@@ -23,7 +23,9 @@ Grok and reads that host's skills. `skills/skills.json` `delegates.t3code`
 names those hosts. Repo-quality counts t3code when each of them is linked.
 See [t3code](t3code.md). Links point to source instructions.
 Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
-preserve upstream `disable-model-invocation: true` policy.
+preserve upstream `disable-model-invocation: true` policy. Owned `hill-climb`
+and `sdlc` store that flag under `metadata` so their `SKILL.md` files stay
+within the Agent Skills frontmatter set. See [Agent Plugins](agent-plugins.md).
 
 The personal `learn` skill maintains the shared steering store and supports
 explicit report/audit and procedural skill-improvement modes. See

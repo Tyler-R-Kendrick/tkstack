@@ -38,9 +38,13 @@ this repository's installer for owned integration files, and explicit graphs or
 MCP project selection for repository context. Native global graph storage uses
 `~/.graphify`, which is outside the managed state convention.
 
-Install does not register a Graphify MCP server. A host that wants
-`graphify-local` adds that entry in its own MCP config. Install does not
-apply it.
+Root `mcp.json` declares Graphify as the official `graphify-mcp` stdio
+command, with `${PLUGIN_DATA}/graphify-out/graph.json` as the graph path.
+Install does not run `uv tool install "graphifyy[mcp]"` and does not build
+that graph. A host that wants the server installs the extra and builds
+`graph.json` first. The hosted endpoint `https://api.graphify.com/mcp` is
+Graphify's OAuth server and is not the shipped entry.
+
 The default relative output path preserves native `project_path` selection;
 explicit absolute/shared output overrides select a fixed graph instead. This is
 separate from Graphify's hosted OAuth service; no hosted account, workspace,

@@ -92,6 +92,12 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   owned Cursor rules in `.cursor/rules/`, and Copilot dials in
   `.github/lever.yml`. Generated alias views in `.tkstack/` and installed
   links are ignored. Do not add a top-level harnesses directory.
+- This checkout is an Agent Plugins 1.0 package: root `plugin.json`, root
+  `mcp.json`, and immediate `skills/*/SKILL.md` directories. Keep
+  `skills/skills.json` as the placement registry and `src/runner.json` as the
+  runner registry. Keep `.claude-plugin/` for the Claude marketplace and
+  `.cursor/rules/` for Cursor. Do not add client fields to root `plugin.json`
+  or secrets to `mcp.json`. See `docs/agent-plugins.md`.
 - The ___ify skills (codify, flowify, hookify, instructify, lintify, reusify,
   skillify) are Learn subskills at `skills/learn/skills/<name>/`. They ship and
   install only with Learn; invoke them as `/learn <name>` or
@@ -113,16 +119,21 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   change scope and the improvement workflow in `skills/learn/references/`.
 - Use root `install.sh` to link this checkout into a home or project. It does
   not install private language runtimes, edit shell startup, register native
-  hooks, or write a launcher. `--dry-run` previews the links. See
-  `docs/bootstrap.md`. Keep manual application/account requirements explicit.
+  hooks, or write a launcher. It does run Serena's `init` and `project index`
+  when `uvx` is on `PATH`, and skips that step when `uv` is missing, `uvx` is
+  missing, or the command fails. `--dry-run` prints the link plan and those
+  Serena commands without running them. See `docs/bootstrap.md` and
+  `docs/agent-plugins.md`. Keep manual application/account requirements explicit.
 - Invoke compiled skills/workflows with `python3 src/tkstack.py`. Reuse Codify's
   command schema, binding/freshness checks, and frozen execution; uncompiled
   skills have no prompt/inference fallback. Keep registry and model/provider
   configuration scoped, preserve named Vercel AI SDK profiles, and leave
   help/list/export/check read-only. See `docs/runner.md`.
 - Install does not download tool runtimes or apply a separate integrations
-  pin. Source versions live in `sources.lock.json`. A host still needs its own
-  hook and MCP configuration. See `docs/integrations.md`.
+  pin, except the Serena uvx commands above, which fetch Serena only when
+  `uvx` runs. Source versions live in `sources.lock.json`. Portable MCP
+  servers are declared in `mcp.json`; a host still supplies API keys and
+  OAuth. See `docs/integrations.md`.
 - Graphify's installed skill is a byte copy of the upstream skill text. Use the
   upstream `graphify` command when that package is installed. Installation
   starts no indexing, watcher, model, or delegated extraction. See

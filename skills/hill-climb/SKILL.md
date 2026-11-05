@@ -3,10 +3,10 @@ name: hill-climb
 description: Run a bounded, evidence-driven improvement loop for code, prompts, skills, websites, or generated media. Use for /hill-climb, sustained metric optimization, or iterative quality/cost/latency improvement. Freeze a sensitive evaluation, measure baseline noise, change one hypothesis at a time, keep or revert from evidence, and confirm the winner on untouched cases.
 license: MIT
 compatibility: "Harness independent. Python 3.11+ for the optional offline comparison helper. Actual experiments require the project's runner and relevant runtime or media tools. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
-disable-model-invocation: true
 metadata:
   author: Tyler Kendrick
   version: "0.3.0"
+  disable-model-invocation: "true"
 ---
 
 # Hill-climb

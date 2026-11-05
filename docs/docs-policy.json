@@ -16,6 +16,7 @@
       ],
       "docs": [
         "README.md",
+        "docs/agent-plugins.md",
         "docs/bootstrap.md",
         "docs/integrations.md",
         "docs/normalization.md"
@@ -47,6 +48,8 @@
     "catalog": {
       "inputs": [
         "sources.lock.json",
+        "plugin.json",
+        "mcp.json",
         ".claude-plugin/**",
         "skills/skills.json",
         ".cursor/rules/*.mdc",
@@ -55,6 +58,7 @@
       ],
       "docs": [
         "README.md",
+        "docs/agent-plugins.md",
         "docs/skills.md",
         "docs/integrations.md",
         "docs/normalization.md",
@@ -89,6 +93,7 @@
         "docs/skill-evolution.md",
         "docs/grok-learn.md",
         "docs/integrations.md",
+        "docs/agent-plugins.md",
         "docs/normalization.md"
       ]
     },

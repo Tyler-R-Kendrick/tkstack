@@ -28,3 +28,5 @@ node_modules/
 evals/repo-quality/results/latest.json
 *.py[cod]
 .DS_Store
+# Serena's project index writes this beside the indexed checkout.
+.serena/

@@ -9,10 +9,11 @@ checkout. Bash and curl are the host prerequisites.
 curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
 ```
 
-`install.sh` is the host wrapper. It execs `scripts/install.py`, which only
-links files. It does not install language toolchains, edit shell startup,
-register native hooks or MCP servers, write launchers, or rewrite
-`AGENTS.md` / `CLAUDE.md`.
+`install.sh` is the host wrapper. It execs `scripts/install.py`, which links
+files and then initializes Serena. It does not install language toolchains,
+edit shell startup, register native hooks, write harness MCP config, write
+launchers, or rewrite `AGENTS.md` / `CLAUDE.md`. Portable servers stay in
+root `mcp.json`. See [Agent Plugins](agent-plugins.md).
 
 The default links Codex, Claude Code, and Cursor. Repeat `--harness` for
 Copilot, Grok, Kimi, Muse, or OpenCode. t3code is an orchestrator and is never
@@ -26,10 +27,11 @@ for a home target is home scope. Keep the checkout: the links point at it.
 ./install.sh --uninstall
 ```
 
-`--dry-run` prints the link plan and writes nothing. `--uninstall` removes this
-checkout's links for every harness, including a legacy `.muse/skills` link, and
-unsets `core.hooksPath` when its value is `.githooks`. `--harness` does not
-limit uninstall. A second uninstall changes nothing. Foreign links stay.
+`--dry-run` prints the link plan and the Serena commands, and writes nothing.
+`--uninstall` removes this checkout's links for every harness, including a
+legacy `.muse/skills` link, unsets `core.hooksPath` when its value is
+`.githooks`, and skips Serena. `--harness` does not limit uninstall. A second
+uninstall changes nothing. Foreign links stay.
 
 ## Host prerequisites
 
@@ -77,6 +79,33 @@ On a git checkout, install sets `core.hooksPath=.githooks`. Git then runs
 key only when it is still `.githooks`. A directory that is not a git checkout, or a PATH with no `git` binary,
 prints `skip git docs hook: not a git checkout` and the link step still
 finishes. Dry-run prints the config change and does not run it.
+
+## Serena
+
+After the links, install runs Serena's documented uvx setup when `uvx` is on
+`PATH`:
+
+```text
+uvx --from git+https://github.com/oraios/serena serena init
+uvx --from git+https://github.com/oraios/serena serena project index
+```
+
+`serena init` sets up the language-server backend. `serena project index`
+runs in the install target when the scope is `project`, and in this checkout
+when the scope is home. It does not walk the home directory. The index may
+create a gitignored `.serena/` directory in that project. `--dry-run` prints
+the two lines and does not execute them. Uninstall prints
+`skip serena: uninstall`. If `uv` or `uvx` is absent, or either command exits
+non-zero, install prints `skip serena:` and keeps the links it already made.
+That includes an offline `uvx` fetch. No API key is written.
+
+Required environment for the shipped MCP servers, not for this index step:
+
+| Variable | Server | When it is required |
+| --- | --- | --- |
+| `FIRECRAWL_API_KEY` | `firecrawl` (`npx -y firecrawl-mcp`) | Cloud Firecrawl tools. Export it for the client process. `mcp.json` does not reference it, because Agent Plugins would pass `${FIRECRAWL_API_KEY}` through as literal text. |
+| none | `serena`, `playwright`, `graphify` | Local commands. Playwright needs Node. Graphify needs `uv tool install "graphifyy[mcp]"` and a graph at `${PLUGIN_DATA}/graphify-out/graph.json`. |
+| none | `mobbin`, `vercel` | OAuth in the MCP client. Mobbin requires a paid Mobbin plan. |
 
 ## Devcontainer
 
