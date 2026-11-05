@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Generate and check the SDLC skill-routing inventory.
 
-The inventory is the installed skill set plus Learn subskills, vendored skills
-that are intentionally not placed, and any SKILL.md under harnesses/. Routing
-entries live in skills/sdlc/references/routing.json. The rendered table is the
-marked region of skills/sdlc/references/skill-routing.md.
+The inventory is the installed skill set plus Learn subskills and vendored
+skills that are intentionally not placed. Routing entries live in
+skills/sdlc/references/routing.json. Placement is skills/skills.json. The
+rendered table is the marked region of skills/sdlc/references/skill-routing.md.
 """
 
 import json
@@ -229,7 +229,7 @@ def discover(root=ROOT):
     """
     root = Path(root)
     install, skill_roots = _placement_tools(root)
-    rules_path = root / "harnesses/skills.json"
+    rules_path = root / "skills/skills.json"
     rules = json.loads(rules_path.read_text()).get("placement", {}) if rules_path.is_file() else {}
     found = {}
 
@@ -280,19 +280,6 @@ def discover(root=ROOT):
             "text": skill.read_text(errors="replace"),
             "path": skill.parent,
         })
-    harnesses = root / "harnesses"
-    if harnesses.is_dir():
-        for skill in sorted(harnesses.rglob("SKILL.md")):
-            if skill.parent.resolve() in known_dirs:
-                continue
-            declared = _declared_name(skill)
-            add(declared, {
-                "group": "harness",
-                "stack": "harnesses/",
-                "placement": "harness package",
-                "text": skill.read_text(errors="replace"),
-                "path": skill.parent,
-            })
     stale_allowance = sorted(DUPLICATE_SKILL_PATHS - seen_duplicates)
     if stale_allowance:
         raise ValueError("Duplicate skill allowlist is stale: " + ", ".join(stale_allowance))
@@ -360,7 +347,7 @@ def render_inventory(skills, catalog):
     rank = {name: index for index, name in enumerate(order)}
     lines = [
         "Generated from the installed skill set, Learn subskills, unplaced vendored",
-        "skills, and `harnesses/` packages. Do not edit this region by hand. Run",
+        "skills. Do not edit this region by hand. Run",
         "`python3 skills/sdlc/scripts/routing_inventory.py render` after adding a skill and its",
         "routing entry.",
         "",

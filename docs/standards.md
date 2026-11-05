@@ -147,7 +147,7 @@ the repository.
 
 Keep upstream snapshots unchanged. Pin revisions, file contents, symlink
 targets, and executable modes in `sources.lock.json`. Keep name adaptations in
-`harnesses/skills.json`; generated views belong in `.tkstack/`. When a skill is
+`skills/skills.json`; generated views belong in `.tkstack/`. When a skill is
 added or removed, add or remove its phase and strengths in
 `skills/sdlc/references/routing.json`, then run
 `python3 skills/sdlc/scripts/routing_inventory.py render` and `check`. Put new personal

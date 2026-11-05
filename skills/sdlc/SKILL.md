@@ -1,12 +1,12 @@
 ---
 name: sdlc
-description: Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.
-disable-model-invocation: true
+description: Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Invoke only when the user explicitly asks for /sdlc or one of those modes. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.
 license: MIT
 compatibility: "Python 3.11+ with SQLite and Git for deterministic task coordination. Typed commands use the shared installed Codify command runtime. Full lifecycle requires actual delegation/PR capabilities and a reflink-capable filesystem for strict COW. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
   version: "0.5.0"
+  disable-model-invocation: "true"
 ---
 
 # SDLC

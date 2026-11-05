@@ -32,7 +32,7 @@ class InstructifyTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.project = Path(temporary.name) / "project"
         self.project.mkdir()
-        self.source = self.project / "harnesses/instructions/policy.json"
+        self.source = self.project / "instructions/policy.json"
         self.source.parent.mkdir(parents=True)
         self.manifest = json.loads((ROOT / "skills/learn/skills/instructify/examples/manifest.json").read_text())
         self.save()

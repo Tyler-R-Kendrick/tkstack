@@ -68,10 +68,10 @@ frontmatter, tool/model restrictions, imports, and other owners' managed blocks.
 Do not treat a role prompt as authorization to change permissions or spawn agents.
 
 In this dotfiles repository, the installer links skills, `.agents/steering`,
-`.agents/principles`, and the Cursor rules in `harnesses/cursor/`, including
-`tkstack-steering.mdc`. It does not apply or rewrite instruction files.
-There is no installer adapter for startup instructions. Edit
-`harnesses/cursor/tkstack-steering.mdc` for that standing Cursor rule, and
+`.agents/principles`, and the Cursor rules `.cursor/rules/graphify.mdc` and
+`.cursor/rules/tkstack-steering.mdc`. It does not apply or rewrite instruction
+files. There is no installer adapter for startup instructions. Edit
+`.cursor/rules/tkstack-steering.mdc` for that standing Cursor rule, and
 use this skill for other instruction sources. Installed links are not the
 canonical editable source. A plain marketplace copy installs the skill;
 actual instruction authoring is a separate requested operation.

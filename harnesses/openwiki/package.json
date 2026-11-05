@@ -1,7 +1,0 @@
-{
-  "name": "tkstack-openwiki-runtime",
-  "private": true,
-  "version": "1.0.0",
-  "engines": { "node": ">=22.22.0" },
-  "dependencies": { "openwiki": "0.7.2" }
-}

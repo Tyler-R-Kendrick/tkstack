@@ -24,9 +24,12 @@ curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/insta
 From a checkout of this repository, `./install.sh` installs that checkout instead
 of downloading another copy. The command links skills, agents, and rules for
 Codex, Claude Code, and Cursor, and sets this checkout's `core.hooksPath` to
-`.githooks`. A conflicting foreign path stops setup. Keep the checkout, because
+`.githooks`. It also runs Serena's `init` and `project index` when `uvx` is
+on `PATH`, and skips that step when `uvx` is not on `PATH` or the command fails.
+A conflicting foreign path stops setup. Keep the checkout, because
 the links point at it. `SCOPE.md` is the supported baseline. `sources.lock.json`
-pins every upstream snapshot under `vendor/`.
+pins every upstream snapshot under `vendor/`. Root `plugin.json` and `mcp.json`
+are the Agent Plugins package. See [Agent Plugins](docs/agent-plugins.md).
 
 ## Develop
 
@@ -84,13 +87,14 @@ Other manifest packages and their tree paths are `document`
 
 OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
 needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
-The installer only links files. It does not authenticate accounts, start a
-proxy, redirect providers, run models, or index repositories. See
-[install details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
+The installer links files and, when `uvx` works, initializes Serena for the
+selected project. It does not authenticate accounts, start a proxy, redirect
+providers, or run models. See [install details](docs/bootstrap.md),
+[Agent Plugins](docs/agent-plugins.md), and [integration readiness](docs/integrations.md).
 
 ## Repository layout
 
-Tracked directories (`git ls-files`). Root files beside them include `install.sh`, `sources.lock.json`, `SCOPE.md`, `AGENTS.md`, `CLAUDE.md`, and `GLOSSARY.md`.
+Tracked directories (`git ls-files`). Root files beside them include `plugin.json`, `mcp.json`, `install.sh`, `sources.lock.json`, `SCOPE.md`, `AGENTS.md`, `CLAUDE.md`, and `GLOSSARY.md`.
 
 | Path | Contents |
 | --- | --- |
@@ -98,15 +102,15 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `.claude-plugin/` | Claude marketplace and plugin manifests (`marketplace.json`, `plugin.json`). |
 | `.devcontainer/` | Devcontainer: project-scope link on create and on later starts. |
 | `.githooks/` | Versioned `pre-commit` that checks the staged docs ledger. |
+| `.cursor/` | Tracked rules `.cursor/rules/graphify.mdc` and `.cursor/rules/tkstack-steering.mdc`. The installer links them. Other `.cursor/` paths are local install links and stay ignored. |
 | `.github/` | CI workflow `workflows/skills.yml` and Lever dials `lever.yml`. |
 | `.tkstack/` | Versioned state seed: `.gitignore` and `reuse/catalog.json`. |
 | `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
-| `docs/` | Focused install, skill, harness, and maintainer guides. |
+| `docs/` | Focused install, skill, harness, and maintainer guides, including `docs/harnesses.md` and `docs/t3code.md`. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
-| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/copilot/` (`lever.yml` example dials), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
 | `scripts/` | The linker. `install.sh` calls `scripts/install.py`. |
-| `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
-| `src/` | Shared command, state, and documentation programs. See `src/README.md`. |
+| `skills/` | Owned Agent Skills and the placement registry `skills/skills.json`. Clients discover only immediate `skills/*/SKILL.md` directories. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
+| `src/` | Shared command, state, and documentation programs, plus the runner source registry `src/runner.json`. See `src/README.md`. |
 | `tests/` | Unittest suite. |
 | `vendor/` | Pinned upstream snapshots named in `sources.lock.json`. |
 | `vendor/ponytail/` | DietrichGebert/ponytail 5.3.3 (MIT): six skills and Node lifecycle-hook adapters. Vendored so setup uses those locked bytes instead of cloning upstream. |
@@ -186,8 +190,10 @@ bash /tmp/tkstack-install.sh
 `core.hooksPath` when that value is `.githooks`. `--harness` does not limit it.
 It leaves foreign links in place. `--dry-run --uninstall` prints that plan and
 writes nothing. Repeat `--harness` with `codex`, `claude`, `cursor`, `grok`,
-`kimi`, `opencode`, `copilot`, or `muse` to select hosts. t3code is not a
-choice: it reads the other hosts' skills. Copilot links `~/.copilot/skills` at
+`kimi`, `opencode`, `copilot`, `muse`, or `t3code`. `--harness t3code` installs
+every host in `skills/skills.json` `delegates.t3code` (Claude, Codex, Cursor,
+Copilot, and Grok) into that host's skill directory. There is no t3code
+directory. Copilot links `~/.copilot/skills` at
 home and `.github/skills` in a project. Muse links `~/.config/muse/skills` at
 home and does not follow `XDG_CONFIG_HOME`; a project install uses
 `.agents/skills`. The default selection is Codex, Claude Code, and Cursor.
@@ -284,14 +290,15 @@ and [model/provider configuration](skills/learn/skills/codify/references/inferen
 `scripts/` is the dotfiles linker (`install.sh` calls `scripts/install.py`).
 Shared command, state, and documentation programs live in `src/`. Skills under
 active development live in `skills/`; third-party-derived packages live in
-`.agents/skills/`; shared agents live in `agents/`; host settings live in
-`harnesses/`. Personal skills join every selected harness. Upstream skills in
-`placement.default`, including Emil Kowalski and ub-mode, go to Codex, Grok,
-Kimi, OpenCode, Copilot, and Muse. Pstack and
+`.agents/skills/`; shared agents live in `agents/`. Placement is
+`skills/skills.json`. Owned Cursor rules live in `.cursor/rules/`. Copilot
+dials live in `.github/lever.yml`. Personal skills join every selected harness.
+Upstream skills in `placement.default`, including Emil Kowalski and ub-mode,
+go to Codex, Grok, Kimi, OpenCode, Copilot, and Muse. Pstack and
 Cursor Team Kit go only to Cursor. Graphify and Impeccable keep Codex, Claude
 Code, and Cursor, including the generic agent-skills view at
-`.tkstack/skill-views/graphify/default/`. See `harnesses/skills.json` and
-`harnesses/README.md`. Reinstalling removes this checkout's links that no
+`.tkstack/skill-views/graphify/default/`. See `skills/skills.json` and
+`docs/harnesses.md`. Reinstalling removes this checkout's links that no
 longer match that placement. `./install.sh --uninstall` removes this
 checkout's links for every harness and unsets `core.hooksPath` when it is
 `.githooks`. Preserve `vendor/` snapshots and update

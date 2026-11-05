@@ -38,8 +38,13 @@ this repository's installer for owned integration files, and explicit graphs or
 MCP project selection for repository context. Native global graph storage uses
 `~/.graphify`, which is outside the managed state convention.
 
-Install does not register a Graphify MCP server. `harnesses/integrations.json`
-may still name `graphify-local`; that record is not applied.
+Root `mcp.json` declares Graphify as the official `graphify-mcp` stdio
+command, with `${PLUGIN_DATA}/graphify-out/graph.json` as the graph path.
+Install does not run `uv tool install "graphifyy[mcp]"` and does not build
+that graph. A host that wants the server installs the extra and builds
+`graph.json` first. The hosted endpoint `https://api.graphify.com/mcp` is
+Graphify's OAuth server and is not the shipped entry.
+
 The default relative output path preserves native `project_path` selection;
 explicit absolute/shared output overrides select a fixed graph instead. This is
 separate from Graphify's hosted OAuth service; no hosted account, workspace,
@@ -62,23 +67,14 @@ command should not manage tkstack-owned links or instructions.
 
 ## Reproduce installation
 
-Python **3.12** and `uv` are required for this locked runtime recipe. The source
-project supports more Python versions; this dependency lock was resolved and
-verified for 3.12. Runtime/interpreter downloads stay under ignored `.tkstack/`.
-
 ```sh
 python3 scripts/install.py --target . --harness codex --harness claude --harness cursor
 ```
 
-That links the three host views. It does not install the lock below.
-The recipe is `harnesses/graphify/requirements.in` plus `requirements.lock`:
-**59 exact dependency versions** with SHA-256 distribution hashes, including
-MCP 2.3.0. Installation accepts wheels only and enforces those hashes. A single
-writer owns installation; the readiness receipt is published only after native
-version/interpreter verification and matching recipe copies. The environment
-stays at its final path so Python console-script shebangs remain valid. Ordinary
-failure removes only the newly created environment. A differing existing runtime
-or a crash leftover is preserved for inspection. No global PATH change occurs.
+That links the three host views. It does not install `graphifyy` or register MCP.
+The package version recorded with the source pin is **graphifyy 0.9.97**
+(`sources.lock.json`). Installing that package is a host step. This repository
+does not commit a Python dependency lock for it.
 
 ## Verification and limits
 
@@ -86,8 +82,7 @@ The source snapshot pins **32 files** to
 [`0a8cd4e1e342235fe53e881fb5d591bf0460071f`](https://github.com/Graphify-Labs/graphify/tree/0a8cd4e1e342235fe53e881fb5d591bf0460071f),
 including the native skill variants, all their sidecars, metadata, Apache 2.0
 license, original MIT license, and NOTICE. Git blob identities and file modes
-are recorded in `sources.lock.json`. The PyPI runtime is pinned independently
-by its published artifact hashes; source and distribution pins are distinct.
+are recorded in `sources.lock.json`. A separate PyPI hash lock is not committed.
 
 Native checks build a two-file fixture (5 nodes, 7 edges), verify an extracted
 `calculate → double` call, query/path output, missing-symbol exit 4, the managed

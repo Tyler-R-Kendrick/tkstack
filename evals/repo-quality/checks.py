@@ -701,7 +701,7 @@ def _delegates(skills):
 
 def _linked_placements(root):
     """Harnesses skills.json lists and scripts/harness_paths.py actually links."""
-    skills, _detail = _json_object(root / "harnesses" / "skills.json")
+    skills, _detail = _json_object(root / "skills" / "skills.json")
     placement = skills.get("placement") if isinstance(skills, dict) else None
     if not isinstance(placement, dict):
         placement = {}
@@ -712,7 +712,7 @@ def _linked_placements(root):
     if isinstance(default, list):
         for name in default:
             if isinstance(name, str):
-                listed.append((name, "harnesses/skills.json placement.default"))
+                listed.append((name, "skills/skills.json placement.default"))
     sources = placement.get("sources")
     if isinstance(sources, dict):
         for source, names in sources.items():
@@ -720,7 +720,7 @@ def _linked_placements(root):
                 continue
             for name in names:
                 if isinstance(name, str):
-                    listed.append((name, f"harnesses/skills.json placement.sources.{source}"))
+                    listed.append((name, f"skills/skills.json placement.sources.{source}"))
     directories = _home_skill_directories(root)
     linked = {}
     if directories is None:
@@ -741,7 +741,7 @@ def harness_coverage(root):
     An orchestrator such as t3code has no skills directory. It counts when
     skills.json `delegates` names that harness and every target is itself linked.
     """
-    skills, _detail = _json_object(root / "harnesses" / "skills.json")
+    skills, _detail = _json_object(root / "skills" / "skills.json")
     delegates = _delegates(skills if isinstance(skills, dict) else None)
     linked, experimental = _linked_placements(root)
     evidence = []
@@ -877,6 +877,76 @@ def install_flags(root):
     )
 
 
+def agent_plugins_conformance(root):
+    """Spec conformance, plus this checkout's separate shipped-MCP policy."""
+    directory = Path(__file__).resolve().parent
+    if str(directory) not in sys.path:
+        sys.path.insert(0, str(directory))
+    import agent_plugins
+    import repo_mcp_policy
+
+    spec = agent_plugins.conformance_problems(root)
+    policy = repo_mcp_policy.policy_problems(root)
+    problems = list(spec)
+    problems.extend(f"repo MCP policy: {item}" for item in policy)
+    evidence = [
+        "schemas: evals/repo-quality/schemas/plugin.schema.json",
+        "schemas: evals/repo-quality/schemas/mcp.schema.json",
+        "discovery: immediate skills/*/SKILL.md only",
+        "repo MCP policy: evals/repo-quality/repo_mcp_policy.py",
+    ]
+    if problems:
+        evidence.extend(problems[:30])
+    else:
+        evidence.append(
+            "plugin.json and discovered skills match the 1.0.0 schemas and spec rules"
+        )
+        evidence.append("mcp.json is present and matches the repo server policy")
+    explanation = (
+        "Spec conformance requires root plugin.json and checks mcp.json only when that file exists. "
+        "An absent mcp.json is not a spec error (Agent Plugins §6.2). "
+        "stdio commands are single tokens and remote URLs are absolute http(s) URLs. "
+        "Unrecognized placeholders stay literal (§9.2). "
+        "The spec check reports no known credential patterns in env/headers; "
+        "it does not prove a document embeds no credential. "
+        "A separate repo MCP policy requires this checkout to ship mcp.json and the pinned servers. "
+        + ("The checkout matches both." if not problems else " ".join(problems[:8]) + ".")
+    )
+    return result(
+        "agent_plugins_conformance", "marketplace_install", not problems,
+        "ok" if not problems else "; ".join(problems),
+        "Agent Plugins 1.0.0 plugin.json and skills, plus this repo's mcp.json policy",
+        explanation, evidence,
+    )
+
+
+def no_harnesses_directory(root):
+    """Fail when a top-level harnesses directory exists.
+
+    Placement is skills/skills.json. Owned Cursor rules are .cursor/rules/.
+    Copilot dials are .github/lever.yml. Host notes are under docs/.
+    """
+    path = Path(root) / "harnesses"
+    if path.is_symlink() or path.exists():
+        evidence = ["harnesses/ exists"]
+        try:
+            children = sorted(child.name for child in path.iterdir())
+        except OSError:
+            children = []
+        evidence.extend("harnesses/" + name for name in children[:8])
+        return result(
+            "no_harnesses_directory", "conventions", False, 1, 0,
+            "A top-level harnesses/ directory is not allowed. "
+            "Move each file next to what it configures, or delete it.",
+            evidence,
+        )
+    return result(
+        "no_harnesses_directory", "conventions", True, 0, 0,
+        "The checkout has no top-level harnesses/ directory.",
+        ["absent: harnesses/"],
+    )
+
+
 def top_level_files(root):
     """Countable root files. The worktree git pointer is not a source file."""
     names = sorted(
@@ -898,8 +968,10 @@ CHECKS = (
     scripts_loc,
     quickstart_commands,
     marketplace_manifests,
+    agent_plugins_conformance,
     harness_coverage,
     install_flags,
+    no_harnesses_directory,
     top_level_files,
 )
 

@@ -16,6 +16,7 @@
       ],
       "docs": [
         "README.md",
+        "docs/agent-plugins.md",
         "docs/bootstrap.md",
         "docs/integrations.md",
         "docs/normalization.md"
@@ -24,7 +25,7 @@
     "execution": {
       "inputs": [
         "src/tkstack.py",
-        "harnesses/runner.json"
+        "src/runner.json"
       ],
       "docs": [
         "README.md",
@@ -47,18 +48,22 @@
     "catalog": {
       "inputs": [
         "sources.lock.json",
+        "plugin.json",
+        "mcp.json",
         ".claude-plugin/**",
-        "harnesses/**",
+        "skills/skills.json",
+        ".cursor/rules/*.mdc",
+        ".github/lever.yml",
         "agents/**"
-      ],
-      "exclude": [
-        "harnesses/runner.json"
       ],
       "docs": [
         "README.md",
+        "docs/agent-plugins.md",
         "docs/skills.md",
         "docs/integrations.md",
-        "docs/normalization.md"
+        "docs/normalization.md",
+        "docs/harnesses.md",
+        "docs/t3code.md"
       ]
     },
     "skills": {
@@ -88,6 +93,7 @@
         "docs/skill-evolution.md",
         "docs/grok-learn.md",
         "docs/integrations.md",
+        "docs/agent-plugins.md",
         "docs/normalization.md"
       ]
     },

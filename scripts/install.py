@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
@@ -17,6 +18,7 @@ from harness_paths import SKILL_DIRECTORIES, skill_directory
 
 
 ROOT = Path(__file__).resolve().parent.parent
+PLACEMENT = Path("skills/skills.json")
 SKILL_PATHS = SKILL_DIRECTORIES
 DEFAULT_HARNESSES = ("codex", "claude", "cursor")
 # Releases before Muse moved to ~/.config/muse/skills linked .muse/skills.
@@ -61,15 +63,21 @@ def verify_vendor(root):
                 raise ValueError(f"Executable mode differs from lock: {path}")
 
 
+def _placement_doc(root):
+    """Load skills/skills.json once per call. Missing or non-object files are empty."""
+    config = root / PLACEMENT
+    if not config.is_file():
+        return {}
+    loaded = json.loads(config.read_text())
+    return loaded if isinstance(loaded, dict) else {}
+
+
 def skill_aliases(root):
-    config = root / "harnesses/skills.json"
-    return json.loads(config.read_text()).get("aliases", {}) if config.exists() else {}
+    return _placement_doc(root).get("aliases", {})
 
 
 def rewrite_callers(root, source):
-    config = root / "harnesses/skills.json"
-    return (json.loads(config.read_text()).get("rewrite_callers", {}).get(source, True)
-            if config.exists() else True)
+    return _placement_doc(root).get("rewrite_callers", {}).get(source, True)
 
 
 def placement(rules, kind, source):
@@ -237,8 +245,7 @@ def sourced(root, kind, harness=None):
 
 def placed(root, kind, harness):
     """Collected items that belong in one harness's native directory."""
-    config = root / "harnesses/skills.json"
-    rules = json.loads(config.read_text()).get("placement", {}) if config.exists() else {}
+    rules = _placement_doc(root).get("placement", {})
     return {name: path for name, (source, path) in sourced(root, kind, harness).items()
             if (harnesses := placement(rules, kind, source)) is None or harness in harnesses}
 
@@ -283,8 +290,15 @@ def link_plan(root, target, harnesses, scope="home"):
         if harness == "cursor":
             plan.extend((source, target / ".cursor/rules" / name)
                         for name, source in placed(root, "rules", harness).items())
-            for rule in sorted((root / "harnesses/cursor").glob("*.mdc")):
-                plan.append((rule.resolve(), target / ".cursor/rules" / rule.name))
+            rules = root / ".cursor/rules"
+            if rules.is_dir():
+                for rule in sorted(rules.glob("*.mdc")):
+                    if rule.is_symlink():
+                        continue
+                    destination = target / ".cursor/rules" / rule.name
+                    if destination.resolve() == rule.resolve():
+                        continue
+                    plan.append((rule.resolve(), destination))
     # Project Muse shares Codex's .agents/skills, so the same link can be planned twice.
     unique = []
     seen = set()
@@ -331,8 +345,16 @@ def remove_stale(paths, dry_run=False):
     return len(paths)
 
 
+# Cursor rules lived at harnesses/cursor/*.mdc before they moved to .cursor/rules.
+LEGACY_CURSOR_RULES = Path("harnesses/cursor")
+
+
 def alias_migrations(root, target, harnesses, scope="home"):
-    """Recognize only this checkout's former, unaliased upstream skill links."""
+    """Former links this checkout owns: steering, skill aliases, and Cursor rules.
+
+    A destination whose symlink still points at the previous source can be
+    replaced on install and removed on uninstall. A foreign target cannot.
+    """
     migrations = {}
     steering = target / ".agents/steering"
     if harnesses and matches(steering, (root / "steering").resolve()):
@@ -343,7 +365,74 @@ def alias_migrations(root, target, harnesses, scope="home"):
                 for harness in harnesses:
                     for relative in harness_skill_directories(harness, scope):
                         migrations[target / relative / path.parent.name] = path.parent.resolve()
+    if harnesses and "cursor" in harnesses:
+        rules = root / ".cursor" / "rules"
+        if rules.is_dir():
+            for rule in sorted(rules.glob("*.mdc")):
+                if rule.is_symlink():
+                    continue
+                migrations[target / ".cursor" / "rules" / rule.name] = (
+                    root / LEGACY_CURSOR_RULES / rule.name
+                ).resolve()
     return migrations
+
+
+SERENA_FROM = "git+https://github.com/oraios/serena"
+
+
+def serena_steps(project):
+    """Official uvx launch from oraios/serena, then init and project index.
+
+    Both commands use `project` as their working directory. `serena init`
+    selects the language-server backend and also writes Serena's user-global
+    config (`~/.serena/serena_config.yml`); the working directory does not
+    move that file. `serena project index` receives `project` as its
+    `[PROJECT]` path so it does not fall back to the caller's directory.
+    Home scope indexes this checkout. Project scope indexes the install
+    target. Neither step indexes the user's home directory.
+    """
+    launch = ["uvx", "--from", SERENA_FROM, "serena"]
+    return (
+        (launch + ["init"], project),
+        (launch + ["project", "index", str(project)], project),
+    )
+
+
+def _run_serena(argv, cwd):
+    return subprocess.run(argv, cwd=cwd, capture_output=True, text=True)
+
+
+def initialize_serena(root, target, scope, dry_run=False, runner=None, which=None):
+    """Index Serena's project. Skip when uvx is missing or a command fails.
+
+    `--dry-run` prints the commands and does not execute them. A missing uvx,
+    or a non-zero exit (including an offline uvx fetch), prints a skip line
+    and leaves the rest of install in place. `uv` alone is not enough.
+    """
+    project = target if scope == "project" else root
+    steps = serena_steps(project)
+    if dry_run:
+        for argv, cwd in steps:
+            where = f" in {cwd}" if cwd is not None else ""
+            print("Would run" + where + ": " + " ".join(argv))
+        return 0
+    which = shutil.which if which is None else which
+    if which("uvx") is None:
+        print("skip serena: uvx is not on PATH")
+        return 0
+    runner = _run_serena if runner is None else runner
+    for argv, cwd in steps:
+        where = f" (cwd {cwd})" if cwd is not None else ""
+        print("run: " + " ".join(argv) + where)
+        try:
+            completed = runner(argv, None if cwd is None else str(cwd))
+        except OSError as error:
+            print(f"skip serena: {error}")
+            return 0
+        if completed.returncode != 0:
+            print(f"skip serena: {' '.join(argv)} exited {completed.returncode}")
+            return 0
+    return 0
 
 
 def repo_hooks(root, dry_run=False, uninstall=False):
@@ -379,11 +468,18 @@ def repo_hooks(root, dry_run=False, uninstall=False):
         _git_checked(root, "config", "core.hooksPath", ".githooks")
 
 
+def _owned_previous(destination, migrations):
+    """The former source when this checkout's link still points at it."""
+    previous = (migrations or {}).get(destination)
+    if previous is not None and matches(destination, previous):
+        return previous
+    return None
+
+
 def preflight(plan, migrations=None):
     """Check every destination before creating links or generated source views."""
     for source, destination in plan:
-        previous = (migrations or {}).get(destination)
-        migrating = previous is not None and matches(destination, previous)
+        migrating = _owned_previous(destination, migrations) is not None
         if (destination.exists() or destination.is_symlink()) and not matches(destination, source) and not migrating:
             raise ValueError(f"Refusing to replace existing path: {destination}")
         for parent in destination.parents:
@@ -396,17 +492,16 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
         preflight(plan, migrations)
     changes = 0
     for source, destination in plan:
+        previous = _owned_previous(destination, migrations)
         owned = matches(destination, source)
         if uninstall:
-            if not owned:
+            if not owned and previous is None:
                 continue
             action = "remove"
         elif owned:
             continue
         else:
-            previous = (migrations or {}).get(destination)
-            migrating = previous is not None and matches(destination, previous)
-            action = "migrate" if migrating else "link"
+            action = "migrate" if previous is not None else "link"
         print(f"{'Would ' if dry_run else ''}{action}: {destination}")
         if not dry_run:
             if uninstall:
@@ -415,7 +510,7 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if action == "migrate":
                     temporary = destination.with_name("." + destination.name + ".tkstack-next")
-                    temporary.symlink_to(source, target_is_directory=True)
+                    temporary.symlink_to(source, target_is_directory=source.is_dir())
                     try:
                         if not matches(destination, previous):
                             raise ValueError(f"Link changed during installation: {destination}")
@@ -428,12 +523,37 @@ def apply(plan, dry_run=False, uninstall=False, migrations=None):
     return changes
 
 
+def _delegates(root):
+    """Orchestrators in skills.json. Each value is a list of harness names."""
+    raw = _placement_doc(root).get("delegates")
+    if not isinstance(raw, dict):
+        return {}
+    return {name: targets for name, targets in raw.items()
+            if isinstance(name, str) and name not in SKILL_DIRECTORIES and isinstance(targets, list)}
+
+
+def expand_harnesses(root, names):
+    """Swap an orchestrator for the harnesses skills.json says it runs."""
+    declared = _delegates(root)
+    expanded = []
+    for name in names:
+        targets = declared.get(name)
+        if targets is None:
+            expanded.append(name)
+            continue
+        if not targets or any(not isinstance(item, str) or item not in SKILL_DIRECTORIES for item in targets):
+            raise ValueError(f"{name} delegates must name harnesses this installer links")
+        expanded.extend(targets)
+    return list(dict.fromkeys(expanded))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", type=Path, default=Path.home(),
                         help="Home or project root to install into (default: your home)")
-    parser.add_argument("--harness", action="append", choices=tuple(SKILL_PATHS),
-                        help="Harness to install; repeat to select several (default: codex, claude, cursor)")
+    parser.add_argument("--harness", action="append",
+                        choices=tuple(dict.fromkeys((*SKILL_PATHS, *_delegates(ROOT)))),
+                        help="Harness to install; t3code installs delegates.t3code (default: codex, claude, cursor)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without changing files")
     parser.add_argument("--uninstall", action="store_true",
                         help="Remove this checkout's links for every harness and its docs hook")
@@ -443,7 +563,6 @@ def main():
     try:
         if not args.uninstall:
             verify_vendor(ROOT)
-        selected = list(dict.fromkeys(args.harness or DEFAULT_HARNESSES))
         target = args.target.expanduser().resolve()
         scope = args.scope or ("home" if target == Path.home().resolve() else "project")
         if args.uninstall:
@@ -453,6 +572,7 @@ def main():
                 print("tkstack: --uninstall removes this checkout's links for every harness; --harness does not limit it.",
                       file=sys.stderr)
         else:
+            selected = expand_harnesses(ROOT, list(dict.fromkeys(args.harness or DEFAULT_HARNESSES)))
             harnesses = selected
             link_scope = scope
         plan = link_plan(ROOT, target, harnesses, link_scope)
@@ -464,6 +584,10 @@ def main():
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
         changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
         repo_hooks(ROOT, dry_run=args.dry_run, uninstall=args.uninstall)
+        if args.uninstall:
+            print("skip serena: uninstall")
+        else:
+            initialize_serena(ROOT, target, scope, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
         print(f"tkstack: {error}", file=sys.stderr)
         return 1

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tkstack",
+  "version": "0.8.0",
+  "description": "Portable personal learning, quality review, development lifecycle, and measured improvement skills.",
+  "author": {
+    "name": "Tyler Kendrick"
+  },
+  "homepage": "https://github.com/Tyler-R-Kendrick/tkstack",
+  "repository": "https://github.com/Tyler-R-Kendrick/tkstack",
+  "license": "MIT",
+  "keywords": ["skills", "mcp", "learning", "sdlc"]
+}

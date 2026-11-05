@@ -20,8 +20,8 @@ harness so it discovers the new skills.
 `--harness copilot --scope project` puts those same skill links in
 `.github/skills`. Install does not create `.github/docs`, templates, config,
 automations, or `.github/lever.yml`.
-[`harnesses/copilot/lever.yml`](../harnesses/copilot/lever.yml) is an example
-you can copy. Lever's own
+[`.github/lever.yml`](../.github/lever.yml) is this repository's dial file.
+Lever's own
 [per-repo installation](../vendor/lever/README.md) remains upstream's procedure.
 
 Remove this checkout's links with `./install.sh --uninstall`. That removes

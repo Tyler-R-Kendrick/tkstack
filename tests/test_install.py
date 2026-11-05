@@ -33,6 +33,21 @@ from skill_roots import load  # noqa: E402
 install = load("install", ROOT / "scripts/install.py")
 
 
+def _env_without_uv():
+    """Drop uv and uvx so a real install.py run cannot fetch Serena or write ~/.serena."""
+    kept = []
+    for entry in os.environ.get("PATH", "").split(os.pathsep):
+        if not entry:
+            continue
+        directory = Path(entry)
+        if any((directory / name).exists() for name in ("uv", "uvx", "uv.exe", "uvx.exe")):
+            continue
+        kept.append(entry)
+    env = os.environ.copy()
+    env["PATH"] = os.pathsep.join(kept)
+    return env
+
+
 class InstallTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -106,6 +121,16 @@ class InstallTests(unittest.TestCase):
             self.assertNotIn("architect", hosted)
             self.assertNotIn("graphify", hosted)
         self.assertIsNone(install.skill_directory("t3code"))
+        self.assertEqual(install.expand_harnesses(ROOT, ["t3code"]),
+                         ["claude", "codex", "cursor", "copilot", "grok"])
+        self.assertEqual(
+            install.expand_harnesses(ROOT, ["t3code", "claude", "muse"]),
+            ["claude", "codex", "cursor", "copilot", "grok", "muse"],
+        )
+        self.assertEqual(
+            install.expand_harnesses(ROOT, [*install.SKILL_PATHS, "t3code"]),
+            list(install.SKILL_PATHS),
+        )
         self.assertEqual(install.skill_directory("copilot"), Path(".copilot/skills"))
         self.assertEqual(install.skill_directory("copilot", "project"), Path(".github/skills"))
         self.assertEqual(install.skill_directory("muse"), Path(".config/muse/skills"))
@@ -146,6 +171,72 @@ class InstallTests(unittest.TestCase):
     def test_preview_has_no_side_effects(self):
         self.assertEqual(install.apply(self.plan, dry_run=True), self.expected_links)
         self.assertEqual(list(self.target.iterdir()), [])
+
+    def test_t3code_installs_delegate_placements_and_uninstalls_them(self):
+        holding = tempfile.TemporaryDirectory()
+        self.addCleanup(holding.cleanup)
+        broken = Path(holding.name)
+        (broken / "skills").mkdir()
+        (broken / "skills" / "skills.json").write_text(
+            '{"delegates": {"t3code": ["claude", "nope"]}}\n', encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "delegates must name"):
+            install.expand_harnesses(broken, ["t3code"])
+        env = _env_without_uv()
+        base = [sys.executable, str(ROOT / "scripts/install.py"), "--target", str(self.target), "--harness", "t3code"]
+        preview = subprocess.run(base + ["--dry-run", "--scope", "project"],
+                                 capture_output=True, text=True, env=env)
+        self.assertEqual(preview.returncode, 0, preview.stdout + preview.stderr)
+        for relative in (".github/skills", ".claude/skills", ".agents/skills", ".cursor/skills", ".grok/skills", ".cursor/rules"):
+            self.assertIn(str(self.target / relative), preview.stdout)
+        self.assertNotIn(str(self.target / ".copilot/skills"), preview.stdout)
+        self.assertNotIn(".kimi/skills", preview.stdout)
+        self.assertNotIn("t3code", preview.stdout)
+        self.assertEqual(list(self.target.iterdir()), [])
+        installed = subprocess.run(base + ["--scope", "home"], capture_output=True, text=True, env=env)
+        self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
+        self.assertTrue((self.target / ".copilot/skills/learn").is_symlink())
+        self.assertTrue((self.target / ".claude/skills/graphify").is_symlink())
+        self.assertFalse((self.target / ".grok/skills/graphify").exists())
+        self.assertFalse((self.target / ".github/skills").exists())
+        self.assertNotIn("t3code", {path.name for path in self.target.iterdir()})
+        dry_remove = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--dry-run", "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, env=env)
+        self.assertEqual(dry_remove.returncode, 0, dry_remove.stdout + dry_remove.stderr)
+        self.assertIn(f"Would remove: {self.target / '.copilot/skills/learn'}", dry_remove.stdout)
+        self.assertTrue((self.target / ".copilot/skills/learn").is_symlink())
+        removed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, env=env)
+        self.assertEqual(removed.returncode, 0, removed.stdout + removed.stderr)
+        self.assertIn("skip serena: uninstall", removed.stdout)
+        self.assertFalse((self.target / ".copilot/skills/learn").exists())
+        self.assertFalse((self.target / ".claude/skills/learn").exists())
+
+    def test_uninstall_succeeds_when_delegates_are_broken(self):
+        install.apply(self.plan)
+        owned = self.target / ".claude" / "skills" / "learn"
+        self.assertTrue(owned.is_symlink())
+        placement = ROOT / "skills" / "skills.json"
+        original = placement.read_bytes()
+        needle = b'"t3code": ["claude", "codex", "cursor", "copilot", "grok"]'
+        self.assertIn(needle, original)
+        self.addCleanup(placement.write_bytes, original)
+        command = [
+            sys.executable, str(ROOT / "scripts/install.py"),
+            "--uninstall", "--target", str(self.target),
+        ]
+        env = _env_without_uv()
+        for replacement in (b'"t3code": []', b'"t3code": ["claude", "nope"]'):
+            placement.write_bytes(original.replace(needle, replacement, 1))
+            if not owned.is_symlink():
+                install.apply(self.plan)
+            completed = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            self.assertNotIn("delegates must name", completed.stderr)
+            self.assertIn("skip serena: uninstall", completed.stdout)
+            self.assertFalse(owned.exists() or owned.is_symlink())
 
     def test_invalid_parent_stops_before_creating_other_links(self):
         parent = self.plan[-1][1].parent
@@ -293,10 +384,63 @@ class InstallTests(unittest.TestCase):
             self.assertFalse(shared.is_symlink())
             self.assertTrue((ROOT / "skills/tkstack-principles/SKILL.md").is_file())
 
+    def test_reinstall_migrates_former_cursor_rule_links(self):
+        names = ("graphify.mdc", "tkstack-steering.mdc")
+        for name in names:
+            destination = self.target / ".cursor" / "rules" / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.symlink_to(ROOT / "harnesses" / "cursor" / name)
+        env = _env_without_uv()
+        command = [
+            sys.executable, str(ROOT / "scripts/install.py"),
+            "--target", str(self.target), "--harness", "cursor",
+        ]
+        preview = subprocess.run(command + ["--dry-run"], capture_output=True, text=True, env=env)
+        self.assertEqual(preview.returncode, 0, preview.stdout + preview.stderr)
+        for name in names:
+            self.assertIn(f"Would migrate: {self.target / '.cursor' / 'rules' / name}", preview.stdout)
+            self.assertEqual(
+                os.readlink(self.target / ".cursor" / "rules" / name),
+                str(ROOT / "harnesses" / "cursor" / name),
+            )
+        installed = subprocess.run(command, capture_output=True, text=True, env=env)
+        self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        for name in names:
+            link = self.target / ".cursor" / "rules" / name
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(link.resolve(), (ROOT / ".cursor" / "rules" / name).resolve())
+
+    def test_uninstall_removes_former_cursor_rule_links(self):
+        for name in ("graphify.mdc", "tkstack-steering.mdc"):
+            destination = self.target / ".cursor" / "rules" / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.symlink_to(ROOT / "harnesses" / "cursor" / name)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", str(self.target)],
+            capture_output=True, text=True, check=False, env=_env_without_uv(),
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("skip serena: uninstall", completed.stdout)
+        for name in ("graphify.mdc", "tkstack-steering.mdc"):
+            link = self.target / ".cursor" / "rules" / name
+            self.assertFalse(link.exists() or link.is_symlink())
+
+    def test_owned_cursor_rules_link_elsewhere_and_stay_files_in_the_checkout(self):
+        rules = sorted((ROOT / ".cursor/rules").glob("*.mdc"))
+        owned = [path for path in rules if not path.is_symlink()]
+        self.assertEqual(sorted(path.name for path in owned), ["graphify.mdc", "tkstack-steering.mdc"])
+        plan = install.link_plan(ROOT, self.target, ["cursor"])
+        for rule in owned:
+            matches = [destination for source, destination in plan if source == rule.resolve()]
+            self.assertEqual(matches, [self.target / ".cursor/rules" / rule.name])
+        destinations = {destination.resolve() for _, destination in install.link_plan(ROOT, ROOT, ["cursor"])}
+        for rule in owned:
+            self.assertNotIn(rule.resolve(), destinations)
+
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
         checkout.mkdir()
-        for directory in ('vendor', 'scripts', 'src', 'harnesses', 'skills'):
+        for directory in ('vendor', 'scripts', 'src', 'skills'):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
         for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
@@ -304,8 +448,9 @@ class InstallTests(unittest.TestCase):
         before = {name: (checkout / name).read_bytes() for name in ('AGENTS.md', 'CLAUDE.md')}
         command = [sys.executable, str(checkout / 'scripts/install.py'), '--target', str(checkout),
                    '--harness', 'codex', '--harness', 'claude']
-        installed = subprocess.run(command, capture_output=True, text=True, timeout=60)
+        installed = subprocess.run(command, capture_output=True, text=True, timeout=60, env=_env_without_uv())
         self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
         for name, data in before.items():
             self.assertEqual((checkout / name).read_bytes(), data)
         self.assertTrue((checkout / '.agents/principles').is_symlink())
@@ -334,21 +479,24 @@ class InstallTests(unittest.TestCase):
     def test_fresh_checkout_installs_without_a_preexisting_alias_view(self):
         checkout = self.target / "checkout"
         checkout.mkdir()
-        for directory in ("vendor", "scripts", "src", "harnesses", "skills"):
+        for directory in ("vendor", "scripts", "src", "skills"):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copy2(ROOT / "sources.lock.json", checkout / "sources.lock.json")
         target = self.target / "installation"
         command = [sys.executable, str(checkout / "scripts/install.py"),
                    "--target", str(target)]
-        subprocess.run(command + ["--dry-run"], check=True, capture_output=True)
+        env = _env_without_uv()
+        subprocess.run(command + ["--dry-run"], check=True, capture_output=True, env=env)
         self.assertFalse((checkout / ".tkstack").exists())
         self.assertFalse(target.exists())
-        subprocess.run(command, check=True, capture_output=True)
+        installed = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
+        self.assertIn("skip serena: uvx is not on PATH", installed.stdout)
         self.assertTrue((target / ".agents/skills/matt-tdd/SKILL.md").is_file())
         self.assertTrue((target / ".agents/steering").is_symlink())
-        again = subprocess.run(command, check=True, capture_output=True, text=True)
+        again = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
         self.assertIn("0 link(s) changed.", again.stdout)
+        self.assertIn("skip serena: uvx is not on PATH", again.stdout)
 
 
 
@@ -737,6 +885,103 @@ exec "$REAL_MV" "$@"
         log = self.uv_log.read_text()
         self.assertIn("python install 3.12.15", log)
         self.assertNotIn("chatty", log)
+
+
+class SerenaInstallTests(unittest.TestCase):
+    def _result(self, code):
+        return subprocess.CompletedProcess(args=[], returncode=code, stdout="", stderr="")
+
+    def test_dry_run_prints_init_and_index_without_calling_them(self):
+        calls = []
+        stdout = io.StringIO()
+        project = Path("/tmp/example-project")
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, project, "project", dry_run=True,
+                runner=lambda argv, cwd: calls.append((argv, cwd)),
+                which=lambda name: "/usr/bin/" + name,
+            )
+        text = stdout.getvalue()
+        self.assertEqual(calls, [])
+        self.assertIn(
+            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena init",
+            text,
+        )
+        self.assertIn(
+            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena project index {project}",
+            text,
+        )
+
+    def test_home_scope_indexes_the_checkout(self):
+        calls = []
+        with redirect_stdout(io.StringIO()):
+            install.initialize_serena(
+                ROOT, Path("/home/someone"), "home", dry_run=False,
+                runner=lambda argv, cwd: calls.append((argv, cwd)) or self._result(0),
+                which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertEqual(calls[0][0][:4], ["uvx", "--from", "git+https://github.com/oraios/serena", "serena"])
+        self.assertEqual(calls[0][0][4:], ["init"])
+        self.assertEqual(calls[0][1], str(ROOT))
+        self.assertEqual(calls[1][0][4:], ["project", "index", str(ROOT)])
+        self.assertEqual(calls[1][1], str(ROOT))
+
+    def test_missing_uv_skips_without_a_command(self):
+        calls = []
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=lambda argv, cwd: calls.append(argv),
+                which=lambda name: None,
+            )
+        self.assertEqual(calls, [])
+        self.assertIn("skip serena: uvx is not on PATH", stdout.getvalue())
+
+    def test_uv_without_uvx_skips(self):
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project",
+                runner=lambda argv, cwd: self._result(0),
+                which=lambda name: "/usr/bin/uv" if name == "uv" else None,
+            )
+        self.assertIn("skip serena: uvx is not on PATH", stdout.getvalue())
+
+    def test_failed_command_skips_the_rest(self):
+        calls = []
+
+        def runner(argv, cwd):
+            calls.append(argv)
+            return self._result(1)
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=runner, which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertEqual(len(calls), 1)
+        self.assertIn("exited 1", stdout.getvalue())
+
+    def test_oserror_skips(self):
+        def runner(argv, cwd):
+            raise OSError("offline")
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=runner, which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertIn("skip serena: offline", stdout.getvalue())
+
+    def test_uninstall_prints_skip_serena(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--uninstall", "--target", temporary.name],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("skip serena: uninstall", completed.stdout)
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ def discover(project=None):
     for name, path in owned(ROOT).items():
         entries['skills'].setdefault(name, path.resolve())
     settings = {}
-    source = ROOT / 'harnesses/runner.json'
+    source = ROOT / 'src/runner.json'
     files = [(source, 'source'), *[(scopes[scope] / 'runner.json', scope) for scope in ('global', 'user', 'workspace')]]
     for path, scope in files:
         if scope != 'source':

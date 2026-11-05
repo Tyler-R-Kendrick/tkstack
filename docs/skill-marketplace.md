@@ -17,6 +17,11 @@ package; installing `learn@tkstack` installs its subskills as `/learn <name>`.
 | Knowledge and writing | `document`, `write` |
 | Design, media, context | `open-design`, `fal-ai`, `headroom`, `rtk` |
 
+The checkout is also one [Agent Plugins 1.0](https://agent-plugins.org/specification)
+package (`plugin.json`, `mcp.json`, and immediate `skills/*/SKILL.md` files).
+The Claude marketplace below coexists with that package. Marketplaces are
+outside the portable spec. See [Agent Plugins](agent-plugins.md).
+
 Packages follow the [Agent Skills specification](https://agentskills.io/specification)
 and root [skills discovery](https://github.com/vercel-labs/skills/blob/main/docs/creating-skills.md).
 The entrypoint carries purpose, triggers, the execution spine, boundaries, and

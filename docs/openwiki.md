@@ -37,16 +37,10 @@ python3 scripts/install.py --target .
 ```
 
 That links the skill. It does not run `npm ci` or register MCP.
-The runtime recipe is [`harnesses/openwiki`](../harnesses/openwiki/package.json).
-Its npm lock pins 333 dependency records with registry integrity digests. Native
-dependency install scripts run through `npm ci`; platform-specific binaries are
-managed by those packages. Runtime files and the npm cache are ignored under
-`.tkstack/runtime/openwiki/` and `.tkstack/cache/npm/`.
-
-Install preparation uses an isolated directory and a single-writer lock. A
-failed install publishes no runtime. An existing differing runtime is preserved
-and reported for explicit repair. A changed recipe must be reinstalled before
-the readiness check accepts it. The installer never writes to the user's home.
+The npm package version recorded with the source pin is **openwiki 0.7.2**
+(`sources.lock.json`). This repository does not commit an npm lock for it.
+A host that wants the CLI installs that package itself. Runtime files stay
+under ignored `.tkstack/`.
 
 Run the upstream `openwiki` CLI when Node and the package are installed. tkstack
 does not wrap it. A host MCP entry, if you add one, uses
@@ -56,7 +50,8 @@ settings take precedence. Keep credentials in that ignored state or the launchin
 environment. Standalone CLI generation uses its own provider setup; it is separate
 from the host-driven MCP workflow.
 
-Use tkstack's installer to manage these skill links and MCP entries. OpenWiki's
+Use tkstack's installer to manage the skill links. It does not register MCP
+entries. OpenWiki's
 own integration installer expects ownership of those destinations and rejects
 symlinked components, so the two installers should not manage the same files.
 
@@ -64,9 +59,9 @@ symlinked components, so the two installers should not manage the same files.
 
 The six vendored documentation/skill/metadata files come unchanged from
 [`305599f8e44203f9ca6b74bb6b38eebaf0b0405e`](https://github.com/langchain-ai/openwiki/tree/305599f8e44203f9ca6b74bb6b38eebaf0b0405e).
-Their Git blob identities and modes are in `sources.lock.json`. The runtime is
-the published npm **0.7.2** tarball, pinned independently by its registry SHA-512
-integrity in `package-lock.json`. Its official skill matches the vendored skill.
+Their Git blob identities and modes are in `sources.lock.json`. The published
+npm package is **0.7.2**. This repository does not commit that tarball's
+integrity lock. Its official skill matches the vendored skill.
 Only `integrations/openwiki` is installed as a skill; upstream connector-authoring
 and Mermaid helpers are not added to the global skill catalog.
 

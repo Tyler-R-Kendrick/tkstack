@@ -39,6 +39,14 @@ def load_checks():
     return module
 
 
+def _load_agent_plugins():
+    path = ROOT / "evals" / "repo-quality" / "agent_plugins.py"
+    spec = importlib.util.spec_from_file_location("repo_quality_agent_plugins", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_snapshot():
     path = ROOT / "evals" / "repo-quality" / "snapshot.py"
     spec = importlib.util.spec_from_file_location("repo_quality_snapshot", path)
@@ -378,6 +386,144 @@ class RepoQualityTests(unittest.TestCase):
     def test_marketplace_manifests(self):
         self.assert_check(checks.marketplace_manifests(ROOT))
 
+    def test_checkout_matches_agent_plugins(self):
+        self.assert_check(checks.agent_plugins_conformance(ROOT))
+
+    def test_agent_plugins_rejects_secret_env_and_unknown_skill_fields(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-") as temporary:
+            root = Path(temporary)
+            plugin = {
+                "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+                "name": "example.plugin",
+            }
+            (root / "plugin.json").write_text(json.dumps(plugin) + "\n", encoding="utf-8")
+            servers = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+            servers["mcpServers"]["firecrawl"]["env"] = {"FIRECRAWL_API_KEY": "fc-secretvalue"}
+            (root / "mcp.json").write_text(json.dumps(servers) + "\n", encoding="utf-8")
+            skill = root / "skills" / "demo"
+            skill.mkdir(parents=True)
+            (skill / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\ndisable-model-invocation: true\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            problems = plugins.conformance_problems(root)
+            text = "\n".join(problems)
+            self.assertIn("known credential pattern", text)
+            self.assertIn("disable-model-invocation", text)
+
+    def test_agent_plugins_leaves_foreign_placeholders_literal(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-env-") as temporary:
+            root = Path(temporary)
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            servers = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+            servers["mcpServers"]["firecrawl"]["env"] = {"FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"}
+            (root / "mcp.json").write_text(json.dumps(servers) + "\n", encoding="utf-8")
+            problems = plugins.conformance_problems(root)
+            self.assertFalse(any("FIRECRAWL_API_KEY" in item for item in problems), problems)
+            directory = str(ROOT / "evals" / "repo-quality")
+            if directory not in sys.path:
+                sys.path.insert(0, directory)
+            import repo_mcp_policy
+            policy = repo_mcp_policy.policy_problems(root)
+            self.assertTrue(any("would overlay" in item for item in policy), policy)
+
+    def test_absent_mcp_json_is_policy_not_spec(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-absent-") as temporary:
+            root = Path(temporary)
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            problems = plugins.conformance_problems(root)
+            self.assertFalse(any("missing mcp.json" in item for item in problems), problems)
+            directory = str(ROOT / "evals" / "repo-quality")
+            if directory not in sys.path:
+                sys.path.insert(0, directory)
+            import repo_mcp_policy
+            self.assertIn("missing mcp.json", repo_mcp_policy.policy_problems(root))
+
+    def test_folded_skill_description_parses(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-yaml-") as temporary:
+            root = Path(temporary)
+            skill = root / "skills" / "demo"
+            skill.mkdir(parents=True)
+            text = (
+                "---\n"
+                "name: demo\n"
+                "description: >\n"
+                "  Folded line one\n"
+                "  folded line two\n"
+                "---\n\n"
+                "Body.\n"
+            )
+            (skill / "SKILL.md").write_text(text, encoding="utf-8")
+            fields, errors = plugins.parse_frontmatter(text)
+            self.assertEqual(errors, [])
+            self.assertIn("Folded line one", fields["description"])
+            self.assertIn("folded line two", fields["description"])
+            self.assertEqual(plugins.skill_document_errors(skill, text), [])
+
+    def test_cwd_escape_is_a_spec_error(self):
+        plugins = _load_agent_plugins()
+        document = json.loads((ROOT / "mcp.json").read_text(encoding="utf-8"))
+        document["mcpServers"]["serena"]["cwd"] = "${PLUGIN_ROOT}/../outside"
+        escaped = plugins.mcp_semantic_errors(document, ROOT)
+        self.assertTrue(any("cwd resolves outside" in item for item in escaped), escaped)
+        document["mcpServers"]["serena"]["cwd"] = "./."
+        self.assertFalse(any("cwd" in item for item in plugins.mcp_semantic_errors(document, ROOT)))
+
+    def test_in_root_skill_symlink_stays_conformant(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-link-") as temporary:
+            base = Path(temporary)
+            root = base / "plugin"
+            payload = root / "payload" / "demo"
+            payload.mkdir(parents=True)
+            (payload / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            (root / "plugin.json").write_text(
+                (ROOT / "plugin.json").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            skills = root / "skills"
+            skills.mkdir()
+            (skills / "demo").symlink_to(payload, target_is_directory=True)
+            problems = plugins.conformance_problems(root)
+            self.assertFalse(any("outside" in item or "symlink" in item for item in problems), problems)
+            outside = base / "outside"
+            outside.mkdir()
+            (outside / "SKILL.md").write_text(
+                "---\nname: demo\ndescription: Demo skill.\n---\n\nBody.\n",
+                encoding="utf-8",
+            )
+            (skills / "demo").unlink()
+            (skills / "demo").symlink_to(outside, target_is_directory=True)
+            escaped = plugins.conformance_problems(root)
+            self.assertTrue(any("outside the plugin root" in item for item in escaped), escaped)
+
+    def test_extension_keys_must_be_reverse_domain_namespaces(self):
+        plugins = _load_agent_plugins()
+        with tempfile.TemporaryDirectory(prefix="agent-plugins-ext-") as temporary:
+            root = Path(temporary)
+            plugin = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8"))
+            plugin["extensions"] = {"com.example.client": {"setting": True}}
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            self.assertFalse(any("extensions" in item for item in plugins.conformance_problems(root)))
+            plugin["extensions"] = {"claude": {}, "Com.Example": {}}
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            bad = plugins.conformance_problems(root)
+            self.assertTrue(any("claude" in item and "reverse-domain" in item for item in bad), bad)
+            self.assertTrue(any("Com.Example" in item for item in bad), bad)
+            plugin.pop("extensions")
+            (root / "plugin.json").write_text(json.dumps(plugin), encoding="utf-8")
+            self.assertFalse(any("extensions" in item for item in plugins.conformance_problems(root)))
+
     @GATE
     def test_harness_coverage(self):
         self.assert_check(checks.harness_coverage(ROOT))
@@ -389,6 +535,37 @@ class RepoQualityTests(unittest.TestCase):
     @GATE
     def test_top_level_files(self):
         self.assert_check(checks.top_level_files(ROOT))
+
+    def test_no_harnesses_directory_fails_when_the_directory_exists(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-harnesses-") as temporary:
+            root = Path(temporary)
+            nested = root / "harnesses"
+            nested.mkdir()
+            (nested / "skills.json").write_text("{}\n", encoding="utf-8")
+            found = checks.no_harnesses_directory(root)
+            self.assertFalse(found["pass"])
+            self.assertEqual(found["metric"], "conventions")
+            self.assertEqual(found["value"], 1)
+            self.assertEqual(found["limit"], 0)
+            self.assertIn("harnesses/ exists", found["evidence"])
+            self.assertIn("harnesses/skills.json", found["evidence"])
+            for child in nested.iterdir():
+                child.unlink()
+            nested.rmdir()
+            elsewhere = root / "notes"
+            elsewhere.mkdir()
+            (root / "harnesses").symlink_to(elsewhere, target_is_directory=True)
+            via_link = checks.no_harnesses_directory(root)
+            self.assertFalse(via_link["pass"])
+            self.assertIn("harnesses/ exists", via_link["evidence"])
+            (root / "harnesses").unlink()
+            absent = checks.no_harnesses_directory(root)
+            self.assertTrue(absent["pass"], absent["evidence"])
+            self.assertEqual(absent["value"], 0)
+            self.assertEqual(absent["evidence"], ["absent: harnesses/"])
+
+    def test_no_harnesses_directory(self):
+        self.assert_check(checks.no_harnesses_directory(ROOT))
 
     def test_snapshot_ignores_extra_args_from_any_directory(self):
         script = ROOT / "evals" / "repo-quality" / "snapshot.py"
@@ -438,14 +615,25 @@ class RepoQualityTests(unittest.TestCase):
         self.assertIn("skills/learn/skills/codify/SKILL.md", text)
         self.assertIn('main "$@"', text)
         self.assertIn("npx skills add", text)
-        self.assertIn("[download record omitted]", text)
         for relative in (
             ".claude-plugin/marketplace.json",
             ".claude-plugin/plugin.json",
-            "harnesses/skills.json",
-            "harnesses/integrations.json",
+            "skills/skills.json",
+            "docs/harnesses.md",
+            "docs/t3code.md",
         ):
             self.assertIn(relative, text)
+        harnesses = text.split("## docs/harnesses.md\n", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("delegate harnesses' placements", harnesses)
+        self.assertIn("./install.sh --harness t3code", harnesses)
+        self.assertIn("| t3code |", harnesses)
+        t3code = text.split("## docs/t3code.md\n", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("T3 Code is an orchestrator", t3code)
+        self.assertIn("delegate", t3code)
+        self.assertIn("./install.sh --harness t3code", t3code)
+        readme = text.split("## README.md\n", 1)[1].split("\n## install.sh\n", 1)[0]
+        self.assertIn("--harness t3code", readme)
+        self.assertNotIn("[truncated docs/t3code.md]", t3code)
         home = str(Path.home())
         if len(home) > 1:
             self.assertNotIn(home, text)
@@ -456,9 +644,9 @@ class RepoQualityTests(unittest.TestCase):
 
     def test_generated_lock_json_is_summarized(self):
         self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/graphify/requirements.lock"))
-        self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
+        self.assertTrue(snapshot._is_lockfile("package-lock.json"))
+        self.assertTrue(snapshot._is_lockfile("requirements.lock"))
+        self.assertFalse(snapshot._is_lockfile("skills/skills.json"))
         lockfile = json.dumps({
             "name": "demo",
             "lockfileVersion": 3,
@@ -532,10 +720,10 @@ class RepoQualityTests(unittest.TestCase):
                 "The muse and kimi and grok and opencode and t3code are named here.\n",
                 encoding="utf-8",
             )
-            (root / "harnesses").mkdir()
-            (root / "harnesses" / "muse").mkdir()
-            (root / "harnesses" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
-            (root / "harnesses" / "skills.json").write_text(
+            (root / "notes" / "muse").mkdir(parents=True)
+            (root / "notes" / "muse" / "README.md").write_text("docs only\n", encoding="utf-8")
+            (root / "skills").mkdir()
+            (root / "skills" / "skills.json").write_text(
                 '{"placement": {"default": ["codex"], "experimental": ["muse"]}}\n',
                 encoding="utf-8",
             )
@@ -554,7 +742,7 @@ class RepoQualityTests(unittest.TestCase):
             self.assertEqual(covered["value"], 1, covered["evidence"])
             self.assertFalse(covered["pass"])
             self.assertIn("muse: experimental, not counted", covered["evidence"])
-            self.assertFalse(any("harnesses/muse" in line for line in covered["evidence"]))
+            self.assertFalse(any("notes/muse" in line for line in covered["evidence"]))
 
     def test_counted_harnesses_are_directories_the_installer_links(self):
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -586,8 +774,8 @@ class RepoQualityTests(unittest.TestCase):
     def test_harness_coverage_parses_installer_code_and_does_not_execute_it(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-parse-") as temporary:
             root = Path(temporary)
-            (root / "harnesses").mkdir()
-            (root / "harnesses" / "skills.json").write_text(
+            (root / "skills").mkdir()
+            (root / "skills" / "skills.json").write_text(
                 '{"placement": {"default": ["codex"]}}\n',
                 encoding="utf-8",
             )
@@ -611,7 +799,7 @@ class RepoQualityTests(unittest.TestCase):
     def test_orchestrator_counts_only_when_every_delegate_is_linked(self):
         with tempfile.TemporaryDirectory(prefix="repo-quality-orchestrator-") as temporary:
             root = Path(temporary)
-            (root / "harnesses").mkdir()
+            (root / "skills").mkdir()
             (root / "scripts").mkdir()
             (root / "scripts" / "harness_paths.py").write_text(
                 "from pathlib import Path\n"
@@ -625,7 +813,7 @@ class RepoQualityTests(unittest.TestCase):
                 "    return SKILL_DIRECTORIES[harness]\n",
                 encoding="utf-8",
             )
-            skills = root / "harnesses" / "skills.json"
+            skills = root / "skills" / "skills.json"
             skills.write_text(
                 '{"delegates": {"t3code": ["claude", "codex"]}, '
                 '"placement": {"default": ["claude", "codex"]}}\n',

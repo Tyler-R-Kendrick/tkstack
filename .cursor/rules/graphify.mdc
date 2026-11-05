@@ -1,0 +1,19 @@
+---
+description: Use the managed local Graphify graph for structural code questions when it exists.
+alwaysApply: true
+---
+
+For structural codebase questions, consult an existing
+`${PLUGIN_DATA}/graphify-out/graph.json` through the `graphify` skill or the
+`graphify` MCP server (`graphify-mcp` from a host-installed `graphifyy[mcp]`).
+Use query/path/explain results to locate relevant source; verify current code
+and keep inferred relationships distinct from extracted edges. An absent or
+stale graph is missing context, not permission to invent relationships or
+automatically rebuild it.
+
+The host installs `graphifyy[mcp]`. The MCP server reads
+`${PLUGIN_DATA}/graphify-out/graph.json`. Provider/model calls, semantic media
+extraction, watching, publication, and delegation retain the current task's
+explicit scope. Code-only extraction is available without model credentials.
+Keep session evidence under `.tkstack/sessions/<session>/`. Current
+instructions retain precedence.

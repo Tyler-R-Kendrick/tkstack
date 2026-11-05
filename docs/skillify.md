@@ -82,9 +82,11 @@ The version-pinned Vercel AI SDK 7 runtime provides separate interfaces for:
 - Official Codex and Claude Code harness adapters with model, authentication,
   tool/permission selection, bounded steps, and explicit Vercel sandbox setup.
 
-Use [the shared example](../harnesses/ai-sdk/profiles.example.json) as configuration
-data, with model/key environment-variable references. The generated CLI accepts
-`--config <profiles-json>`; code can supply a configuration to `createInference`.
+Configuration is a version 1 providers/profiles document, with model and key
+names taken from environment variables. The shape is in
+[inference](../skills/learn/skills/skillify/references/inference.md).
+The generated CLI accepts `--config <profiles-json>`; code can supply a
+configuration to `createInference`.
 Profiles are validated, selected explicitly, and have no silent provider fallback
 or process-wide default-provider mutation. Runtime defaults are empty and need
 no model credentials for deterministic paths.
