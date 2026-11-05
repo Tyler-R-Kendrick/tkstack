@@ -168,7 +168,7 @@ def _loc_report(paths):
         entries = per_top[name]
         total = sum(count for _, count in entries)
         lines.append(f"{name}/: {total} non-blank lines")
-        if name == "scripts":
+        if name in ("scripts", "src"):
             for relative, count in sorted(entries, key=lambda item: (-item[1], item[0])):
                 if count:
                     lines.append(f"  {relative}: {count}")

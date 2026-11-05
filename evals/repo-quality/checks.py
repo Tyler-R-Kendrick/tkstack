@@ -100,22 +100,25 @@ def _iter_files(directory):
 
 
 def scripts_loc(root):
-    """Ceiling on glue under scripts/. Comments stay in the count."""
-    directory = root / "scripts"
+    """Ceiling on glue under scripts/ and src/. Comments stay in the count."""
     per_file = []
-    for path in _iter_files(directory):
-        count = _nonblank_lines(path)
-        if count is None:
+    missing = []
+    for name in ("scripts", "src"):
+        directory = root / name
+        if not directory.is_dir():
+            missing.append(f"{name}/ is absent")
             continue
-        per_file.append((path.relative_to(root).as_posix(), count))
+        for path in _iter_files(directory):
+            count = _nonblank_lines(path)
+            if count is None:
+                continue
+            per_file.append((path.relative_to(root).as_posix(), count))
     total = sum(count for _, count in per_file)
     largest = sorted(per_file, key=lambda item: (-item[1], item[0]))[:8]
-    evidence = [f"{path}: {count} non-blank lines" for path, count in largest]
-    if not directory.is_dir():
-        evidence = ["scripts/ is absent"]
-    ok = total <= SCRIPTS_LOC_LIMIT
+    evidence = missing + [f"{path}: {count} non-blank lines" for path, count in largest]
+    ok = total <= SCRIPTS_LOC_LIMIT and not missing
     explanation = (
-        f"scripts/ has {total} non-blank lines. "
+        f"scripts/ plus src/ has {total} non-blank lines. "
         f"The best-practice ceiling for dotfiles glue is {SCRIPTS_LOC_LIMIT}."
     )
     return result(

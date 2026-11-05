@@ -1059,7 +1059,6 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
-      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
@@ -1115,11 +1114,11 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "feeac513464be3d97f9cb7f24d0a0470551aca21"
+          "oid": "a66032de396615a9e6e28b4e8661c2b8e78f8fc3"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
-          "oid": "b39c5597a052110cac2887fb491b7183b7b40c39"
+          "oid": "62b2758f7c4c3db36fdd5bdc6b93271d70558afc"
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
@@ -1135,7 +1134,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "751b9b86960d3ffd8294df899a265f48b4cd192b"
+          "oid": "48c72c8f266db43ae74651dbbe2634bd129169d8"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2759,7 +2758,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Capped repo-quality snapshot excerpts and summarized generated lock JSON so the promptfoo grader argument stays under the OS limit. Skill docs do not describe that limit; evals/README.md does."
+      "reason": "Repo-quality glue metric now counts scripts/ plus src/ non-blank lines and lists src/ per file. Eval rubric wording matches. No skill documentation change."
     }
   },
   "object_format": "sha1",
