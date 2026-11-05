@@ -1,7 +1,7 @@
 # Headroom runtime and context fidelity
 
 Use the installed Headroom runtime or an explicitly selected executable. In the
-tkstack checkout, `scripts/tool.py headroom` launches the pinned runtime recipe
+tkstack checkout, `src/tool.py headroom` launches the pinned runtime recipe
 and `scripts/setup_integrations.py --status` reports readiness. A standalone
 skill does not supply those scripts or the Python package.
 
