@@ -53,6 +53,7 @@ class CodifyTests(unittest.TestCase):
     def test_compilation_replays_cached_code_without_a_provider_and_is_byte_reproducible(self):
         result = self.compile()
         self.assertEqual(result['inference'], {'mode': 'none', 'profiles': []})
+        self.assertEqual(json.loads(self.output.read_text())['includes'], [])
         before = self.output.read_bytes()
         self.assertEqual(self.compile()['artifact_sha256'], result['artifact_sha256'])
         self.assertEqual(self.output.read_bytes(), before)
@@ -230,6 +231,61 @@ class CodifyTests(unittest.TestCase):
         (nested.parent / 'SKILL.md').write_text('---\nname: child\n---\n\nChild package.\n')
         (nested / 'helper.py').write_text('def execute(payload):\n    return payload\n')
         codify.check(self.output)
+
+    def test_nested_package_files_do_not_consume_the_parent_inventory_limit(self):
+        (self.scripts / 'contract.json').write_text('{}\n')
+        self.compile(includes=[self.root])
+        nested = self.root / 'skills' / 'child'
+        nested.mkdir(parents=True)
+        (nested / 'SKILL.md').write_text('---\nname: child\n---\n\nChild.\n')
+        for index in range(520):
+            (nested / f'probe-{index}.txt').write_text('x')
+        codify.check(self.output)
+        added = self.root / 'references'
+        added.mkdir()
+        (added / 'routing.json').write_text('{}\n')
+        with self.assertRaisesRegex(ValueError, 'references/routing.json'):
+            codify.check(self.output)
+
+    def test_filtered_parent_inventory_still_rejects_more_than_512_files(self):
+        (self.scripts / 'contract.json').write_text('{}\n')
+        self.compile(includes=[self.root])
+        overflow = self.root / 'references'
+        overflow.mkdir()
+        for index in range(520):
+            (overflow / f'file-{index}.txt').write_text('x')
+        with self.assertRaisesRegex(ValueError, 'Expected 1..512 files'):
+            codify.check(self.output)
+
+    def test_recorded_includes_are_rebuilt_and_legacy_locks_keep_named_file_checks(self):
+        refs = self.root / 'refs'
+        refs.mkdir()
+        (refs / 'a.md').write_text('a\n')
+        other = self.root / 'other'
+        other.mkdir()
+        (other / 'c.md').write_text('c\n')
+        self.compile(includes=[other, refs])
+        lock = json.loads(self.output.read_text())
+        self.assertEqual(lock['includes'], ['other', 'refs'])
+        (refs / 'b.md').write_text('b\n')
+        with self.assertRaisesRegex(ValueError, 'refs/b.md'):
+            codify.check(self.output)
+        (refs / 'b.md').unlink()
+        legacy = {key: value for key, value in lock.items() if key != 'includes'}
+        legacy['artifact_sha256'] = codify.digest(codify.canonical({key: value for key, value in legacy.items() if key != 'artifact_sha256'}))
+        self.output.write_bytes(codify.canonical(legacy) + b'\n')
+        (refs / 'b.md').write_text('b\n')
+        codify.check(self.output)
+        (refs / 'a.md').write_text('changed\n')
+        with self.assertRaisesRegex(ValueError, 'Stale workflow input refs/a.md'):
+            codify.check(self.output)
+
+    def test_include_of_the_build_root_is_recorded_and_rebuilt(self):
+        self.compile(includes=[self.root])
+        self.assertEqual(json.loads(self.output.read_text())['includes'], ['.'])
+        (self.root / 'extra.md').write_text('extra\n')
+        with self.assertRaisesRegex(ValueError, 'extra.md'):
+            codify.check(self.output)
 
     def test_relocating_source_tree_preserves_freshness_and_executable_file_modes(self):
         helper = self.scripts / 'native-helper'

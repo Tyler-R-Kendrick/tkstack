@@ -63,6 +63,26 @@ def relative_file(name):
     return path
 
 
+def relative_include(name):
+    """Caller include path relative to the build root. `.` is the root itself."""
+    if name == '.':
+        return name
+    if not isinstance(name, str) or not name or '\\' in name:
+        raise ValueError("Expected a relative POSIX include path")
+    path = PurePosixPath(name)
+    if path.is_absolute() or any(part in ("", ".", "..") for part in name.split('/')) or any(part in SKIP for part in path.parts):
+        raise ValueError("Unsafe include path")
+    return name
+
+
+def include_name(root, supplied):
+    supplied = Path(supplied).absolute()
+    if not supplied.is_relative_to(root):
+        raise ValueError("All build inputs must be contained in --root")
+    name = supplied.relative_to(root).as_posix()
+    return relative_include(name)
+
+
 def regular(path, root):
     path = path.absolute()
     if not path.is_relative_to(root) or not path.is_file():
@@ -95,22 +115,41 @@ def scaffold(source, target, backend="python"):
             "next": "Implement scripts/workflow, author positive and negative contract cases, then compile PROMPT.md. Drafts cannot be compiled."}
 
 
-def snapshot(root, paths, output):
+def snapshot(root, paths, output, exclude_prefixes=()):
+    """Freeze files under `paths`. `exclude_prefixes` are omitted before the limits."""
     selected = {}
+    exclude_prefixes = tuple(exclude_prefixes)
+    entry_parent = paths[0].absolute() if paths else None
     for supplied in paths:
         supplied = supplied.absolute()
         if not supplied.is_relative_to(root):
             raise ValueError("All build inputs must be contained in --root")
         if supplied.is_symlink():
             raise ValueError("Symlinked build inputs are not supported")
+        supplied_name = supplied.relative_to(root).as_posix()
+        if supplied_name == '.':
+            supplied_name = ''
+        if supplied_name and _under_prefix(supplied_name, exclude_prefixes):
+            continue
         if supplied.is_dir():
             entries = []
             for parent, dirs, files in os.walk(supplied, followlinks=False):
-                dirs[:] = sorted(name for name in dirs if name not in SKIP)
-                for directory in dirs:
-                    if (Path(parent) / directory).is_symlink():
+                parent_path = Path(parent)
+                relative_dir = parent_path.relative_to(root).as_posix()
+                if relative_dir == '.':
+                    relative_dir = ''
+                kept = []
+                for name in sorted(dirs):
+                    if name in SKIP:
+                        continue
+                    child = name if not relative_dir else relative_dir + '/' + name
+                    if _under_prefix(child, exclude_prefixes):
+                        continue
+                    if (parent_path / name).is_symlink():
                         raise ValueError("Symlinked build directories are not supported")
-                entries.extend(Path(parent) / name for name in sorted(files))
+                    kept.append(name)
+                dirs[:] = kept
+                entries.extend(parent_path / name for name in sorted(files))
         else:
             entries = [supplied]
         for path in entries:
@@ -118,11 +157,13 @@ def snapshot(root, paths, output):
                 continue
             path = regular(path, root)
             name = path.relative_to(root).as_posix()
+            if _under_prefix(name, exclude_prefixes):
+                continue
             relative_file(name)
             data = read_bytes(path)
             if path.suffix == '.py':
                 ast.parse(data.decode('utf-8'), filename=name)
-            if (path.parent == paths[0].absolute() and path.name in ('workflow.py', 'workflow.ts')
+            if (path.parent == entry_parent and path.name in ('workflow.py', 'workflow.ts')
                     and b'WORKFLOW_NOT_IMPLEMENTED' in data):
                 raise ValueError("Implement the executable workflow before compiling a lock")
             mode = 0o755 if path.stat().st_mode & 0o100 else 0o644
@@ -180,13 +221,22 @@ def decode_files(lock):
     return decoded
 
 
+def validate_includes(includes):
+    if not isinstance(includes, list) or any(not isinstance(name, str) for name in includes) or includes != sorted(set(includes)):
+        raise ValueError("Includes must be sorted unique relative paths")
+    for name in includes:
+        relative_include(name)
+
+
 def validate_lock(lock):
     fields = {'format', 'compiler', 'root', 'source', 'cases', 'entrypoint', 'runtime', 'inference', 'files', 'verification', 'artifact_sha256'}
-    if not isinstance(lock, dict) or set(lock) != fields or lock['format'] != FORMAT or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
+    if not isinstance(lock, dict) or not fields <= set(lock) <= fields | {'includes'} or lock['format'] != FORMAT or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
         raise ValueError("Unsupported codify lock format/compiler")
     unsigned = {key: value for key, value in lock.items() if key != 'artifact_sha256'}
     if digest(canonical(unsigned)) != lock['artifact_sha256']:
         raise ValueError("Artifact digest mismatch")
+    if 'includes' in lock:
+        validate_includes(lock['includes'])
     if not isinstance(lock['root'], str) or Path(lock['root']).is_absolute():
         raise ValueError("Root must be relative to the lock file")
     for kind in ('source', 'cases'):
@@ -231,14 +281,22 @@ def _under_prefix(name, prefixes):
     return any(name == prefix or name.startswith(prefix + '/') for prefix in prefixes)
 
 
+def included_path(root, name):
+    relative_include(name)
+    return root if name == '.' else root / name
+
+
 def expected_inventory(root, lock, output):
-    """Recompute the snapshot compile froze, then drop nested skill packages.
+    """Recompute the snapshot compile froze, omitting nested skill packages.
 
     Codify always walks the entrypoint directory and `commands/` when that
     directory exists. Skillify also walks the package root when
-    `scripts/contract.json` exists. A file in that inventory that the lock
+    `scripts/contract.json` exists. Locks that record `includes` also walk
+    those caller-supplied paths. A file in that inventory that the lock
     does not name was added after compilation. Learn's subskills are nested
-    packages, so they stay out of the parent inventory.
+    packages, so they stay out of the parent inventory and its file-count
+    and encoded-size limits. Locks compiled before `includes` was recorded
+    omit that field; content changes to files they name are still compared.
     """
     paths = [root / PurePosixPath(lock['entrypoint']).parent]
     commands = root / 'commands'
@@ -246,11 +304,9 @@ def expected_inventory(root, lock, output):
         paths.append(commands)
     if (root / 'scripts' / 'contract.json').is_file():
         paths.append(root)
-    selected = snapshot(root, paths, output)
-    prefixes = nested_skill_prefixes(root)
-    if not prefixes:
-        return selected
-    return {name: item for name, item in selected.items() if not _under_prefix(name, prefixes)}
+    for name in lock.get('includes', ()):
+        paths.append(included_path(root, name))
+    return snapshot(root, paths, output, exclude_prefixes=nested_skill_prefixes(root))
 
 
 def check(path):
@@ -362,6 +418,7 @@ def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, e
 def compile_workflow(source, entrypoint, cases, output=None, root=None, includes=(), profiles=(), dry_run=False,
                      project=None, jobs=4, timeout=30, dependencies=None, config=None):
     root = (root or source.parent).resolve(strict=True)
+    recorded_includes = sorted({include_name(root, path) for path in includes})
     if (root / 'commands').exists():
         command_schema.catalog(root)
         includes = [*includes, root / 'commands']
@@ -387,6 +444,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
             'source': {'path': source.relative_to(root).as_posix(), 'sha256': digest(source_data)},
             'cases': {'path': cases.relative_to(root).as_posix(), 'sha256': digest(case_data)},
             'entrypoint': entrypoint.relative_to(root).as_posix(), 'runtime': 'python' if entrypoint.suffix == '.py' else 'node',
+            'includes': recorded_includes,
             'inference': {'mode': 'explicit' if profile_names else 'none', 'profiles': profile_names},
             'files': snapshot(root, [entrypoint.parent, *includes], output),
             'verification': {'status': 'passed', 'case_ids': [case['id'] for case in contract], 'repeat_successes': 1 if profile_names else 2}}

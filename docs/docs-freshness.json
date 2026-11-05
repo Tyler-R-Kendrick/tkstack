@@ -8,7 +8,7 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "700447724bfeefb833f3514995badb14ec9001b6"
+          "oid": "d6b8190321bff3557aa0bb3d8fc8a85d97bdf6c6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -98,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "164ed1ed487564330f465253bb6f832daf096102"
+          "oid": "fe1f7c355a129c98d9b13975e2b0aa493fec3b30"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -106,7 +106,7 @@
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
-          "oid": "f5b751f77361bc453b8a31f1cc5fdd1646506d35"
+          "oid": "b2a8b3dbf6baee21698f8702dd642f0ac76da540"
         },
         "skills/learn/skills/codify/references/compilation.md": {
           "mode": "100644",
@@ -182,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "2680311acfa1a077157116427cf055d5480c5f08"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -226,7 +226,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "9070172f0e2f3107760dc5e4eabb02ff3974cc0a"
+          "oid": "7832cc6887d67d98c49b32a39d9697789b699234"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -414,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "2680311acfa1a077157116427cf055d5480c5f08"
+          "oid": "0490333c78db4d02dc1443a1433007835e0b7d70"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "cb25fa9a2fe51faddfe8d8d4d3af1b5ca43d5523"
+          "oid": "a4f9d751d1562bbfca3a861383f27605d426f3bd"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -537,8 +537,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Codify check now rejects a contract package whose snapshot inventory is missing from the lock. Recompiled the codify and skillify artifacts."
+      "no_doc_impact": true,
+      "reason": "Recompiled the codify and skillify locks after recording --include paths and applying parent inventory limits after nested skill packages are omitted. The authoring docs already describe that contract."
     },
     "catalog": {
       "docs": {
@@ -679,7 +679,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "721c5c1490fdede23628f89710a3ba87c583247a"
+          "oid": "19895586a75d35485deffcfdebf2635eb98103d7"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -783,7 +783,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Command-schema test now expects the inventory freshness error when command definitions reappear after a lock compiled without them."
+      "reason": "Codify tests cover nested-package inventory limits and recorded include directories. The contract text is in the authoring docs."
     },
     "execution": {
       "docs": {

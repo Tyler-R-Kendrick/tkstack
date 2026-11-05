@@ -9,6 +9,8 @@ another orchestration language. It freezes:
 - A native Python/Node entrypoint and sorted code/resource inventory, each with
   SHA-256, file mode, and base64-encoded exact bytes.
 - Declared inference mode/profile names and passed case IDs/repetition count.
+- Caller-supplied `--include` paths, sorted and unique, relative to the build
+  root (`.` is the root). Locks compiled before this field omit `includes`.
 
 The lock contains the **actual runnable code bytes**. `run` validates the lock,
 checks current source/code/cases, writes that frozen image into an isolated
@@ -29,11 +31,17 @@ ignored by `.tkstack/.gitignore`.
 
 `check` and `run` fail on a stale source, case file, or included implementation.
 `check` also rebuilds the snapshot from the entrypoint directory, `commands/`
-when that directory exists, and the package root when `scripts/contract.json`
-exists. A file in that inventory that the lock does not name is stale, so adding
-a reference after compilation fails until an explicit recompile. A nested
-directory with its own `SKILL.md` is a separate package and stays on its own
-lock. Snapshots retain Git-portable executable modes (0644/0755). Freshness compares
+when that directory exists, the package root when `scripts/contract.json`
+exists, and each path in `includes` when the lock records that field. A file
+in that inventory that the lock does not name is stale, so adding a reference
+after compilation fails until an explicit recompile. A lock that omits
+`includes` was compiled before those paths were recorded: `check` rebuilds
+the entrypoint directory, `commands/`, and the contract package root, and
+still compares every file the lock names. A nested directory with its own
+`SKILL.md` is a separate package and stays on its own lock. `check` drops
+that package before applying the snapshot limits, so subskill growth does
+not exhaust the parent inventory. Snapshots retain Git-portable executable
+modes (0644/0755). Freshness compares
 the executable bit, so checkout umasks that change owner/group read/write bits
 do not invalidate identical code. Changing executable status still invalidates
 the artifact. Existing locks retain compatibility. This is source execution-mode
@@ -47,8 +55,10 @@ Inventory discovery excludes `.git`, `.tkstack`, `node_modules`, and
 `scripts/contract.json` snapshots the whole package, so keep generated files
 out of that tree. Other workflows snapshot the entrypoint directory and
 `commands/`; include imported code outside those directories explicitly.
-Inventory limits: 512 files, 16 MiB base64 data; lock parsing also caps total
-file size at 16 MiB. This is not an import tracer or a hermetic build system.
+Compile records those `--include` paths. Inventory limits apply to the files
+that remain after nested skill packages are omitted: 512 files and 16 MiB of
+base64 data. Lock parsing also caps total file size at 16 MiB. This is not an
+import tracer or a hermetic build system.
 
 Python uses the selected interpreter/standard library; Node needs its actual
 compatible runtime. AI SDK packages are pinned by the frozen npm lock and

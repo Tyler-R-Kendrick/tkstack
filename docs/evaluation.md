@@ -31,10 +31,11 @@ Sources pinned after this initial review are recorded in
 pinned source records the git blob and mode of each retained file and stops
 when the upstream repository has no license. The initial collections are not
 limited to skills, agents, LICENSE, and README: Matt Pocock's snapshot includes
-`.github/`, `.changeset/`, and plugin manifests. A later package with no
-`selection` in `sources.lock.json` is the complete upstream tree at its pin.
-SkillOpt and Lever record a `selection` because those snapshots are partial.
-Emil Kowalski and ub-mode do not.
+`.github/`, `.changeset/`, and plugin manifests. SkillOpt and Lever record a
+`selection` because those snapshots are partial. Emil Kowalski and ub-mode
+omit `selection` because their pins are the complete upstream trees. Other
+later packages can omit `selection` and still lock a subset; Google Stitch
+`design-md` and OpenWiki do.
 
 | Source | Pinned revision | Skills | Snapshot files | License |
 | --- | --- | ---: | ---: | --- |
