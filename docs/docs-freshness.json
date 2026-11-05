@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -16,7 +16,7 @@
         },
         "docs/skillify.md": {
           "mode": "100644",
-          "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
+          "oid": "6211bd6ef566b8f68942a05346063629f6b78577"
         }
       },
       "inputs": {
@@ -118,7 +118,7 @@
         },
         "skills/learn/skills/codify/references/reuse.md": {
           "mode": "100644",
-          "oid": "a471a076015f613ea57af4090fc872042bdfe167"
+          "oid": "2fe33b73128f750e93e958f5bfbf3572d73f475c"
         },
         "skills/learn/skills/codify/references/sources.md": {
           "mode": "100644",
@@ -222,7 +222,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "01de0af46a6649b485c121910d64a0aba8deca0e"
+          "oid": "64e2b48403ae6f8f0c577b00afbba0f59cd56127"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -538,13 +538,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
+      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -559,7 +559,6 @@
           "oid": "105baa5a45c9ce12a1ce6ff47dd8be9c2c9e6d98"
         }
       },
-      "docs_refresh_reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -635,17 +634,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
+      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "b7d84d80ae99c5a630d480404ce4b9f78af20176"
+          "oid": "ee9c3f3ddcdcb6d294d32fa2668f061655a496ba"
         }
       },
       "inputs": {
@@ -660,11 +659,15 @@
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "8d1049ca2a8e1a7c741a1aa2c31bcf7e1122b3c2"
+          "oid": "f61ecca7f01ed110832fc2e1de66583b99043e1e"
         },
         "src/check_docs.py": {
           "mode": "100755",
           "oid": "2d86f055f6ba528c93f0e2dc96b127dbb6a6260b"
+        },
+        "tests/installer_stubs.py": {
+          "mode": "100644",
+          "oid": "0fee98c53bdf6030bbeb359d3bbe9856f3994841"
         },
         "tests/test_authoring.py": {
           "mode": "100644",
@@ -672,11 +675,11 @@
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
-          "oid": "d36aea21623a187088dcb1ab24a7b4f16e579bbc"
+          "oid": "1c85619d20ee8562f2f2d82679f0d320df9e7709"
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "19895586a75d35485deffcfdebf2635eb98103d7"
+          "oid": "d5018e615516b6df1de04eac487a4390e870f9f9"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -684,7 +687,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "812922d214ad92fc850f99e65fc147b75f875226"
+          "oid": "198166280573a25b971ee3e0e4062e801642e6e4"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -704,11 +707,15 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "d5f5a6321eb314d3f540d9af367196727686d690"
+          "oid": "c8c5ebaf0b53e555f4befc5085481d0c96199200"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
           "oid": "397af8ab24b54bff2cbde4920e930621c6f69115"
+        },
+        "tests/test_integrations.py": {
+          "mode": "100644",
+          "oid": "9686c5701e96a88c5f741045455d6c9a3b11a130"
         },
         "tests/test_learn.py": {
           "mode": "100644",
@@ -728,7 +735,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "440f5a24652ba6e9a27abc7cb887ff4d30ef4f84"
+          "oid": "684f98eaf7cc961d5294f21c37a2a413b647b4d4"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -775,14 +782,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
+      "no_doc_impact": true,
+      "reason": "test_install and test_bootstrap put the tests directory on sys.path so installer_stubs imports under discover and as tests.test_* modules. The reviewed install docs are unchanged."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -793,7 +800,6 @@
           "oid": "f8db6b3e08365f9d1093d037400bee0211f55505"
         }
       },
-      "docs_refresh_reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -801,21 +807,21 @@
         },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "bff5a69feadd3a887fe9ba7e521cc417c628b4d9"
+          "oid": "a8a196fd8e8782fa4ec7b467fd5065bb63033000"
         }
       },
       "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them. README pins are read from install.sh."
+      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "a0d75f42e6afe2a62acc472901348781d9931188"
+          "oid": "ac5a6e992c473d66a707508ad605167b9605a3f1"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -829,7 +835,7 @@
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
-          "oid": "76231828f77fba89c261e0723ddec5abce20147f"
+          "oid": "9e4760aa742767a19f5d957453a0e6f7c809f160"
         },
         ".gitattributes": {
           "mode": "100644",
@@ -849,19 +855,19 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "01d38b4d6ff1093e09f19baedae21d4d4fdf36c2"
+          "oid": "ebbb78938ec464f6f8369f3da9091efe1df4e461"
         },
         "src/README.md": {
           "mode": "100644",
-          "oid": "44397d8f48c9cf3f1c97d926c85eb1d9fc6ac360"
+          "oid": "2b94d2f1ff3dee2c692018e6c75f62066e9d6aa6"
         },
         "src/check_skills.py": {
           "mode": "100644",
-          "oid": "bfb20502e90373869bc27460a17c9ca096ace21f"
+          "oid": "b7279b11a19be982b24ef4fa2f212334e50c0ba3"
         },
         "src/skill_roots.py": {
           "mode": "100644",
-          "oid": "07c5b8be393fef36404b954e779e2b970f1a90ea"
+          "oid": "f0f251e9042f5ddcf886e6d5d7276cb3dda6ef2a"
         },
         "src/tkstack_state.py": {
           "mode": "100644",
@@ -869,13 +875,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
+      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "50e1c2e7d3ec804420426519943bbc254deb5ff4"
+          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1001,7 +1007,7 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "5aacf27b84ba167005cfb92d96bbc79d2ea2bd60"
+          "oid": "c76f302f32378cb2c9f75599bc5674ccfbbedd51"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
@@ -1409,7 +1415,7 @@
         },
         "skills/learn/references/improvement.md": {
           "mode": "100644",
-          "oid": "bc8e0ead1b1f549f08f35b4768833a39195093a1"
+          "oid": "6976401561f539a639ab199016e25b540c5371aa"
         },
         "skills/learn/references/operating-guide.md": {
           "mode": "100644",
@@ -1477,7 +1483,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "0230a64718fb58377e51fb1da1a1db602b9e782b"
+          "oid": "bdd6232c83a395160d938f65fcfd98f705fe5ca6"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1669,7 +1675,7 @@
         },
         "skills/learn/skills/hookify/references/adapters.md": {
           "mode": "100644",
-          "oid": "8af59db454470e37680b0978c6666d167c956dc6"
+          "oid": "403360b6b4b699476d5bcab3082404e01adfe78c"
         },
         "skills/learn/skills/hookify/references/distilled-sources.md": {
           "mode": "100644",
@@ -1685,7 +1691,7 @@
         },
         "skills/learn/skills/hookify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "9bb5ee3876874c795755f13b1ed931822b4f18e8"
+          "oid": "a708ab13537c28443b2f9b10bb343bc196c7aca8"
         },
         "skills/learn/skills/hookify/references/policy.md": {
           "mode": "100644",
@@ -1733,7 +1739,7 @@
         },
         "skills/learn/skills/hookify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a750d002e621a8fba505ecbd04526b2c2d0b04e0"
+          "oid": "ddc0b48bd56ef0755f972e8e088c655ec4a5dd4c"
         },
         "skills/learn/skills/instructify/LICENSE": {
           "mode": "100644",
@@ -1789,7 +1795,7 @@
         },
         "skills/learn/skills/instructify/references/harnesses.md": {
           "mode": "100644",
-          "oid": "3b255ff6015bc4d2396e592f00d5d46c869ed6a5"
+          "oid": "034b553267a1ef7a054fcdd70ab561fb62affe90"
         },
         "skills/learn/skills/instructify/references/manifest.md": {
           "mode": "100644",
@@ -1797,7 +1803,7 @@
         },
         "skills/learn/skills/instructify/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "3336da104c7280ee908244d5ebe5f43aeff49a7f"
+          "oid": "65799ba71985ad51a9526b7a5543ce4b6929e117"
         },
         "skills/learn/skills/instructify/references/storage.md": {
           "mode": "100644",
@@ -1837,7 +1843,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "14681967e5a978341c3aca4f0da43c1bea205147"
+          "oid": "03e120ef4fcc7c520081637f1af321d6b52a9a26"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2317,7 +2323,7 @@
         },
         "skills/sdlc/scripts/routing_inventory.py": {
           "mode": "100644",
-          "oid": "59d7fc25b86ee8a572ec7479c7af0e8cc5802ed8"
+          "oid": "911c5dbdde05b70d6d3f9ea48ec87cf8a40dc3e4"
         },
         "skills/sdlc/scripts/run.py": {
           "mode": "100644",
@@ -2345,7 +2351,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "af89c1b610d91d69c55a996fed76072fab354fb4"
+          "oid": "7f21588e4a45834c30bbeac99f1fd093a4453e34"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2653,13 +2659,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The installer only links skills and sets core.hooksPath, including when git is missing. Profiles, launchers, doctor, hook chaining, and private runtimes are gone. Routing, evolve, and Codify sync live in the skills that own them, and those locks were recompiled. Compile omits nested skill packages the same way check does. README pins are read from install.sh."
+      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "8d1049ca2a8e1a7c741a1aa2c31bcf7e1122b3c2"
+    "oid": "f61ecca7f01ed110832fc2e1de66583b99043e1e"
   },
   "version": 1
 }

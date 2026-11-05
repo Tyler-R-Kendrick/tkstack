@@ -7,7 +7,6 @@ entries live in skills/sdlc/references/routing.json. The rendered table is the
 marked region of skills/sdlc/references/skill-routing.md.
 """
 
-import importlib.util
 import json
 import re
 import sys
@@ -17,9 +16,11 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 SCRIPTS = ROOT / "scripts"
-for directory in (HERE, SCRIPTS):
+for directory in (HERE, SCRIPTS, ROOT / "src"):
     if str(directory) not in sys.path:
         sys.path.insert(0, str(directory))
+from skill_roots import load  # noqa: E402
+import skill_roots  # noqa: E402
 CATALOG = Path("skills/sdlc/references/routing.json")
 GUIDE = Path("skills/sdlc/references/skill-routing.md")
 START = "<!-- tkstack:routing-inventory:start -->"
@@ -107,15 +108,7 @@ DUPLICATE_SKILL_PATHS = frozenset({
 })
 
 
-def _load(name, path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-install = _load("tkstack_install", ROOT / "scripts" / "install.py")
-skill_roots = _load("tkstack_skill_roots", ROOT / "src" / "skill_roots.py")
+install = load("tkstack_install", ROOT / "scripts" / "install.py")
 
 
 def _unescape_double_quoted(value):
@@ -227,9 +220,9 @@ def _placement(rules, source):
 def discover(root=ROOT):
     """Map every routed skill name to its stack, purpose, and placement.
 
-    This read does not generate alias or Graphify views. Doctor runs the check
-    through the managed command-schema interpreter, and Graphify views embed the
-    installer interpreter. Rewriting them here would make the next doctor fail.
+    This read does not generate alias or Graphify views. The root skills gate
+    (src/check_skills.py) runs this check read-only. The installer writes those
+    views. Generating them here would change the checkout the check reads.
     """
     root = Path(root)
     rules_path = root / "harnesses/skills.json"

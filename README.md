@@ -103,7 +103,7 @@ Tracked directories (`git ls-files`). Root files beside them include `install.sh
 | `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
 | `docs/` | Focused install, skill, harness, and maintainer guides. |
 | `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
-| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (uv pin, not applied by install), `harnesses/copilot/` (`lever.yml` example dials), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
+| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/copilot/` (`lever.yml` example dials), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (orchestrator; `skills.json` `delegates` names the hosts whose skills it reads). |
 | `scripts/` | The linker. `install.sh` calls `scripts/install.py`. |
 | `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. SDLC owns `skills/sdlc/scripts/routing_inventory.py`. Learn owns `skills/learn/scripts/evolve.py`. Skillify owns `skills/learn/skills/skillify/scripts/sync_codify.py`. |
 | `src/` | Shared command, state, and documentation programs. See `src/README.md`. |
@@ -191,9 +191,8 @@ choice: it reads the other hosts' skills. Copilot links `~/.copilot/skills` at
 home and `.github/skills` in a project. Muse links `~/.config/muse/skills` at
 home and does not follow `XDG_CONFIG_HOME`; a project install uses
 `.agents/skills`. The default selection is Codex, Claude Code, and Cursor.
-`--offline`, `--no-toolchains`, `--no-shell`, and `--workspace` are accepted
-and ignored. Set `CODEX_HOME` for a real-home Codex install. Restart or reload
-the harness after setup.
+Set `CODEX_HOME` for a real-home Codex install. Restart or reload the harness
+after setup.
 
 ## Devcontainers
 

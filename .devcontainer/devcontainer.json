@@ -24,7 +24,6 @@
     "--target",
     "${containerWorkspaceFolder}",
     "--scope",
-    "project",
-    "--offline"
+    "project"
   ]
 }

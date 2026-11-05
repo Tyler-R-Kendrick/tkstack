@@ -709,10 +709,7 @@ def install_flags(root):
             target.mkdir()
             before = _porcelain(root)
             dry_run = subprocess.run(
-                [
-                    str(install), "--dry-run", "--offline", "--no-toolchains", "--no-shell",
-                    "--target", str(target), "--workspace", str(target),
-                ],
+                [str(install), "--dry-run", "--target", str(target)],
                 cwd=root, capture_output=True, text=True, timeout=60, check=False,
                 env=_sandbox_env(home, sandbox),
             )
@@ -735,7 +732,7 @@ def install_flags(root):
     found = ", ".join(supported) if supported else "none"
     explanation = (
         "install.sh --help must list --dry-run and --uninstall, and "
-        f"install.sh --dry-run --offline --target <tmpdir> must exit 0 without "
+        f"install.sh --dry-run --target <tmpdir> must exit 0 without "
         f"changing the checkout. Supported flags: {found}."
     )
     return result(

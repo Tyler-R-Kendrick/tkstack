@@ -1,7 +1,6 @@
 """Exercise installation against temporary targets, never the user's home."""
 
 import hashlib
-import importlib.util
 import io
 import os
 import re
@@ -15,13 +14,23 @@ import subprocess
 import sys
 import unittest
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from installer_stubs import (  # noqa: E402
+    CURL_TARBALL as _CURL_TARBALL,
+    CURL_UV as _CURL_UV,
+    GIT_ORIGIN_STUB,
+    UV_INSTALLER_BODY as _UV_INSTALLER_BODY,
+    UV_STUB as _UV_STUB,
+    stub_path as _stub_path,
+)
+
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "src"))
-SPEC = importlib.util.spec_from_file_location("install", ROOT / "scripts/install.py")
-install = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(install)
+from skill_roots import load  # noqa: E402
+
+install = load("install", ROOT / "scripts/install.py")
 
 
 class InstallTests(unittest.TestCase):
@@ -342,115 +351,6 @@ class InstallTests(unittest.TestCase):
         self.assertIn("0 link(s) changed.", again.stdout)
 
 
-def _stub_path(root, hide_prefixes, stubs):
-    """Build a PATH whose stub executables hide selected real commands."""
-    root.mkdir(parents=True, exist_ok=True)
-    bindir = root / "stubs"
-    system = root / "system-bin"
-    bindir.mkdir()
-    system.mkdir()
-    hidden = set()
-    for name, text in stubs.items():
-        path = bindir / name
-        path.write_text(text)
-        path.chmod(0o755)
-        hidden.add(name)
-    seen = set(hidden)
-    for directory in os.environ["PATH"].split(os.pathsep):
-        try:
-            entries = list(Path(directory).iterdir())
-        except OSError:
-            continue
-        for source in entries:
-            name = source.name
-            if name in seen or any(name == prefix or name.startswith(prefix) for prefix in hide_prefixes):
-                continue
-            if not source.is_file() or not os.access(source, os.X_OK):
-                continue
-            try:
-                (system / name).symlink_to(source)
-            except FileExistsError:
-                continue
-            seen.add(name)
-    return str(bindir) + os.pathsep + str(system)
-
-
-_UV_STUB = """#!/bin/sh
-printf '%s\\n' "$*" >> "$UV_LOG"
-exit 0
-"""
-
-_UV_INSTALLER_BODY = """#!/bin/sh
-bindir="${UV_INSTALL_DIR:-$HOME/.local/bin}"
-mkdir -p "$bindir"
-cat > "$bindir/uv" << 'UV'
-#!/bin/sh
-printf '%s\\n' "$*" >> "$UV_LOG"
-exit 0
-UV
-chmod +x "$bindir/uv"
-"""
-
-_CURL_UV = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$CURL_LOG"
-out=
-url=
-while [ $# -gt 0 ]; do
-  case "$1" in
-    -o) out=$2; shift 2 ;;
-    -o*) out=${1#-o}; shift ;;
-    https://*|http://*) url=$1; shift ;;
-    *) shift ;;
-  esac
-done
-case "$url" in
-  https://astral.sh/uv/0.12.23/install.sh) ;;
-  *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
-esac
-[ -n "$out" ] || { printf '%s\n' 'missing -o' >&2; exit 1; }
-cat "$UV_INSTALLER_FILE" > "$out"
-"""
-
-_CURL_TARBALL = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$CURL_LOG"
-out=
-url=
-while [ $# -gt 0 ]; do
-  case "$1" in
-    -o) out=$2; shift 2 ;;
-    -o*) out=${1#-o}; shift ;;
-    https://*|http://*) url=$1; shift ;;
-    *) shift ;;
-  esac
-done
-case "$url" in
-  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main) ;;
-  *)
-    if [ -n "${CURL_ACCEPT:-}" ] && [ "$url" = "$CURL_ACCEPT" ]; then
-      :
-    else
-      printf '%s\n' "unexpected url: $url" >&2
-      exit 1
-    fi
-    ;;
-esac
-[ -n "$out" ] || exit 1
-if [ -n "${BAD_TAR:-}" ]; then
-  cat "$BAD_TAR" > "$out"
-  exit 0
-fi
-work=$(mktemp -d)
-mkdir -p "$work/tkstack-main/scripts"
-printf '%s\n' 'print(1)' > "$work/tkstack-main/scripts/install.py"
-cat > "$work/tkstack-main/install.sh" << 'END'
-#!/bin/sh
-printf '%s\n' "local-install $*" >> "$INSTALL_LOG"
-END
-chmod +x "$work/tkstack-main/install.sh"
-tar -czf "$out" -C "$work" tkstack-main
-rm -rf "$work"
-"""
-
 
 class InstallerPrerequisiteTests(unittest.TestCase):
     """PATH stubs stand in for a host with no Python 3.11+ or no Git."""
@@ -553,14 +453,13 @@ class InstallerPrerequisiteTests(unittest.TestCase):
     def test_missing_python_uses_uv_without_installing_uv(self):
         path = _stub_path(self.base / "bins", ("python", "uv"), {"uv": _UV_STUB, "curl": "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$CURL_LOG\"\nexit 1\n"})
         target = self.base / "target"
-        result = self._run(ROOT / "install.sh", path, "--dry-run", "--offline", "--target", str(target))
+        result = self._run(ROOT / "install.sh", path, "--dry-run", "--target", str(target))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         log = self.uv_log.read_text()
         self.assertIn("python install 3.12.15", log)
         self.assertIn("run --python 3.12.15 --no-project -- python -B ", log)
         self.assertIn(str(ROOT / "scripts" / "install.py"), log)
         self.assertIn("--dry-run", log)
-        self.assertIn("--offline", log)
         self.assertNotIn("requires Python 3.11+", result.stderr)
         self.assertFalse(self.curl_log.exists())
 
@@ -600,10 +499,10 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        result = self._run(script, path, "--offline")
+        result = self._run(script, path, "--dry-run")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main", self.curl_log.read_text())
-        self.assertIn("local-install --offline", self.install_log.read_text())
+        self.assertIn("local-install --dry-run", self.install_log.read_text())
         checkout = self.home / ".local" / "share" / "tkstack"
         self.assertTrue((checkout / "install.sh").is_file())
         receipt = (checkout / ".tkstack" / "source-receipt.txt").read_text()
@@ -756,28 +655,21 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         (dest / "install.sh").write_text("#!/bin/sh\nprintf '%s\\n' \"PLANTED $*\" >> \"$INSTALL_LOG\"\n")
         (dest / "install.sh").chmod(0o755)
         (dest / ".git").mkdir()
-        git = r"""#!/bin/sh
-printf '%s\n' "$*" >> "$GIT_LOG"
-if [ "$1" = -C ]; then shift 2; fi
-if [ "$1" = remote ]; then printf '%s\n' "$GIT_ORIGIN"; fi
-if [ "$1" = pull ]; then exit 0; fi
-exit 0
-"""
-        path = _stub_path(self.base / "bins-origin", ("git",), {"git": git})
+        path = _stub_path(self.base / "bins-origin", ("git",), {"git": GIT_ORIGIN_STUB})
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        mismatch = self._run(script, path, "--offline", extra={"GIT_ORIGIN": "https://example.com/other.git"})
+        mismatch = self._run(script, path, "--dry-run", extra={"GIT_ORIGIN": "https://example.com/other.git"})
         self.assertNotEqual(mismatch.returncode, 0, mismatch.stdout + mismatch.stderr)
         self.assertIn("Refusing to run it", mismatch.stderr)
         self.assertFalse(self.install_log.exists())
         self.assertNotIn("pull", (self.base / "git.log").read_text())
         trusted = self._run(
-            script, path, "--offline",
+            script, path, "--dry-run",
             extra={"GIT_ORIGIN": "https://example.com/other.git", "TKSTACK_TRUST_HOME": "1"},
         )
         self.assertEqual(trusted.returncode, 0, trusted.stdout + trusted.stderr)
-        self.assertIn("PLANTED --offline", self.install_log.read_text())
+        self.assertIn("PLANTED --dry-run", self.install_log.read_text())
         self.assertNotIn("pull", (self.base / "git.log").read_text())
         self.install_log.unlink()
         matched = self._run(
@@ -793,7 +685,7 @@ exit 0
         script = self.base / "downloaded-install.sh"
         script.write_text((ROOT / "install.sh").read_text())
         script.chmod(0o755)
-        first = self._run(script, path, "--offline")
+        first = self._run(script, path, "--dry-run")
         self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
         checkout = self.home / ".local" / "share" / "tkstack"
         (checkout / ".tkstack" / "keep").write_text("state\n")
@@ -819,7 +711,7 @@ exec "$REAL_MV" "$@"
             {"curl": _CURL_TARBALL, "mv": blocker},
         )
         failed = self._run(
-            script, blocked, "--offline",
+            script, blocked, "--dry-run",
             extra={
                 "TKSTACK_TRUST_HOME": "1",
                 "FAIL_MV_DEST": str(checkout),

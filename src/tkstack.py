@@ -3,7 +3,6 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -14,12 +13,10 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 
 from tkstack_state import state_roots
-from skill_roots import owned
+from skill_roots import load, owned
 
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location('tkstack_codify_runner', ROOT / 'skills/learn/skills/codify/scripts/codify.py')
-codify = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(codify)
+codify = load('tkstack_codify_runner', ROOT / 'skills/learn/skills/codify/scripts/codify.py')
 NAME = re.compile(r'[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}')
 
 

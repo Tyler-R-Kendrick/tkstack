@@ -2,17 +2,15 @@
 """Read-only conformance gate for every owned normalized skill and its artifacts."""
 
 from concurrent.futures import ThreadPoolExecutor
-import importlib.util
 import json
 from pathlib import Path
 import sys
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location('owned_skill_checker', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
-skillify = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(skillify)
-from skill_roots import all_packages, owned, subskills  # noqa: E402
+from skill_roots import all_packages, load, owned, subskills  # noqa: E402
+
+skillify = load('owned_skill_checker', ROOT / 'skills/learn/skills/skillify/scripts/skillify.py')
 
 
 def check(root=ROOT, jobs=4):
@@ -69,11 +67,7 @@ def check(root=ROOT, jobs=4):
 if __name__ == '__main__':
     try:
         rows = check()
-        spec = importlib.util.spec_from_file_location(
-            'routing_inventory', ROOT / 'skills/sdlc/scripts/routing_inventory.py')
-        routing_inventory = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(routing_inventory)
-        routing_inventory.check(ROOT)
+        load('routing_inventory', ROOT / 'skills/sdlc/scripts/routing_inventory.py').check(ROOT)
         print(json.dumps({'status': 'pass', 'skills': len(rows), 'results': rows,
                           'limits': 'Conformance is not a semantic/model-quality score or native provider activation proof.'}, indent=2))
     except (OSError, ValueError, KeyError, TypeError) as error:

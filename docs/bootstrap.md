@@ -31,10 +31,6 @@ checkout's links for every harness, including a legacy `.muse/skills` link, and
 unsets `core.hooksPath` when its value is `.githooks`. `--harness` does not
 limit uninstall. A second uninstall changes nothing. Foreign links stay.
 
-`--offline`, `--no-toolchains`, `--no-shell`, and `--workspace` are accepted so
-older commands still exit 0. They select nothing: install does not download
-skills, provision toolchains, or edit a shell rc file.
-
 ## Host prerequisites
 
 Missing Python **3.12.15** is installed with uv **0.12.23** after sha256
@@ -85,10 +81,9 @@ finishes. Dry-run prints the config change and does not run it.
 ## Devcontainer
 
 [`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json) runs
-`install.sh --target <workspace> --scope project` after create, and the same
-command with `--offline` on later starts. `--offline` does not change the link
-step. The image's Node feature is the devcontainer's own, not something
-`install.sh` downloads.
+`install.sh --target <workspace> --scope project` after create and on later
+starts. The link step does not download skills. The image's Node feature is
+the devcontainer's own, not something `install.sh` downloads.
 
 A dotfiles install in another devcontainer can use:
 

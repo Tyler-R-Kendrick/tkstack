@@ -2,7 +2,11 @@
 import os
 from pathlib import Path
 import subprocess
+import sys
 import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from installer_stubs import GIT_CLONE_STUB  # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,36 +28,12 @@ class InstallerCheckoutTests(unittest.TestCase):
         script = self.base / 'downloaded-install.sh'
         script.write_text((ROOT / 'install.sh').read_text())
         script.chmod(0o755)
-        (bin_dir / 'git').write_text(r"""#!/bin/sh
-printf '%s\n' "$*" >> "$GIT_LOG"
-if [ "$1" = -C ]; then
-  shift 2
-fi
-if [ "$1" = clone ]; then
-  for dest do :; done
-  mkdir -p "$dest/scripts" "$dest/.git"
-  printf '%s\n' 'print(1)' > "$dest/scripts/install.py"
-  cat > "$dest/install.sh" << 'END_STUB'
-#!/bin/sh
-echo local-install "$*"
-END_STUB
-  chmod +x "$dest/install.sh"
-fi
-if [ "$1" = remote ]; then
-  printf '%s\n' 'https://github.com/Tyler-R-Kendrick/tkstack.git'
-fi
-if [ "$1" = pull ]; then
-  if [ -n "${GIT_PULL_STATUS:-}" ]; then
-    exit "$GIT_PULL_STATUS"
-  fi
-fi
-exit 0
-""")
+        (bin_dir / 'git').write_text(GIT_CLONE_STUB)
         (bin_dir / 'git').chmod(0o755)
         env = {**os.environ, 'HOME': str(home), 'GIT_LOG': str(log), 'PATH': str(bin_dir) + os.pathsep + os.environ['PATH']}
-        result = subprocess.run(['bash', str(script), '--offline'], cwd=self.base, env=env, capture_output=True, text=True, timeout=20)
+        result = subprocess.run(['bash', str(script), '--dry-run'], cwd=self.base, env=env, capture_output=True, text=True, timeout=20)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn('local-install --offline', result.stdout)
+        self.assertIn('local-install --dry-run', result.stdout)
         self.assertIn('clone', log.read_text())
         self.assertTrue((home / '.local/share/tkstack/install.sh').is_file())
         result = subprocess.run(['bash', str(script), '--check'], cwd=self.base, env=env, capture_output=True, text=True, timeout=20)
@@ -71,29 +51,16 @@ exit 0
         script = self.base / 'downloaded-install.sh'
         script.write_text((ROOT / 'install.sh').read_text())
         script.chmod(0o755)
-        (bin_dir / 'git').write_text(r"""#!/bin/sh
-printf '%s\n' "$*" >> "$GIT_LOG"
-if [ "$1" = -C ]; then shift 2; fi
-if [ "$1" = clone ]; then
-  for dest do :; done
-  mkdir -p "$dest/scripts" "$dest/.git"
-  printf '%s\n' 'print(1)' > "$dest/scripts/install.py"
-  printf '%s\n' '#!/bin/sh' > "$dest/install.sh"
-  chmod +x "$dest/install.sh"
-fi
-if [ "$1" = remote ]; then printf '%s\n' 'https://github.com/Tyler-R-Kendrick/tkstack.git'; fi
-if [ "$1" = pull ]; then exit "${GIT_PULL_STATUS:-0}"; fi
-exit 0
-""")
+        (bin_dir / 'git').write_text(GIT_CLONE_STUB)
         (bin_dir / 'git').chmod(0o755)
         env = {**os.environ, 'HOME': str(home), 'GIT_LOG': str(log), 'PATH': str(bin_dir) + os.pathsep + os.environ['PATH']}
-        first = subprocess.run(['bash', str(script), '--offline'], cwd=self.base, env=env, capture_output=True, text=True, timeout=20)
+        first = subprocess.run(['bash', str(script), '--dry-run'], cwd=self.base, env=env, capture_output=True, text=True, timeout=20)
         self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
         failed = subprocess.run(['bash', str(script), '--check'], cwd=self.base, env={**env, 'GIT_PULL_STATUS': '1'}, capture_output=True, text=True, timeout=20)
         self.assertNotEqual(failed.returncode, 0)
         self.assertIn('git pull --ff-only failed', failed.stderr)
         self.assertIn('stash', failed.stderr)
-        self.assertNotIn('--offline', failed.stderr)
+        self.assertNotIn('--dry-run', failed.stderr)
         self.assertNotIn('local-install', failed.stdout)
 
     def test_planted_checkout_is_refused(self):

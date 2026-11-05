@@ -30,10 +30,12 @@ a completed verdict. `run --adapter portable` always returns explicit decision
 data on valid evaluation; its caller must enforce it.
 
 Settings must be merged at their owned boundary. This package emits a fragment
-and does not mutate project/home configuration itself. Within tkstack, standing
-hook registration belongs in `scripts/setup_integrations.py` and its existing
-ownership-aware install/uninstall path. In another repository, use its native
-project configuration and retain exact added entries for safe rollback.
+and does not mutate project/home configuration itself. The tkstack installer
+only links skills and sets `core.hooksPath` for the repository docs hook. It
+does not register Claude, Codex, or Cursor agent hooks. The host owns that
+configuration: merge the fragment into the host's project settings and keep
+the added entries for rollback. In another repository, use its native project
+configuration the same way.
 
 Claude hook configuration/loading behavior is version dependent. Verify the
 installed version and reload/restart when required. Rule files are re-read per

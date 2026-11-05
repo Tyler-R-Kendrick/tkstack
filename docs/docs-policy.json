@@ -52,7 +52,6 @@
         "agents/**"
       ],
       "exclude": [
-        "harnesses/bootstrap/**",
         "harnesses/runner.json"
       ],
       "docs": [

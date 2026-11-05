@@ -316,7 +316,7 @@ class RepoQualityTests(unittest.TestCase):
     def test_generated_lock_json_is_summarized(self):
         self.assertTrue(snapshot._is_lockfile("skills/sdlc/scripts/workflow.lock.json"))
         self.assertTrue(snapshot._is_lockfile("harnesses/openwiki/package-lock.json"))
-        self.assertTrue(snapshot._is_lockfile("harnesses/bootstrap/requirements.lock"))
+        self.assertTrue(snapshot._is_lockfile("harnesses/graphify/requirements.lock"))
         self.assertFalse(snapshot._is_lockfile("harnesses/integrations.json"))
         lockfile = json.dumps({
             "name": "demo",
@@ -507,6 +507,19 @@ class RepoQualityTests(unittest.TestCase):
             absent = checks.harness_coverage(root)
             plain = next(line for line in absent["evidence"] if line.startswith("t3code:"))
             self.assertIn("no skills.json placement path", plain)
+            malformed = {
+                "list": '{"delegates": ["claude", "codex"], "placement": {"default": ["claude", "codex"]}}\n',
+                "empty": '{"delegates": {"t3code": []}, "placement": {"default": ["claude", "codex"]}}\n',
+                "number": '{"delegates": {"t3code": ["claude", 1]}, "placement": {"default": ["claude", "codex"]}}\n',
+                "blank": '{"delegates": {"t3code": [""]}, "placement": {"default": ["claude", "codex"]}}\n',
+            }
+            for label, body in malformed.items():
+                skills.write_text(body, encoding="utf-8")
+                covered = checks.harness_coverage(root)
+                line = next(item for item in covered["evidence"] if item.startswith("t3code:"))
+                self.assertIn("no skills.json placement path", line, label)
+                self.assertNotIn("which are linked", line, label)
+                self.assertNotIn("orchestrator", line, label)
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"

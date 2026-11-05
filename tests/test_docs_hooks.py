@@ -198,3 +198,28 @@ class DocumentationHookTests(unittest.TestCase):
         with contextlib.redirect_stdout(skipped):
             install.repo_hooks(self.root, dry_run=True, uninstall=True)
         self.assertIn('core.hooksPath is not .githooks', skipped.getvalue())
+
+    def test_git_config_failure_is_a_value_error(self):
+        bindir = self.root.parent / 'git-bin'
+        bindir.mkdir()
+        real = shutil.which('git')
+        (bindir / 'git').write_text(
+            '#!/bin/sh\n'
+            'if [ "$1" = -C ] && [ "$3" = config ] && [ "$4" != --get ] && [ "$4" != --unset ]; then\n'
+            '  printf "%s\\n" "config denied" >&2\n'
+            '  exit 4\n'
+            'fi\n'
+            f'exec {real} "$@"\n'
+        )
+        (bindir / 'git').chmod(0o755)
+        saved = os.environ.get('PATH')
+        os.environ['PATH'] = str(bindir) + os.pathsep + (saved or '')
+        try:
+            with self.assertRaises(ValueError) as caught:
+                install.repo_hooks(self.root)
+        finally:
+            if saved is None:
+                os.environ.pop('PATH', None)
+            else:
+                os.environ['PATH'] = saved
+        self.assertIn('config denied', str(caught.exception))

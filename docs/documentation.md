@@ -86,7 +86,7 @@ success. Other upstream hook adapters retain their existing behavior.
 Apply project configuration with:
 
 ```sh
-./install.sh --target "$PWD" --scope project --workspace "$PWD" --offline
+./install.sh --target "$PWD" --scope project
 ```
 
 Registration is separate from observed native activation. Reload/restart the

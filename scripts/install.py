@@ -103,6 +103,22 @@ def skill_view(root, source, harness=None):
     return root / ".tkstack/skill-views" / source / (harness or "default")
 
 
+def _write_file(target, data):
+    """Create parent directories and replace the file when its bytes differ."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists() or target.read_bytes() != data:
+        target.write_bytes(data)
+
+
+def _git_checked(root, *args):
+    """Run git and raise ValueError instead of a CalledProcessError traceback."""
+    try:
+        subprocess.run(["git", "-C", str(root), *args], check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as error:
+        detail = (error.stderr or "").strip()
+        raise ValueError(detail or "git " + " ".join(args) + " failed") from None
+
+
 def prepare_graphify(root):
     """Copy each Graphify host skill into a view named SKILL.md.
 
@@ -132,9 +148,7 @@ def prepare_graphify(root):
             target = directory / name
             if target.is_symlink() or any(parent.is_symlink() for parent in target.parents if root in parent.parents):
                 raise ValueError("Graphify view must not be a symlink: " + str(target))
-            target.parent.mkdir(parents=True, exist_ok=True)
-            if not target.exists() or target.read_bytes() != data:
-                target.write_bytes(data)
+            _write_file(target, data)
 
 
 def prepare_aliases(root):
@@ -157,12 +171,10 @@ def prepare_aliases(root):
             if path.is_dir():
                 destination.mkdir(parents=True, exist_ok=True)
                 continue
-            destination.parent.mkdir(parents=True, exist_ok=True)
             content = path.read_bytes()
             if path.suffix in (".md", ".yaml", ".yml"):
                 content = rewrite_invocations(content.decode(), aliases).encode()
-            if not destination.exists() or destination.read_bytes() != content:
-                destination.write_bytes(content)
+            _write_file(destination, content)
             destination.chmod(path.stat().st_mode & 0o777)
         # A source update must also remove deleted references from the view.
         for path in sorted(view.rglob("*"), key=lambda p: len(p.parts), reverse=True):
@@ -358,13 +370,13 @@ def repo_hooks(root, dry_run=False, uninstall=False):
             return
         print(("Would unset" if dry_run else "unset") + " core.hooksPath")
         if not dry_run:
-            subprocess.run(["git", "-C", str(root), "config", "--unset", "core.hooksPath"], check=True)
+            _git_checked(root, "config", "--unset", "core.hooksPath")
         return
     if current == ".githooks":
         return
     print(("Would set" if dry_run else "set") + " core.hooksPath=.githooks")
     if not dry_run:
-        subprocess.run(["git", "-C", str(root), "config", "core.hooksPath", ".githooks"], check=True)
+        _git_checked(root, "config", "core.hooksPath", ".githooks")
 
 
 def preflight(plan, migrations=None):
@@ -427,11 +439,6 @@ def main():
                         help="Remove this checkout's links for every harness and its docs hook")
     parser.add_argument("--scope", choices=("home", "project"),
                         help="Home or project skill directories (default: home for your home directory, else project)")
-    # The repo-quality dry-run still passes these. They select nothing.
-    parser.add_argument("--offline", action="store_true", help="Accepted and ignored. Install does not download.")
-    parser.add_argument("--no-toolchains", action="store_true", help="Accepted and ignored. Install does not provision toolchains.")
-    parser.add_argument("--no-shell", action="store_true", help="Accepted and ignored. Install does not edit shell startup.")
-    parser.add_argument("--workspace", type=Path, help="Accepted and ignored. Links use --target.")
     args = parser.parse_args()
     try:
         if not args.uninstall:
@@ -457,7 +464,7 @@ def main():
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
         changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
         repo_hooks(ROOT, dry_run=args.dry_run, uninstall=args.uninstall)
-    except (OSError, ValueError, KeyError) as error:
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
         print(f"tkstack: {error}", file=sys.stderr)
         return 1
     print(f"{changes} link(s) {'would change' if args.dry_run else 'changed'}.")
