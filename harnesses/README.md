@@ -48,6 +48,10 @@ The installer also maintains native shared-steering pointers. See
 service specifications; `scripts/setup_integrations.py` manages native hook
 and MCP entries without embedding credentials. See `docs/integrations.md` for
 what is installed versus dependent on a host runtime or account sign-in.
+`vendor/ponytail/` is the pinned DietrichGebert/ponytail 5.3.3 snapshot: six
+skills and Node lifecycle-hook adapters. It is vendored so setup links the
+bytes locked in `sources.lock.json` instead of cloning upstream. It is not a
+harness directory.
 
 `copilot/lever.yml` supplies initial Lever repository defaults. Copilot is not a
 `--harness` skills directory. The separate `src/setup_lever.py` installs Lever's

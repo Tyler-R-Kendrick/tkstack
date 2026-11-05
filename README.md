@@ -39,9 +39,65 @@ RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_ju
 python3 src/check_docs.py check
 ```
 
-`REPO_QUALITY_GATE=1` enforces the repo-quality ceilings. `RUN_JUDGE=1` runs the
-pinned promptfoo judge. The [maintain section](#maintain-this-repository) has
-the longer preview, routing, and doctor sequence.
+`REPO_QUALITY_GATE=1` enforces the ceilings in `evals/repo-quality/`.
+`RUN_JUDGE=1` runs the pinned promptfoo judge. That test executes
+`npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`
+(`latest.json` is gitignored). Suites and that harness are described in
+[evals/README.md](evals/README.md). The [maintain section](#maintain-this-repository)
+has the longer preview, routing, and doctor sequence.
+
+## Install one skill
+
+The marketplace name is `tkstack`. These commands install the `investigate`
+plugin from `skills/investigate`:
+
+```text
+/plugin marketplace add Tyler-R-Kendrick/tkstack
+/plugin install investigate@tkstack
+```
+
+```sh
+npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
+```
+
+`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects the same
+package. Other manifest packages and their tree paths are `document`
+(`skills/document`), `fal-ai` (`.agents/skills/fal-ai`), `headroom`
+(`.agents/skills/headroom`), `hill-climb` (`skills/hill-climb`), `learn`
+(`skills/learn`), `open-design` (`.agents/skills/open-design`), `rtk`
+(`.agents/skills/rtk`), `sdlc` (`skills/sdlc`), `tkstack-principles`
+(`skills/tkstack-principles`), `unslop` (`skills/unslop`), and `write`
+(`skills/write`). Learn's subskills ship inside `skills/learn`. See
+[skill distribution](docs/skill-marketplace.md).
+
+OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
+needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
+Setup reports these requirements and does not authenticate accounts, start a
+proxy, redirect providers, run models, or index repositories. See
+[bootstrap details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
+
+## Repository layout
+
+Tracked directories (`git ls-files`). Root files beside them include `install.sh`, `sources.lock.json`, `SCOPE.md`, `AGENTS.md`, `CLAUDE.md`, and `GLOSSARY.md`.
+
+| Path | Contents |
+| --- | --- |
+| `.agents/` | Third-party packages. `.agents/skills/` holds `fal-ai`, `headroom`, `open-design`, and `rtk`. |
+| `.claude-plugin/` | Claude marketplace and plugin manifests (`marketplace.json`, `plugin.json`). |
+| `.devcontainer/` | Devcontainer: full setup on create, offline setup on later starts. |
+| `.githooks/` | Versioned `pre-commit` that checks the staged docs ledger. |
+| `.github/` | CI workflow `workflows/skills.yml` and Lever dials `lever.yml`. |
+| `.tkstack/` | Versioned state seed: `.gitignore` and `reuse/catalog.json`. |
+| `agents/` | Shared Markdown agents. The installer links them; `agents/README.md` is not installed. |
+| `docs/` | Focused install, skill, harness, and maintainer guides. |
+| `evals/` | Decision regressions. The guide is `evals/README.md`. `evals/repo-quality/` grades this checkout (`checks.py`, `snapshot.py`, `judge.py`, `eval.yaml`). |
+| `harnesses/` | Placement and host config: `harnesses/ai-sdk/` (Vercel AI SDK `profiles.example.json`), `harnesses/bootstrap/` (profiles, Python locks, toolchains), `harnesses/copilot/` (`lever.yml`), `harnesses/cursor/` (`graphify.mdc`, `tkstack-steering.mdc`), `harnesses/graphify/` and `harnesses/headroom/` (Python locks), `harnesses/openwiki/` (npm package and lock), `harnesses/t3code/` (reads a host's skills; no skills directory). |
+| `scripts/` | Installer tools. `install.sh` calls `scripts/bootstrap.py`. |
+| `skills/` | Owned skills. Learn subskills live in `skills/learn/skills/`. |
+| `src/` | Shared command, state, documentation, and pinned-runtime programs. |
+| `tests/` | Unittest suite. |
+| `vendor/` | Pinned upstream snapshots named in `sources.lock.json`. |
+| `vendor/ponytail/` | DietrichGebert/ponytail 5.3.3 (MIT): six skills and Node lifecycle-hook adapters. Vendored so setup uses those locked bytes instead of cloning upstream. |
 
 ## Install options
 
@@ -88,36 +144,6 @@ to select hosts. The default profile selects Codex, Claude Code, and Cursor.
 yourself. Set `CODEX_HOME` for a real-home Codex install. Restart or reload the
 harness after setup. Codex may require reviewing new hook definitions with
 `/hooks` before they run.
-
-## Install one skill
-
-The marketplace name is `tkstack`. These commands install the `investigate`
-plugin from `skills/investigate`:
-
-```text
-/plugin marketplace add Tyler-R-Kendrick/tkstack
-/plugin install investigate@tkstack
-```
-
-```sh
-npx skills add Tyler-R-Kendrick/tkstack/skills/investigate --skill investigate
-```
-
-`npx skills add Tyler-R-Kendrick/tkstack --skill investigate` selects the same
-package. Other manifest packages and their tree paths are `document`
-(`skills/document`), `fal-ai` (`.agents/skills/fal-ai`), `headroom`
-(`.agents/skills/headroom`), `hill-climb` (`skills/hill-climb`), `learn`
-(`skills/learn`), `open-design` (`.agents/skills/open-design`), `rtk`
-(`.agents/skills/rtk`), `sdlc` (`skills/sdlc`), `tkstack-principles`
-(`skills/tkstack-principles`), `unslop` (`skills/unslop`), and `write`
-(`skills/write`). Learn's subskills ship inside `skills/learn`. See
-[skill distribution](docs/skill-marketplace.md).
-
-OpenDesign needs its application/daemon and `OPEN_DESIGN_CLI`; Google Stitch
-needs `STITCH_API_KEY`. Services may also require their normal account sign-in.
-Setup reports these requirements and does not authenticate accounts, start a
-proxy, redirect providers, run models, or index repositories. See
-[bootstrap details](docs/bootstrap.md) and [integration readiness](docs/integrations.md).
 
 ## Devcontainers and Codex cloud
 

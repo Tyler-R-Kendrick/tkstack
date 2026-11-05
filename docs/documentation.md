@@ -153,7 +153,12 @@ README Develop section has copy-paste commands for
 `python3 -m unittest discover -s tests`,
 `REPO_QUALITY_GATE=1 python3 -m unittest tests.test_repo_quality`,
 `RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v`,
-and `python3 src/check_docs.py check`. The maintain section includes the dry-run
+and `python3 src/check_docs.py check`. Develop also names `evals/README.md`,
+`evals/repo-quality/`, and the promptfoo command that judge test runs,
+`npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
+The README repository layout table lists every tracked top-level directory
+and the notable subtrees, including `vendor/ponytail/` and each `harnesses/`
+directory. The maintain section includes the dry-run
 preview, routing inventory check, docs check, tests, and that restore sequence.
 `tests/test_repo_quality.py` always checks the repo-quality harness shape,
 including that the encoded snapshot stays under 100 KiB so the promptfoo grader

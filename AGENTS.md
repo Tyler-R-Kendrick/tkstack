@@ -54,6 +54,8 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   intermediary code-mode prompt. Put usage/contracts/design/evidence in
   `references/` through progressive disclosure. Prefer the locked Vercel AI SDK
   adapter for explicit chat/Responses, Decisions, or harness inference boundaries.
+  Shared profile examples live in `harnesses/ai-sdk/`
+  (`harnesses/ai-sdk/profiles.example.json`).
   A scaffold is a draft until its actual workflow and native outcomes are verified.
   See `docs/skillify.md`. Use
   `hookify` for explicit mechanically enforceable rules and hook authoring.
@@ -82,8 +84,11 @@ for current runtime readiness, and `GLOSSARY.md` for terminology.
   evidence distinct. See `docs/flowify.md`; do not invent a private workflow DSL.
 - Preserve every `vendor/<source>/` snapshot exactly, including licenses,
   references, scripts, symlinks, and executable modes. Record updates in
-  `sources.lock.json`. Upstream instructions under `vendor/` describe those
-  packages and are not additional mandatory policy for maintaining this repo.
+  `sources.lock.json`. `vendor/ponytail/` is the pinned DietrichGebert/ponytail
+  5.3.3 snapshot (six skills and Node lifecycle-hook adapters), vendored so
+  install uses those locked bytes instead of cloning upstream. Upstream
+  instructions under `vendor/` describe those packages and are not additional
+  mandatory policy for maintaining this repo.
 - Put personal skills in `skills/`, shared Markdown agents in `agents/`, and
   harness-specific configuration in `harnesses/`. Generated alias views in
   `.tkstack/` and installed links are ignored.

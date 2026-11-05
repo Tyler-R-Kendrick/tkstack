@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "c0edb007df10b52993d98f98820e82458dbccb98"
         }
       },
-      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
+      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         "skills/learn/skills/codify/LICENSE": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -575,7 +575,7 @@
         },
         "harnesses/README.md": {
           "mode": "100644",
-          "oid": "e9819c9e407fc67148cd7275f06646e55ee4407f"
+          "oid": "3310ddda4cfa67a80ca4605beb5354e62e659d96"
         },
         "harnesses/ai-sdk/profiles.example.json": {
           "mode": "100644",
@@ -634,18 +634,18 @@
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Named installer skill destinations in harnesses/README.md: Claude Code uses .claude/skills (~/.claude/skills at home), and Copilot Lever skills use .github/skills. The other --harness directories were already listed. Mapped catalog pages were reviewed and left unchanged."
+      "no_doc_impact": false,
+      "reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "f2db7326883f54c2b49c30baca641da5f6c84ca8"
+          "oid": "22c08ddae3e7fa54b91bc8e828e26f7a4b5e5fc1"
         }
       },
       "inputs": {
@@ -656,7 +656,7 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "62dbf5d2736f3d769159f619b9f431170ec4dedb"
+          "oid": "8c812fff589d2d8f3500587ac248212a442f6a8b"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
@@ -796,13 +796,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "The repo-quality snapshot test now requires the encoded snapshot to stay under 100 KiB so the promptfoo grader argument fits the operating-system limit."
+      "reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -813,7 +813,7 @@
           "oid": "f5497f954e9a92a72cacb678d1f52950b9e4d65c"
         }
       },
-      "docs_refresh_reason": "Reviewed the installer. Bash and curl are the host prerequisites: missing Python 3.11+ is installed with the official uv installer and uv python install 3.12, and a missing git client downloads the GitHub tarball instead of cloning. README Develop lists the unittest, repo-quality gate, opt-in judge, and doc check commands. The repo-quality judge now waits 900 seconds and retries once on timeout. Other skill documents still match their sources.",
+      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -843,7 +843,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -858,6 +858,7 @@
           "oid": "43bbf13dc05a87bf479541292d1d9826b5ccbfa0"
         }
       },
+      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -987,7 +988,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7a081c66f022d4e3524462ccfd4ca35b1a77ef6d"
+          "oid": "db2de2fb196a41530f653b1609da9f8f858490af"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1058,6 +1059,7 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
+      "docs_refresh_reason": "Named tracked tree paths in the README layout, Develop eval commands, AGENTS.md, and harness docs.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
