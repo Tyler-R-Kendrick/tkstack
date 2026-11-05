@@ -57,19 +57,32 @@ class RoutingInventoryTests(unittest.TestCase):
                 weak.append(name)
         self.assertEqual(weak, [])
 
-    def test_module_imports_without_a_preseeded_scripts_path(self):
+    def test_import_does_not_load_root_installer(self):
         env = os.environ.copy()
         env.pop("PYTHONPATH", None)
         result = subprocess.run(
             [sys.executable, "-c",
-             "import importlib.util; from pathlib import Path; "
+             "import sys; from pathlib import Path; import importlib.util; "
              "p = Path('skills/sdlc/scripts/routing_inventory.py'); "
              "spec = importlib.util.spec_from_file_location('routing_inventory_fresh', p); "
              "module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module); "
-             "print(module.install.sourced.__name__)"],
+             "loaded = [name for name in sys.modules if name in ('skill_roots', 'install') or name.startswith('tkstack_install')]; "
+             "print('LOADED', ','.join(loaded)); "
+             "print('HAS', hasattr(module, 'install')); "
+             "print('SKILLS', module.check(Path('.').resolve())['skills'])"],
             cwd=ROOT, capture_output=True, text=True, env=env)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("sourced", result.stdout)
+        self.assertIn("LOADED \n", result.stdout)
+        self.assertIn("HAS False", result.stdout)
+        self.assertGreater(int(result.stdout.split("SKILLS ", 1)[1].splitlines()[0]), 200)
+
+    def test_root_gate_and_ci_do_not_exec_skill_owned_programs(self):
+        workflows = sorted((ROOT / ".github/workflows").glob("*.yml"))
+        self.assertTrue(workflows)
+        blob = (ROOT / "src/check_skills.py").read_text()
+        blob += "\n" + "\n".join(path.read_text() for path in workflows)
+        for name in ("routing_inventory", "evolve.py", "sync_codify"):
+            self.assertNotIn(name, blob)
 
     def test_unknown_phase_fails(self):
         skills = {"present": {"group": "developed"}}

@@ -229,6 +229,57 @@ class RepoQualityTests(unittest.TestCase):
     def test_scripts_loc(self):
         self.assert_check(checks.scripts_loc(ROOT))
 
+    def test_scripts_loc_counts_root_only_skill_scripts_not_skill_owned_ones(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-loc-") as temporary:
+            root = Path(temporary)
+            (root / "scripts").mkdir()
+            (root / "src").mkdir()
+            (root / "scripts" / "glue.py").write_text("print('glue')\n", encoding="utf-8")
+            (root / "src" / "gate.py").write_text(
+                "load('hidden', 'skills/demo/scripts/hidden.py')\n"
+                "load('owned', 'skills/demo/scripts/owned.py')\n",
+                encoding="utf-8",
+            )
+            skill = root / "skills" / "demo"
+            (skill / "scripts").mkdir(parents=True)
+            (skill / "references").mkdir()
+            (skill / "SKILL.md").write_text(
+                "Run scripts/owned.py for the skill's own engine.\n",
+                encoding="utf-8",
+            )
+            (skill / "references" / "guide.md").write_text(
+                "The workflow calls scripts/owned.py.\n",
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "workflow.lock.json").write_text(
+                '{"files": {"scripts/owned.py": {}}}\n',
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "hidden.py").write_text(
+                "".join(f"value_{index} = {index}\n" for index in range(20)),
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "owned.py").write_text(
+                "".join(f"kept_{index} = {index}\n" for index in range(15)),
+                encoding="utf-8",
+            )
+            (skill / "scripts" / "engine.py").write_text("print('skill engine')\n", encoding="utf-8")
+            result = checks.scripts_loc(root)
+            evidence = "\n".join(result["evidence"])
+            self.assertIn("skills/demo/scripts/hidden.py: 20 non-blank lines", evidence)
+            self.assertNotIn("owned.py", evidence)
+            self.assertNotIn("engine.py", evidence)
+            self.assertIn("SKILL.md", result["explanation"])
+            self.assertIn("references", result["explanation"])
+            self.assertIn("workflow", result["explanation"])
+            self.assertEqual(result["value"], 1 + 2 + 20)
+            self.assertTrue(result["pass"], evidence)
+
+    def test_named_skill_engines_are_not_repo_glue(self):
+        reached = [path for path, _count in checks.reached_skill_scripts(ROOT)]
+        for name in ("codify.py", "skillify.py", "evolve.py", "sync_codify.py", "routing_inventory.py"):
+            self.assertFalse(any(path.endswith("/" + name) or path.endswith(name) for path in reached), reached)
+
     @GATE
     def test_quickstart_commands(self):
         self.assert_check(checks.quickstart_commands(ROOT))

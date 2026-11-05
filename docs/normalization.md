@@ -136,14 +136,16 @@ need their real task adapters and inspected artifacts.
 
 `src/check_skills.py` reuses Skillify validation and Codify freshness checks,
 checks all owned marketplace entries, shared runtime/state copies, required
-typed commands, contract schemas, and reviewed decision splits. It also checks
-the SDLC skill routing inventory: every installed skill needs an entry, and an
-entry cannot name a missing skill. The routing check does not regenerate alias
-or Graphify views. The repository's
+typed commands, contract schemas, and reviewed decision splits. It does not
+run the SDLC routing inventory. That check is
+`python3 skills/sdlc/scripts/routing_inventory.py check`. Importing the script
+does not load the installer; the check loads placement when SDLC runs it, and
+it does not regenerate alias or Graphify views. The repository's
 [CI workflow](../.github/workflows/skills.yml) creates
 `.tkstack/runtime/command-schema` from the Codify lockfile, then runs
 `src/check_skills.py`, `src/check_docs.py check`, and
-`python -m unittest discover -s tests`. It does not run a paid model or provider job.
+`python -m unittest discover -s tests`. The unittest step covers the routing
+inventory. It does not run a paid model or provider job.
 Native Graphify and AI SDK integration checks require their explicitly enabled
 local runtimes; those additional checks are covered by the retained local run.
 

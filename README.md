@@ -318,7 +318,7 @@ packages the same way `.github/workflows/skills.yml` does and runs the suite
 with `.tkstack/runtime/command-schema/bin/python`. Reapply
 `python3 scripts/install.py --target . --scope project` afterward because tests
 can regenerate ignored alias views. `python3 src/check_skills.py` is the
-owned-skill gate.
+owned-skill gate. It does not run the SDLC routing inventory.
 
 [`evals/repo-quality`](evals/repo-quality/) grades this checkout separately from
 the skill-evolution suites. The harness is Unix-only. Its snapshot lists

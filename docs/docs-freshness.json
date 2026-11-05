@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -12,7 +12,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
+          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -538,13 +538,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
+      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -552,7 +552,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
+          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -634,13 +634,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
+      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -735,7 +735,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "684f98eaf7cc961d5294f21c37a2a413b647b4d4"
+          "oid": "b34ce4b3dd96b676e75e95147e20b57757d92382"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -763,7 +763,7 @@
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
-          "oid": "530ebfd387af6f9d005c0b4e30b96bd1d56ba1cd"
+          "oid": "2aae901b63f07e66d6b41a7d1db8c82945495f92"
         },
         "tests/test_skillify_workflows.py": {
           "mode": "100644",
@@ -783,17 +783,17 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "test_install and test_bootstrap put the tests directory on sys.path so installer_stubs imports under discover and as tests.test_* modules. The reviewed install docs are unchanged."
+      "reason": "scripts_loc counts non-blank lines under scripts/ and src/, plus a skills/**/scripts file only when scripts/, src/, CI, or tests use it and its own skill never mentions it in SKILL.md, references, or workflow. The rule is in the check explanation and eval.yaml minimal_code, so mapped docs are unchanged. The root skills gate still does not run the SDLC routing inventory."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
+          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
         },
         "docs/runner.md": {
           "mode": "100644",
@@ -811,13 +811,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
+      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -829,7 +829,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
+          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
         }
       },
       "inputs": {
@@ -859,11 +859,11 @@
         },
         "src/README.md": {
           "mode": "100644",
-          "oid": "2b94d2f1ff3dee2c692018e6c75f62066e9d6aa6"
+          "oid": "1208636aee574530447a8183997f0270da38ec73"
         },
         "src/check_skills.py": {
           "mode": "100644",
-          "oid": "b7279b11a19be982b24ef4fa2f212334e50c0ba3"
+          "oid": "1eade15d28971d7e5582b1e0e98bc473902c8773"
         },
         "src/skill_roots.py": {
           "mode": "100644",
@@ -875,13 +875,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
+      "reason": "The root skills gate no longer runs the SDLC routing inventory. routing_inventory.py loads installer placement only when that skill check runs. README, src/README.md, and docs/normalization.md say so."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "aa6141e7675daf619b8fb4538d04b5e0cb545903"
+          "oid": "bcb88ca7aec497ad83c94dd9b850833ea1c436f5"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -913,7 +913,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "25ee62bafaa4b4a25d874400e6ddf917a1c8c529"
+          "oid": "4dc818896d633024e2ed40095276a37ca868a1aa"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1007,11 +1007,11 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "c76f302f32378cb2c9f75599bc5674ccfbbedd51"
+          "oid": "e472ae6ac7e9c5cde1c358323deb93a17b5dda6a"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
-          "oid": "62b2758f7c4c3db36fdd5bdc6b93271d70558afc"
+          "oid": "f7a54a6afba41af6b0abed7d4a9e3429906170c1"
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
@@ -1031,7 +1031,7 @@
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "65d4a1c4244c353ad5284a2496ba8971b8646167"
+          "oid": "097e790bc5be0965fd2a9c4b92c2952d355037e0"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2323,7 +2323,7 @@
         },
         "skills/sdlc/scripts/routing_inventory.py": {
           "mode": "100644",
-          "oid": "911c5dbdde05b70d6d3f9ea48ec87cf8a40dc3e4"
+          "oid": "56855d03478dd67df236fa2e109e95a16a666e3f"
         },
         "skills/sdlc/scripts/run.py": {
           "mode": "100644",
@@ -2351,7 +2351,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "7f21588e4a45834c30bbeac99f1fd093a4453e34"
+          "oid": "be22e068aa28a59d4bc4247492855e63995e05a5"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2658,8 +2658,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Dropped the ignored install flags and the devcontainer post-start --offline. routing_inventory stays exec'd by the root skills gate and is disclosed in src/README.md. Hookify and Instructify say the host owns hooks and instructions. Codify drift is sync_codify.py --check; skill conformance is that check plus src/check_skills.py. The unused bootstrap requirements pin is gone, and affected workflow locks were recompiled."
+      "no_doc_impact": true,
+      "reason": "scripts_loc counts non-blank lines under scripts/ and src/, plus a skills/**/scripts file only when scripts/, src/, CI, or tests use it and its own skill never mentions it in SKILL.md, references, or workflow. The rule is in the check explanation and eval.yaml minimal_code, so mapped docs are unchanged. The root skills gate still does not run the SDLC routing inventory."
     }
   },
   "object_format": "sha1",

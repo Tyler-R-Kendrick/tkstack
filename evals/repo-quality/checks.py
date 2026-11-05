@@ -85,8 +85,113 @@ def _iter_files(directory):
         yield path
 
 
+def _text(path):
+    """Decoded text of a regular file, or empty when it is binary or huge."""
+    if not path.is_file() or path.is_symlink():
+        return ""
+    try:
+        if path.stat().st_size > 2_000_000:
+            return ""
+        data = path.read_bytes()
+    except OSError:
+        return ""
+    if b"\0" in data:
+        return ""
+    return data.decode("utf-8", "replace")
+
+
+def _is_skill_script(root, path):
+    """True for a real Python file under skills/**/scripts/."""
+    try:
+        parts = path.resolve().relative_to(root.resolve()).parts
+    except (OSError, ValueError):
+        return False
+    return (
+        path.suffix == ".py"
+        and path.is_file()
+        and not path.is_symlink()
+        and bool(parts)
+        and parts[0] == "skills"
+        and "scripts" in parts[1:]
+    )
+
+
+def _owning_skill(root, script):
+    """Nearest ancestor package that ships a SKILL.md, if there is one."""
+    current = script.parent
+    root = root.resolve()
+    while current != root and root in current.parents:
+        if (current / "SKILL.md").is_file():
+            return current
+        current = current.parent
+    return None
+
+
+def _skill_mentions(skill, script):
+    """True when the skill names this script in SKILL.md, references, or workflow."""
+    if skill is None:
+        return False
+    needles = (script.name, script.relative_to(skill).as_posix())
+    chunks = [_text(skill / "SKILL.md")]
+    references = skill / "references"
+    if references.is_dir():
+        chunks.extend(_text(path) for path in references.rglob("*") if path.is_file())
+    scripts = skill / "scripts"
+    if scripts.is_dir():
+        chunks.extend(
+            _text(path) for path in scripts.iterdir()
+            if path.is_file() and "workflow" in path.name
+        )
+    blob = "\n".join(chunks)
+    return any(needle and needle in blob for needle in needles)
+
+
+def _consumer_text(root):
+    """Text of scripts/, src/, tests/, and CI workflows. These are glue consumers."""
+    chunks = []
+    for relative in ("scripts", "src", "tests", ".github/workflows"):
+        directory = root / relative
+        if not directory.is_dir():
+            continue
+        for path in _iter_files(directory):
+            chunks.append(_text(path))
+    return "\n".join(chunks)
+
+
+def reached_skill_scripts(root):
+    """Skill scripts whose only users are scripts/, src/, CI, or tests.
+
+    A file counts only when one of those calls it and its own skill never
+    mentions it in SKILL.md, references, or workflow. Skill engines the skill
+    itself names stay product code, even when a thin CLI imports them.
+    """
+    root = Path(root)
+    skills = root / "skills"
+    if not skills.is_dir():
+        return []
+    consumers = _consumer_text(root)
+    counted = []
+    for path in _iter_files(skills):
+        if not _is_skill_script(root, path):
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative not in consumers:
+            continue
+        if _skill_mentions(_owning_skill(root, path), path):
+            continue
+        count = _nonblank_lines(path)
+        if count is not None:
+            counted.append((relative, count))
+    return sorted(counted, key=lambda item: (-item[1], item[0]))
+
+
 def scripts_loc(root):
-    """Ceiling on glue under scripts/ and src/. Comments stay in the count."""
+    """Ceiling on repo glue: scripts/, src/, and root-only skill scripts.
+
+    Comments stay in the count. A skills/**/scripts file counts only when
+    scripts/, src/, CI, or tests are its only users and its own skill never
+    mentions it in SKILL.md, references, or workflow.
+    """
     per_file = []
     missing = []
     for name in ("scripts", "src"):
@@ -99,12 +204,20 @@ def scripts_loc(root):
             if count is None:
                 continue
             per_file.append((path.relative_to(root).as_posix(), count))
-    total = sum(count for _, count in per_file)
+    reached = [] if missing else reached_skill_scripts(root)
+    glue = sum(count for _, count in per_file)
+    extra = sum(count for _, count in reached)
+    per_file.extend(reached)
+    total = glue + extra
     largest = sorted(per_file, key=lambda item: (-item[1], item[0]))[:8]
     evidence = missing + [f"{path}: {count} non-blank lines" for path, count in largest]
     ok = total <= SCRIPTS_LOC_LIMIT and not missing
     explanation = (
-        f"scripts/ plus src/ has {total} non-blank lines. "
+        f"scripts/ plus src/ has {glue} non-blank lines. "
+        f"Also count a skills/**/scripts file only when scripts/, src/, CI, or tests "
+        f"use it and its own skill never mentions it in SKILL.md, references, or workflow. "
+        f"That adds {extra} non-blank lines from {len(reached)} root-only skill scripts. "
+        f"The total is {total}. "
         f"The best-practice ceiling for dotfiles glue is {SCRIPTS_LOC_LIMIT}."
     )
     return result(
