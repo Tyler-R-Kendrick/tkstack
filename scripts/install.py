@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
@@ -354,6 +355,64 @@ def alias_migrations(root, target, harnesses, scope="home"):
     return migrations
 
 
+SERENA_FROM = "git+https://github.com/oraios/serena"
+
+
+def serena_steps(project):
+    """Official uvx launch from oraios/serena, then init and project index.
+
+    `serena init` selects the language-server backend. `serena project index`
+    creates the project config when needed and indexes `project`. Home scope
+    indexes this checkout. Project scope indexes the install target. Neither
+    step indexes the user's home directory.
+    """
+    launch = ["uvx", "--from", SERENA_FROM, "serena"]
+    return (
+        (launch + ["init"], None),
+        (launch + ["project", "index"], project),
+    )
+
+
+def _run_serena(argv, cwd):
+    return subprocess.run(argv, cwd=cwd, capture_output=True, text=True)
+
+
+def initialize_serena(root, target, scope, dry_run=False, runner=None, which=None):
+    """Index Serena's project. Skip when uv/uvx is missing or a command fails.
+
+    `--dry-run` prints the commands and does not execute them. A missing uv,
+    a missing uvx, or a non-zero exit (including an offline uvx fetch) prints
+    a skip line and leaves the rest of install in place.
+    """
+    project = target if scope == "project" else root
+    steps = serena_steps(project)
+    if dry_run:
+        for argv, cwd in steps:
+            where = f" in {cwd}" if cwd is not None else ""
+            print("Would run" + where + ": " + " ".join(argv))
+        return 0
+    which = shutil.which if which is None else which
+    if which("uv") is None and which("uvx") is None:
+        print("skip serena: uv is not on PATH")
+        return 0
+    if which("uvx") is None:
+        print("skip serena: uvx is not on PATH")
+        return 0
+    runner = _run_serena if runner is None else runner
+    for argv, cwd in steps:
+        where = f" (cwd {cwd})" if cwd is not None else ""
+        print("run: " + " ".join(argv) + where)
+        try:
+            completed = runner(argv, None if cwd is None else str(cwd))
+        except OSError as error:
+            print(f"skip serena: {error}")
+            return 0
+        if completed.returncode != 0:
+            print(f"skip serena: {' '.join(argv)} exited {completed.returncode}")
+            return 0
+    return 0
+
+
 def repo_hooks(root, dry_run=False, uninstall=False):
     """Use .githooks for this checkout. Git then ignores .git/hooks."""
     try:
@@ -472,6 +531,10 @@ def main():
         changes = apply(plan, dry_run=args.dry_run, uninstall=args.uninstall, migrations=migrations)
         changes += remove_stale(stale_links(ROOT, target, harnesses, plan, link_scope), dry_run=args.dry_run)
         repo_hooks(ROOT, dry_run=args.dry_run, uninstall=args.uninstall)
+        if args.uninstall:
+            print("skip serena: uninstall")
+        else:
+            initialize_serena(ROOT, target, scope, dry_run=args.dry_run)
     except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
         print(f"tkstack: {error}", file=sys.stderr)
         return 1

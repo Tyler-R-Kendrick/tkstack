@@ -687,7 +687,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "93125b71d203e3a1202f9e8ae0b6c302d4823bb2"
+          "oid": "1476373919a961e498c4794fb2bc3381bbe44453"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Add the Agent Plugins schema check and its tests. docs/agent-plugins.md already names the check and the vendored schemas."
+      "reason": "Initialize Serena from install.py. docs/bootstrap.md and docs/agent-plugins.md already describe init, project index, dry-run, and the skip path."
     },
     "execution": {
       "docs": {
@@ -835,7 +835,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "4319222f3a2371bf8df4e6080545d41c6dde56d2"
+          "oid": "569114e61c9e84863371bf3d8d8a95273d0a331e"
         },
         "src/README.md": {
           "mode": "100644",
@@ -858,8 +858,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Declare the Agent Plugins 1.0 package, ship the six MCP servers, and record Serena install plus the conformance check."
+      "no_doc_impact": true,
+      "reason": "Initialize Serena from install.py. docs/bootstrap.md and docs/agent-plugins.md already describe init, project index, dry-run, and the skip path."
     },
     "skills": {
       "docs": {

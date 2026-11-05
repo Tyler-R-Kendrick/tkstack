@@ -33,6 +33,21 @@ from skill_roots import load  # noqa: E402
 install = load("install", ROOT / "scripts/install.py")
 
 
+def _env_without_uv():
+    """Drop uv and uvx so a real install.py run cannot fetch Serena or write ~/.serena."""
+    kept = []
+    for entry in os.environ.get("PATH", "").split(os.pathsep):
+        if not entry:
+            continue
+        directory = Path(entry)
+        if any((directory / name).exists() for name in ("uv", "uvx", "uv.exe", "uvx.exe")):
+            continue
+        kept.append(entry)
+    env = os.environ.copy()
+    env["PATH"] = os.pathsep.join(kept)
+    return env
+
+
 class InstallTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -316,8 +331,9 @@ class InstallTests(unittest.TestCase):
         before = {name: (checkout / name).read_bytes() for name in ('AGENTS.md', 'CLAUDE.md')}
         command = [sys.executable, str(checkout / 'scripts/install.py'), '--target', str(checkout),
                    '--harness', 'codex', '--harness', 'claude']
-        installed = subprocess.run(command, capture_output=True, text=True, timeout=60)
+        installed = subprocess.run(command, capture_output=True, text=True, timeout=60, env=_env_without_uv())
         self.assertEqual(installed.returncode, 0, installed.stdout + installed.stderr)
+        self.assertIn("skip serena: uv is not on PATH", installed.stdout)
         for name, data in before.items():
             self.assertEqual((checkout / name).read_bytes(), data)
         self.assertTrue((checkout / '.agents/principles').is_symlink())
@@ -353,14 +369,17 @@ class InstallTests(unittest.TestCase):
         target = self.target / "installation"
         command = [sys.executable, str(checkout / "scripts/install.py"),
                    "--target", str(target)]
-        subprocess.run(command + ["--dry-run"], check=True, capture_output=True)
+        env = _env_without_uv()
+        subprocess.run(command + ["--dry-run"], check=True, capture_output=True, env=env)
         self.assertFalse((checkout / ".tkstack").exists())
         self.assertFalse(target.exists())
-        subprocess.run(command, check=True, capture_output=True)
+        installed = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
+        self.assertIn("skip serena: uv is not on PATH", installed.stdout)
         self.assertTrue((target / ".agents/skills/matt-tdd/SKILL.md").is_file())
         self.assertTrue((target / ".agents/steering").is_symlink())
-        again = subprocess.run(command, check=True, capture_output=True, text=True)
+        again = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
         self.assertIn("0 link(s) changed.", again.stdout)
+        self.assertIn("skip serena: uv is not on PATH", again.stdout)
 
 
 
@@ -749,6 +768,90 @@ exec "$REAL_MV" "$@"
         log = self.uv_log.read_text()
         self.assertIn("python install 3.12.15", log)
         self.assertNotIn("chatty", log)
+
+
+class SerenaInstallTests(unittest.TestCase):
+    def _result(self, code):
+        return subprocess.CompletedProcess(args=[], returncode=code, stdout="", stderr="")
+
+    def test_dry_run_prints_init_and_index_without_calling_them(self):
+        calls = []
+        stdout = io.StringIO()
+        project = Path("/tmp/example-project")
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, project, "project", dry_run=True,
+                runner=lambda argv, cwd: calls.append((argv, cwd)),
+                which=lambda name: "/usr/bin/" + name,
+            )
+        text = stdout.getvalue()
+        self.assertEqual(calls, [])
+        self.assertIn("Would run: uvx --from git+https://github.com/oraios/serena serena init", text)
+        self.assertIn(
+            f"Would run in {project}: uvx --from git+https://github.com/oraios/serena serena project index",
+            text,
+        )
+
+    def test_home_scope_indexes_the_checkout(self):
+        calls = []
+        with redirect_stdout(io.StringIO()):
+            install.initialize_serena(
+                ROOT, Path("/home/someone"), "home", dry_run=False,
+                runner=lambda argv, cwd: calls.append((argv, cwd)) or self._result(0),
+                which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertEqual(calls[0][0][:4], ["uvx", "--from", "git+https://github.com/oraios/serena", "serena"])
+        self.assertEqual(calls[0][0][4:], ["init"])
+        self.assertIsNone(calls[0][1])
+        self.assertEqual(calls[1][0][4:], ["project", "index"])
+        self.assertEqual(calls[1][1], str(ROOT))
+
+    def test_missing_uv_skips_without_a_command(self):
+        calls = []
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=lambda argv, cwd: calls.append(argv),
+                which=lambda name: None,
+            )
+        self.assertEqual(calls, [])
+        self.assertIn("skip serena: uv is not on PATH", stdout.getvalue())
+
+    def test_uv_without_uvx_skips(self):
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project",
+                runner=lambda argv, cwd: self._result(0),
+                which=lambda name: "/usr/bin/uv" if name == "uv" else None,
+            )
+        self.assertIn("skip serena: uvx is not on PATH", stdout.getvalue())
+
+    def test_failed_command_skips_the_rest(self):
+        calls = []
+
+        def runner(argv, cwd):
+            calls.append(argv)
+            return self._result(1)
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=runner, which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertEqual(len(calls), 1)
+        self.assertIn("exited 1", stdout.getvalue())
+
+    def test_oserror_skips(self):
+        def runner(argv, cwd):
+            raise OSError("offline")
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            install.initialize_serena(
+                ROOT, ROOT, "project", runner=runner, which=lambda name: "/usr/bin/" + name,
+            )
+        self.assertIn("skip serena: offline", stdout.getvalue())
 
 
 if __name__ == "__main__":
