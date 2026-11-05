@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -19,7 +19,7 @@
           "oid": "590b4e81866559b49cddba9e5aeb5775440f173d"
         }
       },
-      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
+      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
       "inputs": {
         "scripts/sync_codify.py": {
           "mode": "100644",
@@ -545,7 +545,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -560,7 +560,7 @@
           "oid": "5d3a9c9438b30ad547bfb02b4b2f3ff6c2b9a141"
         }
       },
-      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
+      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -634,11 +634,11 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "f83aed8b4aa4dc6343ce81be11bb74e93292ecb8"
+          "oid": "0cbda95112f0d6c959f1fce94aca5a8deaa1ff67"
         }
       },
       "inputs": {
@@ -741,7 +741,7 @@
         },
         "tests/test_repo_quality.py": {
           "mode": "100644",
-          "oid": "c4f83c45ef412798c9b09b9b830e92192ec1d1f1"
+          "oid": "571550ee9c3d3204e97a8c0453b487694ae0c9c0"
         },
         "tests/test_reusify.py": {
           "mode": "100644",
@@ -785,13 +785,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented tests/test_repo_quality.py ceiling and judge gates in the maintainer guide and documentation page"
+      "reason": "Documented the pinned promptfoo judge test and its score gate."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -802,7 +802,7 @@
           "oid": "cff0ea0bbaa0eb27dc6625009b5f87fee33b6a3d"
         }
       },
-      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
+      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
       "inputs": {
         "harnesses/runner.json": {
           "mode": "100644",
@@ -832,7 +832,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -847,7 +847,7 @@
           "oid": "0117f7e313e39b368051e063a78360f2d8595e65"
         }
       },
-      "docs_refresh_reason": "Documented the repo-quality promptfoo harness in the maintainer guide and hill-climb page",
+      "docs_refresh_reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide.",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -969,7 +969,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "6a682f404df20b9c21cf194c843f85dd6eead3be"
+          "oid": "3b392cf349118c50d275bf641abb6fb8e7edfd3d"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1043,7 +1043,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "1587d0963f5707a687faaf395089bd944880d074"
+          "oid": "fd6411ece3d0b391fb35815a9a5f523302cb7c69"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1095,27 +1095,27 @@
         },
         "evals/repo-quality/checks.py": {
           "mode": "100644",
-          "oid": "d613ec2248a17939ac25dc158f8e23735d323c81"
+          "oid": "feeac513464be3d97f9cb7f24d0a0470551aca21"
         },
         "evals/repo-quality/eval.yaml": {
           "mode": "100644",
-          "oid": "7aa0ee5b86aaf98203341d787b6c950a43753e92"
+          "oid": "b39c5597a052110cac2887fb491b7183b7b40c39"
         },
         "evals/repo-quality/judge.py": {
           "mode": "100644",
-          "oid": "e309659f92a0bb6f5ccafe2046607535472dcd8d"
+          "oid": "407a9f4dcc8e09a1b11ffc409bf7cf1bee537a95"
         },
         "evals/repo-quality/results/baseline-checks.json": {
           "mode": "100644",
-          "oid": "c8f073b5ed5cfbc96dfa93f99b571c78bb2b3730"
+          "oid": "31bafa3d4baaaa24a360efa9b40a87aeedbf6878"
         },
         "evals/repo-quality/results/baseline-reasons.md": {
           "mode": "100644",
-          "oid": "496c6b5e570993cc2d0caab8b05b84fc54735489"
+          "oid": "2b727b4eeb24d48a5d22199d7a4082a160b4df8d"
         },
         "evals/repo-quality/snapshot.py": {
           "mode": "100644",
-          "oid": "86f5f3f8da827dc7903a4c11c0216e0ff1d209fe"
+          "oid": "f4c18ad0c589904f23cc7904bbf67df9ed35b88a"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2730,8 +2730,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": true,
-      "reason": "dropped bulky raw promptfoo output from results/; docs already describe the harness"
+      "no_doc_impact": false,
+      "reason": "Documented repo-quality snapshot frontmatter, prompt-file judge, and numeric rubric bands in the maintainer guide."
     }
   },
   "object_format": "sha1",

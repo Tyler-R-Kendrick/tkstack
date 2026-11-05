@@ -21,14 +21,20 @@
     "name": "quickstart_commands",
     "metric": "minimal_setup",
     "pass": false,
-    "value": 4,
+    "value": 10,
     "limit": 1,
-    "explanation": "The README quickstart has 4 commands. Best practice is a single install command (limit 1).",
+    "explanation": "The README quickstart has 10 commands. Best practice is exactly 1 install command.",
     "evidence": [
       "README.md: git clone https://github.com/Tyler-R-Kendrick/tkstack.git \"$HOME/.local/share/tkstack\"",
       "README.md: cd \"$HOME/.local/share/tkstack\"",
       "README.md: ./install.sh",
-      "README.md: . .tkstack/bootstrap/env.sh"
+      "README.md: . .tkstack/bootstrap/env.sh",
+      "README.md: ./install.sh --profile codex-cloud       # Codex-only host configuration",
+      "README.md: ./install.sh --target /repo --scope project --workspace /repo",
+      "README.md: ./install.sh --offline                  # reapply files using cached runtimes",
+      "README.md: ./install.sh --check                    # read-only verification",
+      "README.md: ./install.sh --dry-run                  # read-only plan and collision checks",
+      "README.md: ./install.sh --strict                   # fail for known unresolved prerequisites"
     ]
   },
   {
@@ -48,19 +54,19 @@
     "name": "harness_coverage",
     "metric": "cross_harness",
     "pass": false,
-    "value": 7,
+    "value": 4,
     "limit": 9,
-    "explanation": "7 of 9 harnesses (claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) are mentioned in harnesses/README.md or docs/.",
+    "explanation": "4 of 9 harnesses (claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) have a skills.json placement, an integrations.json args_by_harness entry, or a config path whose component is that harness.",
     "evidence": [
-      "claude: harnesses/README.md",
-      "codex: harnesses/README.md",
-      "cursor: harnesses/README.md",
-      "copilot: harnesses/README.md",
-      "grok: docs/adr/0003-separate-procedural-experience.md",
-      "kimi: not mentioned in harnesses/README.md or docs/",
-      "muse: not mentioned in harnesses/README.md or docs/",
-      "opencode: docs/caveman.md",
-      "t3code: docs/evaluation.md"
+      "claude: harnesses/skills.json placement.sources.graphify",
+      "codex: harnesses/skills.json placement.default",
+      "cursor: harnesses/skills.json placement.sources.cursor-team-kit",
+      "copilot: harnesses/copilot/",
+      "grok: no placement, args_by_harness entry, or config path",
+      "kimi: no placement, args_by_harness entry, or config path",
+      "muse: no placement, args_by_harness entry, or config path",
+      "opencode: no placement, args_by_harness entry, or config path",
+      "t3code: no placement, args_by_harness entry, or config path"
     ]
   },
   {
@@ -74,11 +80,11 @@
       "--dry-run",
       "--uninstall"
     ],
-    "explanation": "install.sh must accept --dry-run and --uninstall, in that file or in the Python entrypoint it execs. Supported flags: --dry-run.",
+    "explanation": "install.sh --help must list --dry-run and --uninstall, and install.sh --dry-run --offline --target <tmpdir> must exit 0 without changing the checkout. Supported flags: --dry-run.",
     "evidence": [
       "install.sh",
-      "scripts/bootstrap.py",
-      "missing --uninstall"
+      "install.sh --help does not list --uninstall",
+      "sandboxed install.sh --dry-run exited 0 and left the checkout unchanged"
     ]
   },
   {

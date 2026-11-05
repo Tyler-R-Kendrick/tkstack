@@ -1,16 +1,20 @@
 """Deterministic repo-quality checks and the promptfoo eval config."""
 
 import importlib.util
+import json
 import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
+import textwrap
 import unittest
 
 
 ROOT = Path(__file__).resolve().parent.parent
 EVAL_YAML = ROOT / "evals" / "repo-quality" / "eval.yaml"
+PROMPTFOO_PACKAGE = "promptfoo@0.125.1"
 METRICS = (
     "conventions",
     "minimal_setup",
@@ -33,7 +37,32 @@ def load_checks():
     return module
 
 
+def load_snapshot():
+    path = ROOT / "evals" / "repo-quality" / "snapshot.py"
+    spec = importlib.util.spec_from_file_location("repo_quality_snapshot", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 checks = load_checks()
+snapshot = load_snapshot()
+
+
+def _metric_scores(path):
+    data = json.loads(path.read_text(encoding="utf-8"))
+    scores = {}
+    for row in data["results"]["results"]:
+        named = row.get("namedScores") or {}
+        if named:
+            scores.update(named)
+            continue
+        grading = row.get("gradingResult") or {}
+        for component in grading.get("componentResults") or []:
+            metric = (component.get("assertion") or {}).get("metric")
+            if metric:
+                scores[metric] = component.get("score")
+    return scores
 
 
 def failure_message(result):
@@ -220,18 +249,103 @@ class RepoQualityTests(unittest.TestCase):
 
     def test_snapshot_ignores_extra_args_from_any_directory(self):
         script = ROOT / "evals" / "repo-quality" / "snapshot.py"
-        completed = subprocess.run(
-            [sys.executable, "snapshot.py", "PROMPTFOO-ARGV-PROBE", "{\"config\":true}", "{\"vars\":{}}"],
-            cwd=script.parent,
-            capture_output=True,
-            text=True,
-            timeout=60,
-            check=False,
-        )
-        self.assertEqual(completed.returncode, 0, completed.stderr[-2000:])
-        self.assertIn("## README.md", completed.stdout)
-        self.assertIn("## install.sh", completed.stdout)
-        self.assertNotIn("PROMPTFOO-ARGV-PROBE", completed.stdout)
+        outputs = []
+        temporary = tempfile.mkdtemp(prefix="repo-quality-cwd-")
+        try:
+            for cwd in (script.parent, ROOT, Path(temporary)):
+                completed = subprocess.run(
+                    [
+                        sys.executable, str(script), "PROMPTFOO-ARGV-PROBE",
+                        "{\"config\":true}", "{\"vars\":{}}",
+                    ],
+                    cwd=cwd,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                    check=False,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr[-2000:])
+                self.assertNotIn("PROMPTFOO-ARGV-PROBE", completed.stdout)
+                outputs.append(completed.stdout)
+        finally:
+            os.rmdir(temporary)
+        self.assertEqual(outputs[0], outputs[1])
+        self.assertEqual(outputs[0], outputs[2])
+        self.assertIn("## File tree", outputs[0])
+        self.assertIn("## README.md", outputs[0])
+
+    def test_snapshot_stays_within_limit_and_keeps_evidence(self):
+        text = snapshot.snapshot()
+        self.assertLessEqual(len(text), snapshot.LIMIT)
+        self.assertIn("## File tree", text)
+        self.assertIn("## SKILL.md frontmatter", text)
+        self.assertIn("## docs/skill-marketplace.md", text)
+        self.assertIn("npx skills add", text)
+        for relative in (
+            ".claude-plugin/marketplace.json",
+            ".claude-plugin/plugin.json",
+            "harnesses/skills.json",
+            "harnesses/integrations.json",
+        ):
+            self.assertIn(relative, text)
+        home = str(Path.home())
+        if len(home) > 1:
+            self.assertNotIn(home, text)
+
+    def test_quickstart_requires_exactly_one_command(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-readme-") as temporary:
+            root = Path(temporary)
+            readme = root / "README.md"
+            readme.write_text("# Title\n\n## Install\n\nNo commands here.\n", encoding="utf-8")
+            empty = checks.quickstart_commands(root)
+            self.assertFalse(empty["pass"])
+            self.assertEqual(empty["value"], 0)
+            readme.write_text(textwrap.dedent("""\
+                ## Uninstall
+
+                ```sh
+                rm -rf /
+                ```
+
+                ## Install
+
+                ```text
+                $ ./install.sh && echo done
+                ```
+
+                ```sh
+                echo "keep && this"; true
+                ```
+                """), encoding="utf-8")
+            counted = checks.quickstart_commands(root)
+            self.assertEqual(counted["value"], 4, counted["evidence"])
+            self.assertFalse(counted["pass"])
+
+    def test_invalid_utf8_manifest_does_not_crash(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-json-") as temporary:
+            path = Path(temporary) / "plugin.json"
+            path.write_bytes(b"\xff\xfe not utf-8")
+            loaded, detail = checks._json_object(path)
+            self.assertIsNone(loaded)
+            self.assertEqual(detail, "invalid UTF-8")
+
+    def test_harness_coverage_ignores_prose_mentions(self):
+        with tempfile.TemporaryDirectory(prefix="repo-quality-harness-") as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "story.md").write_text(
+                "The muse and kimi and grok and opencode and t3code are named here.\n",
+                encoding="utf-8",
+            )
+            (root / "harnesses").mkdir()
+            (root / "harnesses" / "skills.json").write_text(
+                '{"placement": {"default": ["codex"]}}\n', encoding="utf-8"
+            )
+            (root / "harnesses" / "integrations.json").write_text("{}\n", encoding="utf-8")
+            covered = checks.harness_coverage(root)
+            self.assertEqual(covered["value"], 1, covered["evidence"])
+            self.assertFalse(covered["pass"])
 
     def test_judge_prompt_is_argv1_with_extra_args(self):
         script = ROOT / "evals" / "repo-quality" / "judge.py"
@@ -242,7 +356,7 @@ class RepoQualityTests(unittest.TestCase):
         )
         completed = subprocess.run(
             [sys.executable, str(script), "GRADE-PROMPT", "{\"options\":true}", "{\"context\":true}"],
-            cwd="/tmp",
+            cwd=tempfile.gettempdir(),
             env=environment,
             capture_output=True,
             text=True,
@@ -251,6 +365,49 @@ class RepoQualityTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr[-2000:])
         self.assertEqual(completed.stdout.strip(), "GRADE-PROMPT")
+
+    def test_failed_judge_does_not_emit_its_stdout(self):
+        script = ROOT / "evals" / "repo-quality" / "judge.py"
+        environment = os.environ.copy()
+        environment.pop("CURSOR_API_KEY", None)
+        environment["REPO_QUALITY_JUDGE"] = (
+            f"{sys.executable} -c \"import sys; sys.stdout.write('SECRET-GRADE'); sys.exit(1)\""
+        )
+        completed = subprocess.run(
+            [sys.executable, str(script), "GRADE-PROMPT", "{\"options\":true}", "{\"context\":true}"],
+            cwd=tempfile.gettempdir(),
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertNotIn("SECRET-GRADE", completed.stdout)
+        self.assertNotIn("SECRET-GRADE", completed.stderr)
+        self.assertIn("judge provider: REPO_QUALITY_JUDGE", completed.stderr)
+
+    def test_default_grok_judge_uses_prompt_file(self):
+        path = ROOT / "evals" / "repo-quality" / "judge.py"
+        spec = importlib.util.spec_from_file_location("repo_quality_judge", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        saved = os.environ.copy()
+        try:
+            os.environ.pop("CURSOR_API_KEY", None)
+            os.environ.pop("REPO_QUALITY_JUDGE", None)
+            argv, _environment, stdin, provider = module.judge_invocation(
+                "SECRET-PROMPT", "prompt.txt"
+            )
+        finally:
+            os.environ.clear()
+            os.environ.update(saved)
+        self.assertEqual(provider, "grok")
+        self.assertIsNone(stdin)
+        self.assertIn("--prompt-file", argv)
+        self.assertIn("prompt.txt", argv)
+        self.assertNotIn("SECRET-PROMPT", argv)
+        self.assertNotIn("-p", argv)
 
     def test_eval_yaml_structure(self):
         config = load_eval_config(EVAL_YAML)
@@ -283,7 +440,7 @@ class RepoQualityTests(unittest.TestCase):
         output.parent.mkdir(parents=True, exist_ok=True)
         completed = subprocess.run(
             [
-                "npx", "-y", "promptfoo@latest", "eval",
+                "npx", "-y", PROMPTFOO_PACKAGE, "eval",
                 "-c", "evals/repo-quality/eval.yaml",
                 "--no-cache", "-o", "evals/repo-quality/results/latest.json",
             ],
@@ -294,8 +451,12 @@ class RepoQualityTests(unittest.TestCase):
             check=False,
         )
         detail = (completed.stdout + "\n" + completed.stderr)[-4000:]
-        self.assertEqual(completed.returncode, 0, detail)
         self.assertTrue(output.is_file(), detail)
+        scores = _metric_scores(output)
+        for metric in METRICS:
+            self.assertIn(metric, scores, detail)
+            self.assertEqual(scores[metric], 1.0, detail)
+        self.assertEqual(completed.returncode, 0, detail)
 
 
 if __name__ == "__main__":

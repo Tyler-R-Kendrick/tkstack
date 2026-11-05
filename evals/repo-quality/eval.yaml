@@ -3,8 +3,10 @@
 description: Repository quality of this tkstack checkout
 prompts:
   - "Repository snapshot for repo-quality evaluation."
-# Script paths are relative to this file. Promptfoo runs exec providers with
-# cwd set to the config directory, from any shell working directory.
+# Unix only: promptfoo runs `python3` with cwd set to this file's directory.
+# defaultTest.options.provider is the llm-rubric grader (promptfoo
+# getGradingProvider / getFinalTest). It is not the test execution provider.
+# The execution provider stays `exec:python3 snapshot.py`.
 providers:
   - "exec:python3 snapshot.py"
 defaultTest:
@@ -47,11 +49,11 @@ tests:
         metric: minimal_code
         threshold: 1.0
         value: |
-          Grade minimal code. Installer and glue code stay small. scripts/ is within about 1500 non-blank lines, and each script has one job.
-          10: scripts/ is within that budget, and the LOC breakdown shows a short, obvious split.
-          7: scripts/ is slightly over 1500, or one script is longer than its job requires, and the split is still obvious.
-          5: scripts/ is well over 1500, or the same behavior shows up in more than one script.
-          3: Large undifferentiated scripts dominate scripts/.
+          Grade minimal code. Installer and glue code stay small. Count non-blank lines under scripts/. Each script has one job.
+          10: scripts/ has at most 1500 non-blank lines, and the LOC breakdown shows a short, obvious split.
+          7: scripts/ has 1501 to 1650 non-blank lines, and the split is still obvious.
+          5: scripts/ has 1651 to 2500 non-blank lines, or the same behavior shows up in more than one script while the total is at most 2500.
+          3: scripts/ has more than 2500 non-blank lines, or large undifferentiated scripts dominate scripts/.
           0: The glue code is large enough that the snapshot's LOC breakdown has no readable structure.
           Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
           Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
@@ -65,7 +67,7 @@ tests:
           10: All nine are documented and have a real path in the tree, manifests, or harness docs.
           7: Seven or eight are documented with a real path, and the snapshot names the omitted harnesses as out of scope.
           5: Four, five, or six are actually supported.
-          3: Only claude, codex, and cursor, or a similar pair, are actually supported.
+          3: One, two, or three harnesses are actually supported.
           0: The snapshot has no harness story.
           Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
           Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
@@ -76,7 +78,7 @@ tests:
         threshold: 1.0
         value: |
           Grade marketplace install. The checkout is a plugin/skills marketplace a user can add.
-          10: .claude-plugin/marketplace.json and .claude-plugin/plugin.json are present and valid, every shown SKILL.md has name and description frontmatter, and the docs give `/plugin marketplace add`.
+          10: .claude-plugin/marketplace.json and .claude-plugin/plugin.json are present and valid, every shown SKILL.md has name and description frontmatter, and the docs show a marketplace-add command that names both a package from those manifests and a placement path present in the tree. Pasting a command string that does not name a manifest package and a tree path does not qualify.
           7: The marketplace manifest is valid and skills have frontmatter, with one field missing from plugin.json or one skill.
           5: One of the two manifests is absent or invalid, and a marketplace path is still recognizable.
           3: Manifests are absent or broken, so install would be guesswork.
@@ -89,8 +91,8 @@ tests:
         metric: direct_install
         threshold: 1.0
         value: |
-          Grade direct install. A user installs a plugin or a skill with one command, for example `npx skills add` or `/plugin install name@marketplace`.
-          10: README.md or the docs in the snapshot give one such command that selects a skill or plugin, and the manifests name that package.
+          Grade direct install. A user installs one plugin or one skill with one command.
+          10: README.md or the docs give one install command that names a package from the manifests and a placement path present in the tree. A command string with no matching manifest package and tree path does not qualify.
           7: One command installs the whole set, and selecting a single skill needs one extra documented flag.
           5: Direct install is documented as several commands, or only as a local checkout plus extra steps.
           3: The docs mention direct install and omit a command that could succeed.
@@ -103,8 +105,8 @@ tests:
         metric: state_of_the_art
         threshold: 1.0
         value: |
-          Grade state of the art for a portable agent-skills repository. Current practice is the Agent Skills layout, SKILL.md with name and description, a Claude marketplace manifest, `npx skills add` or `/plugin marketplace add`, and harness-independent placement.
-          10: The snapshot shows that current layout, both install routes, and multi-harness placement, and the docs match those files.
+          Grade state of the art for a portable agent-skills repository. Current practice is the Agent Skills layout, SKILL.md with name and description, a valid marketplace manifest, one marketplace-add command and one direct skill-add command, and harness-independent placement.
+          10: The snapshot shows that layout, both commands, and multi-harness placement, and each command names a package from the manifest and a placement path present in the tree. The docs match those files. A bare command string with no matching package and path does not qualify.
           7: The main path is current, and one older mechanism remains explicitly labeled as legacy.
           5: The tree mixes a current skills layout with a single-harness or copy-the-prompts assumption.
           3: The layout is an older single-IDE prompt collection.

@@ -20,5 +20,6 @@
 /.github/automations
 __pycache__/
 node_modules/
+evals/repo-quality/results/latest.json
 *.py[cod]
 .DS_Store

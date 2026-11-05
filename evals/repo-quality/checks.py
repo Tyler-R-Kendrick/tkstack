@@ -7,8 +7,11 @@ checkout can still fail them.
 """
 
 import json
+import os
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -26,18 +29,24 @@ HARNESSES = (
     "opencode",
     "t3code",
 )
-# "T3 Code" and "open-code" are the same harnesses as the metric tokens.
-HARNESS_PATTERNS = {
-    "claude": r"\bclaude\b",
-    "codex": r"\bcodex\b",
-    "cursor": r"\bcursor\b",
-    "copilot": r"\bcopilot\b",
-    "grok": r"\bgrok\b",
-    "kimi": r"\bkimi\b",
-    "muse": r"\bmuse\b",
-    "opencode": r"\bopen-?code\b",
-    "t3code": r"\bt3code\b|\bt3-code\b|\bt3 code\b",
+# Path components that name a harness. "open-code" and "t3-code" are the same
+# harnesses as the metric tokens. A prose mention is not placement.
+HARNESS_PATH_NAMES = {
+    "claude": "claude",
+    "codex": "codex",
+    "cursor": "cursor",
+    "copilot": "copilot",
+    "grok": "grok",
+    "kimi": "kimi",
+    "muse": "muse",
+    "opencode": "opencode",
+    "open-code": "opencode",
+    "t3code": "t3code",
+    "t3-code": "t3code",
 }
+_HEADING = re.compile(
+    r"(?i)(?<!un)(?<!un-)(?<!un )\b(?:quickstart|getting started|install)\b"
+)
 OWNED_SKILL_ROOTS = ("skills", ".agents/skills")
 MANIFESTS = (
     ".claude-plugin/marketplace.json",
@@ -114,26 +123,83 @@ def scripts_loc(root):
     )
 
 
-def _section(text, heading):
+def _heading_text(line, following):
+    """Return (level, text) for an ATX or Setext heading, else None."""
+    match = re.match(r"^(#+)[ \t]*(.*\S)[ \t]*$", line)
+    if match:
+        return len(match.group(1)), match.group(2)
+    if following and line.strip() and re.match(r"^(=+|-+)[ \t]*$", following):
+        return (1 if following.lstrip().startswith("=") else 2), line.strip()
+    return None
+
+
+def _section(text, heading=_HEADING):
+    pattern = heading if hasattr(heading, "search") else re.compile(heading, re.I)
     lines = text.splitlines()
     start = None
     level = None
-    pattern = re.compile(heading, re.I)
     for index, line in enumerate(lines):
-        match = re.match(r"^(#+)\s+(.*\S)\s*$", line)
-        if match and pattern.search(match.group(2)):
-            start = index
-            level = len(match.group(1))
+        following = lines[index + 1] if index + 1 < len(lines) else ""
+        parsed = _heading_text(line, following)
+        if parsed and pattern.search(parsed[1]):
+            start, level = index, parsed[0]
             break
     if start is None:
         return None
     body = []
-    for line in lines[start + 1:]:
-        match = re.match(r"^(#+)\s+", line)
-        if match and len(match.group(1)) <= level:
+    body_start = start + 1
+    if start + 1 < len(lines) and re.match(r"^(=+|-+)[ \t]*$", lines[start + 1]):
+        body_start = start + 2
+    index = body_start
+    while index < len(lines):
+        following = lines[index + 1] if index + 1 < len(lines) else ""
+        parsed = _heading_text(lines[index], following)
+        if parsed and parsed[0] <= level:
             break
-        body.append(line)
+        body.append(lines[index])
+        index += 1
     return "\n".join(body)
+
+
+def _split_shell(command):
+    """Split one logical line on && and ; outside quotes."""
+    parts = []
+    buf = []
+    quote = None
+    index = 0
+    while index < len(command):
+        char = command[index]
+        if quote:
+            buf.append(char)
+            if char == quote and command[index - 1] != "\\":
+                quote = None
+            index += 1
+            continue
+        if char in "\"'":
+            quote = char
+            buf.append(char)
+            index += 1
+            continue
+        if command.startswith("&&", index):
+            piece = "".join(buf).strip()
+            if piece:
+                parts.append(piece)
+            buf = []
+            index += 2
+            continue
+        if char == ";":
+            piece = "".join(buf).strip()
+            if piece:
+                parts.append(piece)
+            buf = []
+            index += 1
+            continue
+        buf.append(char)
+        index += 1
+    piece = "".join(buf).strip()
+    if piece:
+        parts.append(piece)
+    return parts
 
 
 def _shell_commands(block):
@@ -144,8 +210,7 @@ def _shell_commands(block):
         if pending:
             pending = pending[:-1].rstrip() + " " + re.sub(r"^[$>]\s*", "", stripped)
             if not stripped.endswith("\\"):
-                if pending.strip():
-                    commands.append(pending.strip())
+                commands.extend(_split_shell(pending.strip()))
                 pending = ""
             continue
         if not stripped or stripped.startswith("#"):
@@ -156,24 +221,32 @@ def _shell_commands(block):
         if stripped.endswith("\\"):
             pending = stripped
         else:
-            commands.append(stripped)
+            commands.extend(_split_shell(stripped))
     if pending:
-        commands.append(pending[:-1].strip())
-    return commands
+        commands.extend(_split_shell(pending[:-1].strip()))
+    return [command for command in commands if command]
 
 
-def _first_shell_block(section):
+def _looks_like_shell(body):
+    return any(re.match(r"^[ \t]*\$[ \t]+\S", line) for line in body.splitlines())
+
+
+def _shell_blocks(section):
     fence = re.compile(r"^```([^\n]*)\n(.*?)^```[ \t]*$", re.M | re.S)
+    blocks = []
     for match in fence.finditer(section):
         info = match.group(1).strip().split()
         language = info[0].lower() if info else ""
-        if language in {"", "sh", "bash", "shell", "console", "zsh"}:
-            return match.group(2)
-    return None
+        body = match.group(2)
+        if language in {"sh", "bash", "shell", "console", "zsh"}:
+            blocks.append(body)
+        elif language in {"", "text", "txt"} and _looks_like_shell(body):
+            blocks.append(body)
+    return blocks
 
 
 def quickstart_commands(root):
-    """The first shell block of the install/quickstart section is the happy path."""
+    """Every shell command in the install/quickstart section is the happy path."""
     readme = root / "README.md"
     if not readme.is_file():
         return result(
@@ -181,23 +254,24 @@ def quickstart_commands(root):
             "README.md has no install quickstart.", ["README.md is absent"],
         )
     text = readme.read_text(encoding="utf-8", errors="replace")
-    section = _section(text, r"quickstart|getting started|install")
+    section = _section(text)
     if section is None:
         return result(
             "quickstart_commands", "minimal_setup", False, None, QUICKSTART_COMMAND_LIMIT,
             "README.md has no Install, Quickstart, or Getting started section.",
             ["README.md"],
         )
-    block = _first_shell_block(section)
-    commands = _shell_commands(block) if block is not None else []
+    commands = []
+    for block in _shell_blocks(section):
+        commands.extend(_shell_commands(block))
     count = len(commands)
-    ok = count <= QUICKSTART_COMMAND_LIMIT
+    ok = count == QUICKSTART_COMMAND_LIMIT
     explanation = (
         f"The README quickstart has {count} commands. "
-        f"Best practice is a single install command (limit {QUICKSTART_COMMAND_LIMIT})."
+        f"Best practice is exactly {QUICKSTART_COMMAND_LIMIT} install command."
     )
     evidence = [f"README.md: {command}" for command in commands] or [
-        "README.md: no shell block in the install/quickstart section"
+        "README.md: no shell commands in the install/quickstart section"
     ]
     return result(
         "quickstart_commands", "minimal_setup", ok, count, QUICKSTART_COMMAND_LIMIT,
@@ -245,6 +319,8 @@ def _frontmatter(text):
 def _json_object(path):
     try:
         loaded = json.loads(path.read_text(encoding="utf-8"))
+    except UnicodeDecodeError:
+        return None, "invalid UTF-8"
     except json.JSONDecodeError as error:
         return None, f"invalid JSON ({error.msg} at line {error.lineno})"
     except OSError as error:
@@ -311,94 +387,186 @@ def marketplace_manifests(root):
     )
 
 
-def _mention_files(root):
-    paths = []
-    readme = root / "harnesses" / "README.md"
-    if readme.is_file():
-        paths.append(readme)
-    docs = root / "docs"
-    if docs.is_dir():
-        paths.extend(
-            path for path in sorted(docs.rglob("*"))
-            if path.is_file() and not any(part in SKIP_NAMES for part in path.parts)
-        )
-    return paths
+def _record_harness(hits, name, evidence):
+    if name in hits and not hits[name]:
+        hits[name] = evidence
+
+
+def _record_name_list(hits, value, label):
+    if not isinstance(value, list):
+        return
+    for item in value:
+        if isinstance(item, str):
+            _record_harness(hits, item, label)
+
+
+def _walk_args_by_harness(value, hits):
+    if isinstance(value, dict):
+        args = value.get("args_by_harness")
+        if isinstance(args, dict):
+            for name in args:
+                _record_harness(hits, name, "harnesses/integrations.json args_by_harness." + name)
+        for child in value.values():
+            _walk_args_by_harness(child, hits)
+    elif isinstance(value, list):
+        for child in value:
+            _walk_args_by_harness(child, hits)
+
+
+def _placement_from_manifests(root, hits):
+    skills, _detail = _json_object(root / "harnesses" / "skills.json")
+    if isinstance(skills, dict):
+        placement = skills.get("placement")
+        if isinstance(placement, dict):
+            _record_name_list(hits, placement.get("default"), "harnesses/skills.json placement.default")
+            sources = placement.get("sources")
+            if isinstance(sources, dict):
+                for source, names in sources.items():
+                    _record_name_list(
+                        hits, names, f"harnesses/skills.json placement.sources.{source}"
+                    )
+    integrations, _detail = _json_object(root / "harnesses" / "integrations.json")
+    if isinstance(integrations, dict):
+        _walk_args_by_harness(integrations, hits)
+
+
+def _placement_from_paths(root, hits):
+    if all(hits.values()):
+        return
+    skip = SKIP_NAMES | {"vendor"}
+    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
+        dirnames[:] = [name for name in dirnames if name not in skip]
+        relative = Path(dirpath).relative_to(root)
+        for part in relative.parts:
+            name = HARNESS_PATH_NAMES.get(part.lower())
+            if name:
+                _record_harness(hits, name, relative.as_posix() + "/")
+        for filename in filenames:
+            name = HARNESS_PATH_NAMES.get(filename.lower())
+            if name:
+                _record_harness(hits, name, (relative / filename).as_posix())
+        if all(hits.values()):
+            return
 
 
 def harness_coverage(root):
-    """Each of the nine harnesses is named in harnesses/README.md or docs/."""
-    files = _mention_files(root)
-    texts = []
-    for path in files:
-        try:
-            data = path.read_bytes()
-        except OSError:
-            continue
-        if b"\0" in data[:1024]:
-            continue
-        texts.append((path.relative_to(root).as_posix(), data.decode("utf-8", "replace")))
+    """Each harness has a placement entry, args_by_harness key, or config path."""
+    hits = {name: "" for name in HARNESSES}
+    _placement_from_manifests(root, hits)
+    _placement_from_paths(root, hits)
     evidence = []
     found = 0
     for name in HARNESSES:
-        pattern = re.compile(HARNESS_PATTERNS[name], re.I)
-        hit = next((relative for relative, text in texts if pattern.search(text)), None)
-        if hit:
+        if hits[name]:
             found += 1
-            evidence.append(f"{name}: {hit}")
+            evidence.append(f"{name}: {hits[name]}")
         else:
-            evidence.append(f"{name}: not mentioned in harnesses/README.md or docs/")
+            evidence.append(f"{name}: no placement, args_by_harness entry, or config path")
     ok = found == len(HARNESSES)
     explanation = (
         f"{found} of {len(HARNESSES)} harnesses "
         "(claude, codex, cursor, copilot, grok, kimi, muse, opencode, t3code) "
-        "are mentioned in harnesses/README.md or docs/."
+        "have a skills.json placement, an integrations.json args_by_harness entry, "
+        "or a config path whose component is that harness."
     )
     return result(
         "harness_coverage", "cross_harness", ok, found, len(HARNESSES), explanation, evidence
     )
 
 
-def _dispatched_python(root, text):
-    match = re.search(r"scripts/([A-Za-z0-9_]+\.py)", text)
-    if not match:
+def _lists_option(text, flag):
+    escaped = re.escape(flag)
+    if re.search(rf"(?m)^\s*{escaped}(?:[\s,=\[|]|$)", text):
+        return True
+    return re.search(rf"(?m)^usage:.*{escaped}\b", text) is not None
+
+
+def _porcelain(root):
+    completed = subprocess.run(
+        ["git", "-C", str(root), "status", "--porcelain"],
+        capture_output=True, text=True, timeout=20, check=False,
+    )
+    if completed.returncode != 0:
         return None
-    path = root / "scripts" / match.group(1)
-    return path if path.is_file() else None
+    return completed.stdout
+
+
+def _sandbox_env(home, temporary):
+    return {
+        "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+        "HOME": str(home),
+        "TMPDIR": str(temporary),
+        "LANG": os.environ.get("LANG", "C.UTF-8"),
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TKSTACK_PYTHON": sys.executable,
+    }
 
 
 def install_flags(root):
-    """install.sh supports --dry-run and --uninstall, directly or via the script it execs."""
+    """install.sh --help lists both flags, and a sandboxed --dry-run writes nothing outside."""
     install = root / "install.sh"
-    blobs = []
-    evidence = []
     if not install.is_file():
         return result(
             "install_flags", "dotfiles", False, [], ["--dry-run", "--uninstall"],
             "install.sh is absent, so it has neither --dry-run nor uninstall.",
             ["absent: install.sh"],
         )
-    text = install.read_text(encoding="utf-8", errors="replace")
-    blobs.append(text)
-    evidence.append("install.sh")
-    dispatched = _dispatched_python(root, text)
-    if dispatched is not None:
-        blobs.append(dispatched.read_text(encoding="utf-8", errors="replace"))
-        evidence.append(dispatched.relative_to(root).as_posix())
-    blob = "\n".join(blobs)
+    evidence = ["install.sh"]
     supported = []
-    if "--dry-run" in blob:
-        supported.append("--dry-run")
-    else:
-        evidence.append("missing --dry-run")
-    if "--uninstall" in blob:
+    try:
+        help_run = subprocess.run(
+            [str(install), "--help"],
+            cwd=root, capture_output=True, text=True, timeout=30, check=False,
+            env=_sandbox_env(Path(tempfile.gettempdir()), tempfile.gettempdir()),
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        return result(
+            "install_flags", "dotfiles", False, [], ["--dry-run", "--uninstall"],
+            f"install.sh --help failed: {error}", evidence,
+        )
+    help_text = help_run.stdout or ""
+    if help_run.returncode == 0 and _lists_option(help_text, "--uninstall"):
         supported.append("--uninstall")
     else:
-        evidence.append("missing --uninstall")
+        evidence.append("install.sh --help does not list --uninstall")
+    dry_ok = False
+    try:
+        with tempfile.TemporaryDirectory(prefix="repo-quality-dry-") as temporary:
+            sandbox = Path(temporary)
+            home = sandbox / "home"
+            target = sandbox / "target"
+            home.mkdir()
+            target.mkdir()
+            before = _porcelain(root)
+            dry_run = subprocess.run(
+                [
+                    str(install), "--dry-run", "--offline", "--no-toolchains", "--no-shell",
+                    "--target", str(target), "--workspace", str(target),
+                ],
+                cwd=root, capture_output=True, text=True, timeout=60, check=False,
+                env=_sandbox_env(home, sandbox),
+            )
+            after = _porcelain(root)
+    except (OSError, subprocess.TimeoutExpired) as error:
+        evidence.append(f"sandboxed --dry-run failed: {error}")
+        dry_run = None
+        before = after = None
+    if dry_run is not None and dry_run.returncode == 0 and before is not None and before == after:
+        dry_ok = True
+        evidence.append("sandboxed install.sh --dry-run exited 0 and left the checkout unchanged")
+    else:
+        code = dry_run.returncode if dry_run is not None else "error"
+        evidence.append(f"sandboxed install.sh --dry-run did not stay read-only (exit {code})")
+    if dry_ok and help_run.returncode == 0 and _lists_option(help_text, "--dry-run"):
+        supported.insert(0, "--dry-run")
+    elif "--dry-run" not in supported:
+        evidence.append("install.sh --dry-run is not an advertised read-only flag")
     ok = supported == ["--dry-run", "--uninstall"]
     found = ", ".join(supported) if supported else "none"
     explanation = (
-        "install.sh must accept --dry-run and --uninstall, in that file or in the "
-        f"Python entrypoint it execs. Supported flags: {found}."
+        "install.sh --help must list --dry-run and --uninstall, and "
+        f"install.sh --dry-run --offline --target <tmpdir> must exit 0 without "
+        f"changing the checkout. Supported flags: {found}."
     )
     return result(
         "install_flags", "dotfiles", ok, supported, ["--dry-run", "--uninstall"],

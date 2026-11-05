@@ -41,10 +41,12 @@ than replacing full skill outcomes or creative/provider execution.
 
 ## Repository quality
 
-`evals/repo-quality/` grades this checkout. `snapshot.py` prints a bounded
-snapshot (file tree, LOC, README, install.sh, AGENTS.md, manifests, harness
-docs, and the docs list). `judge.py` is the headless grader. `checks.py`
-applies deterministic limits and prints a JSON array of check results.
+`evals/repo-quality/` grades this checkout on Unix. `snapshot.py` prints a
+bounded snapshot (file tree, LOC, README, install.sh, AGENTS.md, manifests,
+owned SKILL.md frontmatter, `docs/skill-marketplace.md`, harness docs, and the
+docs list) with home paths and secret-like values redacted. `judge.py` is the
+headless grader. `checks.py` applies deterministic limits and prints a JSON
+array of check results.
 
 From the repository root:
 
@@ -57,15 +59,18 @@ python3 -m unittest tests.test_repo_quality -v
 `python3 -m unittest discover` run. Set `REPO_QUALITY_GATE=1` to enforce them;
 a failure's text is that check's explanation and evidence.
 
-Promptfoo grades ten `llm-rubric` metrics and passes only at score 1.0. The
-default judge command is `grok -p <prompt> -m grok-4.7 --output-format plain
---disable-web-search`. When `CURSOR_API_KEY` is set, the judge is
-`cursor-agent -p --model composer-2.5`. `REPO_QUALITY_CURSOR_MODEL` replaces
-that model id. `REPO_QUALITY_JUDGE` replaces the whole command; put `{prompt}`
-where the prompt argument belongs. The opt-in test runs the eval:
+Promptfoo 0.125.1 grades ten `llm-rubric` metrics and passes only at score 1.0.
+`defaultTest.options.provider` is the grader. The default judge writes the
+prompt to a file and runs `grok --prompt-file <file> -m grok-4.7 --output-format
+plain --disable-web-search`. When `CURSOR_API_KEY` is set, the judge is
+`cursor-agent -p --model composer-2.5` with the prompt on stdin.
+`REPO_QUALITY_CURSOR_MODEL` replaces that model id. `REPO_QUALITY_JUDGE`
+replaces the whole command; put `{prompt}` or `{prompt_file}` where that value
+belongs. The opt-in test requires every metric to score 1.0:
 
 ```sh
 RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v
 ```
 
-That executes `npx -y promptfoo@latest eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
+That executes `npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
+`latest.json` is gitignored.

@@ -3,18 +3,20 @@
 
 Promptfoo's exec provider cwd is the config directory, and it appends the
 rendered prompt, provider options, and call context as extra arguments. Those
-arguments are ignored. The repository root comes from this file's location, so
-the snapshot does not depend on the process working directory. Output is capped
-at 60_000 characters.
+arguments are ignored. The repository root is this file's parents[2], so the
+snapshot does not depend on the process working directory. Output is capped
+at 60_000 characters. Home directories and secret-like values are redacted.
 """
 
 import os
+import re
 import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 LIMIT = 60_000
+READ_CAP = 8_000
 SKIP_NAMES = {".git", "__pycache__", "node_modules"}
 INTERESTING_FILES = {
     "SKILL.md", "README.md", "AGENTS.md", "CLAUDE.md",
@@ -26,6 +28,38 @@ MANIFESTS = (
     "harnesses/skills.json",
     "harnesses/integrations.json",
 )
+OWNED_SKILL_ROOTS = ("skills", ".agents/skills")
+_ASSIGNED_SECRET = re.compile(
+    r"(?i)\b(api[_-]?key|secret|token|password|passwd|authorization|bearer)"
+    r"(\s*[:=]\s*)([^\s,;\"']{8,})"
+)
+_KEYLIKE = re.compile(
+    r"\b(?:sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}"
+    r"|AKIA[0-9A-Z]{16}|xai-[A-Za-z0-9_-]{16,})\b"
+)
+_PRIVATE_KEY = re.compile(
+    r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----",
+    re.S,
+)
+
+
+def redact(text):
+    """Replace home-directory prefixes and secret-like values."""
+    homes = []
+    for key in ("HOME", "USERPROFILE"):
+        value = os.environ.get(key, "")
+        if len(value) > 1:
+            homes.append(value)
+    try:
+        homes.append(str(Path.home()))
+    except (OSError, RuntimeError):
+        pass
+    for home in sorted(set(homes), key=len, reverse=True):
+        text = text.replace(home, "$HOME")
+    text = _PRIVATE_KEY.sub("[redacted]", text)
+    text = _ASSIGNED_SECRET.sub(r"\1\2[redacted]", text)
+    text = _KEYLIKE.sub("[redacted]", text)
+    return text
 
 
 def _count_files(directory):
@@ -94,7 +128,6 @@ def _tree():
                 lines.append(f"{relative} -> {os.readlink(child)}")
                 continue
             if child.is_dir():
-                # Vendor snapshots dominate the tree. Keep one line per package.
                 if child.name == "vendor" and directory == ROOT:
                     lines.append(f"{relative}/ ({_count_files(child)} files, packages only)")
                     packages = sorted(
@@ -102,9 +135,7 @@ def _tree():
                         key=lambda entry: entry.name.lower(),
                     )
                     for package in packages:
-                        lines.append(
-                            f"{relative}/{package.name}/ ({_count_files(package)} files)"
-                        )
+                        lines.append(f"{relative}/{package.name}/ ({_count_files(package)} files)")
                     continue
                 lines.append(f"{relative}/ ({_count_files(child)} files)")
                 walk(child)
@@ -115,14 +146,84 @@ def _tree():
     return "\n".join(lines)
 
 
-def _read(relative, cap=20_000):
+def _read(relative, cap=READ_CAP):
     path = ROOT / relative
     if not path.is_file():
         return f"ABSENT: {relative}"
-    text = path.read_text(encoding="utf-8", errors="replace")
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError as error:
+        return f"UNREADABLE: {relative} ({error})"
     if len(text) > cap:
         return text[:cap] + f"\n[truncated {relative}]\n"
     return text
+
+
+def _read_ends(relative, cap=READ_CAP):
+    """Keep the start and the end so a long file's closing sections survive."""
+    path = ROOT / relative
+    if not path.is_file():
+        return f"ABSENT: {relative}"
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError as error:
+        return f"UNREADABLE: {relative} ({error})"
+    if len(text) <= cap:
+        return text
+    head = cap * 2 // 3
+    marker = f"\n[truncated middle of {relative}]\n"
+    tail = cap - head - len(marker)
+    if tail < 200:
+        return text[:cap] + f"\n[truncated {relative}]\n"
+    return text[:head] + marker + text[-tail:]
+
+
+def _frontmatter_fields(text):
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return None
+    end = None
+    for index, line in enumerate(lines[1:], 1):
+        if line.strip() == "---":
+            end = index
+            break
+    if end is None:
+        return None
+    fields = {}
+    for line in lines[1:end]:
+        match = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", line)
+        if match and match.group(1) not in fields:
+            fields[match.group(1)] = match.group(2).strip()
+    return fields
+
+
+def _skill_frontmatter():
+    blocks = []
+    for relative_root in OWNED_SKILL_ROOTS:
+        base = ROOT / relative_root
+        if not base.is_dir():
+            blocks.append(f"ABSENT: {relative_root}")
+            continue
+        paths = sorted(
+            path for path in base.rglob("SKILL.md")
+            if path.is_file() and not any(part in SKIP_NAMES for part in path.parts)
+        )
+        if not paths:
+            blocks.append(f"none under {relative_root}")
+            continue
+        for path in paths:
+            relative = path.relative_to(ROOT).as_posix()
+            try:
+                fields = _frontmatter_fields(path.read_text(encoding="utf-8", errors="replace"))
+            except OSError:
+                fields = None
+            if not fields:
+                blocks.append(f"### {relative}\nno frontmatter")
+                continue
+            name = fields.get("name", "")
+            description = fields.get("description", "")[:240]
+            blocks.append(f"### {relative}\nname: {name}\ndescription: {description}")
+    return "\n\n".join(blocks)
 
 
 def _docs():
@@ -150,35 +251,52 @@ def _docs():
 def _manifests():
     parts = []
     for relative in MANIFESTS:
-        parts.append(f"### {relative}\n{_read(relative, cap=12_000)}")
+        parts.append(f"### {relative}\n{_read(relative, cap=READ_CAP)}")
     return "\n\n".join(parts)
 
 
-def snapshot():
-    priority = [
-        "Repository snapshot. Paths are relative to the repo root. "
-        "Use only paths and text that appear below as evidence.",
-        "## LOC per top-level directory\n" + _loc_report(),
-        "## README.md\n" + _read("README.md"),
-        "## install.sh\n" + _read("install.sh"),
-        "## AGENTS.md\n" + _read("AGENTS.md"),
-        "## harnesses/README.md\n" + _read("harnesses/README.md"),
-        "## Manifests\n" + _manifests(),
-        "## Docs\n" + _docs(),
-    ]
-    body = "\n\n".join(priority)
-    tree = "## File tree\n" + _tree()
+def _fit(required, extras):
+    """Keep required sections. Add later sections only while under LIMIT."""
+    text = redact(required)
     marker = "\n[truncated]\n"
-    if len(body) + 2 + len(tree) <= LIMIT:
-        text = body + "\n\n" + tree
-    elif len(body) + len(marker) >= LIMIT:
-        text = body[: LIMIT - len(marker)] + marker
-    else:
-        room = LIMIT - len(body) - 2 - len(marker)
-        text = body + "\n\n" + tree[:room] + marker
+    if len(text) > LIMIT:
+        return text[: LIMIT - len(marker)] + marker
+    for extra in extras:
+        piece = redact(extra)
+        candidate = text + "\n\n" + piece
+        if len(candidate) <= LIMIT:
+            text = candidate
+            continue
+        room = LIMIT - len(text) - 2 - len(marker)
+        if room > 200:
+            text = text + "\n\n" + piece[:room] + marker
+        break
     if len(text) > LIMIT:
         text = text[: LIMIT - len(marker)] + marker
     return text
+
+
+def snapshot():
+    required = "\n\n".join([
+        "Repository snapshot. Paths are relative to the repo root. "
+        "Use only paths and text that appear below as evidence. "
+        "Home directories and secret-like values are redacted.",
+        "## LOC per top-level directory\n" + _loc_report(),
+        "## File tree\n" + _tree(),
+        "## Manifests\n" + _manifests(),
+        "## SKILL.md frontmatter\n"
+        "Owned skills under skills/ and .agents/skills/. "
+        "Each block is that file's name and description.\n" + _skill_frontmatter(),
+        "## docs/skill-marketplace.md\n" + _read("docs/skill-marketplace.md"),
+        "## install.sh\n" + _read("install.sh"),
+        "## harnesses/README.md\n" + _read("harnesses/README.md"),
+    ])
+    extras = [
+        "## README.md\n" + _read_ends("README.md"),
+        "## AGENTS.md\n" + _read_ends("AGENTS.md"),
+        "## Docs\n" + _docs(),
+    ]
+    return _fit(required, extras)
 
 
 def main(argv=None):

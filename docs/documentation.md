@@ -145,5 +145,6 @@ documentation inputs or versioned source. The README includes this sequence.
 `tests/test_repo_quality.py` always checks the repo-quality harness shape.
 Ceiling assertions run only with `REPO_QUALITY_GATE=1`, and the promptfoo judge
 only with `RUN_JUDGE=1`, so a checkout below those ceilings still passes the
-default unittest discover. Commands are in the README maintain section and
-[Repository quality](../evals/README.md).
+default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
+requires each metric score to be 1.0. The harness is Unix-only. Commands are
+in the README maintain section and [Repository quality](../evals/README.md).
