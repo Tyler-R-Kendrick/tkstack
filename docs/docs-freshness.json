@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -538,13 +538,13 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Recompiled the codify and skillify locks after recording --include paths and applying parent inventory limits after nested skill packages are omitted. The authoring docs already describe that contract."
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -625,18 +625,18 @@
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Emil Kowalski is the complete 33-file upstream tree. The pin is 19 sources and 1094 files, with no selection field."
+      "no_doc_impact": true,
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "7890533ae1b10f88fd945d111c9b6e061bd05c6e"
+          "oid": "0cbda95112f0d6c959f1fce94aca5a8deaa1ff67"
         }
       },
       "inputs": {
@@ -737,6 +737,10 @@
           "mode": "100644",
           "oid": "b0cffe8280ce71c3f7bbac68562039fd2a910c7b"
         },
+        "tests/test_repo_quality.py": {
+          "mode": "100644",
+          "oid": "da586bc1d8c85e9a33a503130de2fb4f664fb638"
+        },
         "tests/test_reusify.py": {
           "mode": "100644",
           "oid": "c486238606c7933564fe18c8a390a8a9938ea767"
@@ -783,13 +787,13 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Codify tests cover nested-package inventory limits and recorded include directories. The contract text is in the authoring docs."
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -822,14 +826,14 @@
           "oid": "f9eaee5c81176a3475b24ec6e6db91b0832ca4ab"
         }
       },
-      "no_doc_impact": false,
-      "reason": "README now runs check_skills through the managed command-schema runtime. Runner behavior is unchanged."
+      "no_doc_impact": true,
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -962,14 +966,14 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Corrected the README skill check to the managed command-schema interpreter after the routing inventory script change."
+      "no_doc_impact": true,
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "9dda270d81fc6706aa024df28e9f72704c061364"
+          "oid": "a585899d157c9475a2148c12f782495e47e274c8"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -985,7 +989,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "95a7c2637f5b93458b9814597a3e6881c29b8645"
+          "oid": "64bf90ed0caca6c07feadcdb9c86c0d666c67c62"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1043,7 +1047,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a78686d645f192c7acd2dce280b92d757ce8bdb1"
+          "oid": "a059b1a08dec3f1c4d1fc459cd35f229d4d2feee"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1092,6 +1096,30 @@
         "evals/open-design/tasks.json": {
           "mode": "100644",
           "oid": "6a900d9520b9796f7de5b64185b72c8fcdab9fa9"
+        },
+        "evals/repo-quality/checks.py": {
+          "mode": "100644",
+          "oid": "feeac513464be3d97f9cb7f24d0a0470551aca21"
+        },
+        "evals/repo-quality/eval.yaml": {
+          "mode": "100644",
+          "oid": "b39c5597a052110cac2887fb491b7183b7b40c39"
+        },
+        "evals/repo-quality/judge.py": {
+          "mode": "100644",
+          "oid": "407a9f4dcc8e09a1b11ffc409bf7cf1bee537a95"
+        },
+        "evals/repo-quality/results/baseline-checks.json": {
+          "mode": "100644",
+          "oid": "31bafa3d4baaaa24a360efa9b40a87aeedbf6878"
+        },
+        "evals/repo-quality/results/baseline-reasons.md": {
+          "mode": "100644",
+          "oid": "2b727b4eeb24d48a5d22199d7a4082a160b4df8d"
+        },
+        "evals/repo-quality/snapshot.py": {
+          "mode": "100644",
+          "oid": "d2ced9bc07cf4a1a2da4c43fe229887be47d62eb"
         },
         "evals/results/2026-10-29.json": {
           "mode": "100644",
@@ -2714,8 +2742,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": false,
-      "reason": "The SDLC routing guide contrasts every skill, rejects unlisted duplicate names, and notes that ub-mode does not authorize push-to-main."
+      "no_doc_impact": true,
+      "reason": "merge origin/main (#5) into eval-harness; both sides' doc edits reviewed and kept"
     }
   },
   "object_format": "sha1",
