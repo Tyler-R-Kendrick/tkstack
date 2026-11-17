@@ -65,3 +65,15 @@ reviewer. See [measurement details](../skills/hill-climb/references/measurement.
 Tests use synthetic measurements to verify comparison and evidence boundaries.
 No paid experiments, measured application improvement, or held-out model
 performance gain is claimed from creating this skill.
+
+## Experiment primitives
+
+The package includes local building blocks for private Git experiment arms,
+SQLite trial reservations, frozen-tree command execution, paired evaluation,
+and a bounded controller model. These modules are internal foundations. The
+measurement helper above remains the public entry point until a controller
+connects those pieces.
+
+The local runner executes trusted commands with host privileges. The bounded
+model checks its declared transitions and assumptions, rather than proving the
+implementation or a remote provider.

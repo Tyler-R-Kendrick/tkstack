@@ -670,6 +670,26 @@
           "mode": "100644",
           "oid": "198166280573a25b971ee3e0e4062e801642e6e4"
         },
+        "tests/test_experiment_evaluate.py": {
+          "mode": "100644",
+          "oid": "5487b55500196331765eb67e70ce55cf1977a3b1"
+        },
+        "tests/test_experiment_git.py": {
+          "mode": "100644",
+          "oid": "0834eff2569c0fbfc4b9117d76dba920dfa930e5"
+        },
+        "tests/test_experiment_ledger.py": {
+          "mode": "100644",
+          "oid": "f6395a78e48d87d21ae134c555f1e4a20d02956e"
+        },
+        "tests/test_experiment_model.py": {
+          "mode": "100644",
+          "oid": "d4a505e5cb491c25ac208196a8004849d12f76fa"
+        },
+        "tests/test_experiment_runner.py": {
+          "mode": "100644",
+          "oid": "0cb54325bcf6866a208b8562f6db36724ab8aabb"
+        },
         "tests/test_flowify.py": {
           "mode": "100644",
           "oid": "0af36d4171a5b03e1d13ebcfdb33020c35bbe4d5"
@@ -760,7 +780,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Uninstall removes every linked harness without reading skills.json delegates, so an empty or unknown delegates.t3code still succeeds. The test covers that path. Install still expands delegates.t3code. Existing install and uninstall docs already say that."
+      "reason": "Only the reviewed documentation ledger changed; the existing documentation workflow remains accurate."
     },
     "execution": {
       "docs": {
@@ -887,7 +907,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "e5fc1a4c35b035b0d7cc6ad622f9df702fe08022"
+          "oid": "9636b674075e20afe6cfda0967e93e9f639491e1"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1187,6 +1207,14 @@
           "mode": "100644",
           "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
         },
+        "skills/hill-climb/formal/README.md": {
+          "mode": "100644",
+          "oid": "6dbb5c488694078d674e6707820e94290169f407"
+        },
+        "skills/hill-climb/formal/model_check.py": {
+          "mode": "100644",
+          "oid": "46e9c6b5061f846ef59c3fb968ec4fe507b5c3e5"
+        },
         "skills/hill-climb/references/distilled-sources.md": {
           "mode": "100644",
           "oid": "af902bb4a5204584af62a1ce51c99bfe6e3b7e74"
@@ -1219,6 +1247,22 @@
           "mode": "100644",
           "oid": "197fa416f283a3b3707ca96d764be2fe003f0967"
         },
+        "skills/hill-climb/scripts/experiment_evaluate.py": {
+          "mode": "100644",
+          "oid": "f6e676e4d88434459fefdff206120e857f73fd5d"
+        },
+        "skills/hill-climb/scripts/experiment_git.py": {
+          "mode": "100644",
+          "oid": "ba32be945239cbf835ed4da89e2590e0f54b2fe9"
+        },
+        "skills/hill-climb/scripts/experiment_ledger.py": {
+          "mode": "100644",
+          "oid": "c06097747350ea919abce8bdb0ef4bed309056b3"
+        },
+        "skills/hill-climb/scripts/experiment_runner.py": {
+          "mode": "100644",
+          "oid": "335fc5550e556ee514484ee05e9f0043aabeff52"
+        },
         "skills/hill-climb/scripts/hill_climb.py": {
           "mode": "100644",
           "oid": "2a6ac1093e54ea46c0e0a0d12ffc7ddcc5094afd"
@@ -1249,7 +1293,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "503dfe455e62e884426b3771dc171a508b642a5b"
+          "oid": "186b692b4ad41785967402110b1a91b5331828ce"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2669,7 +2713,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Removed one Streamable HTTP MCP server from mcp.json, the repo MCP policy, and the install and integration docs. Remaining pinned servers are serena, playwright, firecrawl, vercel, and graphify."
+      "reason": "Document internal Git experiment, reservation, runner, evaluation and model primitives."
     }
   },
   "object_format": "sha1",
