@@ -5,8 +5,8 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 624,
-    "max_bytes": 685000,
+    "max_cases": 632,
+    "max_bytes": 700000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -120,9 +120,9 @@
         ],
         "exclude": [],
         "max_files": 54,
-        "max_bytes": 688000,
+        "max_bytes": 704000,
         "max_depth": 2,
-        "reason": "Allow the focused Evalify adapter regression and timeout tests alongside the existing reviewed automation suites."
+        "reason": "Allow distinct reviewed regressions for timing coverage, concurrent dispatch, contextual duplicates, statistical decisions and evolution wiring."
       },
       {
         "id": "documentation",
@@ -131,9 +131,9 @@
         ],
         "exclude": [],
         "max_files": 51,
-        "max_bytes": 545000,
+        "max_bytes": 550000,
         "max_depth": 3,
-        "reason": "Keep one canonical feature document; allow reviewed ledger growth for the added Testify package, safety checks, type-first guidance and their existing owner pages."
+        "reason": "Retain canonical user guidance and review ledger for bounded execution and the measured testing improvements."
       },
       {
         "id": "shared-code",

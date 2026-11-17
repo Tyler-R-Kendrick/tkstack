@@ -90,6 +90,10 @@ mkdir -p /project/.tkstack/eval-runs
 
 Each output and receipt must be absent before invocation. The command does not
 create a dataset, install a framework, or authorize provider spending by itself.
+It reserves both paths exclusively before starting Promptfoo, so overlapping
+runs cannot silently share either name. An interrupted or crashed process may
+leave an empty reservation; inspect provider-side effects and the retained files
+before removing it or retrying.
 
 Sources: [Promptfoo model-graded rubrics](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/llm-rubric/),
 [Promptfoo OTLP tracing](https://www.promptfoo.dev/docs/tracing/),

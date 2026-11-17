@@ -40,6 +40,8 @@ MCP operation was cancelled or that a latency SLO was met.
 Compiled TKStack operations record elapsed time and outcomes in the workspace
 trace described in [the runner guide](runner.md); direct helpers and MCP hosts
 need their own supported instrumentation.
+Evalify reserves its receipt and result paths before dispatch so concurrent
+runs cannot silently reuse them; reconcile incomplete reservations after a crash.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:

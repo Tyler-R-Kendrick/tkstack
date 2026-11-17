@@ -640,11 +640,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "0ca321a4632a402e8cc2ac36fdd70197b6066ad8"
+          "oid": "07bb5cb77ea003933c7a142d23f24c359aad17fc"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "49a00b06b322ce99d73d5c2baa4867b452d5ff28"
+          "oid": "c6dfd30e9ebe568e1a044c7e091a242c4e4418b9"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -697,7 +697,7 @@
         },
         "tests/test_evalify.py": {
           "mode": "100644",
-          "oid": "60eb260d0b5d18068ac2a085edb11f8acab449a0"
+          "oid": "a44bc9d21dbbee90d231f956cba7bdc87aa57119"
         },
         "tests/test_experiment_agent_arm.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the new runner trace regression and its scoped test review; documentation policy is unchanged."
+      "reason": "Reviewed distinct measured regression cases and documented the justified test and guidance budget allowance."
     },
     "execution": {
       "docs": {
@@ -1025,7 +1025,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "f932ec9b3225e03cc5f76ca0c1c8e2fd0defc7cd"
+          "oid": "f67fb89d401c78c40699b9f8f5adac28e3bfee85"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1959,7 +1959,7 @@
         },
         "skills/learn/skills/evalify/references/evaluation.md": {
           "mode": "100644",
-          "oid": "23d1424dabdedd24959c00efce3866edd8c6b8a5"
+          "oid": "62ba6b435572a6d737fb53957e9a25940ecdb265"
         },
         "skills/learn/skills/evalify/references/execution.md": {
           "mode": "100644",
@@ -1979,7 +1979,7 @@
         },
         "skills/learn/skills/evalify/scripts/evalify.py": {
           "mode": "100644",
-          "oid": "658b5b93f0c509de41abd67034d74ca92c7e43c7"
+          "oid": "9500c7920baa5366e9d7131e183abcc2b94a8389"
         },
         "skills/learn/skills/evalify/scripts/json_contract.py": {
           "mode": "100644",
@@ -2007,7 +2007,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "edd9deaae3fc52dd1c568d4d3d9bab749fa1d978"
+          "oid": "85f160ec6a85f85ea807b45564e30d6598e51afc"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Learn runner timing coverage and its read-only discovery boundary."
+      "reason": "Reviewed Evalify path reservation, crash recovery, and the Promptfoo invocation boundary."
     }
   },
   "object_format": "sha1",

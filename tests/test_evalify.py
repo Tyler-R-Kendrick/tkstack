@@ -85,6 +85,33 @@ if 'eval' in sys.argv:
             except ProcessLookupError:
                 pass
 
+    def test_concurrent_runs_reserve_receipt_and_output_before_dispatch(self):
+        self.runner.write_text('''#!/usr/bin/env python3
+import json, pathlib, sys, time
+root = pathlib.Path.cwd()
+with (root / 'calls').open('a') as calls:
+    calls.write('call\\n')
+    calls.flush()
+time.sleep(0.7)
+pathlib.Path(sys.argv[sys.argv.index('-o') + 1]).write_text(json.dumps({'results': {'results': [{'success': True}]}}))
+''')
+        self.runner.chmod(0o755)
+        for collision in ('receipt', 'output'):
+            with self.subTest(collision=collision):
+                root = self.root / collision
+                root.mkdir()
+                (root / 'config.yaml').write_text('fixture: true\n')
+                commands = []
+                for index in range(2):
+                    receipt = 'same-receipt.json' if collision == 'receipt' else f'receipt-{index}.json'
+                    output = 'same-output.json' if collision == 'output' else f'output-{index}.json'
+                    commands.append([sys.executable, str(HELPER), 'run', '--project', str(root),
+                        '--config', 'config.yaml', '--executable', str(self.runner), '--receipt', receipt, '--output', output])
+                processes = [subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) for command in commands]
+                results = [process.communicate(timeout=10) for process in processes]
+                self.assertEqual(sorted(process.returncode for process in processes), [0, 1], results)
+                self.assertEqual((root / 'calls').read_text().splitlines(), ['call'])
+
     @unittest.skipUnless(PROMPTFOO, 'set TKSTACK_PROMPTFOO_BIN for the real Promptfoo integration')
     def test_real_promptfoo_calls_a_fixture_judge_and_reports_mixed_results(self):
         (self.root / 'judge.cjs').write_text('''module.exports = class Judge {

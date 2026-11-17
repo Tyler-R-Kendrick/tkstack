@@ -27,9 +27,13 @@ def in_project(root, value, existing):
     return resolved
 
 
-def write_receipt(path, payload):
+def reserve(path):
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, 'O_NOFOLLOW', 0)
-    with os.fdopen(os.open(path, flags, 0o600), 'w', encoding='utf-8') as stream:
+    return os.open(path, flags, 0o600)
+
+
+def write_receipt(fd, payload):
+    with os.fdopen(os.dup(fd), 'w', encoding='utf-8') as stream:
         json.dump(payload, stream, sort_keys=True, allow_nan=False)
         stream.write('\n')
 
@@ -56,6 +60,7 @@ def main():
     parser.add_argument('--output')
     parser.add_argument('--timeout', type=int, default=20)
     args = parser.parse_args()
+    reserved, dispatched = [], False
     try:
         if not 1 <= args.timeout <= 25:
             raise ValueError('Timeout must be 1..25 seconds; use the native CLI for longer runs')
@@ -83,6 +88,12 @@ def main():
             output = None
             command = [str(executable), 'validate', 'config', '-c', str(config)]
         digest = hashlib.sha256(config.read_bytes()).hexdigest()
+        # Reserve both names before dispatch: a late receipt collision must not
+        # cause a second provider call or let concurrent runs overwrite output.
+        receipt_fd = reserve(receipt)
+        reserved.append((receipt, receipt_fd))
+        if output is not None:
+            reserved.append((output, reserve(output)))
         runtime = ensure_state(root / '.tkstack/runs/evalify')
         started_at = datetime.now(timezone.utc).isoformat()
         start = time.monotonic()
@@ -93,6 +104,7 @@ def main():
             own_group = os.name == 'posix' and os.environ.get('TKSTACK_CODIFY_EXECUTION') != '1'
             process = subprocess.Popen(command, cwd=root, env=env, stdout=stdout, stderr=stderr,
                                        start_new_session=own_group)
+            dispatched = True
             try:
                 try:
                     code = process.wait(timeout=args.timeout)
@@ -140,7 +152,7 @@ def main():
                   'config': str(config), 'output': str(output) if output else None,
                   'result_count': count, 'passed': passed, 'failed': failed, 'grader_errors': grader_errors,
                   'receipt': str(receipt)}
-        write_receipt(receipt, result)
+        write_receipt(receipt_fd, result)
         if status != 'pass':
             print(diagnostic[-4096:], file=sys.stderr)
         print(json.dumps(result, sort_keys=True))
@@ -148,6 +160,16 @@ def main():
     except (OSError, ValueError, TypeError) as error:
         print('evalify: ' + str(error), file=sys.stderr)
         return 1
+    finally:
+        for path, fd in reversed(reserved):
+            if not dispatched:
+                try:
+                    current, original = path.lstat(), os.fstat(fd)
+                    if (current.st_dev, current.st_ino) == (original.st_dev, original.st_ino):
+                        path.unlink()
+                except FileNotFoundError:
+                    pass
+            os.close(fd)
 
 
 if __name__ == '__main__':
