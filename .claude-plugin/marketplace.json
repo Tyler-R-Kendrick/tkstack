@@ -55,7 +55,7 @@
       "name": "hill-climb",
       "source": "./skills/hill-climb",
       "description": "Run a bounded, evidence-driven improvement loop for code, prompts, skills, websites, or generated media. Invoke only when the user explicitly asks for /hill-climb or a measured improvement loop. Freeze a sensitive evaluation, measure baseline noise, change one hypothesis at a time, keep or revert from evidence, and confirm the winner on untouched cases.",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "license": "MIT",
       "strict": false,
       "skills": [

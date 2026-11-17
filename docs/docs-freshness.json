@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -537,14 +537,14 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed consumer defaults, native discovery, workspace adoption, digest-verified acquisition, staged/sparse reads, and the revised maintainer lifecycle against their public commands."
+      "no_doc_impact": true,
+      "reason": "Reviewed Codify and Skillify guidance; controller integration changes no authoring procedure."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -574,7 +574,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "a9f6d1b32040c7a8d5670c2ba2b0afda81abae2d"
+          "oid": "8e7257a7e1f6def75bd4b2c7eab2e12840914856"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -621,14 +621,14 @@
           "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed the catalog integration docs and native harness mapping with the Firecrawl SDK override."
+      "no_doc_impact": true,
+      "reason": "Reviewed the skill catalog and marketplace version; no catalog entry changes beyond the existing hill-climb package."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -638,11 +638,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "fc66acf76d061992b9c223f4961388cb9e3f3f13"
+          "oid": "e271d41b2a61bd3b51f1aac1a61fdbd4431fc70c"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "30a0575c21115a89e88b90eb32f45be4114693bf"
+          "oid": "4dce4bd5caeb84bda200a5a2796b4f4e26ff455c"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -695,11 +695,27 @@
         },
         "tests/test_experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "db406524f7538c41848fbb542bf11845777174ae"
+          "oid": "ddc16ffe6c8dbfed27965ebe7205561684de85ba"
+        },
+        "tests/test_experiment_factory.py": {
+          "mode": "100644",
+          "oid": "bda2ef921dc24adc697c77fc8c561aa6374f1ba6"
         },
         "tests/test_experiment_git.py": {
           "mode": "100644",
           "oid": "0361e86f6a12bf69e67349d3b89a30d2d29f9733"
+        },
+        "tests/test_experiment_handoff.py": {
+          "mode": "100644",
+          "oid": "a3a608b4aa56514752ee4068efc800737aa23a4b"
+        },
+        "tests/test_experiment_integration.py": {
+          "mode": "100644",
+          "oid": "bd5242e032105c2c65f2966cf232ef4f39d11002"
+        },
+        "tests/test_experiment_integrity.py": {
+          "mode": "100644",
+          "oid": "f5329b4a48c73c9d81c0c14cbd13524652ecd315"
         },
         "tests/test_experiment_lean.py": {
           "mode": "100644",
@@ -709,9 +725,21 @@
           "mode": "100644",
           "oid": "a8addf6fae0c63e04aee1fb02d2e3b43ded731bc"
         },
+        "tests/test_experiment_maf.py": {
+          "mode": "100644",
+          "oid": "78c2b661ad503fa1a7014faac999d1ae48167594"
+        },
         "tests/test_experiment_model.py": {
           "mode": "100644",
           "oid": "52c37e7bdaf7506b0cabaae96b96233550b69893"
+        },
+        "tests/test_experiment_native_check.py": {
+          "mode": "100644",
+          "oid": "843d39abb05215b9bd3a1def5546822329005d14"
+        },
+        "tests/test_experiment_native_integration.py": {
+          "mode": "100644",
+          "oid": "70549f9cd718e497172713101668c7ac88442372"
         },
         "tests/test_experiment_runner.py": {
           "mode": "100644",
@@ -807,13 +835,13 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed documentation maintenance; the constraint capacity and CI proof step do not change its process."
+      "reason": "Reviewed the exact provenance test exception and updated test budget; user guidance remains current"
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -834,14 +862,14 @@
           "oid": "30a2ec5e5f0cedf233224f28015739e4f5506e1a"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Documented the installed launcher's checkout-managed interpreter and exact dependency provisioning command."
+      "no_doc_impact": true,
+      "reason": "Reviewed runner and normalization guidance; the new experiment action stays within the existing native dispatch contract."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -911,13 +939,13 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed bootstrap and installation guidance; the CI-only Lean checker does not change consumer setup."
+      "reason": "Reviewed bootstrap and installation guidance; the README experiment link does not change installation."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "7e027db8d1b0a3aa7b502ef29cd51162210fae7f"
+          "oid": "d78a6588c56dbc9556f291016995ecebbf5c71f6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -937,7 +965,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "3ab778751d6ea685d3e6b4e4dc28b390fed1c8da"
+          "oid": "f79dc810722328612c0db1c4dcaf3253c8f18046"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1347,7 +1375,7 @@
         },
         "skills/hill-climb/SKILL.md": {
           "mode": "100644",
-          "oid": "cbecb691cd389dd6a64e088e98b28ce40970a1e5"
+          "oid": "40a1b12a1475abb7a4de9bbf112a776349407a16"
         },
         "skills/hill-climb/commands/help.md": {
           "mode": "100644",
@@ -1360,6 +1388,10 @@
         "skills/hill-climb/commands/native_compare.md": {
           "mode": "100644",
           "oid": "a64f4c681919677c0e4dee2997e4b11aa63c974f"
+        },
+        "skills/hill-climb/commands/native_experiment.md": {
+          "mode": "100644",
+          "oid": "27eda4c944e9272cec02330130758b7377f31c7d"
         },
         "skills/hill-climb/commands/verify.md": {
           "mode": "100644",
@@ -1423,7 +1455,15 @@
         },
         "skills/hill-climb/references/execution.md": {
           "mode": "100644",
-          "oid": "d0950b0061ebf2eb75f64b54b821fb4515bb9b27"
+          "oid": "934ca488b35f66ac169b09c97eb180fbaace579a"
+        },
+        "skills/hill-climb/references/git-experiments.md": {
+          "mode": "100644",
+          "oid": "4d9fd57d6ac9b4680f9f7b903d77e3cc912d3daf"
+        },
+        "skills/hill-climb/references/git-handoff.md": {
+          "mode": "100644",
+          "oid": "ac59a0558c1111cbecc55e4c5ccc51362494ee94"
         },
         "skills/hill-climb/references/instrument-and-loop.md": {
           "mode": "100644",
@@ -1447,19 +1487,35 @@
         },
         "skills/hill-climb/scripts/contract.json": {
           "mode": "100644",
-          "oid": "197fa416f283a3b3707ca96d764be2fe003f0967"
+          "oid": "9d3e5b56ec66d1ad22011c6c518375cd614aaec8"
+        },
+        "skills/hill-climb/scripts/experiment.py": {
+          "mode": "100644",
+          "oid": "08eb7829e009286426bd801026d941cdaaf5bd9b"
         },
         "skills/hill-climb/scripts/experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "0d91d7e86c44ef362f629533c2a4b38a09dcdb0d"
+          "oid": "250ceb2b0ffa764efb04ae74860e815c36da3e3a"
         },
         "skills/hill-climb/scripts/experiment_git.py": {
           "mode": "100644",
           "oid": "9fa1de9ae320445a8e362adb4abdf2ab8f13e5da"
         },
+        "skills/hill-climb/scripts/experiment_handoff.py": {
+          "mode": "100644",
+          "oid": "fafac54e09649fc50865ce213a5daabfbc5e608d"
+        },
         "skills/hill-climb/scripts/experiment_ledger.py": {
           "mode": "100644",
           "oid": "db9af96bb11b275256e12674231887cb679f83c6"
+        },
+        "skills/hill-climb/scripts/experiment_native_check.py": {
+          "mode": "100644",
+          "oid": "a9398e893a4646c4c794e0e7cb114dc076ea8e1c"
+        },
+        "skills/hill-climb/scripts/experiment_regrade.py": {
+          "mode": "100644",
+          "oid": "ec32dc3a2b486ef7b258b8a7c994f2c241f4b7a1"
         },
         "skills/hill-climb/scripts/experiment_runner.py": {
           "mode": "100644",
@@ -1475,7 +1531,7 @@
         },
         "skills/hill-climb/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "9eef3413dc266cab8ce8ec4849f475d82f93517f"
+          "oid": "2a3e722f9f3bf4480b68d84d674b712a7c5166bc"
         },
         "skills/hill-climb/scripts/package_runtime.py": {
           "mode": "100644",
@@ -1491,15 +1547,51 @@
         },
         "skills/hill-climb/scripts/workflow.cases.json": {
           "mode": "100644",
-          "oid": "eb132839eeda3d92e9186ba861527e2cf9d81834"
+          "oid": "97fa9956aaaeb1705b253da3ad1e3a9a76ef75db"
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "81326783b5000a8272b82945a8600f3cc112515d"
+          "oid": "cac661da7752e1059681aa6f784f9b78d680d5da"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
           "oid": "cb570276041109c247df7009de9de6104221e352"
+        },
+        "skills/hill-climb/templates/task-harness.json": {
+          "mode": "100644",
+          "oid": "d23960e90f609a7beb49678db932f02ea59de48e"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/LICENSE": {
+          "mode": "100644",
+          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/README.md": {
+          "mode": "100644",
+          "oid": "340699d1a1ed7e2e56e2e7b1009d4544761011de"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/bindings.py": {
+          "mode": "100644",
+          "oid": "3f73b3c751d3e0d92cbc95538f3f832ba39ed2b7"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/inputs.json": {
+          "mode": "100644",
+          "oid": "4ef040d67d7ac863acb1739082021ae45415cee5"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/requirements.lock": {
+          "mode": "100644",
+          "oid": "b3900d52cec4df83cd2a80e6e48bdd8ba3c7cb26"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/requirements.txt": {
+          "mode": "100644",
+          "oid": "e6ba153d268d84292eea30906218364d40de6968"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/run.py": {
+          "mode": "100644",
+          "oid": "d9c575ce49b095f45afc371e879229df589c696b"
+        },
+        "skills/hill-climb/workflows/experiment-cycle/workflow.yaml": {
+          "mode": "100644",
+          "oid": "77e9338458f683c5da52e6e139f9720509cda354"
         },
         "skills/investigate/LICENSE": {
           "mode": "100644",
@@ -3007,7 +3099,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented reviewed selection-claim behavior, evaluator noise evidence and the Lean budget proof."
+      "reason": "Documented measured source provenance for equivalent-tree reuse"
     }
   },
   "object_format": "sha1",

@@ -67,6 +67,19 @@ class EvaluationTests(unittest.TestCase):
         calibration[2]["observed"] = True
         self.assertFalse(evaluation.validate_calibration(calibration)["qualified"])
 
+    def test_provenance_must_prove_direct_or_same_tree_identity(self):
+        source = {"commit": "5" * 40, "tree": self.spec["candidate"]["tree"]}
+        self.candidate[0]["provenance"] = {"kind": "same-tree", "run_key": "run-1", "source": source}
+        self.assertEqual(self.compare()["decision"], "eligible")
+        for invalid in (
+            {"kind": "direct", "run_key": "run-1", "source": source},
+            {"kind": "same-tree", "run_key": "run-1",
+             "source": {"commit": "5" * 40, "tree": "6" * 40}},
+            {"kind": "same-tree", "run_key": "", "source": source},
+        ):
+            self.candidate[0]["provenance"] = invalid
+            self.assertEqual(self.compare()["decision"], "inconclusive")
+
     def test_candidate_required_failure_rejects(self):
         self.candidate[0]["gates"]["valid-submit"] = False
         self.assertEqual(self.compare()["decision"], "reject")

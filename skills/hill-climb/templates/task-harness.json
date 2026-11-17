@@ -1,0 +1,64 @@
+{
+  "template_version": 1,
+  "status": "draft",
+  "purpose": "Planning aid for an agent and reviewer. This is not an executable workflow or comparison plan.",
+  "outcome": {
+    "user_goal": "REPLACE with the observable outcome",
+    "reported_problem": "REPLACE with the user's observation and source",
+    "required_behavior": ["REPLACE with a mandatory observable behavior"]
+  },
+  "integration": {
+    "repository": "REPLACE with the repository identity",
+    "base_commit": "REPLACE with the full frozen commit ID",
+    "editable_paths": ["REPLACE with the paths needed for this task"],
+    "targets": [
+      {
+        "id": "REPLACE with the actual project target",
+        "reason": "REPLACE with why the changed behavior needs this target"
+      }
+    ],
+    "runtime_and_dependencies": "REPLACE with observed versions or an explicit unknown"
+  },
+  "quality": {
+    "criterion": "REPLACE with a quality dimension",
+    "evidence_required": ["REPLACE with an observable artifact"],
+    "anchors": {
+      "poor": "REPLACE with an observable poor outcome",
+      "acceptable": "REPLACE with an observable acceptable outcome",
+      "excellent": "REPLACE with an observable excellent outcome"
+    },
+    "insufficient_evidence": "Do not assign a rating or promote",
+    "minimum_useful_change": "REPLACE with a task-specific threshold"
+  },
+  "evaluation": {
+    "contract_revision": "REPLACE with the contract identity",
+    "evaluator_revision": "REPLACE with the evaluator identity",
+    "known_good_example": "REPLACE with its evidence reference",
+    "known_defect_example": "REPLACE with its evidence reference",
+    "development_cases": "REPLACE with their controlled reference",
+    "selection_cases": "REPLACE with their controlled reference",
+    "confirmation_cases": "REPLACE with the evaluator-held reference",
+    "baseline_noise": "REPLACE with measured evidence or identify an unknown"
+  },
+  "search": {
+    "incumbent": "REPLACE with the frozen baseline commit",
+    "hypothesis": "REPLACE with one expected effect and a falsifier",
+    "candidate_branch": "REPLACE with its controller-owned branch identity",
+    "max_attempts": null,
+    "max_elapsed_minutes": null,
+    "max_model_tokens": null,
+    "stop_rule": "REPLACE with target, budget, and plateau conditions"
+  },
+  "feedback": {
+    "original_observation": "REPLACE when feedback is received",
+    "interpretation_and_uncertainty": "REPLACE with the inferred quality dimension",
+    "distinguishing_case": "REPLACE with a good outcome and a counterexample",
+    "proposed_harness_change": "REPLACE with the policy, metric, rubric, skills, or workflow change",
+    "validation_and_rebaseline": "REPLACE with calibration evidence and resulting revision"
+  },
+  "retention": {
+    "decision_and_evidence": "REPLACE with a retained location outside product history",
+    "source_replay_required": null,
+    "bundle_or_object_retention": "REPLACE with a verified source replay reference if required"
+  }
+}

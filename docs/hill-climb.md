@@ -8,6 +8,14 @@ It is user-invoked and installs into every selected harness; the default
 profile selects Codex, Claude Code, and Cursor. Restart the
 harness session to discover it. Installation does not start a run.
 
+For a task that needs competing implementations or a revised evaluator, use
+[Git-backed experiments](../skills/hill-climb/references/git-experiments.md) and
+the [task harness brief](../skills/hill-climb/templates/task-harness.json).
+The brief records the real integration targets, quality rubric, candidate
+revisions, budget, feedback, and retention needs. It is an agent planning aid,
+not an executable workflow. Select only the language runtimes and native checks
+needed by the task and its changed boundaries.
+
 The workflow combines Pstack's [newer Hillclimb playbook](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/poteto-mode/playbooks/hillclimb.md)
 with Anthropic's published [`/claude-api hillclimb` guide](https://github.com/anthropics/skills/blob/ca45fc496a3436251f191354091d557da31c15b5/skills/claude-api/shared/evals/eval-hillclimb.md)
 and cost-specific guidance. The pinned Pstack snapshot predates its playbook;
@@ -45,6 +53,57 @@ active `sdlc` workflow owns COW/sparse isolation, BDD/contract testing, evidence
 independent final review, incremental commits, stacked PRs and babysitting.
 This skill does not introduce permission to push or merge unrelated work.
 
+Feedback can reveal a defect in the feature, the harness, or both. An
+evaluator change is calibrated against labeled good and defective examples,
+then both incumbent and challenger are regraded under the same revised
+contract. Changes to agent instructions, skills, context, or workflow need
+fresh matched trials; rescoring existing outputs does not establish that the
+revised workflow produces better work. Keep earlier decisions and evaluator
+revisions so the evidence remains auditable.
+
+Git branches identify distinct hypotheses. The trial records the exact commit
+and tree, and repeats use clean inputs at that same revision. When equivalent
+trees share a measurement, decisions retain the commit that actually ran and
+label the reuse. Experiment refs,
+worktrees, and evidence belong outside the developer's checkout. Git worktrees
+share objects but do not guarantee filesystem copy-on-write or isolate an
+untrusted process. Preserve the necessary objects or a verified bundle when
+source replay is required; deleting a branch does not immediately reclaim
+all of its objects.
+
+The `native experiment` command can coordinate a scoped local Git experiment.
+It freezes each arm, records local trial reservations and receipts, compares
+paired evidence, and advances an eligible private integration ref. Its local
+runner executes trusted commands with host privileges. It hashes declared
+case files, the evaluator, its direct executable or trusted interpreter, and
+declared dependencies. The included native test adapter requires its configuration
+and JSON parser to be declared and frozen. The evaluator must attest the case digest. Evaluator
+revisions require calibration runs on labeled references. A default 1800-second
+experiment deadline limits trial dispatch and execution. Provider spending
+controls, protecting confirmation data from host processes, and external
+sandboxes require separate integration.
+The [Git experiment guide](../skills/hill-climb/references/git-experiments.md)
+documents the request format and recovery limits. The optional
+[MAF YAML workflow](../skills/hill-climb/workflows/experiment-cycle/README.md)
+runs a bounded sequence of those requests with its own Python and .NET runtime
+prerequisites.
+
+The private Git store verifies ownership and separation from registered source
+worktrees, disables hooks, and rejects configured external filter drivers during
+managed checkout and freezing. A worktree is not a sandbox against another
+process with the same privileges.
+
+Lean checks unbounded budget arithmetic, with finite correspondence cases
+against SQLite. The bounded controller model checks its declared transitions
+and assumptions.
+Optional TLA+ and TLC specifications exercise reservation and guarded promotion
+models, including weakened configurations that produce counterexamples. The
+[formal guide](../skills/hill-climb/formal/README.md) records the checker,
+assumptions, and scope; these checks do not prove the implementation or remote
+provider behavior. The local runner checks a monotonic deadline after Git export
+and caps command execution to the remaining interval. Git export has its own
+subprocess timeout.
+
 For an actual structured run, copy and complete
 [the plan template](../skills/hill-climb/templates/plan.json). The helper compares
 existing JSONL results with hashed trace receipts:
@@ -66,36 +125,8 @@ Tests use synthetic measurements to verify comparison and evidence boundaries.
 No paid experiments, measured application improvement, or held-out model
 performance gain is claimed from creating this skill.
 
-## Experiment primitives
-
-The package includes local building blocks for private Git experiment arms,
-SQLite trial reservations, frozen-tree command execution, paired evaluation,
-and a bounded controller model. These modules are internal foundations. The
-measurement helper above remains the public entry point until a controller
-connects those pieces.
-
-The local runner executes trusted commands with host privileges. The bounded
-model checks its declared transitions and assumptions, rather than proving the
-implementation or a remote provider.
-
-The private Git store verifies its ownership and its separation from every
-registered source worktree. It disables hooks and rejects configured external
-filter drivers during managed checkout and freezing. These checks do not make
-a worktree a sandbox against another process with the same privileges.
-
-Lean checks unbounded budget arithmetic, with finite correspondence cases
-against SQLite. Optional TLA+ and TLC specifications exercise bounded
-reservation and guarded promotion models. They include deliberately weakened configurations whose
-counterexamples check the model's sensitivity. The [formal guide](../skills/hill-climb/formal/README.md)
-records the pinned checker, assumptions, and scope.
-
-Local trial execution accepts a monotonic deadline. It checks the deadline
-again after exporting the Git tree and caps command time to the remaining
-interval. Git export uses its own subprocess timeout.
-
-The ledger can enforce one claim for a frozen selection assignment per
-candidate tree, case and repetition when the controller supplies that identity. A nondeterministic comparison needs repeated baseline
-observations for every case and a positive declared noise floor; missing
-evidence remains inconclusive.
-Regrading also binds the original submission and case bytes separately from
-the evaluator's grading receipt, which may legitimately change.
+The ledger can enforce one claim for each frozen selection assignment when
+the controller supplies the candidate tree, case and repetition identity.
+Nondeterministic comparisons require repeated baseline observations for every
+case and a positive declared noise floor. Regrading binds submitted source and
+case bytes separately from grading receipts, which may legitimately change.

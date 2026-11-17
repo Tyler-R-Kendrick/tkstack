@@ -63,12 +63,22 @@
   },
   "tests/test_experiment_evaluate.py": {
     "risk": "An ineligible, incomplete, substituted or regressing result could be promoted as an improvement.",
-    "oracle": "Independent labeled measurements, changed grade receipts, retained submission/case bytes and repeated noisy baselines must produce the correct eligibility or inconclusive result.",
+    "oracle": "Independent labeled measurements, provenance kinds, changed grade receipts, retained submission/case bytes and repeated noisy baselines must produce the correct eligibility or inconclusive result.",
     "kinds": [
       "contract"
     ],
     "overlap": "Tests pure paired evaluation and regrade decisions; higher-layer tests exercise persisted controller receipts.",
-    "sha256": "a3eed5e747b81ac1e63acf7de6c1739d1b19cbf1afce0d191ff900d8878d3bdb"
+    "sha256": "3c062c7eac9f0f67a9ab580a7da5fb0f141d6d398dcc38df780eca7abe2b6ad9"
+  },
+  "tests/test_experiment_factory.py": {
+    "sha256": "2cc92b8b966c6af67000318cd8e9b0d70ea9fd1bbaa0a6abbcf62bc02a57c7b4",
+    "risk": "A task draft could overwrite data, infer unsupported criteria or escape the declared repository scope.",
+    "oracle": "Real Git fixtures and the compiled entry point must produce a fact-only draft while rejecting invalid paths, aliases and overwrites.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "The draft boundary is distinct from the executable experiment controller."
   },
   "tests/test_experiment_git.py": {
     "risk": "Private experiment arms, guarded promotion, and cleanup could lose user work or act on a redirected Git store.",
@@ -79,6 +89,36 @@
     ],
     "overlap": "Exercises Git ownership and lifecycle; controller tests separately cover decisions and evidence.",
     "sha256": "03cd1e80a6455a3cf018c97aa8cfe49fa2f6c3b14491fdb0b8c71177f2ff2b47"
+  },
+  "tests/test_experiment_handoff.py": {
+    "sha256": "a71c52d360ab34898c85c69690f053c9c8666f3d6648f4966a70f908161c7bc3",
+    "risk": "A private champion could be delivered without matching the evaluated tree, evidence, scope or current delivery base.",
+    "oracle": "Real isolated Git repositories must stage the exact promoted tree and preserve measured source provenance while rejecting stale, dirty, tampered, unconfirmed and unsafe-filter cases.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Exercises the separate-worktree handoff boundary; promotion and controller tests validate the private ref and retained decision."
+  },
+  "tests/test_experiment_integration.py": {
+    "sha256": "78220b535f71fb829644cb77f0c2c01489e87d639731dfc8bee6a64098bcc784",
+    "risk": "Stale evidence, invalid confirmation, changed evaluator inputs or interrupted promotion could advance the wrong candidate.",
+    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery, same-tree source provenance and tamper rejection against retained decisions and refs.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Covers public controller integration; component evaluation and Git lifecycle tests cover narrower invariants."
+  },
+  "tests/test_experiment_integrity.py": {
+    "sha256": "dd362ff4d1febbb61609e457839f81521c06da8c0bdac92c052256f6d5ec0b84",
+    "risk": "Spoofed verifiers, reused assignments, wrong case bytes or fabricated calibration could authorize an invalid comparison.",
+    "oracle": "Real controller calls and stored receipts must reject forged, duplicate, stale and unattested inputs while accepting a bound case.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Targets authority boundaries and selection uniqueness beyond the general lifecycle."
   },
   "tests/test_experiment_lean.py": {
     "sha256": "dd15162d6ddbcdafad8aaea90070b8490355f2c09d6df96b75f3a4fdbb186bad",
@@ -100,6 +140,16 @@
     "overlap": "Checks the durable ledger directly; the finite model explores an abstract state machine and controller tests verify callers.",
     "sha256": "a82f48dc4b8d9db54ebd0c025659878488090e6fbcce200935bf6a603df0945d"
   },
+  "tests/test_experiment_maf.py": {
+    "sha256": "31987078e7317233206e654097dc0c19b4c98ce73f494aa4dd51eec63ead0649",
+    "risk": "The workflow could reorder actions, proceed after failed work or alter request bytes.",
+    "oracle": "Validated input snapshots and subprocess receipts establish ordering and failure propagation; optional tests execute a native MAF graph.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Binding tests simulate external stages; the opt-in graph checks the actual MAF boundary."
+  },
   "tests/test_experiment_model.py": {
     "risk": "Reservation or promotion guards might fail under modeled concurrency, crash, or stale-ref transitions.",
     "oracle": "Finite state exploration must preserve stated invariants, while deliberately weakened transitions yield counterexamples; the optional pinned TLC checker exercises TLA+ specifications.",
@@ -109,6 +159,26 @@
     ],
     "overlap": "Model checks assumptions and bounded transitions independently; real SQLite and Git tests exercise implementation behavior.",
     "sha256": "3b48603b9e86ca597013fe953781586f9213af77f9b4c5af2afdfef2e40f5684"
+  },
+  "tests/test_experiment_native_check.py": {
+    "sha256": "36502312ea18237f3727d4a1ee1c0033b6973bd909bb22e87caa48b5994ce590",
+    "risk": "A native test command could be counted as passing without real work or with changed case data.",
+    "oracle": "Real local scripts produce passing, failing, empty, timed-out and malformed outcomes, with work counts and case digests checked.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Exercises adapter parsing and execution independently from controller provenance."
+  },
+  "tests/test_experiment_native_integration.py": {
+    "sha256": "2bc083861637b0d7e02facfbb160da3d3415698a77d27407b157525d56d709ac",
+    "risk": "A controller could run a different native configuration or accept a substituted evaluator.",
+    "oracle": "Real native test execution and configuration, parser and argument mutation cases must preserve frozen identity and reject drift.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Checks compiled controller-to-adapter integration rather than every native output case."
   },
   "tests/test_experiment_runner.py": {
     "risk": "A trial could execute the wrong source tree or undeclared command, overrun its deadline, or silently accept incomplete execution.",

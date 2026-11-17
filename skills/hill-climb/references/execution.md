@@ -27,3 +27,4 @@ Model and verify do not mutate application/learning records; compiled invocation
 - Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.
 - Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.
 - Use native compare against actual retained measurement receipts and untouched confirmation. This contract gate computes no quality or performance gain.
+- Local experiment execution uses host privileges and cannot establish evaluator independence, model spend, or holdout isolation.

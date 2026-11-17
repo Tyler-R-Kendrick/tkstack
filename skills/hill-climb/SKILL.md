@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Harness independent. Python 3.11+ for the optional offline comparison helper. Actual experiments require the project's runner and relevant runtime or media tools. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.3.0"
+  version: "0.4.0"
   disable-model-invocation: "true"
 ---
 
@@ -21,6 +21,7 @@ Tool: `.tkstack/tkstack skills hill-climb -- <command>`. Omit the command for de
 | `model` | [Typed parameters](commands/model.md) |
 | `verify` | [Typed parameters](commands/verify.md) |
 | `native compare` | [Typed parameters](commands/native_compare.md) |
+| `native experiment` | [Typed parameters](commands/native_experiment.md) |
 | Evidence, effects, native execution, and semantic boundaries | [Execution contract](references/execution.md) |
 
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
@@ -36,6 +37,9 @@ does not start an experiment, spend money, or expand merge authority by existing
 | Establish the feedback loop | [Instrument and loop](references/instrument-and-loop.md) |
 | Compare paired case metrics | [Measurement contract](references/measurement.md) |
 | Inspect example plan | [Plan template](templates/plan.json) |
+| Build or improve a task-specific Git experiment harness | [Git-backed experiments](references/git-experiments.md) |
+| Capture a task harness brief | [Task harness template](templates/task-harness.json) |
+| Run a native MAF YAML experiment workflow | [Optional MAF workflow](workflows/experiment-cycle/README.md) |
 
 Ground the real workload and prove the instrument can distinguish good/bad
 behavior. Freeze inputs, metric, runner, grader, guardrails, splits, threshold,
