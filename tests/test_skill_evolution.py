@@ -44,7 +44,7 @@ class SkillEvolutionTests(unittest.TestCase):
 
     def test_ify_subskills_ship_inside_the_learn_plugin_as_complete_packages(self):
         learn = ROOT / "skills/learn"
-        subskills = {"codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify", "testify"}
+        subskills = {"codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify", "testify", "evalify"}
         self.assertEqual({path.name for path in (learn / "skills").iterdir()}, subskills)
         for name in sorted(subskills):
             with self.subTest(subskill=name):

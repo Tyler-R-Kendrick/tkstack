@@ -5,8 +5,8 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 620,
-    "max_bytes": 680000,
+    "max_cases": 624,
+    "max_bytes": 685000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -120,9 +120,9 @@
         ],
         "exclude": [],
         "max_files": 54,
-        "max_bytes": 690000,
+        "max_bytes": 688000,
         "max_depth": 2,
-        "reason": "The automation layer adds reviewed proposal, parallel, process-isolation, optional GEPA and Harbor suites for distinct execution and budget boundaries."
+        "reason": "Allow the focused Evalify adapter regression and timeout tests alongside the existing reviewed automation suites."
       },
       {
         "id": "documentation",
@@ -154,9 +154,9 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 42000,
+        "max_bytes": 43000,
         "max_depth": 2,
-        "reason": "One policy and per-suite review inventory include the automation suites and exact helper-oracle exceptions."
+        "reason": "Keep one policy and per-suite review inventory, including the reviewed Evalify deadline and framework adapter tests."
       },
       {
         "id": "owned-tree",
@@ -166,10 +166,10 @@
         "exclude": [
           "vendor/**"
         ],
-        "max_files": 880,
-        "max_bytes": 9200000,
+        "max_files": 900,
+        "max_bytes": 10200000,
         "max_depth": 9,
-        "reason": "The reviewed automation layer adds scoped proposer, parallel worker, optional verifier and optimizer modules plus their integration regressions."
+        "reason": "Allow the requested Evalify subskill and integrity-locked Promptfoo dependency plus its compiled artifact and focused deadline guidance."
       }
     ]
   },

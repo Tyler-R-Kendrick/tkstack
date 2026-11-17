@@ -253,6 +253,12 @@ class TestifyTests(unittest.TestCase):
         self.assertEqual(planned['status'], 'planned')
         self.assertFalse(self.target.exists())
         self.assertIn('invalid request', planned['content'])
+        del self.data['timeout']
+        self.save_spec()
+        default = json.loads(self.invoke('plan').stdout)
+        self.assertIn('timeout=30', default['content'])
+        self.data['timeout'] = 4
+        self.save_spec()
         routed = subprocess.run([sys.executable, '-B', str(ROOT / 'src/tkstack.py'), '--project', str(self.root),
                                  'skills', 'learn', '--', 'testify', 'native', 'plan',
                                  '--project', str(self.root), '--target', 'tests/test_cli.py', '--spec', str(self.spec)],
@@ -273,7 +279,7 @@ class TestifyTests(unittest.TestCase):
         self.assertEqual(json.loads(self.invoke('run').stdout)['status'], 'pass')
 
     def test_invalid_specs_and_unsafe_paths_do_not_create_or_replace_a_test(self):
-        for mutation in ('no_oracle', 'bool_exit', 'escape', 'duplicate_case', 'duplicate'):
+        for mutation in ('no_oracle', 'bool_exit', 'escape', 'duplicate_case', 'duplicate', 'timeout_zero', 'timeout_bool'):
             data = copy.deepcopy(self.data)
             if mutation == 'no_oracle':
                 del data['cases'][0]['stdout_json']
@@ -283,6 +289,10 @@ class TestifyTests(unittest.TestCase):
                 data['entrypoint'] = '../outside.py'
             elif mutation == 'duplicate_case':
                 data['cases'].append({**data['cases'][0], 'name': 'repeated'})
+            elif mutation == 'timeout_zero':
+                data['timeout'] = 0
+            elif mutation == 'timeout_bool':
+                data['timeout'] = True
             if mutation == 'duplicate':
                 self.spec.write_text('{"version":1,"version":1}')
             else:

@@ -57,3 +57,8 @@ subcommand. Sibling authoring skills are optional; see the reuse procedure for
 mechanism routing. Installation alone does not run initialization.
 
 For session/repository/workspace records, read [local state storage](references/storage.md).
+
+When creating or running workflows, use finite default deadlines for supported
+operations and an outer bound; retain elapsed time and timeout outcomes. Test
+timeout recovery where meaningful. A deadline is not a performance SLO, and an
+unsupported host timeout or uncertain remote effect must remain explicit.

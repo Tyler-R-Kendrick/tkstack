@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.
+description: Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct evalify/skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.
 license: MIT
 compatibility: "Requires Python 3.11 or newer for the bundled helper. The steering format has no harness dependency. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
@@ -25,6 +25,7 @@ Tool: `.tkstack/tkstack skills learn -- <command>`. Omit the command for determi
 | `native show` | [Typed parameters](commands/native_show.md) |
 | `native sessions review` | [Typed parameters](commands/native_sessions_review.md) |
 | `codify [command ...]` | [Mounted subskill](commands/codify.md) → [`skills/codify`](skills/codify/SKILL.md) |
+| `evalify [command ...]` | [Mounted subskill](commands/evalify.md) → [`skills/evalify`](skills/evalify/SKILL.md) |
 | `flowify [command ...]` | [Mounted subskill](commands/flowify.md) → [`skills/flowify`](skills/flowify/SKILL.md) |
 | `hookify [command ...]` | [Mounted subskill](commands/hookify.md) → [`skills/hookify`](skills/hookify/SKILL.md) |
 | `instructify [command ...]` | [Mounted subskill](commands/instructify.md) → [`skills/instructify`](skills/instructify/SKILL.md) |
@@ -42,6 +43,14 @@ Capture visible user corrections and frustrations as evidence, then improve the
 scoped reasoning rule behind the mistake. Tool observations and skill research
 are procedural evidence, not user authority. Continue the user's active task.
 
+When creating or changing Learn workflows and any mounted subskill, build in
+finite default deadlines for supported tests, evals, linters, subprocesses and
+MCP calls. Retain elapsed time and timeout outcomes, and verify recovery where
+that is a distinct behavior. A deadline is a safety bound, not a performance
+SLO; record unsupported cancellation and uncertain remote effects. The shared
+[operation timing](scripts/operation_timing.py) helper records compiled runner
+outcomes; direct helpers and host MCP calls need their own instrumentation.
+
 Invoke `/learn <command> [request]` or `$learn <command> [request]`.
 Use `help [command]` for read-only discovery; `<command> help` also requests
 guidance. Native helper: `python3 <learn-directory>/scripts/learn.py help [topic]`;
@@ -56,6 +65,7 @@ running the helper without a command shows help without initializing state.
 | Create a workflow in a native DSL | [`flowify`](references/subcommands.md#flowify), [package](skills/flowify/SKILL.md) |
 | Create a CLI lint rule | [`lintify`](references/subcommands.md#lintify), [package](skills/lintify/SKILL.md) |
 | Create a distinct behavioral test | [`testify`](references/subcommands.md#testify), [package](skills/testify/SKILL.md) |
+| Evaluate nondeterministic behavior with a calibrated model judge | [`evalify`](references/subcommands.md#evalify), [package](skills/evalify/SKILL.md) |
 | Reuse code assets or bootstrap extraction with `init` | [`reusify`](references/subcommands.md#reusify), [package](skills/reusify/SKILL.md) |
 | Compile a prompt/Markdown procedure to a lock artifact | [`codify`](references/subcommands.md#codify), [package](skills/codify/SKILL.md) |
 | Correction, frustration, or explicit preference | [Capture, reason, curate, verify](references/operating-guide.md) |

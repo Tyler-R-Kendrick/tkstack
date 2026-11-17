@@ -148,6 +148,17 @@ of it and does not create `/etc/.tkstack`. Pass `--project /repo` before the
 operation when the workspace is not the current directory. Help, list, tools,
 and check are read-only.
 
+Compiled execution defaults to a 30-second outer deadline; use `--timeout`
+when a different bounded workload requires it. For executed operations the
+runner appends a local `.tkstack/runs/timing/operations.jsonl` record with elapsed
+monotonic time, deadline, outcome, artifact identity and basic runtime environment,
+without prompts or payloads. Model/report verification and the declared read-only operations are
+excluded so their state-preservation contract remains intact. A trace-write
+failure is reported without pretending the operation itself did not happen.
+Direct helper execution and MCP calls made by other hosts do not pass through
+this runner; configure and verify their deadlines and traces separately. An
+outer timeout does not prove a remote request was cancelled.
+
 ## Owned normalized skill commands
 
 All owned skills now provide `model`, `verify --report`, and their declared

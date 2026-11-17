@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "name": "evalify",
+  "purpose": "Design and execute calibrated evaluations of nondeterministic behavior using established frameworks.",
+  "criteria": [
+    {
+      "id": "task",
+      "description": "Define the actual workload and observable success, including deterministic gates."
+    },
+    {
+      "id": "judge",
+      "description": "Calibrate any model judge against independently labeled examples and record limitations."
+    },
+    {
+      "id": "measurement",
+      "description": "Retain matched runs, elapsed time, costs, failures and confirmation evidence."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "actual_work_observed": {
+        "type": "boolean",
+        "const": true
+      },
+      "judge_calibrated": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "actual_work_observed",
+      "judge_calibrated"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_validate": {
+      "entrypoint": "scripts/evalify.py",
+      "prefix": [
+        "validate"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "config": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--config"
+          ]
+        },
+        "executable": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--executable"
+          ],
+          "path": true
+        },
+        "receipt": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--receipt"
+          ]
+        },
+        "timeout": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "flags": [
+            "--timeout"
+          ],
+          "default": 20
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "validate"
+      ],
+      "description": "Validate a Promptfoo configuration with a timed receipt."
+    },
+    "native_run": {
+      "entrypoint": "scripts/evalify.py",
+      "prefix": [
+        "run"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "config": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--config"
+          ]
+        },
+        "executable": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--executable"
+          ],
+          "path": true
+        },
+        "receipt": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--receipt"
+          ]
+        },
+        "timeout": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "flags": [
+            "--timeout"
+          ],
+          "default": 20
+        },
+        "output": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--output"
+          ]
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "run"
+      ],
+      "description": "Run Promptfoo with a bounded timeout and timed receipt."
+    }
+  },
+  "limits": [
+    "A recorded review does not authenticate judge calibration, model behavior, or semantic quality.",
+    "Promptfoo must be separately installed; native execution can call providers and execute configuration code.",
+    "The helper deadline does not prove remote cancellation or cleanup of detached descendants."
+  ]
+}

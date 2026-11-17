@@ -59,8 +59,34 @@ class StackRunnerTests(unittest.TestCase):
             self.assertEqual(json.loads(self.invoke(kind, 'labels', '--', 'normalize', '-l', '[" b ","a"]').stdout), {'labels': ['a', 'b']})
         call = {'type': 'function_call', 'name': 'normalize_labels', 'arguments': '{"labels":["b","a"]}'}
         self.assertEqual(json.loads(self.invoke('skills', 'labels', '--call', '-', payload=call).stdout), {'labels': ['a', 'b']})
+        self.invoke('skills', 'labels', '--', 'normalize', '-l', '["private-payload-example"]')
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        entries = [json.loads(line) for line in trace.read_text().splitlines()]
+        self.assertTrue(any(row['status'] == 'pass' and row['timeout_seconds'] == 30 and row['elapsed_ms'] >= 0 for row in entries))
+        self.assertTrue(all(row['environment']['python'] and row['environment']['platform'] for row in entries))
+        self.assertNotIn('private-payload-example', trace.read_text())
+        runner.timing.invoke(lambda *args, **kwargs: (0, '', ''), {'artifact_sha256': 'fixture'},
+            {'operation': 'private-operation-example'}, self.workspace, 30, None, None, {},
+            self.scopes['workspace'], 'skills', 'fixture')
+        self.assertNotIn('private-operation-example', trace.read_text())
         tools = json.loads(self.invoke('tools', 'skills', 'labels', '--format', 'chat').stdout)
         self.assertIn('normalize_labels', [item['function']['name'] for item in tools])
+
+    def test_runner_records_a_real_deadline_without_recording_payload(self):
+        skill = self.fixture()
+        workflow = skill / 'scripts/workflow.py'
+        text = workflow.read_text().replace('def execute(payload):',
+            'def execute(payload):\n    if payload.get("labels") == ["slow-private"]:\n        import time\n        time.sleep(10)')
+        workflow.write_text(text)
+        runner.codify.compile_workflow(skill / 'PROMPT.md', skill / 'scripts/run.py',
+            skill / 'cases.json', skill / 'scripts/workflow.lock.json', root=skill, project=self.workspace)
+        result = self.invoke('skills', 'labels', '--timeout', '1', '--', 'normalize', '-l', '["slow-private"]', expected=1)
+        self.assertIn('deadline', result.stderr)
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        record = json.loads(trace.read_text().splitlines()[-1])
+        self.assertEqual((record['status'], record['timeout_seconds']), ('deadline_or_interrupt', 1))
+        self.assertGreaterEqual(record['elapsed_ms'], 500)
+        self.assertNotIn('slow-private', trace.read_text())
 
     def test_direct_lock_reuses_verified_runner_and_rejects_mixed_interfaces(self):
         skill = self.fixture()

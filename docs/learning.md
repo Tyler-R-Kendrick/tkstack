@@ -13,13 +13,14 @@ pointer without migrating the evidence.
 
 Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 `/learn help <name>` for focused guidance. Directly select `skillify`, `hookify`,
-`instructify`, `flowify`, `lintify`, `testify`, `reusify`, or `codify` as a Learn subcommand:
+`instructify`, `flowify`, `lintify`, `testify`, `evalify`, `reusify`, or `codify` as a Learn subcommand:
 
 ```text
 /learn help reusify
 /learn reusify init src --preview
 /learn skillify package our contract-review procedure as a reusable tool
 /learn lintify enforce the stated invariant with our existing CLI linter
+/learn evalify evaluate the agent with a calibrated semantic rubric
 /learn codify compile docs/release.md into scripts/release.lock.json
 ```
 
@@ -32,6 +33,12 @@ without capturing feedback or reviewing sessions. A direct route does not
 start a full consolidation sweep. A missing subskill is reported as an
 explicit dependency; the Learn helper still provides its help.
 See the [bundled command contract](../skills/learn/references/subcommands.md).
+Learn and its subskills require finite default execution bounds and timing
+evidence for supported operations. A timeout does not establish that a remote
+MCP operation was cancelled or that a latency SLO was met.
+Compiled TKStack operations record elapsed time and outcomes in the workspace
+trace described in [the runner guide](runner.md); direct helpers and MCP hosts
+need their own supported instrumentation.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:

@@ -371,4 +371,6 @@ for the CLI and category references. Each adopted workspace owns its policy in
 `.constrain/`. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
 
 `testify` ships inside Learn and creates distinct, fault-sensitive behavioral
-tests. Use `/learn testify`; it is not separately installed.
+tests. Use `/learn testify`; it is not separately installed. `evalify` ships
+inside Learn for calibrated model-graded evaluations using Promptfoo or an
+appropriate existing framework; use `/learn evalify`.

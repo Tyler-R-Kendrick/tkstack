@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "evalify",
+        "purpose": "Design and execute calibrated evaluations of nondeterministic behavior using established frameworks.",
+        "criteria": [
+          {
+            "id": "task",
+            "description": "Define the actual workload and observable success, including deterministic gates."
+          },
+          {
+            "id": "judge",
+            "description": "Calibrate any model judge against independently labeled examples and record limitations."
+          },
+          {
+            "id": "measurement",
+            "description": "Retain matched runs, elapsed time, costs, failures and confirmation evidence."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "actual_work_observed": {
+              "type": "boolean",
+              "const": true
+            },
+            "judge_calibrated": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "actual_work_observed",
+            "judge_calibrated"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "A recorded review does not authenticate judge calibration, model behavior, or semantic quality.",
+          "Promptfoo must be separately installed; native execution can call providers and execute configuration code.",
+          "The helper deadline does not prove remote cancellation or cleanup of detached descendants."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown",
+      "input": {
+        "operation": "unknown"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-extra-model-field",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

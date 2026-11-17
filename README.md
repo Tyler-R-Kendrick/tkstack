@@ -36,7 +36,7 @@ The last command checks the destination, its saved profile, managed paths and st
 | Choose | Use |
 | --- | --- |
 | Personal defaults | Fresh installs use `--profile personal`. |
-| Authoring and delivery | `--profile development` adds SDLC, writing, documentation, quality review and measured experiments. Invoke Testify and other authoring commands through Learn. |
+| Authoring and delivery | `--profile development` adds SDLC, writing, documentation, quality review and measured experiments. Invoke Testify, Evalify and other authoring commands through Learn. |
 | Design and media | `--profile design` selects supported design packages for the chosen hosts. |
 | Full inventory | `--profile catalog` applies source-specific upstream placement, agents and Cursor rules. |
 | One package | Use the [Claude marketplace or skills CLI](docs/skill-marketplace.md). |
@@ -56,9 +56,20 @@ For task-scoped measured improvement, the hill-climb skill can coordinate Git
 experiment arms and paired evaluations. See [measured improvement loops](docs/hill-climb.md)
 for execution and isolation limits.
 
+Constrain's [test-value review](skills/constrain/references/tests.md) ranks
+tests by risk and evidence, checks overlap across the test pyramid, and compares
+fault detection and cost before pruning. Its checker inventories supported tests
+and enforces configured rules; it does not rank tests, run mutation testing, or
+prove that a suite improvement works. Those conclusions require the separate
+review and measurements described in the guide.
+The review also incorporates UB Mode's function-risk, mutation and duplication
+signals, with their measurement limits and tool side effects made explicit.
+Executed TKStack operations use a bounded runner and retain local timing records;
+MCP calls in other hosts need their own deadline and tracing configuration.
+
 ## Maintain TKStack
 
-`skills/` contains owned skills and placement profiles, `vendor/` contains pinned snapshots, `agents/` holds shared subagents, and `integrations/mcp/` locks optional Node tooling. Learn's eight authoring packages ship under Learn. Nested Constrain topics are Markdown references. The [runner](docs/runner.md) exposes executable workflows and their contracts.
+`skills/` contains owned skills and placement profiles, `vendor/` contains pinned snapshots, `agents/` holds shared subagents, and `integrations/mcp/` locks optional Node tooling. Learn's nine authoring packages ship under Learn. Nested Constrain topics are Markdown references. The [runner](docs/runner.md) exposes executable workflows and their contracts.
 
 ```sh
 python3 src/check_skills.py

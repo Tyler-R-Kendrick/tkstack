@@ -935,6 +935,10 @@
     "testify": {
       "phase": "TDD/clean-code discipline",
       "strengths": "Choose this to create and fault-check a distinct behavioral test. Lintify enforces source rules; Skillify packages agent procedures."
+    },
+    "evalify": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Use for calibrated model-graded evaluations of nondeterministic behavior, with bounded execution and timing evidence. Testify owns deterministic behavioral tests."
     }
   }
 }

@@ -1,13 +1,13 @@
 {
   "tests/test_authoring.py": {
-    "sha256": "eea8b74b19e913d5f2e987eff683810f33e4a2d91e07d54fd52f8a1ff996cd83",
-    "risk": "A malformed or ambiguous hook policy could permit a blocked tool or overwrite a package.",
-    "oracle": "Replay the native hook protocol and CLI against valid, invalid, duplicate-key and standalone-copy cases; inspect actual decisions, exits and preserved files.",
+    "sha256": "d3e3f83b0733075f95b00d251fb5e36ee560ba07c8177c9698e1ec69dbaf30be",
+    "risk": "Hook policies or generated CLI contract tests could permit invalid actions, overwrite files, hang, or miss real behavioral faults.",
+    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression.",
     "kinds": [
       "contract",
       "simulation"
     ],
-    "overlap": "Adds Testify CLI planning, no-overwrite, invalid-input, real execution and mutation detection; this is distinct from native linter and hook policy tests."
+    "overlap": "Testify planning, default deadlines and fault sensitivity are distinct from native linter, hook policy, and runner timeout tests."
   },
   "tests/test_bootstrap.py": {
     "sha256": "6800df3a8c211b9729a321123565d80d8803b03b02bdbd8485abfe3bcb279395",
@@ -60,6 +60,17 @@
       "simulation"
     ],
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
+  },
+  "tests/test_evalify.py": {
+    "sha256": "f06b312ccb62cbefec05509298c8cd557862738714573c4a21cff747038d4b4b",
+    "risk": "The evaluation adapter could hide failed or empty runs, reuse outputs, or hang without recording timeout evidence.",
+    "oracle": "Run the adapter with passing, failing, empty and hanging processes; inspect exit, timing, receipt and ordinary child cleanup. Optionally run real Promptfoo with a fixture judge and explicit grader errors.",
+    "kinds": [
+      "contract",
+      "simulation",
+      "functional"
+    ],
+    "overlap": "These tests exercise the Evalify native adapter and timeout boundary; framework semantic quality and real model calibration require separate evaluations."
   },
   "tests/test_experiment_agent_arm.py": {
     "sha256": "3225d3326def8d256f81516804c4687b3415b6c7049bd818f1a408f41f3f5917",
@@ -342,7 +353,7 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "e6457aa520a202897fd4521ced92357ecd96a6424a28fdfaf96e59baecd8f25a",
+    "sha256": "3c5e5b44549a76b2b1458e5062ea0e5e2e328e33a0056558e7978034442adf32",
     "risk": "Source-only setup, wrong workspace selection, lost host instructions or destructive reapply can leave consumers silently misconfigured.",
     "oracle": "Compare the full owned link set, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
     "kinds": [
@@ -449,7 +460,7 @@
     "overlap": "Durability/process ownership is distinct from in-memory graph policy; tests share risks but assert different persistence boundaries, not duplicated unit mocks."
   },
   "tests/test_session_learning.py": {
-    "sha256": "80363a7a17cd5238403ec6f90a97801f0d615ac876fc8b693c988a8f6ad5da75",
+    "sha256": "830f416302f64edf0eb38d745c9f6cec14b0855ed31b50e811a2cd67bfda0cc5",
     "risk": "Session evidence could silently schedule changes, merge active/unrelated sessions or leak out of ignored workspace storage.",
     "oracle": "Use actual lifecycle/review/plan CLIs and isolated files, malformed graphs, binary/oversized evidence and symlink cases; assert explicit scope and saved evidence.",
     "kinds": [
@@ -457,10 +468,10 @@
       "state-machine",
       "functional"
     ],
-    "overlap": "Includes the explicit behavioral-test routing kind alongside other decision-record mechanisms."
+    "overlap": "Includes behavioral-test and nondeterministic evaluation routing alongside other decision-record mechanisms."
   },
   "tests/test_skill_evolution.py": {
-    "sha256": "78e98d5fbf94ed254969d528a055f86b55960cfb2779a703b28aa2f200675a4b",
+    "sha256": "021fee59972de8c635b862d272f4ea7f5e456c1bbaec9413a490a831964c22ae",
     "risk": "Skill improvement could publish changed or unanswered candidates using stale proof or weak substring grading.",
     "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes.",
     "kinds": [
@@ -468,7 +479,7 @@
       "functional",
       "simulation"
     ],
-    "overlap": "The Learn distribution check includes Testify as a self-contained mounted authoring subskill."
+    "overlap": "Checks that Testify and Evalify ship as self-contained mounted Learn authoring subskills."
   },
   "tests/test_skill_normalization.py": {
     "sha256": "a97762d45978aeb78f56ea05da3f1ce38bcf9424909da56da5b224fa99618f31",
@@ -503,14 +514,14 @@
     "overlap": "Owns authoring conversion semantics; generic compiler and parser behavior have dedicated suites instead of duplicated per-skill edge cases."
   },
   "tests/test_stack_runner.py": {
-    "sha256": "2e8a82e6ef5a8230ee4797d90f6df61d2975632f1f52562ddd6e6b05f1b9e7aa",
-    "risk": "Registry precedence or provider selection could execute in a source/cache workspace or silently fall back to inference.",
-    "oracle": "Invoke actual CLI/tool surfaces against isolated registries, explicit projects and compiled fixtures; assert selected paths, output, rejection and state preservation.",
+    "sha256": "3d2863382f9dee51c85df8d8bf7857ed29a111eb4d6863f9a7db45afc186bb8c",
+    "risk": "Registry precedence, provider selection, missing deadlines or unsafe timing traces could misroute execution, hang, or expose payloads.",
+    "oracle": "Invoke the actual runner against isolated registries and compiled fixtures; assert paths, outputs, rejection, state preservation, timing metadata, payload exclusion and a real deadline.",
     "kinds": [
       "contract",
       "functional"
     ],
-    "overlap": "Runner precedence is distinct from installer launcher creation. The optional native SDK check stays opt-in and performs no model calls."
+    "overlap": "Runner precedence and timing evidence are distinct from installer launcher creation and the Evalify adapter deadline. The optional native SDK check performs no model calls."
   },
   "tests/test_state_layout.py": {
     "sha256": "9aa341940f71e5a8aa0a7afd188ff8c2a6fa7e9faf04bea41e779303c1651d5b",

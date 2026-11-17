@@ -2,13 +2,15 @@
 
 Use a version 1 JSON object with exactly `entrypoint` (project-relative `.py`),
 `risk` and `distinction` (specific descriptions of at least 20 characters),
-`timeout` (1–60 seconds), and `cases` (1–32). Every case has a distinct `name`,
+`cases` (1–32), and an optional `timeout` (1–60 seconds, default 30). Every case has a distinct `name`,
 string `args`, an integer `exit`, and at least one independent `stdout_text`,
 `stdout_json` or nonempty `stderr_contains` observation. `stdout_text` and
 `stdout_json` are mutually exclusive. JSON null is a valid expected value.
 `{root}` and `{tmp}` in arguments resolve to the checkout and an isolated
 per-case temporary directory. The CLI is invoked via `sys.executable` with
-`shell=False`, and each case runs with its temporary directory as cwd.
+`shell=False`, and each case runs with its temporary directory as cwd. Python's
+subprocess deadline stops the direct child and reports a timeout; descendant
+processes or remote effects may need a separate supervisor and reconciliation.
 
 ```sh
 python3 <testify>/scripts/testify.py plan --project /project --target tests/test_cli.py --spec /tmp/cases.json

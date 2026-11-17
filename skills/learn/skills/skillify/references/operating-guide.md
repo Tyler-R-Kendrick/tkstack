@@ -115,6 +115,13 @@ concurrency, and completion in executable definitions. Document prerequisites,
 input/output contracts, reason codes, artifacts, and invocation. Use `convert`
 to seed an owned skill migration, then finish its actual behavior using the
 [executable workflow procedure](executable-workflows.md).
+Build finite default deadlines into created or changed tests, evaluations,
+linters, subprocesses and supported MCP calls; bound the whole operation as
+well as its expensive parts. Retain monotonic elapsed time and outcome for later
+analysis, and exercise a genuine timeout/recovery case when applicable. Record
+unsupported cancellation and uncertain remote effects. A safety deadline is
+not a benchmark or a user-experience SLO; justify performance tests from real
+workloads and measured baselines.
 Reference other skills conditionally when optional so a standalone copy remains
 usable. Keep provider-specific installation in an adapter/reference rather than
 copying one harness's assumptions into every workflow.

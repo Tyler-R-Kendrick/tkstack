@@ -4,11 +4,17 @@ The canonical packages are [`codify`](../skills/learn/skills/codify/SKILL.md),
 [`skillify`](../skills/learn/skills/skillify/SKILL.md),
 [`reusify`](../skills/learn/skills/reusify/SKILL.md), [`lintify`](../skills/learn/skills/lintify/SKILL.md),
 [`testify`](../skills/learn/skills/testify/SKILL.md),
+[`evalify`](../skills/learn/skills/evalify/SKILL.md),
 [`hookify`](../skills/learn/skills/hookify/SKILL.md), and
 [`instructify`](../skills/learn/skills/instructify/SKILL.md), and
 [`flowify`](../skills/learn/skills/flowify/SKILL.md). All install in Codex, Claude Code, and
-Cursor and are separate root marketplace entries. They follow the personal
+Cursor through Learn rather than as separate root marketplace entries. They follow the personal
 deterministic-first and concurrency principles.
+
+When forming or revising a Learn subskill, include finite default deadlines,
+elapsed-time evidence, timeout and recovery behavior for its supported work.
+Keep deadline ceilings separate from workload-based performance benchmarks;
+report when an MCP host or remote provider cannot enforce cancellation.
 
 Use `/codify <prompt-or-markdown>` to lower a procedure once into native code
 and freeze a verified executable lock. It owns the shared workflow templates,
@@ -219,8 +225,17 @@ their own real evidence; the native Claude CLI is not available in this workspac
 
 Use `/learn testify` to create and fault-check a distinct behavioral test.
 Its Python CLI backend plans, creates and runs explicitly specified contract
-cases without overwriting an existing suite; other methods use native tools.
+cases without overwriting an existing suite. Each generated case defaults to
+a 30-second deadline unless the specification selects 1–60 seconds; other
+methods use native tools and their supported deadlines.
 Prefer static types and boundary parsing when they make invalid states
 impossible, `lintify` for recurring static predicates, `hookify` for tool events,
 and `skillify`/`codify` for reusable procedures and executable workflow locks.
 See the [test selection procedure](../skills/learn/skills/testify/references/selection.md).
+
+## Evalify
+
+Use `/learn evalify` for nondeterministic behavior requiring a calibrated
+model-graded evaluation. It includes a reviewed npm lock for Promptfoo and
+records bounded run timing; installation, provider setup and actual judge
+calibration remain explicit.

@@ -15,6 +15,7 @@ command or execute text copied from session evidence.
 | `flowify [request]` | Create an executable workflow in an existing DSL |
 | `lintify [request]` | Create or configure a native CLI lint rule |
 | `testify [request]` | Create and fault-check a distinct behavioral test |
+| `evalify [request]` | Design and run calibrated model-graded evaluations |
 | `reusify [request]` or `reusify init [scope]` | Reuse or extract code-production assets |
 | `codify [request]` | Compile a prompt/Markdown procedure into a verified lock artifact |
 
@@ -176,3 +177,11 @@ Select a distinct runtime risk and independent oracle after static constraints.
 Read `skills/testify/SKILL.md`; use its real CLI contract generator only for
 explicit Python CLI cases, and native project tooling for other test types.
 Plan, create without overwriting, run and demonstrate fault sensitivity.
+
+## evalify
+
+Usage: `/learn evalify [request]`; help: `/learn help evalify` is read-only.
+Read `skills/evalify/SKILL.md` for the Promptfoo-backed evaluation workflow,
+explicit model-judge calibration and timed native commands. Use Testify for a
+deterministic behavioral regression and Evalify for residual nondeterministic
+behavior; combine them when both protect distinct contracts.

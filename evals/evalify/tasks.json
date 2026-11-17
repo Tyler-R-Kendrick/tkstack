@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created decision regression scenarios",
+  "tasks": [
+    {
+      "id": "evalify-train",
+      "project": "tkstack",
+      "intent": "A CLI can validate a JSON schema, but a summary must preserve nuanced meaning. A) Use deterministic schema validation plus a calibrated semantic judge. B) Let a judge replace every deterministic check. C) Use an uncalibrated aggregate score. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the evidence-backed evaluation action."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evalify-val",
+      "project": "tkstack",
+      "intent": "A model-graded evaluation has a fixed rubric and live provider, but the test run times out after dispatch. A) Assume it passed. B) Mark the outcome uncertain, record elapsed time, and reconcile before retrying. C) Retry indefinitely. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the evidence-backed evaluation action."
+          }
+        ]
+      }
+    },
+    {
+      "id": "evalify-test",
+      "project": "tkstack",
+      "intent": "An agent says it saved a record, but the final state was never checked. A) Require the exact tool-call order. B) Trust its answer. C) Verify the observable state and required side effects. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the evidence-backed evaluation action."
+          }
+        ]
+      }
+    }
+  ]
+}

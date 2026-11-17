@@ -43,6 +43,8 @@ Use the strongest direct constraint that actually covers the boundary:
 3. **Testify:** exercise a distinct runtime contract or regression through the
    least expensive meaningful layer, with an independent oracle and a demonstrated
    fault. Do not retest a language/type guarantee merely to increase coverage.
+   **Evalify** handles residual nondeterministic outcomes requiring a calibrated
+   evaluation; deterministic assertions and actual state remain separate gates.
 4. **Hookify:** enforce an observable tool event when that event is the actual
    boundary; it may invoke the same checked linter and cannot intercept every
    possible route. Git and CI enforce at their own snapshots/phases.
@@ -54,7 +56,8 @@ Use the strongest direct constraint that actually covers the boundary:
 
 | Trigger | Load the internal reference |
 | --- | --- |
-| Test value, verification depth, proofs or redundancy | [Tests](references/tests.md), [verification selection](references/selection.md) |
+| Rank and measure test value, improve a suite, or review redundancy | [Test-value review](references/tests.md), [verification selection](references/selection.md) |
+| Verification depth, proofs, or test layers | [Verification selection](references/selection.md) |
 | Package integrity, GitOps sources or external dependencies | [Dependencies](references/dependencies.md) |
 | Binary, package, or deployment limits | [Artifact size](references/artifacts.md) |
 | Files, folders or documentation ownership | [Structure and documentation](references/structure.md) |
@@ -77,5 +80,7 @@ all review hashes to clear a failure. Missing policy is an error, not a pass.
 
 The engine reads `.constrain/config.json` from the selected repository. It never
 imports test code, calls a model, installs hooks, or writes review records.
-Semantic value requires inspecting the actual assertions and fault sensitivity;
+Semantic value requires inspecting actual assertions and fault sensitivity;
 a passing budget, coverage percentage, or reviewer attestation is insufficient.
+The checker does not rank tests, run mutations, or optimize the suite; the
+test-value reference describes a separate evidence-driven review and its limits.

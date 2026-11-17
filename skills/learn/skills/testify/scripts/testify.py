@@ -67,15 +67,17 @@ def parse(path, root):
     if len(raw) > 256 * 1024:
         raise ValueError('Test specification exceeds 256 KiB')
     data = json.loads(raw, object_pairs_hook=pairs, parse_constant=lambda _: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
-    if not isinstance(data, dict) or set(data) != {'version', 'entrypoint', 'risk', 'distinction', 'timeout', 'cases'} or type(data['version']) is not int or data['version'] != 1:
-        raise ValueError('Specification requires version 1, entrypoint, risk, distinction, timeout, and cases')
+    required = {'version', 'entrypoint', 'risk', 'distinction', 'cases'}
+    if not isinstance(data, dict) or not required <= set(data) or set(data) - (required | {'timeout'}) or type(data['version']) is not int or data['version'] != 1:
+        raise ValueError('Specification requires version 1, entrypoint, risk, distinction, cases, and an optional timeout')
     entry = relative(data['entrypoint'])
     if entry.suffix != '.py':
         raise ValueError('This backend tests Python CLI entrypoints only')
     contained(root, str(entry), True)
     if any(not isinstance(data[k], str) or len(data[k].strip()) < 20 for k in ('risk', 'distinction')):
         raise ValueError('Explain the concrete regression risk and distinct coverage')
-    if type(data['timeout']) is not int or not 1 <= data['timeout'] <= 60:
+    timeout = data.get('timeout', 30)
+    if type(timeout) is not int or not 1 <= timeout <= 60:
         raise ValueError('Case timeout must be 1..60 seconds')
     if not isinstance(data['cases'], list) or not 1 <= len(data['cases']) <= 32:
         raise ValueError('Supply 1..32 concrete contract cases')
@@ -103,7 +105,7 @@ def parse(path, root):
             raise ValueError('Duplicate contract case: ' + name)
         signatures.add(signature)
         cases.append(Case(name, *signature))
-    return Spec(str(entry), data['risk'].strip(), data['distinction'].strip(), data['timeout'], tuple(cases))
+    return Spec(str(entry), data['risk'].strip(), data['distinction'].strip(), timeout, tuple(cases))
 
 
 def render(spec, target):

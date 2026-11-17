@@ -39,6 +39,15 @@ rejected a perfect tie; no arbitrary optimizer edit was adopted. These narrow
 policy cases complement actual compiler/native/report behavior tests, rather
 than replacing full skill outcomes or creative/provider execution.
 
+Constrain's authored decisions include test overlap, mutation survivors,
+boundary protection and agent outcomes. The replay supplies the target
+`SKILL.md` text, so these multiple-choice cases do not by themselves exercise
+the linked test-value reference or demonstrate a working portfolio review.
+Measuring that procedure requires representative repository tasks, actual
+runner traces and independently reviewed outcomes; a mock run checks wiring only.
+Evalify's authored decisions and local fixture-judge integration similarly do
+not establish a calibrated live judge or a measured skill-quality gain.
+
 ## Repository quality
 
 `evals/repo-quality/` grades this checkout on Unix. `snapshot.py` prints a

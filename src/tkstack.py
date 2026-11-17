@@ -17,6 +17,7 @@ from skill_roots import load, owned
 
 ROOT = Path(__file__).resolve().parent.parent
 codify = load('tkstack_codify_runner', ROOT / 'skills/learn/skills/codify/scripts/codify.py')
+timing = load('tkstack_operation_timing', ROOT / 'skills/learn/scripts/operation_timing.py')
 NAME = re.compile(r'[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}')
 
 
@@ -217,8 +218,7 @@ def main(argv=None):
             return subprocess.run([sys.executable, "-B", str(ROOT / "scripts/install.py"), "--target", str(target_dir), "--status"]).returncode
         workspace, scopes, entries, settings = discover(args.project)
         if args.command == 'list':
-            kinds = [args.kind] if args.kind else entries
-            tasks = [(kind, name, path) for kind in kinds for name, path in sorted(entries[kind].items())]
+            tasks = [(kind, name, path) for kind in ([args.kind] if args.kind else entries) for name, path in sorted(entries[kind].items())]
             def observe(task):
                 kind, name, path = task
                 try:
@@ -243,7 +243,7 @@ def main(argv=None):
                 def invoke(lock, payload, _project, timeout, _dependencies, _config):
                     config = configuration(lock, args.config, scopes, settings, environment)
                     dependencies = args.dependencies or (settings.get('dependencies') if lock['runtime'] == 'node' else None)
-                    return codify.invoke(lock, payload, workspace, timeout, dependencies, config, environment=environment)
+                    return timing.invoke(codify.invoke, lock, payload, workspace, timeout, dependencies, config, environment, scopes['workspace'], kind, selected.name)
                 engine = SimpleNamespace(check=codify.check, invoke=invoke, project_root=lambda: workspace)
                 if selected.is_file():
                     if args.input is None or args.call is not None or command_argv:
