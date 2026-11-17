@@ -161,9 +161,9 @@
     "overlap": "Covers parallel backend integration beyond single-run Harbor and local batch tests."
   },
   "tests/test_experiment_integration.py": {
-    "sha256": "78220b535f71fb829644cb77f0c2c01489e87d639731dfc8bee6a64098bcc784",
+    "sha256": "7ad31facaa042919f641a5b71ceaf7853b20ec1099f7339a47e3c9b08faef759",
     "risk": "Stale evidence, invalid confirmation, changed evaluator inputs or interrupted promotion could advance the wrong candidate.",
-    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery, same-tree source provenance and tamper rejection against retained decisions and refs.",
+    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery, same-tree source provenance and tamper rejection; the compiled public skill must also run a host-written arm through a real comparison.",
     "kinds": [
       "contract",
       "functional"

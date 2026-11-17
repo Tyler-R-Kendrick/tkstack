@@ -812,14 +812,24 @@ def print(*args, **kwargs):
                            "metric": "recovery", "direction": "higher", "min_gain": 1,
                            "noise_floor": 0, "deterministic": True},
             "max_trials": 2, "max_tokens": 0})
-        request.write_text(json.dumps({"action": "init", "root": str(self.root), **prepared}))
-        result = subprocess.run([
-            sys.executable, str(ROOT / "skills/learn/skills/skillify/scripts/skillify.py"),
-            "invoke", str(ROOT / "skills/hill-climb"), "--",
-            "native", "experiment", "--request", str(request)],
-            text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue((self.root / "experiment.json").is_file())
+        def invoke(action, **fields):
+            request.write_text(json.dumps({"action": action, "root": str(self.root), **fields}))
+            result = subprocess.run([
+                sys.executable, str(ROOT / "skills/learn/skills/skillify/scripts/skillify.py"),
+                "invoke", str(ROOT / "skills/hill-climb"), "--",
+                "native", "experiment", "--request", str(request)],
+                text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            return json.loads(result.stdout)
+
+        invoke("init", **prepared)
+        arm = invoke("allocate", arm="host")
+        (Path(arm["worktree"]) / "product.txt").write_text("preserves fields")
+        invoke("freeze", arm="host", message="host edit", writers_stopped=True)
+        invoke("run", side="baseline", rep=0, run_key="old")
+        invoke("run", side="candidate", arm="host", rep=0, run_key="new")
+        result = invoke("compare", arm="host", baseline=["old"], candidate=["new"], decision="pick")
+        self.assertEqual(result["decision"], "eligible")
 
     def test_evaluator_drift_stops_execution(self):
         self.call("init", source=str(self.source), experiment="drift", base=self.base,

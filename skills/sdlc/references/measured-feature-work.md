@@ -31,12 +31,21 @@ harness brief:
   candidate revisions, allowed changes, task budget, and stop rule. Start
   with one incumbent and one bounded challenger when sufficient.
 
-Use the installed `hill-climb` Git-backed task experiments for the private
-experiment repository, branch arms, result records, and comparison. Its task
-harness brief and native experiment command define the current executable
-contract. Follow its host isolation requirements and retain the authoritative
-evaluator outside agent-writable code. If that skill or a needed runtime is
-unavailable, use an equivalent local task-scoped harness and record the gap.
+The invoking host agent runs the measured loop with its existing tools. Use
+the installed `hill-climb` Git-backed task experiments to allocate private
+branch arms, freeze candidates, run the selected evaluator, and compare the
+results. When the host provides authorized native delegation, hand independent
+arms to its subagents; otherwise the invoking agent works through the same
+rounds sequentially. Neither path needs a separate agent runtime, provider, or
+model account. Read the installed `hill-climb` skill's Git-backed experiments
+reference for the handoff and executable command sequence.
+
+Follow the host's applicable isolation rules and retain the authoritative
+evaluator outside agent-writable code. If the skill or a needed project runtime
+is unavailable, use an equivalent local task-scoped harness and record the gap.
+Record host usage where the host exposes it, including delegated work, and mark
+unavailable usage as unknown. The local evaluator's zero-token setting, trial
+deadline, and scripted proposal counter do not measure the host agent's work.
 Do not expand the experiment to unrelated targets or make new paid calls
 without an established budget.
 

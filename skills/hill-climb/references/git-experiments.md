@@ -9,6 +9,52 @@ current task; omit fields that are not applicable. Keep the actual numeric
 comparison contract in [plan.json](../templates/plan.json) when using the
 existing helper.
 
+## Host-agent rounds
+
+The agent already handling the user's task proposes and implements each
+hypothesis using its host's existing tools and context. It may use the host's
+native subagents for independent work when both delegation and the work are
+authorized. Otherwise it performs the same rounds sequentially. The host
+does not need to launch another coding-agent runtime, configure a separate
+provider, or create a new model account to use this workflow. Git, Python,
+and the selected project's actual evaluator remain ordinary tool dependencies.
+
+After preparing the task brief and `init` request described below:
+
+1. Invoke `native experiment --request PATH` with an `allocate` request for a
+   candidate arm. Read the returned worktree path and frozen identity.
+2. Give the worker the user outcome, one hypothesis and its falsifier,
+   baseline identity, owned paths, development evidence, quality contract,
+   selected skills, budget and stop rule. Identify its private worktree and
+   which checks it should run. Keep confirmation cases outside its context.
+   For a sequential round, the invoking agent uses the same handoff itself.
+3. The host agent edits only the authorized paths in the returned worktree.
+   Join delegated work and verify that writers have stopped. Send a `freeze`
+   request with `arm`, `message`, and `writers_stopped: true` to capture the
+   candidate's commit and tree. The controller checks the scoped freeze.
+4. Run the frozen incumbent and candidate on the declared selection
+   assignments. Compare the receipts and inspect failures. Improve the
+   feature or, when the evidence points there, revise the task harness and
+   rebaseline. Select and confirm a fixed finalist when confirmation is
+   configured. Retain the decision and retire owned arms under the policy
+   below.
+
+For example, each request is a separate JSON file passed to the native command:
+
+```json
+{"action":"allocate", "root":"/private/experiment", "arm":"candidate-a"}
+```
+
+```json
+{"action":"freeze", "root":"/private/experiment", "arm":"candidate-a",
+ "message":"Test the recovery hypothesis", "writers_stopped":true}
+```
+
+The `propose` action described later is an optional way to apply supplied text
+edits. It is not needed for a host agent to edit and freeze its arm. Optional
+MAF, GEPA, and Harbor integrations serve their documented purposes; they are
+not prerequisites for the host-driven loop.
+
 ## Scope and instrument
 
 Inspect the real integration boundary and choose only the native targets
@@ -31,9 +77,17 @@ Start with an incumbent and one candidate when that is enough to answer the
 question. Reserve a broader search for evidence that justifies it. All
 proposer, trial, retry, judge, and nested-work usage belongs to the same task
 budget. Record the fixed per-call limit and observed usage where available.
-Do not assume a provider can enforce a strict token or currency ceiling unless
-its adapter actually does so. Account for unknown execution after a lost
-response; retry only when the original outcome and available budget allow it.
+Use the invoking host's existing usage and limit controls for its work and any
+delegated work. Record unavailable host usage as unknown. The local evaluator's
+`max_tokens: 0` denotes its non-model trial contract; it neither measures nor
+limits the host agent's tokens. The controller counts scripted `propose` calls
+against `max_proposals`, but it does not count direct host edits and `freeze`
+as proposals. Track those rounds in the host's task record and stop at the
+declared limit. The experiment deadline constrains trial, calibration, and
+scripted-proposal dispatch and execution; it does not time the host's manual
+work or session. Apply any required session limit through the host when
+available. Account for unknown execution after a lost response; retry only when
+the original outcome and available budget allow it.
 
 ## Record each candidate in Git
 
@@ -309,10 +363,12 @@ serialized to prevent measurement contention. It cannot verify that an
 external editor has stopped. The caller must actually stop writers before
 asserting `writers_stopped`. The local runner has host filesystem and network
 access and is suitable only for trusted targets. It requires `max_tokens: 0`
-and does not measure or prevent model calls made inside a target. Use a separate
-sandbox and a provider-aware accounting adapter for untrusted code or model
-spending. The experiment-wide wall-clock deadline defaults to 1800 seconds
-and can be set at initialization with a positive finite `max_elapsed_seconds`.
+and does not measure or prevent model calls made inside a target. Use an
+appropriate isolation mechanism for untrusted code. Track host-agent and any
+target model usage through the host's available accounting controls; report
+unknown usage instead of treating this setting as a spending measurement.
+The controller's trial-dispatch deadline defaults to 1800 seconds and can be
+set at initialization with a positive finite `max_elapsed_seconds`.
 Run and calibration dispatch fail when it expires or the observed wall clock
 moves backward. A running target is capped by the remaining time; clock
 changes and descendant processes need the host's normal supervision. The

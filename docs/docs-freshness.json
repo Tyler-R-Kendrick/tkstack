@@ -548,7 +548,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/harnesses.md": {
           "mode": "100644",
@@ -574,7 +574,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "83fe430db1693922dd2d46046101646ecae4b168"
+          "oid": "86049ceefe5b082fcdf062a3ebfa9006ec943311"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -622,7 +622,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Updated the skill catalog invocation and marketplace metadata for the measured SDLC workflow."
+      "reason": "Reviewed plugin routing and updated skill package versions"
     },
     "documentation": {
       "docs": {
@@ -642,7 +642,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "9b2c87b249f61904457d8e87790f8a21f5762ec8"
+          "oid": "bb3c0751d096744c6ab96ca18806184103393891"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -735,7 +735,7 @@
         },
         "tests/test_experiment_integration.py": {
           "mode": "100644",
-          "oid": "bd5242e032105c2c65f2966cf232ef4f39d11002"
+          "oid": "3bc2fa67daa4fe20d47a1903bd1026000344f088"
         },
         "tests/test_experiment_integrity.py": {
           "mode": "100644",
@@ -879,7 +879,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed documentation tracking and test policy after provenance changes"
+      "reason": "Reviewed documentation tracking and the host-workflow regression inventory"
     },
     "execution": {
       "docs": {
@@ -917,7 +917,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -982,8 +982,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed bootstrap and installation guidance; the README experiment link does not change installation."
+      "no_doc_impact": false,
+      "reason": "Clarified host invocation and existing agent delegation in plugin guidance"
     },
     "skills": {
       "docs": {
@@ -993,7 +993,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -1009,7 +1009,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "61bef49384e88c2ab4351fabb986c9675f70f6eb"
+          "oid": "c0b48f390373c7a2c288e574176fa7cc5f288e24"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1419,7 +1419,7 @@
         },
         "skills/hill-climb/SKILL.md": {
           "mode": "100644",
-          "oid": "0531d1930c6eafa7851f6079970131abe3215397"
+          "oid": "4c7c55be6d158cc9cab0cba433dc8e68ae604fad"
         },
         "skills/hill-climb/commands/help.md": {
           "mode": "100644",
@@ -1503,7 +1503,7 @@
         },
         "skills/hill-climb/references/git-experiments.md": {
           "mode": "100644",
-          "oid": "df9400331669d176663f861e9f7da94284b8a88b"
+          "oid": "d4285a12a45d7e55766d92aec5d480accd178e6f"
         },
         "skills/hill-climb/references/git-handoff.md": {
           "mode": "100644",
@@ -1623,7 +1623,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "89c4e08e8d1deb3c6bc32e6ab816e7fbdedfdbf3"
+          "oid": "1c60a4038807f2907627679aba1bb84a37399762"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2687,7 +2687,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "00448ef584ba6adf96b936f7b3bbc483315f03bc"
+          "oid": "d820d1cd7424d2a12187fc952be2b5b870f86112"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2783,7 +2783,7 @@
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "b53c554d325f78ac68dfb0110e6138eab13e25cf"
+          "oid": "0062f50fea3f618dc8b3ee82a65fd9476b810953"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
@@ -2863,7 +2863,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "966b9ea922ca9d034e64f65caff5ae8f5bdbd162"
+          "oid": "2bff58705b01baff11de26f8c1c1db3c83451516"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3175,7 +3175,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented equivalent-tree measurement provenance and reviewed the optimizer evidence checks"
+      "reason": "Documented the host-native experiment loop and its accounting boundaries"
     }
   },
   "object_format": "sha1",
