@@ -124,6 +124,8 @@ It checks frozen listed files, disjoint cases, complete repetitions, finite
 measurements, regression gates, equivalent work, paired noise, and guardrails.
 Its case-level Student-t interval uses conservative tabulated critical values
 for larger samples rather than understating uncertainty with a normal cutoff.
+The comparison helper requires repeated observations and a positive declared
+noise floor when the plan marks a run as model-based.
 It never executes commands or adopts a patch. Budget/round enforcement, actual
 trace inspection, and untouched holdout isolation belong to the workflow and
 reviewer. See [measurement details](../skills/hill-climb/references/measurement.md).

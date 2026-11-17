@@ -31,7 +31,9 @@ set `model_based: true` in the plan and add `model` (actual served model),
 `cache_write_tokens`), and nonempty `grade` dict to each row. Evidence must
 contain the same-call transcript and grading receipts. The helper verifies its
 bytes, not its semantic correspondence; the reviewer must check the actual
-trace. Keep full retry and judge usage/cost accounting alongside it.
+trace. It requires at least two repetitions and a positive registered noise
+floor for model-based comparisons; the operator must still measure and justify
+that floor. Keep full retry and judge usage/cost accounting alongside it.
 
 ```sh
 python3 <skill-directory>/scripts/hill_climb.py \

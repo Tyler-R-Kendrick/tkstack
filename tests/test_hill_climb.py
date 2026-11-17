@@ -137,6 +137,14 @@ class HillClimbTests(unittest.TestCase):
                 self.save()
                 self.assertEqual(self.compare()['decision'], 'reject')
 
+    def test_model_comparisons_require_repeated_baseline_and_nonzero_noise(self):
+        self.plan['model_based'] = True
+        for reps, noise in ((1, 1), (2, 0)):
+            with self.subTest(reps=reps, noise=noise):
+                self.plan.update(reps=reps, noise_floor=noise)
+                with self.assertRaisesRegex(ValueError, 'Model-based comparisons'):
+                    hill.validate_plan(self.plan, self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

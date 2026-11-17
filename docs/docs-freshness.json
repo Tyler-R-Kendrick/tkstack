@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "c9c3345b28183b8f33db54d6183020982d9b66fa"
+          "oid": "585d137b43f3e887a8a1d82d6114e453cabcda90"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -809,7 +809,7 @@
         },
         "tests/test_hill_climb.py": {
           "mode": "100644",
-          "oid": "b0aa76401e8f5266e7a8eea0b30040b711b64502"
+          "oid": "129216e7de4fd4a61a675a40eb9c69f804c08a61"
         },
         "tests/test_install.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the valid oversized-result rejection and retained smaller-result guard."
+      "reason": "Reviewed the model-based sampling and noise boundary regressions."
     },
     "execution": {
       "docs": {
@@ -1017,7 +1017,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "f49b417fb3251c4ef141c18bdc9966528d6644ce"
+          "oid": "f5d4b603e2a4a8776c5c5d3fa0f1af97b53fdc56"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1527,7 +1527,7 @@
         },
         "skills/hill-climb/references/measurement.md": {
           "mode": "100644",
-          "oid": "c91b5ceee4505ef766b166328b4f776d3fff6d3c"
+          "oid": "32428624815c8dd8081810d1500fcddffb1cff0d"
         },
         "skills/hill-climb/references/operating-guide.md": {
           "mode": "100644",
@@ -1603,7 +1603,7 @@
         },
         "skills/hill-climb/scripts/hill_climb.py": {
           "mode": "100644",
-          "oid": "15946364a36788c6522ff1feaff7ce35c56c1e90"
+          "oid": "1617a44e554774db6fa529990da1a7ca46c79d4f"
         },
         "skills/hill-climb/scripts/json_contract.py": {
           "mode": "100644",
@@ -1635,7 +1635,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "15049222c205503090859af62a6bcb18471910a2"
+          "oid": "5606cf347d89b6deedc993bbc92395151a50f37d"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the finite Evalify result parsing boundary and documented the native-framework alternative."
+      "reason": "Reviewed minimum repeated sampling and positive noise declaration for model-based comparison plans."
     }
   },
   "object_format": "sha1",

@@ -37,6 +37,10 @@ def validate_plan(plan, base):
         raise ValueError("Baseline noise requires an evidence description")
     if type(plan["reps"]) is not int or plan["reps"] < 1:
         raise ValueError("Reps must be a positive integer")
+    if type(plan.get("model_based", False)) is not bool:
+        raise ValueError("model_based must be a boolean")
+    if plan.get("model_based", False) and (plan["reps"] < 2 or plan["noise_floor"] <= 0):
+        raise ValueError("Model-based comparisons require repeated baselines and a positive noise floor")
     splits = plan["splits"]
     seen = set()
     for name in ("train", "selection", "confirm"):
