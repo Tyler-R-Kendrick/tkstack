@@ -1,13 +1,15 @@
 # Installed skill inventory
 
+This is the full catalog. Select it with `--profile catalog`; new personal installations use four skills. See [bootstrap](bootstrap.md).
+
 All 19 repository packages share reserved help/version, explicit contract models,
 retained-report verification, native helper bindings where applicable, and
 reviewed compiled artifacts. [Normalization coverage](normalization.md) describes
 what runs mechanically and what still requires actual semantic/provider work.
 
 
-Skills install by origin. Personal skills in `skills/` join every selected
-harness; Learn's 7 subskills install inside Learn. `placement.default` in
+In the catalog profile, skills install by origin. Personal skills in `skills/` join every selected
+harness; Learn's packaged subskills install inside Learn. `placement.default` in
 `skills/skills.json` sends other upstream skills to Codex
 (`.agents/skills/`), Grok (`.grok/skills`), Kimi (`.kimi/skills`), OpenCode
 (`.config/opencode/skills` at home, `.opencode/skills` in a project), GitHub
@@ -362,3 +364,11 @@ replace Pstack's `tdd` name.
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
 | [`ub-mode`](../vendor/ub-mode/SKILL.md) | main | User or model |
+
+`constrain` owns test-value selection, verification-category review, repository
+sparsity and deployment artifact budgets. See [its index](../skills/constrain/SKILL.md)
+for the CLI and category references. Each adopted workspace owns its policy in
+`.constrain/`. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
+
+`testify` ships inside Learn and creates distinct, fault-sensitive behavioral
+tests. Use `/learn testify`; it is not separately installed.

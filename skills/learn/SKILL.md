@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.
+description: Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.
 license: MIT
 compatibility: "Requires Python 3.11 or newer for the bundled helper. The steering format has no harness dependency. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
@@ -31,6 +31,7 @@ Tool: `.tkstack/tkstack skills learn -- <command>`. Omit the command for determi
 | `lintify [command ...]` | [Mounted subskill](commands/lintify.md) → [`skills/lintify`](skills/lintify/SKILL.md) |
 | `reusify [command ...]` | [Mounted subskill](commands/reusify.md) → [`skills/reusify`](skills/reusify/SKILL.md) |
 | `skillify [command ...]` | [Mounted subskill](commands/skillify.md) → [`skills/skillify`](skills/skillify/SKILL.md) |
+| `testify [command ...]` | [Mounted subskill](commands/testify.md) → [`skills/testify`](skills/testify/SKILL.md) |
 | Evidence, effects, native execution, and semantic boundaries | [Execution contract](references/execution.md) |
 
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Each ___ify subcommand passes its remaining arguments to the packaged subskill, whose own commands and lock type and bind them. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
@@ -54,6 +55,7 @@ running the helper without a command shows help without initializing state.
 | Maintain scoped agent instructions | [`instructify`](references/subcommands.md#instructify), [package](skills/instructify/SKILL.md) |
 | Create a workflow in a native DSL | [`flowify`](references/subcommands.md#flowify), [package](skills/flowify/SKILL.md) |
 | Create a CLI lint rule | [`lintify`](references/subcommands.md#lintify), [package](skills/lintify/SKILL.md) |
+| Create a distinct behavioral test | [`testify`](references/subcommands.md#testify), [package](skills/testify/SKILL.md) |
 | Reuse code assets or bootstrap extraction with `init` | [`reusify`](references/subcommands.md#reusify), [package](skills/reusify/SKILL.md) |
 | Compile a prompt/Markdown procedure to a lock artifact | [`codify`](references/subcommands.md#codify), [package](skills/codify/SKILL.md) |
 | Correction, frustration, or explicit preference | [Capture, reason, curate, verify](references/operating-guide.md) |

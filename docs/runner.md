@@ -1,7 +1,6 @@
 # Run skills and workflows from `.tkstack`
 
-Run the canonical program directly. Install does not write a `tkstack` launcher
-or a PATH shim.
+Use the destination’s `.tkstack/tkstack` launcher or the source program below. From any repository, `~/.tkstack/tkstack status` checks its project installation or your personal baseline.
 
 ```sh
 python3 src/tkstack.py help
@@ -23,6 +22,15 @@ active repository discovery. A user/global launcher therefore uses the current
 workspace instead of binding execution to the dotfiles checkout.
 
 ## Execution contract
+
+The installed launcher uses the source checkout’s managed Python when present. Provision its locked command dependencies once per checkout before using typed skills or the project constraint hook. From the source checkout, run:
+
+```sh
+python3 -m venv .tkstack/runtime/command-schema
+.tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
+```
+
+Projects sharing that checkout use the same interpreter even when a Git client starts with a different PATH. [Project adoption](bootstrap.md#adopt-team-constraints).
 
 Package commands use Codify's exact `commands/*.md` schema and dispatcher:
 OpenAI function-tool parameters, local nested paths/aliases/flags/defaults,

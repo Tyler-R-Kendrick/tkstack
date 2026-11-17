@@ -86,7 +86,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 case "$url" in
-  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main) ;;
+  https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) ;;
   *)
     if [ -n "${CURL_ACCEPT:-}" ] && [ "$url" = "$CURL_ACCEPT" ]; then
       :

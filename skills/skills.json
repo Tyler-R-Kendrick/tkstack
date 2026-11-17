@@ -1,4 +1,9 @@
 {
+  "profiles": {
+    "personal": ["constrain", "investigate", "learn", "tkstack-principles"],
+    "development": ["constrain", "document", "hill-climb", "investigate", "learn", "sdlc", "tkstack-principles", "unslop", "write"],
+    "design": ["constrain", "investigate", "learn", "open-design", "fal-ai", "tkstack-principles", "write"]
+  },
   "aliases": {
     "pstack": {
       "unslop": "pstack-unslop"

@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "tests": {
+    "include": [
+      "tests/test_*.py"
+    ],
+    "exclude": [],
+    "max_cases": 380,
+    "max_bytes": 390000,
+    "reviews": ".constrain/reviews.json",
+    "exceptions": [
+      {
+        "rule": "tests.no-oracle",
+        "path": "tests/test_command_schema.py:CommandSchemaTests.test_builtin_version_validation_rejects_workflow_binding_and_bad_metadata",
+        "reason": "self.cli checks the actual process exit for each malformed version contract; assertion lives in the shared CLI helper."
+      }
+    ]
+  },
+  "layout": {
+    "budgets": [
+      {
+        "id": "tests",
+        "include": [
+          "tests/**"
+        ],
+        "exclude": [],
+        "max_files": 29,
+        "max_bytes": 400000,
+        "max_depth": 2,
+        "reason": "Regression suites and shared fixtures include the requested Testify and constraint gate behavior; no extra test directory is introduced."
+      },
+      {
+        "id": "documentation",
+        "include": [
+          "docs/**"
+        ],
+        "exclude": [],
+        "max_files": 51,
+        "max_bytes": 545000,
+        "max_depth": 3,
+        "reason": "Keep one canonical feature document; allow reviewed ledger growth for the added Testify package, safety checks, type-first guidance and their existing owner pages."
+      },
+      {
+        "id": "shared-code",
+        "include": [
+          "src/**",
+          "scripts/**"
+        ],
+        "exclude": [],
+        "max_files": 10,
+        "max_bytes": 90000,
+        "max_depth": 2,
+        "reason": "Shared entrypoints only; constraint algorithms live inside the constrain skill."
+      },
+      {
+        "id": "constraint-policy",
+        "include": [
+          ".constrain/**"
+        ],
+        "exclude": [],
+        "max_files": 2,
+        "max_bytes": 22000,
+        "max_depth": 2,
+        "reason": "One policy and one compact suite review inventory; reports stay on stdout."
+      },
+      {
+        "id": "owned-tree",
+        "include": [
+          "*"
+        ],
+        "exclude": [
+          "vendor/**"
+        ],
+        "max_files": 810,
+        "max_bytes": 7800000,
+        "max_depth": 9,
+        "reason": "Adds the requested self-contained Testify subskill, constraint category references and deterministic security checks; counts all owned non-vendor paths to prevent relocation of bloat."
+      }
+    ]
+  },
+  "artifacts": [],
+  "execution": {
+    "max_jobs": 1,
+    "max_timeout_minutes": 15
+  },
+  "documents": {
+    "include": [
+      "docs/*.md",
+      "skills/constrain/references/*.md"
+    ],
+    "exclude": []
+  },
+  "boundaries": [
+    {
+      "id": "constrain-offline-scanners",
+      "include": [
+        "skills/constrain/scripts/constrain.py",
+        "skills/constrain/scripts/dependencies.py",
+        "skills/constrain/scripts/boundaries.py"
+      ],
+      "forbid_imports": [
+        "socket",
+        "urllib",
+        "requests"
+      ],
+      "forbid_calls": [
+        "eval",
+        "exec",
+        "os.system"
+      ]
+    }
+  ]
+}

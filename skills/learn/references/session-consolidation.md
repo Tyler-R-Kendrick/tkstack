@@ -82,6 +82,7 @@ Do not invent model-confidence thresholds or claim measured improvement.
 | `native-workflow` | `flowify` | Native MAF/Rhai or another real workflow host is needed |
 | `compiled-workflow` | `codify` | Cache once-lowered native code in a verified executable artifact |
 | `lint-rule` | `lintify` | A native CLI linter can enforce a stated invariant |
+| `behavioral-test` | `testify` | A distinct runtime fault requires a behavioral regression test |
 | `event-guard` | `hookify` | A precise native tool event requires interception or a gate |
 
 Combine only necessary mechanisms. For example, reuse an existing module first,

@@ -65,65 +65,15 @@ ignores fenced code, external URLs, and fragment-only links; it does not fetch
 websites or validate every CommonMark extension/heading anchor. Keep skill
 package validation and actual behavioral tests in the usual checks.
 
-## Repository agent hooks
+## Completion checks
 
-Project installation into this source checkout registers `repo-docs` completion
-hooks through the normal ownership-aware native configuration path:
-
-| Harness | Event | Failed check |
-| --- | --- | --- |
-| Codex | `Stop` | JSON continuation decision with the failing areas |
-| Claude Code | `Stop` | JSON continuation decision with the failing areas |
-| Cursor | `stop` | One follow-up with the failing areas |
-
-The callback checks only this Git repository (including related worktrees).
-Other repositories return an empty result. Reentry/loop counters cap continuation
-at one attempt; Git remains the commit-time gate if the agent stops again with
-issues. Hooks read the worktree; they never refresh the ledger automatically.
-Malformed hook input/checker errors return nonzero instead of silently claiming
-success. Other upstream hook adapters retain their existing behavior.
-
-Apply project configuration with:
-
-```sh
-./install.sh --target "$PWD" --scope project
-```
-
-Registration is separate from observed native activation. Reload/restart the
-host when required. Codex requires review/trust of new or changed non-managed
-hook definitions through `/hooks`; setup does not bypass that trust mechanism.
-The adapters follow the current documented
-[Codex Stop protocol](https://developers.openai.com/codex/hooks),
-[Claude hooks protocol](https://code.claude.com/docs/en/hooks), and
-[Cursor stop protocol](https://cursor.com/docs/agent/hooks).
+Run the documentation checker before marking a source change complete. A host may register its own completion hook. TKStack's personal installer leaves native registration and host trust to the user.
 
 ## Git pre-commit
 
-`scripts/install.py` sets `core.hooksPath=.githooks` on this checkout. Git then
-runs `.githooks/pre-commit` and ignores `.git/hooks`. There is no chained
-dispatcher and no ownership receipt. A `core.hooksPath` that already points
-somewhere else is replaced. Uninstall unsets the key only when the value is
-still `.githooks`. Dry-run prints `Would set` or `Would unset` and does not
-change config. A missing `git` binary, or a directory that is not a checkout,
-prints `skip git docs hook: not a git checkout`.
+Maintainers can enable the versioned hook in their TKStack checkout with `git config --local core.hooksPath .githooks` after checking the existing setting and hooks. If a hook manager is already configured, have it invoke `.githooks/pre-commit`. Ordinary installation and removal leave the source checkout's Git configuration alone.
 
-```sh
-python3 scripts/install.py --target .
-python3 src/check_docs.py check --staged
-```
-
-`.githooks/pre-commit` execs `src/check_docs.py --repo <toplevel> check --staged`.
-The Git callback checks the actual **index**: policy, docs, source identities,
-and generated README facts all come from staged blobs. Unstaged fixes cannot
-satisfy a staged source change. Sparse checkouts use complete index entries;
-worktree checks fall back to indexed content only for skipped sparse paths.
-The dispatcher follows the active worktree's Git index while retaining a usable
-checker from the durable source checkout. Git hooks can be skipped by Git's
-normal override mechanisms; no server-side CI enforcement is claimed here.
-
-`./install.sh --uninstall` unsets `core.hooksPath` when it is `.githooks`.
-It does not restore a previous hook path. Set that path again yourself if
-another tool should own hooks.
+The hook checks the staged constraint policy and documentation snapshot. An unstaged repair cannot satisfy a failing staged change. Sparse paths fall back to indexed content. Undo a manually selected hook path with Git at the same scope.
 
 ## Verify the maintainer recipe
 
@@ -152,3 +102,14 @@ argument fits the operating-system limit. Ceiling assertions run only with
 checkout below those ceilings still passes the default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
 requires each metric score to be 1.0. The harness is Unix-only. Commands are
 in the README Develop section and [Repository quality](../evals/README.md).
+
+Test changes also pass the [constrain engine](../skills/constrain/SKILL.md). Its
+review inventory names suite risks, behavioral oracles, verification kinds and
+cross-layer overlap. The pre-commit hook checks that policy and sources from the
+same staged snapshot before the documentation gate. Do not add another feature
+doc when its existing page or skill reference can own the information.
+
+The configured documentation byte budget counts both human-facing pages and
+the reviewed source-hash ledger. Budget changes must identify the added
+capability and its existing documentation owners; the Testify/constraint
+addition changes those records without introducing another documentation tree.

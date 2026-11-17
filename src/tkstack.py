@@ -71,7 +71,10 @@ def discover(project=None):
                         name = child.name.removesuffix('.lock.json')
                         valid = (child / 'SKILL.md').is_file() if kind == 'skills' else child.is_dir() or child.name.endswith('.lock.json')
                         if valid and NAME.fullmatch(name):
-                            entries[kind][name] = child.resolve()
+                            directory = child.resolve()
+                            if directory == install.learn_view(ROOT):
+                                directory = ROOT / 'skills/learn'
+                            entries[kind][name] = directory
         if not path.exists():
             continue
         value = read_json(path)
@@ -168,6 +171,7 @@ def parser():
     result = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     result.add_argument('--project', type=Path, help='Exact active workspace; defaults to scoped workspace discovery')
     commands = result.add_subparsers(dest='command')
+    commands.add_parser("status", help="Check the active project installation, or the personal baseline")
     help_command = commands.add_parser('help', help='Read-only help')
     help_command.add_argument('topic', nargs='?', choices=['skills', 'workflows', 'list', 'tools', 'check'])
     listing = commands.add_parser('list', help='List names and observed compilation readiness without executing code')
@@ -206,6 +210,11 @@ def main(argv=None):
     if command_argv and not invoking:
         cli.error('Only skills/workflows accept -- <command> [arguments]')
     try:
+        if args.command == "status":
+            import subprocess
+            workspace = state_roots(args.project)["workspace"].parent
+            target_dir = workspace if args.project or (workspace / ".tkstack/install.json").exists() else Path.home()
+            return subprocess.run([sys.executable, "-B", str(ROOT / "scripts/install.py"), "--target", str(target_dir), "--status"]).returncode
         workspace, scopes, entries, settings = discover(args.project)
         if args.command == 'list':
             kinds = [args.kind] if args.kind else entries
@@ -263,4 +272,7 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
+    runtime = ROOT / '.tkstack/runtime/command-schema/bin/python'
+    if runtime.is_file() and runtime != Path(sys.executable):
+        os.execv(runtime, [str(runtime), '-B', *sys.argv])
     raise SystemExit(main())

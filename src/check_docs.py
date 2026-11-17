@@ -16,58 +16,19 @@ from urllib.parse import unquote, urlsplit
 
 POLICY, LEDGER = 'docs/docs-policy.json', 'docs/docs-freshness.json'
 START, END = '<!-- tkstack:profiles:start -->', '<!-- tkstack:profiles:end -->'
-LIMIT = 4 * 1024 * 1024
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "skills/constrain/scripts"))
+from git_snapshot import GitSnapshot, git
 
 
-def git(root, *args):
-    result = subprocess.run(['git', '-C', str(root), *args], capture_output=True, timeout=20)
-    if result.returncode:
-        raise ValueError(result.stderr.decode(errors='replace').strip())
-    return result.stdout
+class Snapshot(GitSnapshot):
+    allow_links = True
 
-
-class Snapshot:
     def __init__(self, root, staged=False):
-        self.root = Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve()
-        self.staged = staged
-        self.algorithm = git(self.root, 'rev-parse', '--show-object-format').decode().strip()
-        self.index = {}
-        for entry in git(self.root, 'ls-files', '--stage', '-z').split(b'\0'):
-            if not entry:
-                continue
-            header, path = entry.split(b'\t', 1)
-            mode, oid, stage = header.decode().split()
-            if stage != '0':
-                raise ValueError('Resolve index conflicts before documentation review')
-            self.index[path.decode()] = {'mode': mode, 'oid': oid}
-        self.sparse = set()
-        self.files = set(self.index)
-        if not staged:
-            self.sparse = {entry[2:].decode() for entry in git(self.root, 'ls-files', '-t', '-z').split(b'\0') if entry.startswith(b'S ')}
-            self.files.update(entry.decode() for entry in git(self.root, 'ls-files', '--others', '--exclude-standard', '-z').split(b'\0') if entry)
-            self.files = {name for name in self.files if name in self.sparse or os.path.lexists(self.root / name)}
-
-    def read(self, name):
-        if name not in self.files:
-            raise ValueError('Missing snapshot file: ' + name)
-        path = self.root / name
-        if self.staged or (name in self.sparse and not os.path.lexists(path)):
-            record = self.index[name]
-            size = int(git(self.root, 'cat-file', '-s', record['oid']))
-            if size > LIMIT:
-                raise ValueError('Documentation input exceeds 4 MiB: ' + name)
-            data = git(self.root, 'cat-file', 'blob', record['oid'])
-        elif path.is_symlink():
-            data = os.readlink(path).encode()
-        else:
-            with path.open('rb') as source:
-                data = source.read(LIMIT + 1)
-        if len(data) > LIMIT:
-            raise ValueError('Documentation input exceeds 4 MiB: ' + name)
-        return data
+        super().__init__(root, staged)
+        self.algorithm = git(self.root, "rev-parse", "--show-object-format").decode().strip()
 
     def fingerprint(self, name):
-        indexed = self.staged or (name in self.sparse and not os.path.lexists(self.root / name))
+        indexed = self.indexed(name)
         if indexed and name != 'AGENTS.md':
             return self.index[name]
         path = self.root / name
@@ -85,19 +46,8 @@ class Snapshot:
         return name in self.files or any(path.startswith(name.rstrip('/') + '/') for path in self.files)
 
 
-def load(snapshot, path):
-    def pairs(items):
-        result = {}
-        for key, value in items:
-            if key in result:
-                raise ValueError('Duplicate JSON key: ' + key)
-            result[key] = value
-        return result
-    return json.loads(snapshot.read(path), object_pairs_hook=pairs)
-
-
 def policy(snapshot):
-    value = load(snapshot, POLICY)
+    value = snapshot.json(POLICY)
     if not isinstance(value, dict) or type(value.get('version')) is not int or value['version'] != 1 or set(value) != {'version', 'areas'} or not isinstance(value['areas'], dict) or not value['areas']:
         raise ValueError('Invalid documentation policy')
     for name, area in value['areas'].items():
@@ -138,8 +88,8 @@ def profile_block(snapshot):
         'The host needs Bash and curl. Missing Python **' + _pin(text, 'PYTHON_VERSION')
         + '** is installed with uv **' + _pin(text, 'UV_VERSION')
         + '** after sha256 `' + _pin(text, 'UV_INSTALLER_SHA256') + '` is checked.',
-        'Missing Git is replaced by a curl tarball of the GitHub repository.',
-        'One install links Codex, Claude Code, and Cursor. Repeat `--harness` for the other hosts.',
+        'Archive bootstrap requires an independently supplied SHA-256 digest.',
+        'The personal profile selects four skills for Codex, Claude Code, and Cursor. Use `--profile catalog` for full placement.',
         END,
     ]
     return '\n'.join(rows)
@@ -195,7 +145,7 @@ def structural_errors(snapshot):
 
 
 def ledger_document(snapshot):
-    value = load(snapshot, LEDGER)
+    value = snapshot.json(LEDGER)
     if not isinstance(value, dict) or type(value.get('version')) is not int or value.get('version') != 1 or not isinstance(value.get('areas'), dict):
         raise ValueError('Invalid documentation freshness ledger')
     for name, record in value['areas'].items():

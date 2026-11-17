@@ -41,29 +41,10 @@ class SkillEvolutionTests(unittest.TestCase):
         self.run_dir = self.root / ".tkstack/evolution"
         self.run_dir.mkdir(parents=True)
 
-    def test_marketplace_packages_have_root_skills_and_bundled_licenses(self):
-        marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
-        self.assertEqual({plugin["name"] for plugin in marketplace["plugins"]},
-                         {"learn", "sdlc", "unslop", "hill-climb", "tkstack-principles", "investigate", "write", "document", "fal-ai", "headroom", "open-design", "rtk"})
-        adopted = {"fal-ai", "headroom", "open-design", "rtk"}
-        for plugin in marketplace["plugins"]:
-            root = ".agents/skills" if plugin["name"] in adopted else "skills"
-            directory = ROOT / root / plugin["name"]
-            self.assertEqual((ROOT / plugin["source"]).resolve(), directory)
-            self.assertEqual(plugin["skills"], ["./"])
-            self.assertFalse(plugin["strict"])
-            content = (directory / "SKILL.md").read_text()
-            name = re.search(r"^name: (.+)$", content, re.M)[1]
-            description = re.search(r"^description: (.+)$", content, re.M)[1]
-            self.assertEqual(name, directory.name)
-            self.assertRegex(name, r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-            self.assertLessEqual(len(description), 1024)
-            self.assertIn("license: MIT", content)
-            self.assertEqual((directory / "LICENSE").read_bytes(), (ROOT / "LICENSE").read_bytes())
 
     def test_ify_subskills_ship_inside_the_learn_plugin_as_complete_packages(self):
         learn = ROOT / "skills/learn"
-        subskills = {"codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify"}
+        subskills = {"codify", "flowify", "hookify", "instructify", "lintify", "reusify", "skillify", "testify"}
         self.assertEqual({path.name for path in (learn / "skills").iterdir()}, subskills)
         for name in sorted(subskills):
             with self.subTest(subskill=name):

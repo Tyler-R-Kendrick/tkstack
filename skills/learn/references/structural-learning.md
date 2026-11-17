@@ -17,7 +17,7 @@ After identifying the mistaken decision, choose the smallest effective layer:
 | Runtime launch or scheduler defect | A runtime correction, not stronger prose |
 
 Use `instructify`, `reusify`, `skillify`, `codify`, `flowify`, `lintify`, or
-`hookify` as selected by the actual mechanism. See
+`hookify`, or `testify` as selected by the actual mechanism. See
 [session consolidation](session-consolidation.md) for scoped evidence, abstract
 reasoning, deterministic routing, and verified execution. Do not copy the raw feedback into every package. Prefer one
 canonical mechanism with a clear trigger and meaningful exceptions.

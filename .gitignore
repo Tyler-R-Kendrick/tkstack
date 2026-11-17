@@ -30,3 +30,6 @@ evals/repo-quality/results/latest.json
 .DS_Store
 # Serena's project index writes this beside the indexed checkout.
 .serena/
+
+# Task scratch and local verification logs.
+/work/

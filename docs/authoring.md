@@ -3,6 +3,7 @@
 The canonical packages are [`codify`](../skills/learn/skills/codify/SKILL.md),
 [`skillify`](../skills/learn/skills/skillify/SKILL.md),
 [`reusify`](../skills/learn/skills/reusify/SKILL.md), [`lintify`](../skills/learn/skills/lintify/SKILL.md),
+[`testify`](../skills/learn/skills/testify/SKILL.md),
 [`hookify`](../skills/learn/skills/hookify/SKILL.md), and
 [`instructify`](../skills/learn/skills/instructify/SKILL.md), and
 [`flowify`](../skills/learn/skills/flowify/SKILL.md). All install in Codex, Claude Code, and
@@ -215,3 +216,11 @@ reference/syntax checks, typed decisions, replay stability, native JSON/exit
 contracts, explicit error modes, and Stop reentry. Native Claude execution,
 model compliance, and creative-quality improvement are separate claims requiring
 their own real evidence; the native Claude CLI is not available in this workspace.
+
+Use `/learn testify` to create and fault-check a distinct behavioral test.
+Its Python CLI backend plans, creates and runs explicitly specified contract
+cases without overwriting an existing suite; other methods use native tools.
+Prefer static types and boundary parsing when they make invalid states
+impossible, `lintify` for recurring static predicates, `hookify` for tool events,
+and `skillify`/`codify` for reusable procedures and executable workflow locks.
+See the [test selection procedure](../skills/learn/skills/testify/references/selection.md).

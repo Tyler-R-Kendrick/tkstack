@@ -43,6 +43,9 @@ how to run them. Mechanically detectable recurring behavior may belong in a
 lint, CI check, or `hookify` guard instead of another prose reminder. Use
 `lintify` when available for native CLI lint-rule authoring; `hookify` owns
 actual tool-event guards rather than duplicating the lint implementation.
+A distinct behavioral regression belongs in `testify`; do not package a new
+skill when an independent runtime test is the needed artifact. Prefer types
+and compile-time constraints for states they can make impossible.
 Stable working expectations or scoped agent context belong in `instructify`
 when available; keep reusable procedures here instead of duplicating their
 full steps in startup instruction files.

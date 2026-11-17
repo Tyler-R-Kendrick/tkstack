@@ -27,6 +27,14 @@ def check(root=ROOT, jobs=4):
     def inspect(name):
         directory = packages[name]
         plugin = published.get(name)
+        metadata, _, _ = skillify.codify.command_schema.frontmatter(directory / "SKILL.md")
+        if metadata.get("metadata", {}).get("kind") == "guidance":
+            result = skillify.validate(directory)
+            if result["commands"] or (directory / "scripts/workflow.lock.json").exists() or subskills(directory):
+                raise ValueError("Guidance-only skill declares executable commands or mounts: " + name)
+            if not plugin or plugin["description"] != metadata["description"] or plugin["version"] != metadata["metadata"]["version"]:
+                raise ValueError("Guidance marketplace metadata drift: " + name)
+            return {"skill": name, "artifact": "guidance", "commands": 0}
         for helper, expected in (('package_runtime.py', runtime), ('json_contract.py', json_reader), ('tkstack_state.py', state)):
             if (directory / 'scripts' / helper).read_bytes() != expected:
                 raise ValueError('Shared source drift in ' + name + '/' + helper)

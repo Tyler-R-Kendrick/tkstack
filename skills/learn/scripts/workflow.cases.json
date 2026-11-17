@@ -88,6 +88,10 @@
           "skillify": {
             "path": "skills/skillify",
             "description": "Create, convert, normalize, check, and compile owned portable skills."
+          },
+          "testify": {
+            "path": "skills/testify",
+            "description": "Design, create, run and fault-check a distinct behavioral test with an independent oracle."
           }
         },
         "limits": [

@@ -16,18 +16,12 @@ once, in the harness-independent `.agents/skills/` directory, without loading a
 duplicate plugin bundle.
 
 ```sh
-python3 scripts/install.py --target .
+python3 scripts/install.py --target . --profile catalog
 ```
 
-The installer links the official skills and agents. It does not register
-Caveman's hook scripts. It does not invoke a
-native marketplace CLI or claim a native plugin-cache install. Claude/Cursor
-CLIs are absent in this workspace; loading these files in a real host requires
-a restart and any host-required trust. Do not additionally enable Caveman's
-marketplace hooks alongside these managed registrations: choose one owner to
-avoid duplicate lifecycle calls.
+The catalog profile links applicable skills and Markdown agents. Activate official Caveman hooks separately through the host or upstream installer, and select a single registration owner. Verify a benign session-start event in the chosen host.
 
-| Host | Official lifecycle behavior installed |
+| Host | Upstream behavior when explicitly activated |
 | --- | --- |
 | Codex | Stateless SessionStart context, using the official `.codex/codex-sessionstart.js` |
 | Claude Code | SessionStart, SubagentStart, prompt mode tracking, SessionEnd usage recording |

@@ -60,3 +60,7 @@ unknowns, empty discovery, timeouts, and CLI failures need explicit treatment.
 Use `lintify` for file/artifact lint rules, `hookify` for tool-event guards,
 `skillify` for reusable procedures, and `instructify` for standing context.
 A hook can call a validated lint command when that integration is requested.
+
+Prefer types or compile-time checks when they make an invalid state impossible.
+Use `/learn testify` for a distinct observable runtime failure; a static lint
+rule and a behavioral test may be combined for separate gaps.
