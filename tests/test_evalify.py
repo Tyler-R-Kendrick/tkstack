@@ -112,6 +112,22 @@ pathlib.Path(sys.argv[sys.argv.index('-o') + 1]).write_text(json.dumps({'results
                 self.assertEqual(sorted(process.returncode for process in processes), [0, 1], results)
                 self.assertEqual((root / 'calls').read_text().splitlines(), ['call'])
 
+    def test_oversized_result_is_bounded_and_reported(self):
+        self.runner.write_text('''#!/usr/bin/env python3
+import pathlib, sys
+output = pathlib.Path(sys.argv[sys.argv.index('-o') + 1])
+with output.open('wb') as stream:
+    stream.write(b'{"results":{"results":[{"success":true,"padding":"')
+    for _ in range(65): stream.write(b'x' * (1024 * 1024))
+    stream.write(b'"}]}}')
+''')
+        self.runner.chmod(0o755)
+        result = self.cli('run', 'large.time.json', ['--output', 'large.json'])
+        self.assertNotEqual(result.returncode, 0)
+        receipt = json.loads((self.root / 'large.time.json').read_text())
+        self.assertEqual(receipt['status'], 'error')
+        self.assertIn('exceeds 64 MiB', result.stderr)
+
     @unittest.skipUnless(PROMPTFOO, 'set TKSTACK_PROMPTFOO_BIN for the real Promptfoo integration')
     def test_real_promptfoo_calls_a_fixture_judge_and_reports_mixed_results(self):
         (self.root / 'judge.cjs').write_text('''module.exports = class Judge {

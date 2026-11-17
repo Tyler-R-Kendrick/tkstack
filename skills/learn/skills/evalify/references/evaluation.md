@@ -64,7 +64,9 @@ They enforce a default 20-second deadline (1–25 seconds), disable cache, shari
 telemetry and update checks, and write a timing receipt. The outer TKStack runner
 also has its own deadline. For longer workloads invoke the installed Promptfoo
 CLI through an appropriate bounded supervisor; record equivalent timing and
-cleanup evidence. See [execution](execution.md) for limits and side effects.
+cleanup evidence. The adapter rejects result files over 64 MiB before parsing;
+use the native framework with an appropriate supervisor for larger results.
+See [execution](execution.md) for limits and side effects.
 The receipt counts nonpassing results and the subset explicitly marked as
 grader errors by Promptfoo. Inspect retained result details for other transport,
 provider or grading errors; an unclassified failure is not proof of bad output.

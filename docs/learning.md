@@ -42,6 +42,7 @@ trace described in [the runner guide](runner.md); direct helpers and MCP hosts
 need their own supported instrumentation.
 Evalify reserves its receipt and result paths before dispatch so concurrent
 runs cannot silently reuse them; reconcile incomplete reservations after a crash.
+Its adapter rejects result files above 64 MiB before parsing.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:

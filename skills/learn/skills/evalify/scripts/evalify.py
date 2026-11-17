@@ -13,6 +13,8 @@ import time
 from datetime import datetime, timezone
 from tkstack_state import ensure_state
 
+MAX_RESULT_BYTES = 64 * 1024 * 1024
+
 
 def in_project(root, value, existing):
     path = Path(value)
@@ -133,7 +135,13 @@ def main():
         count = passed = failed = grader_errors = None
         if status != 'timeout' and output is not None and (code == 0 or output.is_file()):
             try:
-                data = json.loads(output.read_text())
+                with output.open('rb') as stream:
+                    if os.fstat(stream.fileno()).st_size > MAX_RESULT_BYTES:
+                        raise ValueError('Promptfoo result exceeds 64 MiB')
+                    raw = stream.read(MAX_RESULT_BYTES + 1)
+                if len(raw) > MAX_RESULT_BYTES:
+                    raise ValueError('Promptfoo result exceeds 64 MiB')
+                data = json.loads(raw)
                 rows = data['results']['results']
                 if not isinstance(rows, list) or not rows or any(not isinstance(row, dict) or type(row.get('success')) is not bool for row in rows):
                     raise ValueError('Promptfoo returned no complete result rows')

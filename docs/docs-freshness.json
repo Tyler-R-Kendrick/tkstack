@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "6473543c05bbcf470c8374aa488ada2a9a1cdd82"
+          "oid": "c9c3345b28183b8f33db54d6183020982d9b66fa"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -697,7 +697,7 @@
         },
         "tests/test_evalify.py": {
           "mode": "100644",
-          "oid": "a44bc9d21dbbee90d231f956cba7bdc87aa57119"
+          "oid": "a57505b5e5b559daa3e94ad40c3f26975076b463"
         },
         "tests/test_experiment_agent_arm.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the real descendant-process timeout regression and scoped test review."
+      "reason": "Reviewed the valid oversized-result rejection and retained smaller-result guard."
     },
     "execution": {
       "docs": {
@@ -1025,7 +1025,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "f67fb89d401c78c40699b9f8f5adac28e3bfee85"
+          "oid": "b5acd4503617ddbe68c676076275398054cbe0f1"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1959,7 +1959,7 @@
         },
         "skills/learn/skills/evalify/references/evaluation.md": {
           "mode": "100644",
-          "oid": "62ba6b435572a6d737fb53957e9a25940ecdb265"
+          "oid": "acf05f4f0c2924f601e4abfabfefe8b9d8dc8da0"
         },
         "skills/learn/skills/evalify/references/execution.md": {
           "mode": "100644",
@@ -1979,7 +1979,7 @@
         },
         "skills/learn/skills/evalify/scripts/evalify.py": {
           "mode": "100644",
-          "oid": "9500c7920baa5366e9d7131e183abcc2b94a8389"
+          "oid": "b2eb5adf7c4f36caba7671c87e16aef8887f0d94"
         },
         "skills/learn/skills/evalify/scripts/json_contract.py": {
           "mode": "100644",
@@ -2007,7 +2007,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "85f160ec6a85f85ea807b45564e30d6598e51afc"
+          "oid": "58762cd261eff7ce1c4626b34563c7261d307904"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed generated Testify deadline cleanup, bounded output reads, and compiled-runner limitations."
+      "reason": "Reviewed the finite Evalify result parsing boundary and documented the native-framework alternative."
     }
   },
   "object_format": "sha1",
