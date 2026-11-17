@@ -253,7 +253,7 @@ def _execute(argv, cwd, home, timeout, maximum):
 
 
 def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
-              timeout=30, max_output_bytes=65536):
+              timeout=30, max_output_bytes=65536, deadline=None):
     """Run a named registered target on a frozen commit and return execution evidence.
 
     Invalid inputs raise ValueError. Materialization/launch errors return
@@ -261,13 +261,17 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
     exit code zero only, not a quality or acceptance decision. Output byte
     counts describe what the runner observed before exit/timeout. The timeout
     applies to command execution; Git export has its own 60-second subprocess
-    limit. This local adapter executes with host privileges and is not a sandbox.
+    limits. ``deadline`` is an optional absolute time.monotonic() deadline.
+    If it expires before dispatch, return timeout without starting the command;
+    otherwise the command timeout is capped to the remaining interval. This local adapter executes with host privileges and is not a sandbox.
     """
     argv, relative_cwd = _validate(registry, allowed_targets, target, timeout, max_output_bytes)
     if not isinstance(commit, str) or not _OBJECT_ID.fullmatch(commit):
         raise ValueError("commit must be a full lowercase Git object ID")
     if not isinstance(expected_tree, str) or not _OBJECT_ID.fullmatch(expected_tree):
         raise ValueError("expected_tree must be a full lowercase Git object ID")
+    if deadline is not None and (isinstance(deadline, bool) or not isinstance(deadline, (int, float)) or not math.isfinite(deadline)):
+        raise ValueError("deadline must be a finite monotonic timestamp")
     start = time.monotonic()
     result = {
         "status": "infra_error", "exit_code": None, "stdout": "", "stderr": "",
@@ -276,6 +280,11 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
         "target": target, "error": None,
     }
     try:
+        if deadline is not None and time.monotonic() >= deadline:
+            result["status"] = "timeout"
+            result["error"] = "experiment deadline elapsed before dispatch"
+            result["duration_seconds"] = time.monotonic() - start
+            return result
         repo = Path(repo).resolve(strict=True)
         actual_commit = _git(repo, "rev-parse", "--verify", commit + "^{commit}").decode("ascii").strip()
         actual_tree = _git(repo, "rev-parse", "--verify", commit + "^{tree}").decode("ascii").strip()
@@ -294,6 +303,14 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
                 raise RuntimeError("target working directory escapes export") from exc
             if not cwd.is_dir():
                 raise RuntimeError("target working directory is not a directory")
+            if deadline is not None:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    result["status"] = "timeout"
+                    result["error"] = "experiment deadline elapsed before dispatch"
+                    result["duration_seconds"] = time.monotonic() - start
+                    return result
+                timeout = min(timeout, remaining)
             result.update(_execute(argv, cwd, home, timeout, max_output_bytes))
     except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
         result["status"] = "infra_error"

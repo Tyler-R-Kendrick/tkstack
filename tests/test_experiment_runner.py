@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 MODULE = Path(__file__).resolve().parents[1] / "skills/hill-climb/scripts/experiment_runner.py"
@@ -115,8 +116,31 @@ class LocalTrialTests(unittest.TestCase):
         self.assertEqual(result["status"], "infra_error")
         self.assertIn("symlink", result["error"].lower())
 
+    def test_expiry_during_export_never_spawns_target(self):
+        clock = [100.0]
+        def export(repo, commit, root):
+            clock[0] = 106.0
+        with patch.object(runner.time, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(runner, "_materialize", side_effect=export), \
+             patch.object(runner, "_execute") as execute:
+            result = self.run_target(deadline=105.0)
+        self.assertEqual(result["status"], "timeout")
+        self.assertIn("before dispatch", result["error"])
+        execute.assert_not_called()
+
+    def test_deadline_caps_execution_timeout(self):
+        clock = [100.0]
+        def execute(argv, cwd, home, timeout, maximum):
+            self.assertEqual(timeout, 5.0)
+            return {"status": "passed", "exit_code": 0}
+        with patch.object(runner.time, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(runner, "_materialize"), \
+             patch.object(runner, "_execute", side_effect=execute):
+            result = self.run_target(deadline=105.0, timeout=30)
+        self.assertEqual(result["status"], "passed")
+
     def test_invalid_limits_and_abbreviated_objects_are_rejected(self):
-        for kwargs in ({"timeout": 0}, {"timeout": float("nan")}, {"max_output_bytes": -1}, {"commit": self.commit[:7]}):
+        for kwargs in ({"timeout": 0}, {"timeout": float("nan")}, {"max_output_bytes": -1}, {"commit": self.commit[:7]}, {"deadline": float("nan")}):
             with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
                 self.run_target(**kwargs)
 

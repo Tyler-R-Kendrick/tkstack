@@ -688,7 +688,7 @@
         },
         "tests/test_experiment_runner.py": {
           "mode": "100644",
-          "oid": "0cb54325bcf6866a208b8562f6db36724ab8aabb"
+          "oid": "267689d8a1a6a8a339f85bfcc996a9f7d3843e6a"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -780,7 +780,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Refresh the reviewed ledger; the documentation workflow remains unchanged."
+      "reason": "Only the reviewed ledger changed; the documentation workflow is unchanged."
     },
     "execution": {
       "docs": {
@@ -907,7 +907,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "353b9b19c3f87c59772d0df98d948d3fdb48c512"
+          "oid": "e2b7e559ce0cbbdd3047b6df60780d8cee7e57f0"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1293,7 +1293,7 @@
         },
         "skills/hill-climb/scripts/experiment_runner.py": {
           "mode": "100644",
-          "oid": "335fc5550e556ee514484ee05e9f0043aabeff52"
+          "oid": "6d840b0c98c1d7d8c76f1e11915d53afa6cbfdf2"
         },
         "skills/hill-climb/scripts/hill_climb.py": {
           "mode": "100644",
@@ -1325,7 +1325,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "73eea1745995d6fe4ac478c67821ed31148df61f"
+          "oid": "dc8f211ba262cdec464a5f2e1dbde5ecea7b6e38"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2745,7 +2745,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Document the bounded TLA+ and TLC experiment models and their limits."
+      "reason": "Document deadline checks for scoped local trials."
     }
   },
   "object_format": "sha1",

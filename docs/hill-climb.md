@@ -87,3 +87,7 @@ Optional TLA+ and TLC specifications exercise bounded reservation and guarded
 promotion models. They include deliberately weakened configurations whose
 counterexamples check the model's sensitivity. The [formal guide](../skills/hill-climb/formal/README.md)
 records the pinned checker, assumptions, and scope.
+
+Local trial execution accepts a monotonic deadline. It checks the deadline
+again after exporting the Git tree and caps command time to the remaining
+interval. Git export uses its own subprocess timeout.
