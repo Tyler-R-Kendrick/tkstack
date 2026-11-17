@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "9583fcdee163e2b046598960996d476db30cad0b"
+          "oid": "49a00b06b322ce99d73d5c2baa4867b452d5ff28"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -873,7 +873,7 @@
         },
         "tests/test_stack_runner.py": {
           "mode": "100644",
-          "oid": "9a08def2cb8fda93144a36567cd2bd968f07f0b0"
+          "oid": "8b5102936877d13a46205b5d90fdd78fdff48e1e"
         },
         "tests/test_state_layout.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed non-sensitive runtime environment and executable-hash timing fields and their focused tests; existing usage remains accurate"
+      "reason": "Reviewed the new runner trace regression and its scoped test review; documentation policy is unchanged."
     },
     "execution": {
       "docs": {
@@ -899,9 +899,10 @@
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "52e80b1171b7af40c25509c702300ad754b9f29e"
+          "oid": "7a82a92f42a8d7167d85f9483c31c0e13ef2b731"
         }
       },
+      "docs_refresh_reason": "Reviewed Learn runner timing coverage and its read-only discovery boundary.",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -1024,7 +1025,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "7b2f49107144c3d94a0c5a14cadfdac8eb183d29"
+          "oid": "f932ec9b3225e03cc5f76ca0c1c8e2fd0defc7cd"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -1898,7 +1899,7 @@
         },
         "skills/learn/scripts/operation_timing.py": {
           "mode": "100644",
-          "oid": "7ddbbb97754245f939c0fbc28f2e3e2aa048410a"
+          "oid": "5bb6649e23b5e299710659b30338e0af18a202a0"
         },
         "skills/learn/scripts/package_runtime.py": {
           "mode": "100644",
@@ -1922,7 +1923,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ab0b6132843682af647190c97e6e7fbda211d429"
+          "oid": "42a0526c5877708422497dee4be43d8945a8fe32"
         },
         "skills/learn/skills/evalify/LICENSE": {
           "mode": "100644",
@@ -3277,8 +3278,8 @@
           "oid": "a8038d8d649c8cbba8ca7d00027e3690d636a193"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed non-sensitive runtime environment and executable-hash timing fields and their focused tests; existing usage remains accurate"
+      "no_doc_impact": false,
+      "reason": "Reviewed Learn runner timing coverage and its read-only discovery boundary."
     }
   },
   "object_format": "sha1",

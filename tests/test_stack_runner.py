@@ -96,6 +96,24 @@ class StackRunnerTests(unittest.TestCase):
         self.invoke('skills', skill, '--input', '-', payload={'labels': []}, expected=1)
         self.invoke('skills', skill, '--call', '-', '--', 'normalize', payload={}, expected=1)
 
+    def test_direct_workflow_payload_cannot_hide_timing(self):
+        skill = self.fixture()
+        workflow = skill / 'scripts/workflow.py'
+        workflow.write_text(workflow.read_text().replace('set(payload) != {"labels"}',
+            'set(payload) - {"labels", "operation"} or "labels" not in payload'))
+        lock = skill / 'scripts/workflow.lock.json'
+        runner.codify.compile_workflow(skill / 'PROMPT.md', skill / 'scripts/run.py',
+            skill / 'cases.json', lock, root=skill, project=self.workspace)
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        for operation in ('model', 'verify', 'native_plan'):
+            with self.subTest(operation=operation):
+                result = self.invoke('workflows', lock, '--input', '-', payload={'labels': ['a'], 'operation': operation})
+                self.assertEqual(json.loads(result.stdout), {'labels': ['a']})
+        contents = trace.read_text() if trace.exists() else ''
+        entries = [json.loads(line) for line in contents.splitlines()]
+        self.assertEqual([entry['status'] for entry in entries], ['pass'] * 3)
+        self.assertNotIn('native_plan', contents)
+
     def test_help_list_tools_check_and_setup_preview_preserve_all_state_bytes(self):
         self.fixture()
         before = {str(p): p.read_bytes() for p in self.base.rglob('*') if p.is_file()}

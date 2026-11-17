@@ -514,9 +514,9 @@
     "overlap": "Owns authoring conversion semantics; generic compiler and parser behavior have dedicated suites instead of duplicated per-skill edge cases."
   },
   "tests/test_stack_runner.py": {
-    "sha256": "3d2863382f9dee51c85df8d8bf7857ed29a111eb4d6863f9a7db45afc186bb8c",
+    "sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
     "risk": "Registry precedence, provider selection, missing deadlines or unsafe timing traces could misroute execution, hang, or expose payloads.",
-    "oracle": "Invoke the actual runner against isolated registries and compiled fixtures; assert paths, outputs, rejection, state preservation, timing metadata, payload exclusion and a real deadline.",
+    "oracle": "Invoke the actual runner against isolated registries and compiled fixtures; assert paths, outputs, rejection, state preservation, timing metadata, payload exclusion and a real deadline. Direct lock payloads with reserved-looking operation names must still produce private timing records.",
     "kinds": [
       "contract",
       "functional"

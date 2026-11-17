@@ -4,17 +4,10 @@ import json
 import os
 from pathlib import Path
 import platform
-import re
 import stat
 import sys
 import time
 from tkstack_state import ensure_state
-
-READ_ONLY = {'model', 'verify', 'native_plan', 'native_show', 'native_check',
-             'native_audit', 'native_inspect', 'native_find', 'native_assess',
-             'native_compare', 'native_sessions_review'}
-NAME = re.compile(r'[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}')
-
 
 def record(state, kind, name, timeout, elapsed, status, code, artifact):
     directory = ensure_state(Path(state) / 'runs' / 'timing')
@@ -38,9 +31,6 @@ def record(state, kind, name, timeout, elapsed, status, code, artifact):
 
 
 def invoke(runner, lock, payload, project, timeout, dependencies, config, environment, state, kind, name):
-    operation = payload.get('operation') if isinstance(payload, dict) else None
-    if not isinstance(operation, str) or not NAME.fullmatch(operation):
-        operation = None
     start = time.monotonic()
     status, exit_code = 'error', None
     try:
@@ -53,9 +43,8 @@ def invoke(runner, lock, payload, project, timeout, dependencies, config, enviro
             status = 'deadline_or_interrupt'
         raise
     finally:
-        if operation not in READ_ONLY:
-            try:
-                record(state, kind, name, timeout, time.monotonic() - start,
-                       status, exit_code, lock.get('artifact_sha256'))
-            except (OSError, ValueError) as error:
-                print('tkstack: timing trace unavailable: ' + str(error), file=sys.stderr)
+        try:
+            record(state, kind, name, timeout, time.monotonic() - start,
+                   status, exit_code, lock.get('artifact_sha256'))
+        except (OSError, ValueError) as error:
+            print('tkstack: timing trace unavailable: ' + str(error), file=sys.stderr)

@@ -27,8 +27,9 @@ Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 Learn preserves the request, nested commands, parameters, evidence, and scope,
 then follows the named subskill's index and actual tools. The packaged ___ify
 skills are packaged inside Learn at `skills/learn/skills/<name>/`, so they ship
-and install with it rather than as separate skills. Preview/audit intent
-keeps the entire handoff read-only. Help and missing payloads show guidance
+and install with it rather than as separate skills. Preview/audit intent keeps
+the handoff itself read-only; a compiled invocation still writes its local timing
+record. Help and missing payloads show guidance
 without capturing feedback or reviewing sessions. A direct route does not
 start a full consolidation sweep. A missing subskill is reported as an
 explicit dependency; the Learn helper still provides its help.
