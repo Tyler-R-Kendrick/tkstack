@@ -272,4 +272,7 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
+    runtime = ROOT / '.tkstack/runtime/command-schema/bin/python'
+    if runtime.is_file() and runtime != Path(sys.executable):
+        os.execv(runtime, [str(runtime), '-B', *sys.argv])
     raise SystemExit(main())

@@ -797,7 +797,7 @@
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "8cddce90a1f9eb958c29fd25e0e866a1af29a90c"
+          "oid": "5411a1b164a736a07f97142492e78415067068fc"
         }
       },
       "inputs": {
@@ -807,11 +807,11 @@
         },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "8b6e00ac1f20181308b975ebbf7681252e1b6b83"
+          "oid": "30a2ec5e5f0cedf233224f28015739e4f5506e1a"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed consumer defaults, native discovery, workspace adoption, digest-verified acquisition, staged/sparse reads, and the revised maintainer lifecycle against their public commands."
+      "reason": "Documented the installed launcher's checkout-managed interpreter and exact dependency provisioning command."
     },
     "setup": {
       "docs": {
@@ -825,7 +825,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "69e756389688ead3272f90d6f4bcad3a71066bf7"
+          "oid": "e490f65d45c39dcca098406b02b4c5876518c9c2"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -859,7 +859,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "9d1f4036fa41a7fa6703f3beac78f2384fc3bc3e"
+          "oid": "19c3885ecc25a19fc6bc2a92094afccab0954402"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -887,7 +887,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the locked Firecrawl SDK compatibility override and documented its upgrade condition. Restored statically inspectable home/project harness paths."
+      "reason": "Added explicit locked runtime provisioning for typed project checks and hook adoption."
     },
     "skills": {
       "docs": {

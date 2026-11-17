@@ -57,8 +57,7 @@ def verify_vendor(root):
             digest = hashlib.sha1(b"blob " + str(len(content)).encode() + b"\0" + content)
             if digest.hexdigest() != record["git_blob"]:
                 raise ValueError(f"Vendored file differs from lock: {path}")
-            executable = bool(path.lstat().st_mode & 0o111)
-            if not is_link and executable != (record["mode"] == "100755"):
+            if not is_link and bool(path.stat().st_mode & 0o111) != (record["mode"] == "100755"):
                 raise ValueError(f"Executable mode differs from lock: {path}")
 
 
@@ -74,11 +73,9 @@ def skill_aliases(root):
 
 def placement(rules, kind, source):
     """Personal skills are portable. Upstreams may specify host placement."""
-    if source is None:
-        return None
-    if source in rules.get("sources", {}):
-        return set(rules["sources"][source])
-    return set(rules["default"]) if kind == "skills" and "default" in rules else None
+    default = rules.get("default") if kind == "skills" else None
+    hosts = rules.get("sources", {}).get(source, default) if source is not None else None
+    return set(hosts) if hosts is not None else None
 
 
 def rewrite_invocations(text, aliases):
@@ -265,8 +262,8 @@ def link_plan(root, target, harnesses, scope="home", profile="catalog"):
             plan.extend((source, target / AGENT_PATHS[harness] / name)
                         for name, source in agents.items())
         if harness == "cursor":
-            plan.extend((source, target / ".cursor/rules" / name)
-                        for name, source in placed(root, "rules", harness).items() if profile == "catalog")
+            if profile == "catalog":
+                plan.extend((source, target / ".cursor/rules" / name) for name, source in placed(root, "rules", harness).items())
             for rule in sorted((root / ".cursor/rules").glob("*.mdc")):
                 destination = target / ".cursor/rules" / rule.name
                 if rule.is_symlink() or destination == rule or (rule.name == "graphify.mdc" and profile != "catalog"):
@@ -501,7 +498,7 @@ def main():
                     raise ValueError("Learn discovery view needs setup")
             target_setup.verify(plan, instruction_plan)
             if adopted:
-                return subprocess.run([sys.executable, "-B", str(ROOT / "skills/constrain/scripts/constrain.py"), "check", "--repo", str(target)]).returncode
+                return subprocess.run([str(target / ".tkstack/tkstack"), "skills", "constrain", "--", "native", "check", "--repo", str(target)]).returncode
             return 0
         if not args.uninstall and not args.dry_run:
             preflight(plan, migrations)

@@ -23,6 +23,15 @@ workspace instead of binding execution to the dotfiles checkout.
 
 ## Execution contract
 
+The installed launcher uses the source checkout’s managed Python when present. Provision its locked command dependencies once per checkout before using typed skills or the project constraint hook. From the source checkout, run:
+
+```sh
+python3 -m venv .tkstack/runtime/command-schema
+.tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
+```
+
+Projects sharing that checkout use the same interpreter even when a Git client starts with a different PATH. [Project adoption](bootstrap.md#adopt-team-constraints).
+
 Package commands use Codify's exact `commands/*.md` schema and dispatcher:
 OpenAI function-tool parameters, local nested paths/aliases/flags/defaults,
 and a verified artifact binding. CLI and Responses/Chat tool calls share input
