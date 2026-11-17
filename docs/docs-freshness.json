@@ -951,11 +951,11 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "88fc416b9df0b1ce11efacdae913613b6cbfda15"
+          "oid": "dd4dcb21213bdfd8cbe5e6f82b1674870235d975"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "19c3885ecc25a19fc6bc2a92094afccab0954402"
+          "oid": "be4926b3062bbd0022c77e96fdb36e11ed79d038"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -983,7 +983,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed equivalent harness directory lookup; installation behavior and documentation are unchanged"
+      "reason": "Reviewed analyzer-compatible host lookup and equivalent source discovery simplification; installation behavior is unchanged"
     },
     "skills": {
       "docs": {
