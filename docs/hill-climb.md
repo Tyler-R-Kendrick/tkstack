@@ -82,3 +82,8 @@ The private Git store verifies its ownership and its separation from every
 registered source worktree. It disables hooks and rejects configured external
 filter drivers during managed checkout and freezing. These checks do not make
 a worktree a sandbox against another process with the same privileges.
+
+Optional TLA+ and TLC specifications exercise bounded reservation and guarded
+promotion models. They include deliberately weakened configurations whose
+counterexamples check the model's sensitivity. The [formal guide](../skills/hill-climb/formal/README.md)
+records the pinned checker, assumptions, and scope.

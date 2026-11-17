@@ -53,3 +53,27 @@ class ExperimentModelTests(unittest.TestCase):
         self.assertEqual(actions["quarantine ambiguous recovery"].intent, "quarantined")
         self.assertNotIn("recover and retry", actions)
         self.assertNotIn("recover committed write", actions)
+
+
+class TlcModelTests(unittest.TestCase):
+    def test_unpinned_jar_is_rejected(self):
+        import tempfile
+        from run_tlc import run
+        with tempfile.NamedTemporaryFile() as jar:
+            jar.write(b"not a trusted TLC release")
+            jar.flush()
+            with self.assertRaisesRegex(ValueError, "pinned SHA-256"):
+                run(jar.name)
+
+    def test_pinned_tlc_models_and_counterexamples(self):
+        import os
+        jar = os.environ.get("TLAPLUS_JAR")
+        if not jar:
+            self.skipTest("set TLAPLUS_JAR to run the pinned official TLC models")
+        from run_tlc import run
+        results = run(jar)
+        self.assertEqual(
+            ["safe_within_bounds", "expected_counterexample", "safe_within_bounds",
+             "expected_counterexample", "expected_counterexample"],
+            [result["result"] for result in results],
+        )

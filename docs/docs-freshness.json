@@ -684,7 +684,7 @@
         },
         "tests/test_experiment_model.py": {
           "mode": "100644",
-          "oid": "d4a505e5cb491c25ac208196a8004849d12f76fa"
+          "oid": "52c37e7bdaf7506b0cabaae96b96233550b69893"
         },
         "tests/test_experiment_runner.py": {
           "mode": "100644",
@@ -780,7 +780,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Only the reviewed documentation ledger changed; the existing documentation workflow remains accurate."
+      "reason": "Refresh the reviewed ledger; the documentation workflow remains unchanged."
     },
     "execution": {
       "docs": {
@@ -907,7 +907,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "383d0b8177e879c85342004eed288d6f320bc131"
+          "oid": "353b9b19c3f87c59772d0df98d948d3fdb48c512"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1207,13 +1207,45 @@
           "mode": "100644",
           "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
         },
+        "skills/hill-climb/formal/Budget.tla": {
+          "mode": "100644",
+          "oid": "a1429c94dcd3e68a08d3ab7be003dea950532077"
+        },
+        "skills/hill-climb/formal/BudgetBroken.cfg": {
+          "mode": "100644",
+          "oid": "13a6b3e544f46e4c12e9d3c6e82b1a1d0c4a63cd"
+        },
+        "skills/hill-climb/formal/BudgetSafe.cfg": {
+          "mode": "100644",
+          "oid": "5a17bdd2165c4043385808a1b325e2ba94d95b91"
+        },
+        "skills/hill-climb/formal/Promotion.tla": {
+          "mode": "100644",
+          "oid": "8b92c56912bf26252d16de023b41f92dcf99021e"
+        },
+        "skills/hill-climb/formal/PromotionBrokenGuard.cfg": {
+          "mode": "100644",
+          "oid": "0c324626829ef76476aa7097e5dd8c7f5aa103a8"
+        },
+        "skills/hill-climb/formal/PromotionBrokenWriter.cfg": {
+          "mode": "100644",
+          "oid": "9c4b3a3da2db53ef273b0ac62a1188da6d5fc656"
+        },
+        "skills/hill-climb/formal/PromotionSafe.cfg": {
+          "mode": "100644",
+          "oid": "f77506157b8a5f6c578f594a8972a0242e48133a"
+        },
         "skills/hill-climb/formal/README.md": {
           "mode": "100644",
-          "oid": "6dbb5c488694078d674e6707820e94290169f407"
+          "oid": "6c84bf3134b639ae3b1e224d3be2a56e57b4d0d1"
         },
         "skills/hill-climb/formal/model_check.py": {
           "mode": "100644",
           "oid": "46e9c6b5061f846ef59c3fb968ec4fe507b5c3e5"
+        },
+        "skills/hill-climb/formal/run_tlc.py": {
+          "mode": "100644",
+          "oid": "8b7e1f3c4c99013f5e67764efb5b984d8b2532ee"
         },
         "skills/hill-climb/references/distilled-sources.md": {
           "mode": "100644",
@@ -1293,7 +1325,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "683f65242f775b9757cd1770ab7acabd4388390a"
+          "oid": "73eea1745995d6fe4ac478c67821ed31148df61f"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2713,7 +2745,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Document private Git store ownership checks and safe execution constraints."
+      "reason": "Document the bounded TLA+ and TLC experiment models and their limits."
     }
   },
   "object_format": "sha1",
