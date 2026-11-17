@@ -52,6 +52,10 @@ Archive bootstrap requires an independently supplied SHA-256 digest.
 The personal profile selects four skills for Codex, Claude Code, and Cursor. Use `--profile catalog` for full placement.
 <!-- tkstack:profiles:end -->
 
+For task-scoped measured improvement, the hill-climb skill can coordinate Git
+experiment arms and paired evaluations. See [measured improvement loops](docs/hill-climb.md)
+for execution and isolation limits.
+
 ## Maintain TKStack
 
 `skills/` contains owned skills and placement profiles, `vendor/` contains pinned snapshots, `agents/` holds shared subagents, and `integrations/mcp/` locks optional Node tooling. Learn's eight authoring packages ship under Learn. Nested Constrain topics are Markdown references. The [runner](docs/runner.md) exposes executable workflows and their contracts.

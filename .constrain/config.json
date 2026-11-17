@@ -5,14 +5,79 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 445,
-    "max_bytes": 445000,
+    "max_cases": 525,
+    "max_bytes": 560000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
         "rule": "tests.no-oracle",
         "path": "tests/test_command_schema.py:CommandSchemaTests.test_builtin_version_validation_rejects_workflow_binding_and_bad_metadata",
         "reason": "self.cli checks the actual process exit for each malformed version contract; assertion lives in the shared CLI helper."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_confirmation_locks_winner_and_requires_disjoint_trials",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_confirmation_rejects_regression_and_reused_selection",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_confirmation_cases_must_be_disjoint",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_revision_before_selection_cannot_relabel_holdout",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_promoted_generation_requires_fresh_confirmation",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_revision_rechecks_case_binding",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_failed_confirmation_requires_fresh_cases_with_same_budget",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_same_contract_evaluator_revision_rebaselines_old_runs",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_finalist_cannot_change_after_selection",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_missing_ledger_read_does_not_create_file",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_recover_pretransaction_intent_revalidates_and_retries",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_recovery_rejects_intent_not_bound_to_saved_decision",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_completed_recovery_rejects_changed_decision_and_config",
+        "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
       }
     ]
   },
@@ -24,10 +89,10 @@
           "tests/**"
         ],
         "exclude": [],
-        "max_files": 35,
-        "max_bytes": 450000,
+        "max_files": 42,
+        "max_bytes": 565000,
         "max_depth": 2,
-        "reason": "The Git experiment foundation adds five reviewed suites for scoped Git lifecycle, SQLite budgets, frozen-tree execution, evaluation, and bounded models, with room for its proof regressions."
+        "reason": "The controller adds reviewed draft, integration, integrity, MAF, native-adapter and exact-tree handoff suites covering distinct execution and evidence boundaries."
       },
       {
         "id": "documentation",
@@ -59,9 +124,9 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 26000,
+        "max_bytes": 37000,
         "max_depth": 2,
-        "reason": "Retain one policy and one per-suite review inventory, including the individually reviewed experiment foundation suites."
+        "reason": "One policy and per-suite review inventory include the controller suites and exact helper-oracle exceptions."
       },
       {
         "id": "owned-tree",
@@ -71,10 +136,10 @@
         "exclude": [
           "vendor/**"
         ],
-        "max_files": 836,
-        "max_bytes": 8100000,
+        "max_files": 856,
+        "max_bytes": 8700000,
         "max_depth": 9,
-        "reason": "The experiment foundation adds Git, ledger, evaluation, runner, and formal-model sources with their scoped regressions to the prior owned tree."
+        "reason": "The controller adds the scoped experiment package, optional workflow, exact-tree handoff, retained evidence contracts and reviewed regressions."
       }
     ]
   },

@@ -139,11 +139,34 @@
         "compare"
       ],
       "description": "Compare actual retained paired measurements with the existing noise and confirmation gate."
+    },
+    "native_experiment": {
+      "entrypoint": "scripts/experiment.py",
+      "prefix": [],
+      "parameters": {
+        "request": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--request"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "experiment"
+      ],
+      "description": "Run a scoped Git experiment action from an explicit JSON request."
     }
   },
   "limits": [
     "Mechanical verification checks recorded facts and actual retained bytes; a recorded semantic inspection is not authenticated judgment.",
     "Compilation and fixture success do not prove complete semantic workflow performance or provider/native-host activation.",
-    "Use native compare against actual retained measurement receipts and untouched confirmation. This contract gate computes no quality or performance gain."
+    "Use native compare against actual retained measurement receipts and untouched confirmation. This contract gate computes no quality or performance gain.",
+    "Local experiment execution uses host privileges and cannot establish evaluator independence, model spend, or holdout isolation."
   ]
 }
