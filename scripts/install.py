@@ -318,10 +318,6 @@ def remove_stale(paths, dry_run=False):
     return len(paths)
 
 
-# Cursor rules lived at harnesses/cursor/*.mdc before they moved to .cursor/rules.
-LEGACY_CURSOR_RULES = Path("harnesses/cursor")
-
-
 def alias_migrations(root, target, harnesses, scope="home"):
     """Identify known former sources before replacing an owned link."""
     migrations = {}
@@ -338,7 +334,7 @@ def alias_migrations(root, target, harnesses, scope="home"):
     if "cursor" in harnesses:
         for rule in (root / ".cursor/rules").glob("*.mdc"):
             if not rule.is_symlink():
-                migrations[target / ".cursor/rules" / rule.name] = (root / LEGACY_CURSOR_RULES / rule.name).resolve()
+                migrations[target / ".cursor/rules" / rule.name] = (root / "harnesses/cursor" / rule.name).resolve()
     return migrations
 
 

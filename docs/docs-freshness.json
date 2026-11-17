@@ -556,7 +556,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "46d10f0ba8abaaedc4ad36684424a2f5901f14c2"
+          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -571,7 +571,6 @@
           "oid": "9411acdc5aa81d526e88e52f44f42caaee0c9d67"
         }
       },
-      "docs_refresh_reason": "Aligned Constrain's packaged instructions and skill index with explicit workspace adoption, ownership and budget review.",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -599,11 +598,11 @@
         },
         "integrations/mcp/package-lock.json": {
           "mode": "100644",
-          "oid": "dc2d7f3567cebf0bc93a3e64b1fadebe28a0b873"
+          "oid": "8e1e8a0704461e504741e364d376309175fee96e"
         },
         "integrations/mcp/package.json": {
           "mode": "100644",
-          "oid": "1b440b2be9367e9cd96e0f103bea8c22bcf565a0"
+          "oid": "67b3d1c5e8dbfaeae0689b75c416b0384d3ec589"
         },
         "mcp.json": {
           "mode": "100644",
@@ -623,7 +622,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed consumer defaults, native discovery, workspace adoption, digest-verified acquisition, staged/sparse reads, and the revised maintainer lifecycle against their public commands."
+      "reason": "Reviewed the catalog integration docs and native harness mapping with the Firecrawl SDK override."
     },
     "documentation": {
       "docs": {
@@ -830,7 +829,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "46d10f0ba8abaaedc4ad36684424a2f5901f14c2"
+          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -856,11 +855,11 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "b4c620e59467d324dd319ef8baa03f678a6093f9"
+          "oid": "dd4dcb21213bdfd8cbe5e6f82b1674870235d975"
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "c5788551fa3e5a895c51b78989876d722c1fd4aa"
+          "oid": "9d1f4036fa41a7fa6703f3beac78f2384fc3bc3e"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -888,7 +887,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed and documented link receipt ownership, legacy alias cleanup and native default-hook teardown after a manager switch."
+      "reason": "Reviewed the locked Firecrawl SDK compatibility override and documented its upgrade condition. Restored statically inspectable home/project harness paths."
     },
     "skills": {
       "docs": {
@@ -918,7 +917,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "46d10f0ba8abaaedc4ad36684424a2f5901f14c2"
+          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -969,6 +968,7 @@
           "oid": "fc4cc57bc5680cce10c0203141a54b8bc305704a"
         }
       },
+      "docs_refresh_reason": "Reviewed the locked Firecrawl SDK compatibility override and documented its upgrade condition. Restored statically inspectable home/project harness paths.",
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
