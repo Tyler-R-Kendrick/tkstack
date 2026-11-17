@@ -5,7 +5,7 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 525,
+    "max_cases": 530,
     "max_bytes": 560000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
@@ -78,6 +78,11 @@
         "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_completed_recovery_rejects_changed_decision_and_config",
         "reason": "assert_call_fails executes the controller and asserts its nonzero exit; this test also checks the relevant state or diagnostic."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_same_tree_reuse_keeps_the_measured_commit_in_decision",
+        "reason": "assert_call_fails checks the real controller exit for a tampered backend identity; the test also checks saved source provenance and promotion."
       }
     ]
   },

@@ -38,6 +38,47 @@ class HandoffTests(unittest.TestCase):
         return subprocess.run([sys.executable, str(SCRIPT), '--request', str(request)],
                               capture_output=True, text=True, timeout=30)
 
+    def test_same_tree_handoff_revalidates_the_original_run_provenance(self):
+        t = fixture.NativeExperimentIntegrationTests()
+        t.setUp()
+        self.addCleanup(t.doCleanups)
+        t.initialize()
+        first_arm = t.call("allocate", arm="first")
+        (Path(first_arm["worktree"]) / "product.py").write_text("VALUE = 1\n")
+        first = t.call("freeze", arm="first", message="first", writers_stopped=True)
+        second_arm = t.call("allocate", arm="second")
+        (Path(second_arm["worktree"]) / "product.py").write_text("VALUE = 1\n")
+        second = t.call("freeze", arm="second", message="second", writers_stopped=True)
+        self.assertEqual(first["tree"], second["tree"])
+        self.assertNotEqual(first["commit"], second["commit"])
+        t.call("run", side="baseline", rep=0, run_key="old")
+        t.call("run", side="candidate", arm="first", rep=0, run_key="new")
+        t.call("compare", arm="second", baseline=["old"], candidate=["new"], decision="reuse")
+        t.call("promote", arm="second", decision="reuse")
+        delivery = t.directory / "delivery-same-tree"
+        t.git("worktree", "add", "-b", "delivery-same-tree", str(delivery), t.base)
+        decision = t.root / "decisions" / "reuse.json"
+        original = decision.read_text()
+        data = json.loads(original)
+        self.assertEqual(data["candidate"][0]["provenance"]["source"], first)
+        data["candidate"][0]["provenance"]["source"]["commit"] = second["commit"]
+        decision.write_text(json.dumps(data))
+        request = t.directory / "tampered-handoff.json"
+        request.write_text(json.dumps({"action": "handoff", "root": str(t.root),
+                                      "delivery": str(delivery), "decision": "reuse",
+                                      "writers_stopped": True}))
+        failed = subprocess.run([sys.executable, str(SCRIPT), "--request", str(request)],
+                                capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("decision changed", failed.stderr)
+        self.assertEqual((delivery / "product.py").read_text(), "VALUE = 0\n")
+        decision.write_text(original)
+        receipt = t.call("handoff", delivery=str(delivery), decision="reuse", writers_stopped=True)
+        self.assertEqual(receipt["champion"], second["commit"])
+        self.assertEqual(receipt["tree"], first["tree"])
+        self.assertEqual(receipt["provenance"]["selection"],
+                         [{"kind": "same-tree", "run_key": "new", "source": first}])
+
     def test_handoff_requires_explicit_quiescence(self):
         request = self.t.directory / 'not-quiesced.json'
         request.write_text(json.dumps({'action': 'handoff', 'root': str(self.t.root),

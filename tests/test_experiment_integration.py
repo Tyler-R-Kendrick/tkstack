@@ -381,10 +381,15 @@ def print(*args, **kwargs):
                               "deterministic": True}, max_trials=6, max_tokens=0)
         arm = self.call("allocate", arm="fix")
         (Path(arm["worktree"]) / "product.txt").write_text("preserves fields")
-        self.call("freeze", arm="fix", message="fix", writers_stopped=True)
+        source_identity = self.call("freeze", arm="fix", message="fix", writers_stopped=True)
+        twin = self.call("allocate", arm="twin")
+        (Path(twin["worktree"]) / "product.txt").write_text("preserves fields")
+        target_identity = self.call("freeze", arm="twin", message="twin", writers_stopped=True)
+        self.assertEqual(source_identity["tree"], target_identity["tree"])
+        self.assertNotEqual(source_identity["commit"], target_identity["commit"])
         self.call("run", side="baseline", rep=0, run_key="old-a")
         self.call("run", side="candidate", arm="fix", rep=0, run_key="old-b")
-        old = self.call("compare", arm="fix", baseline=["old-a"], candidate=["old-b"], decision="old")
+        old = self.call("compare", arm="twin", baseline=["old-a"], candidate=["old-b"], decision="old")
         self.assertEqual(old["decision"], "reject")
         revised_contract = self.directory / "contract-v2.txt"
         revised_contract.write_text("preserve valid entries and explain correction")
@@ -412,7 +417,7 @@ def print(*args, **kwargs):
                   calibration=calibration)
         self.call("run", side="baseline", rep=0, run_key="new-a")
         self.call("run", side="candidate", arm="fix", rep=0, run_key="new-b")
-        new = self.call("compare", arm="fix", baseline=["new-a"], candidate=["new-b"], decision="new")
+        new = self.call("compare", arm="twin", baseline=["new-a"], candidate=["new-b"], decision="new")
         self.assertEqual(new["decision"], "eligible")
         with sqlite3.connect(self.root / "ledger.sqlite3") as db:
             config_path = db.execute("SELECT path FROM controller_config WHERE id=1").fetchone()[0]
@@ -424,6 +429,12 @@ def print(*args, **kwargs):
         self.assertEqual(capture["result"]["old"]["decision"], "reject")
         self.assertEqual(capture["result"]["new"]["decision"], "eligible")
         matrix = json.loads(Path(capture["matrix"]).read_text())
+        provenance = matrix["new_candidate"][0]["provenance"]
+        self.assertEqual(provenance["source"], source_identity)
+        self.assertEqual(provenance["kind"], "same-tree")
+        self.assertEqual(matrix["new_candidate"][0]["commit"], target_identity["commit"])
+        self.assertTrue(matrix["new_candidate"][0]["submission_artifacts"][0]["path"].endswith(
+            source_identity["commit"] + ".tar"))
         self.assertNotEqual(matrix["old_candidate"][0]["artifacts"], matrix["new_candidate"][0]["artifacts"])
         self.assertEqual(matrix["old_candidate"][0]["submission_artifacts"], matrix["new_candidate"][0]["submission_artifacts"])
         submission_path = self.root / matrix["old_candidate"][0]["submission_artifacts"][0]["path"]
@@ -436,7 +447,7 @@ def print(*args, **kwargs):
         submission_path.write_bytes(original_archive)
         case_path.write_bytes(case_bytes)
         self.assertEqual(self.call("status")["ledger"]["settled_trials"], 6)
-        self.assertEqual(self.call("promote", arm="fix", decision="new")["commit"],
+        self.assertEqual(self.call("promote", arm="twin", decision="new")["commit"],
                          self.call("status")["integration"])
 
     def test_second_round_uses_current_champion_and_budget(self):
@@ -606,6 +617,51 @@ def print(*args, **kwargs):
             db.execute("UPDATE controller_config SET digest=?, path=? WHERE id=1", old)
         self.contract.write_text("altered contract")
         self.assert_call_fails("recover", decision="choose")
+
+    def test_same_tree_reuse_keeps_the_measured_commit_in_decision(self):
+        self.call("init", source=str(self.source), experiment="same-tree", base=self.base,
+                  paths=["product.txt"], target="check",
+                  registry={"check": {"argv": [sys.executable, str(self.grader)], "cwd": "."}},
+                  contract_file=str(self.contract), evaluator_file=str(self.grader),
+                  evaluation={"case": "one", "repetitions": 1, "required_gates": ["submit"],
+                              "metric": "recovery", "direction": "higher", "min_gain": 1,
+                              "noise_floor": 0, "deterministic": True}, max_trials=2, max_tokens=0)
+        identities = []
+        for name in ("first", "second"):
+            arm = self.call("allocate", arm=name)
+            (Path(arm["worktree"]) / "product.txt").write_text("preserves fields")
+            identities.append(self.call("freeze", arm=name, message=name, writers_stopped=True))
+        self.assertEqual(identities[0]["tree"], identities[1]["tree"])
+        self.assertNotEqual(identities[0]["commit"], identities[1]["commit"])
+        self.call("run", side="baseline", rep=0, run_key="old")
+        self.call("run", side="candidate", arm="first", rep=0, run_key="new")
+        receipt_path = self.root / "runs" / "new.json"
+        original = receipt_path.read_text()
+        receipt = json.loads(original)
+        receipt["result"]["commit"] = identities[1]["commit"]
+        receipt_path.write_text(json.dumps(receipt))
+        with sqlite3.connect(self.root / "ledger.sqlite3") as db:
+            event = db.execute("SELECT details FROM events WHERE run_key='new' AND operation='settle'").fetchone()
+            details = json.loads(event[0])
+            details["receipt_sha256"] = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+            db.execute("UPDATE events SET details=? WHERE run_key='new' AND operation='settle'",
+                       (json.dumps(details),))
+        self.assert_call_fails("compare", arm="second", baseline=["old"],
+                               candidate=["new"], decision="bad-origin")
+        receipt_path.write_text(original)
+        with sqlite3.connect(self.root / "ledger.sqlite3") as db:
+            db.execute("UPDATE events SET details=? WHERE run_key='new' AND operation='settle'",
+                       (event[0],))
+        result = self.call("compare", arm="second", baseline=["old"],
+                           candidate=["new"], decision="reuse")
+        self.assertEqual(result["decision"], "eligible")
+        saved = json.loads((self.root / "decisions/reuse.json").read_text())
+        self.assertEqual(saved["candidate"][0]["commit"], identities[1]["commit"])
+        self.assertEqual(saved["candidate"][0]["provenance"],
+                         {"kind": "same-tree", "run_key": "new", "source": identities[0]})
+        self.assertEqual(saved["baseline"][0]["provenance"]["kind"], "direct")
+        self.assertEqual(self.call("promote", arm="second", decision="reuse")["commit"],
+                         identities[1]["commit"])
 
     def test_multiple_cases_reach_the_registered_evaluator(self):
         self.grader.write_text(

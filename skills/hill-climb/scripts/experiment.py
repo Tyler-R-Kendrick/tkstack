@@ -503,8 +503,15 @@ def rows_for(root, config, keys, side, identity, split="selection", revision=Non
             raise ValueError("run belongs to a different evaluation split")
         if record["side"] != side:
             raise ValueError("run belongs to a different comparison side")
-        if record["identity"]["tree"] != identity["tree"]:
-            raise ValueError("run belongs to a different candidate")
+        source_identity = record.get("identity")
+        if (not isinstance(source_identity, dict) or set(source_identity) != {"commit", "tree"} or
+                source_identity.get("tree") != identity["tree"]):
+            raise ValueError("run belongs to a different candidate tree")
+        if (result.get("commit") != source_identity["commit"] or
+                result.get("tree") != source_identity["tree"]):
+            raise ValueError("trial backend identity differs from its run receipt")
+        provenance = {"kind": "direct" if source_identity == identity else "same-tree",
+                      "run_key": key, "source": source_identity}
         try:
             artifact_path = root / "evidence" / (key + ".json")
             if digest(artifact_path) != record["artifact_sha256"]:
@@ -526,6 +533,7 @@ def rows_for(root, config, keys, side, identity, split="selection", revision=Non
             "gates": measurement.get("gates"), "metrics": measurement.get("metrics"),
             "work_count": measurement.get("work_count"),
             "artifacts": [{"path": key + ".json", "sha256": record["artifact_sha256"]}],
+            "provenance": provenance,
         }
         qualitative = measurement.get("qualitative")
         if qualitative is not None:

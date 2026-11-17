@@ -62,6 +62,7 @@ def handoff_locked(core, root, config, git, decision_id, delivery):
         raise ValueError('selection evidence changed since promotion')
     if assessment['result']['decision'] != 'eligible':
         raise ValueError('selection is not eligible')
+    provenance = {'selection': [row['provenance'] for row in assessment['candidate']]}
     if 'confirmation' in config:
         suffix = intent['expected_generation'] + '-' + core.config_digest(root) + '.json'
         selection_path = root / 'selections' / suffix
@@ -77,6 +78,7 @@ def handoff_locked(core, root, config, git, decision_id, delivery):
         if (verified['result']['decision'] != 'eligible' or
                 verified != {key: confirmation[key] for key in ('result', 'spec', 'baseline', 'candidate')}):
             raise ValueError('confirmation evidence changed since promotion')
+        provenance['confirmation'] = [row['provenance'] for row in verified['candidate']]
 
     delivery = Path(delivery).resolve(strict=True)
     top = Path(_delivery_git(delivery, 'rev-parse', '--show-toplevel').rstrip('\n')).resolve()
@@ -122,5 +124,5 @@ def handoff_locked(core, root, config, git, decision_id, delivery):
         if actual != candidate['tree']:
             raise ValueError('staged tree differs; inspect and re-evaluate before delivery')
     return {'baseline': base['commit'], 'champion': candidate['commit'], 'tree': actual,
-            'paths': paths, 'state': 'staged', 'limitations':
+            'paths': paths, 'state': 'staged', 'provenance': provenance, 'limitations':
             'No commit or publication was made. Inspect evidence and re-evaluate if integration context changes.'}

@@ -39,6 +39,9 @@ def _decision(root, decision_id):
         raise ValueError("decision spec differs from frozen configuration")
     before = experiment.rows_for(root, config, saved["baseline_keys"], "baseline", identity_before, revision=revision, generation=saved["generation"])
     after = experiment.rows_for(root, config, saved["candidate_keys"], "candidate", identity_after, revision=revision, generation=saved["generation"])
+    observed = experiment.compare(spec, before, after, root / "evidence")
+    if (before != saved["baseline"] or after != saved["candidate"] or observed != saved["result"]):
+        raise ValueError("decision evidence or provenance changed since comparison")
     return config, spec, before, after
 
 
@@ -84,10 +87,11 @@ def capture(root, git, capture_id, old_decision, new_decision):
     for config, rows in ((old_config, old_before), (old_config, old_after),
                          (new_config, new_before), (new_config, new_after)):
         for row in rows:
-            commit = row["commit"]
+            source_identity = row["provenance"]["source"]
+            commit = source_identity["commit"]
             if commit not in sources:
                 path = source_dir / (commit + ".tar")
-                sha = _tar_source(git, {"commit": commit, "tree": row["tree"]}, path)
+                sha = _tar_source(git, source_identity, path)
                 sources[commit] = {"path": str(path.relative_to(root)), "sha256": sha}
             case_sha = config["case_files"][row["case"]]["sha256"]
             if case_sha not in cases:

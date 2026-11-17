@@ -65,6 +65,10 @@ commits with the same tree reuse the original settled evidence. An interrupted
 dispatched trial remains claimed until reconciled. If you need more samples,
 revise the frozen evaluation's repetition count and rebaseline the comparison;
 do not rerun an existing assignment under a new key and select the better score.
+Decision rows record the requested candidate together with the run key, actual
+measured commit and tree, and whether the result is direct or reused for an
+equivalent tree. Regrading reconstructs the measured source commit. The handoff
+returns the candidate provenance after revalidating the retained decision.
 
 Select on the frozen contract and recorded evidence. A candidate must satisfy
 mandatory checks before any quality improvement can count. Recheck the exact

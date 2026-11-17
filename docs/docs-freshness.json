@@ -638,11 +638,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "6ca4c0f779d1f8e2f48ae85ac52cc451219bdda5"
+          "oid": "e271d41b2a61bd3b51f1aac1a61fdbd4431fc70c"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "2ecad86a449b85e566c35731c4ab1ce8fe02237b"
+          "oid": "4dce4bd5caeb84bda200a5a2796b4f4e26ff455c"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -695,7 +695,7 @@
         },
         "tests/test_experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "db406524f7538c41848fbb542bf11845777174ae"
+          "oid": "ddc16ffe6c8dbfed27965ebe7205561684de85ba"
         },
         "tests/test_experiment_factory.py": {
           "mode": "100644",
@@ -707,11 +707,11 @@
         },
         "tests/test_experiment_handoff.py": {
           "mode": "100644",
-          "oid": "3a1d36b4752d9ee67548f4ecf3adeb4010d159fa"
+          "oid": "a3a608b4aa56514752ee4068efc800737aa23a4b"
         },
         "tests/test_experiment_integration.py": {
           "mode": "100644",
-          "oid": "a99260183fa1c224f05a83fb51d031c165aae880"
+          "oid": "bd5242e032105c2c65f2966cf232ef4f39d11002"
         },
         "tests/test_experiment_integrity.py": {
           "mode": "100644",
@@ -835,7 +835,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the documentation maintenance process; the controller and reviewed test inventory do not change it."
+      "reason": "Reviewed the exact provenance test exception and updated test budget; user guidance remains current"
     },
     "execution": {
       "docs": {
@@ -965,7 +965,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "4e694571c9e27e896824d1d53e0f50f82280725e"
+          "oid": "f79dc810722328612c0db1c4dcaf3253c8f18046"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1459,7 +1459,7 @@
         },
         "skills/hill-climb/references/git-experiments.md": {
           "mode": "100644",
-          "oid": "b5d7c47428889613fce682c78d059b3e0e970b03"
+          "oid": "4d9fd57d6ac9b4680f9f7b903d77e3cc912d3daf"
         },
         "skills/hill-climb/references/git-handoff.md": {
           "mode": "100644",
@@ -1491,11 +1491,11 @@
         },
         "skills/hill-climb/scripts/experiment.py": {
           "mode": "100644",
-          "oid": "1ad95b3d96b141980460ebbc6857f2dd1cb87252"
+          "oid": "08eb7829e009286426bd801026d941cdaaf5bd9b"
         },
         "skills/hill-climb/scripts/experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "0d91d7e86c44ef362f629533c2a4b38a09dcdb0d"
+          "oid": "250ceb2b0ffa764efb04ae74860e815c36da3e3a"
         },
         "skills/hill-climb/scripts/experiment_git.py": {
           "mode": "100644",
@@ -1503,7 +1503,7 @@
         },
         "skills/hill-climb/scripts/experiment_handoff.py": {
           "mode": "100644",
-          "oid": "9bc9bc8878b4b1499c10564954ad5fd868da8c60"
+          "oid": "fafac54e09649fc50865ce213a5daabfbc5e608d"
         },
         "skills/hill-climb/scripts/experiment_ledger.py": {
           "mode": "100644",
@@ -1515,7 +1515,7 @@
         },
         "skills/hill-climb/scripts/experiment_regrade.py": {
           "mode": "100644",
-          "oid": "5db6540d97ae91a0695745aa498bb2bdd5d32f98"
+          "oid": "ec32dc3a2b486ef7b258b8a7c994f2c241f4b7a1"
         },
         "skills/hill-climb/scripts/experiment_runner.py": {
           "mode": "100644",
@@ -1551,7 +1551,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "7d448c7a73e46d3711cfe35c7386a6bdec525f0e"
+          "oid": "cac661da7752e1059681aa6f784f9b78d680d5da"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -3099,7 +3099,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Updated the hill-climb guide for evidence-bound selection, regrading, recovery and exact-tree handoff."
+      "reason": "Documented measured source provenance for equivalent-tree reuse"
     }
   },
   "object_format": "sha1",

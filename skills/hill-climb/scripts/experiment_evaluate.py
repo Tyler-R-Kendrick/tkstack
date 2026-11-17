@@ -149,8 +149,18 @@ def _rows(spec, rows, role, expected, root):
         key = (_text(row.get("case"), "case"), row.get("rep"))
         if type(key[1]) is not int or key not in expected or key in found:
             raise ValueError("unknown or duplicate assignment")
-        if _identity(row, role) != _identity(spec[role], role):
+        target = _identity(row, role)
+        if target != _identity(spec[role], role):
             raise ValueError(f"{role} commit or tree mismatch")
+        provenance = row.get("provenance")
+        if provenance is not None:
+            if not isinstance(provenance, dict) or set(provenance) != {"kind", "run_key", "source"}:
+                raise ValueError("invalid trial provenance")
+            _text(provenance["run_key"], "provenance run key")
+            source = _identity(provenance["source"], "provenance source")
+            kind = "direct" if source == target else "same-tree"
+            if source["tree"] != target["tree"] or provenance["kind"] != kind:
+                raise ValueError("trial provenance does not establish tree equivalence")
         if row.get("contract") != spec["contract"] or row.get("evaluator") != spec["evaluator"]:
             raise ValueError("mixed contract or evaluator revision")
         if row.get("status") != "completed":
