@@ -8,6 +8,11 @@ returns an ineligible comparison, unqualified calibration, or unresolved
 recovery. Its single MAF tool action owns an ordered sequence. It does not
 start agents or choose model providers.
 
+The standalone `calibrate` stage checks supplied Boolean labels only; its
+`qualified` result has `boolean_examples` scope and does not validate a whole
+evaluator. Use settled `calibration-run` results and `revise` for run-backed
+gate and score-anchor checks.
+
 ## Prerequisites
 
 Python 3.12 on Linux can use the supplied transitive hash lock:

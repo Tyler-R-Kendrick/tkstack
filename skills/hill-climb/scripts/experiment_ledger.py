@@ -213,6 +213,11 @@ class Ledger:
                                "experiment TEXT NOT NULL, run_key TEXT NOT NULL, "
                                "PRIMARY KEY (experiment, run_key), "
                                "FOREIGN KEY (experiment, run_key) REFERENCES runs(experiment, run_key))")
+            connection.execute("CREATE TABLE IF NOT EXISTS host_proposals ("
+                               "experiment TEXT NOT NULL, run_key TEXT NOT NULL, arm TEXT NOT NULL, "
+                               "input TEXT NOT NULL, outcome TEXT, "
+                               "PRIMARY KEY (experiment, run_key), "
+                               "FOREIGN KEY (experiment, run_key) REFERENCES runs(experiment, run_key))")
             row = connection.execute("SELECT max_proposals FROM proposal_limits WHERE experiment=?", (experiment,)).fetchone()
             if row and row["max_proposals"] != max_proposals:
                 raise ValueError("Proposal limits are immutable")
@@ -229,7 +234,8 @@ class Ledger:
         finally:
             connection.close()
 
-    def reserve(self, experiment, run_key, *, tokens, trial_units=1, proposal=False, selection_claim=None):
+    def reserve(self, experiment, run_key, *, tokens, trial_units=1, proposal=False,
+                selection_claim=None, host_proposal=None):
         experiment = _text(experiment, "experiment")
         run_key = _text(run_key, "run_key")
         tokens = _number(tokens, "tokens")
@@ -237,6 +243,8 @@ class Ledger:
             raise ValueError("trial_units must be 0 or 1")
         if type(proposal) is not bool or (proposal and trial_units != 0):
             raise ValueError("proposal must be boolean and must not consume a trial start")
+        if host_proposal is not None and (not proposal or tokens != 0 or not isinstance(host_proposal, dict)):
+            raise ValueError("host proposal requires a zero-local-token proposal reservation")
         claim_text = _selection_claim(selection_claim) if selection_claim is not None else None
         if selection_claim is not None and trial_units != 1:
             raise ValueError("selection assignment requires one trial start")
@@ -253,6 +261,8 @@ class Ledger:
                 "SELECT * FROM runs WHERE experiment=? AND run_key=?", (experiment, run_key)
             ).fetchone()
             if existing:
+                if host_proposal is not None:
+                    raise ValueError("host proposal run key already used; reconcile rather than dispatch again")
                 is_proposal = bool(has_proposal_table and connection.execute(
                     "SELECT 1 FROM proposal_reservations WHERE experiment=? AND run_key=?", (experiment, run_key)
                 ).fetchone())
@@ -276,6 +286,14 @@ class Ledger:
                 count = connection.execute("SELECT COUNT(*) FROM proposal_reservations WHERE experiment=?", (experiment,)).fetchone()[0]
                 if count >= limit["max_proposals"]:
                     raise ValueError("Experiment proposal budget exhausted")
+            if host_proposal is not None:
+                arm = _text(host_proposal.get("arm"), "host arm")
+                active = connection.execute(
+                    "SELECT 1 FROM host_proposals h JOIN runs r USING(experiment,run_key) "
+                    "WHERE h.experiment=? AND h.arm=? AND r.status IN ('reserved','dispatched','uncertain')",
+                    (experiment, arm)).fetchone()
+                if active:
+                    raise ValueError("arm already has an active host proposal")
             rows = connection.execute("SELECT * FROM runs WHERE experiment=?", (experiment,)).fetchall()
             totals = self._totals(rows)
             if (totals["reserved_tokens"] + totals["settled_tokens"] + tokens > budget["max_tokens"] or
@@ -283,16 +301,27 @@ class Ledger:
                 raise ValueError("Experiment budget exhausted")
             connection.execute(
                 "INSERT INTO runs(experiment, run_key, reserved_tokens, trial_units, status, created_at) "
-                "VALUES (?, ?, ?, ?, 'reserved', ?)",
-                (experiment, run_key, tokens, trial_units, _now()),
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (experiment, run_key, tokens, trial_units,
+                 "dispatched" if host_proposal is not None else "reserved", _now()),
             )
             if proposal:
                 connection.execute("INSERT INTO proposal_reservations(experiment, run_key) VALUES (?, ?)", (experiment, run_key))
+            if host_proposal is not None:
+                connection.execute("INSERT INTO host_proposals(experiment,run_key,arm,input) VALUES (?,?,?,?)",
+                                   (experiment, run_key, arm, json.dumps(host_proposal, sort_keys=True, allow_nan=False)))
+                self._event(connection, experiment, run_key, "host_proposal", host_proposal)
             if selection_claim is not None:
                 _insert_selection_claim(connection, experiment, run_key, selection_claim)
             self._event(connection, experiment, run_key, "reserve", {"tokens": tokens, "trial_units": trial_units})
+            if host_proposal is not None:
+                # Authorize external host dispatch in the same transaction as
+                # the reservation. A lost response can never authorize a retry.
+                self._event(connection, experiment, run_key, "dispatch", {})
             result = dict(self._run(connection, experiment, run_key))
             connection.commit()
+            if host_proposal is not None:
+                result["dispatch_granted"] = True
             return result
         except BaseException:
             if connection.in_transaction:
@@ -415,6 +444,41 @@ class Ledger:
     def uncertain(self, experiment, run_key, reason):
         return self._transition(experiment, run_key, "uncertain", reason=reason)
 
+    def finish_host_proposal(self, experiment, run_key, outcome):
+        """Atomically settle the local attempt and retain host-reported provenance."""
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            run = self._run(connection, experiment, run_key)
+            row = connection.execute("SELECT input,outcome FROM host_proposals WHERE experiment=? AND run_key=?",
+                                     (experiment, run_key)).fetchone()
+            if row is None:
+                raise ValueError("Unknown host proposal")
+            if row["outcome"] is not None:
+                prior = json.loads(row["outcome"])
+                if prior != outcome:
+                    raise ValueError("Host proposal already finished with a different outcome")
+                connection.commit()
+                return prior
+            if run["status"] not in ("dispatched", "uncertain"):
+                raise ValueError("Host proposal was not dispatched")
+            connection.execute("UPDATE host_proposals SET outcome=? WHERE experiment=? AND run_key=?",
+                               (json.dumps(outcome, sort_keys=True, allow_nan=False), experiment, run_key))
+            # Zero applies only to the local evaluator ledger, not host model usage.
+            connection.execute("UPDATE runs SET status='settled', actual_tokens=0 WHERE experiment=? AND run_key=?",
+                               (experiment, run_key))
+            self._event(connection, experiment, run_key, "host_finish", outcome)
+            self._event(connection, experiment, run_key, "settle",
+                        {"actual_tokens": 0, "reserved_tokens": 0, "scope": "local-only"})
+            connection.commit()
+            return outcome
+        except BaseException:
+            if connection.in_transaction:
+                connection.rollback()
+            raise
+        finally:
+            connection.close()
+
     def settle(self, experiment, run_key, *, actual_tokens, receipt_sha256=None):
         return self._transition(experiment, run_key, "settle", actual_tokens=actual_tokens,
                                 receipt_sha256=receipt_sha256)
@@ -448,8 +512,21 @@ class Ledger:
                 budget["proposal_count"] = connection.execute(
                     "SELECT COUNT(*) FROM proposal_reservations WHERE experiment=?", (experiment,)
                 ).fetchone()[0]
+                has_host_table = connection.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name='host_proposals'"
+                ).fetchone()
+                budget["host_proposals"] = [
+                    {"run_key": row["run_key"], "arm": row["arm"], "input": json.loads(row["input"]),
+                     "outcome": json.loads(row["outcome"]) if row["outcome"] is not None else None,
+                     "status": row["status"]}
+                    for row in connection.execute(
+                        "SELECT h.*, r.status FROM host_proposals h JOIN runs r USING(experiment,run_key) "
+                        "WHERE h.experiment=? ORDER BY h.run_key", (experiment,))
+                ] if has_host_table else []
+                if budget["host_proposals"]:
+                    budget["host_token_accounting"] = "host-reported or unknown; excluded from local token totals"
             else:
-                budget.update(max_proposals=None, proposal_count=0)
+                budget.update(max_proposals=None, proposal_count=0, host_proposals=[])
             connection.commit()
             return budget
         finally:

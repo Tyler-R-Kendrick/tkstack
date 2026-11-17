@@ -61,11 +61,12 @@ class EvaluationTests(unittest.TestCase):
         calibration = [{"id": "good", "expected": True, "observed": True},
                        {"id": "loss", "expected": False, "observed": False},
                        {"id": "shorter-loss", "expected": False, "observed": False}]
-        self.assertTrue(evaluation.validate_calibration(calibration)["qualified"])
+        check = evaluation.validate_calibration(calibration)
+        self.assertEqual((check["qualified"], check["scope"]), (True, {"kind": "boolean_examples"}))
         self.assertEqual(self.compare()["decision"], "eligible")
         self.assertEqual(self.compare()["target"]["gain"], 2)
         calibration[2]["observed"] = True
-        self.assertFalse(evaluation.validate_calibration(calibration)["qualified"])
+        self.assertFalse(evaluation.validate_calibration(calibration)["boolean_labels_match"])
 
     def test_provenance_must_prove_direct_or_same_tree_identity(self):
         source = {"commit": "5" * 40, "tree": self.spec["candidate"]["tree"]}

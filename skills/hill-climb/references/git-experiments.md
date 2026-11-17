@@ -18,20 +18,28 @@ authorized. Otherwise it performs the same rounds sequentially. The host
 does not need to launch another coding-agent runtime, configure a separate
 provider, or create a new model account to use this workflow. Git, Python,
 and the selected project's actual evaluator remain ordinary tool dependencies.
+For example, use the capabilities already available to Codex, Claude Code, or
+GitHub Copilot in the host that invoked the skill. Do not substitute a different
+coding agent for the active host.
 
 After preparing the task brief and `init` request described below:
 
 1. Invoke `native experiment --request PATH` with an `allocate` request for a
-   candidate arm. Read the returned worktree path and frozen identity.
+   candidate arm. Use the returned identity in a `host-start` request before
+   delegating or editing. This reserves an attempt and records the host,
+   logical worker name, and hypothesis; a lost response must be reconciled.
 2. Give the worker the user outcome, one hypothesis and its falsifier,
    baseline identity, owned paths, development evidence, quality contract,
    selected skills, budget and stop rule. Identify its private worktree and
    which checks it should run. Keep confirmation cases outside its context.
    For a sequential round, the invoking agent uses the same handoff itself.
 3. The host agent edits only the authorized paths in the returned worktree.
-   Join delegated work and verify that writers have stopped. Send a `freeze`
-   request with `arm`, `message`, and `writers_stopped: true` to capture the
-   candidate's commit and tree. The controller checks the scoped freeze.
+   Join delegated work and verify that writers have stopped. Send `host-finish`
+   with the run key, `outcome: "frozen"`, a message, and `writers_stopped: true`.
+   The controller checks the scoped freeze and records the candidate's commit
+   and tree. Supply the host's task ID and reported token usage if available;
+   otherwise usage remains unknown. A failed or uncertain host attempt remains
+   counted. Reconcile interrupted work before retrying or selecting a winner.
 4. Run the frozen incumbent and candidate on the declared selection
    assignments. Compare the receipts and inspect failures. Improve the
    feature or, when the evidence points there, revise the task harness and
@@ -46,9 +54,22 @@ For example, each request is a separate JSON file passed to the native command:
 ```
 
 ```json
-{"action":"freeze", "root":"/private/experiment", "arm":"candidate-a",
- "message":"Test the recovery hypothesis", "writers_stopped":true}
+{"action":"host-start", "root":"/private/experiment", "arm":"candidate-a",
+ "run_key":"host-attempt-1", "expected":{"commit":"FULL_COMMIT", "tree":"FULL_TREE"},
+ "host":"active-host", "worker":"worker-a", "hypothesis":"Preserve valid values"}
 ```
+
+```json
+{"action":"host-finish", "root":"/private/experiment", "run_key":"host-attempt-1",
+ "outcome":"frozen", "message":"Test the recovery hypothesis", "writers_stopped":true}
+```
+
+If dispatch or the worker's outcome is uncertain, use `host-uncertain` with the
+run key and a reason. After confirming that writers stopped, reconcile with
+`host-finish`: use `outcome: "failed"` and a reason when no frozen result can
+be established. A dispatched attempt remains charged; do not reuse its key.
+The host-reported task ID and usage are observations, not independently
+authenticated billing records.
 
 The `propose` action described later is an optional way to apply supplied text
 edits. It is not needed for a host agent to edit and freeze its arm. Optional
@@ -80,11 +101,12 @@ budget. Record the fixed per-call limit and observed usage where available.
 Use the invoking host's existing usage and limit controls for its work and any
 delegated work. Record unavailable host usage as unknown. The local evaluator's
 `max_tokens: 0` denotes its non-model trial contract; it neither measures nor
-limits the host agent's tokens. The controller counts scripted `propose` calls
-against `max_proposals`, but it does not count direct host edits and `freeze`
-as proposals. Track those rounds in the host's task record and stop at the
-declared limit. The experiment deadline constrains trial, calibration, and
-scripted-proposal dispatch and execution; it does not time the host's manual
+limits the host agent's tokens. The controller counts registered `host-start`
+and scripted `propose` attempts against `max_proposals`. Direct `allocate` and
+`freeze` remain available for compatibility, but do not count host work;
+track any such rounds separately and do not treat the proposal cap as a hard
+limit on unregistered work. The experiment deadline constrains trial,
+calibration, host-start, and scripted-proposal dispatch; it does not time the host's manual
 work or session. Apply any required session limit through the host when
 available. Account for unknown execution after a lost response; retry only when
 the original outcome and available budget allow it.
@@ -265,6 +287,9 @@ each JSON response before continuing.
 | Action | Additional request fields | Effect |
 | --- | --- | --- |
 | `allocate` | `arm` | Return a private worktree from the frozen baseline. |
+| `host-start` | `arm`, `run_key`, `expected`, `host`, `worker`, `hypothesis` | Reserve a host attempt before dispatch and bind it to the clean arm. |
+| `host-uncertain` | `run_key`, `reason` | Mark an interrupted host attempt uncertain without refunding it. |
+| `host-finish` | `run_key`, `outcome`, `writers_stopped`, plus `message` or `reason` | Record a frozen or failed host attempt; optional host task ID and usage are self-reported. |
 | `freeze` | `arm`, `message`, `writers_stopped: true` | Commit permitted paths and return its commit and tree. |
 | `run` | `side` (`baseline` or `candidate`), `rep`, unique `run_key`, and `arm` for a candidate. Use `split: confirmation` for a selected finalist. | Reserve one trial, execute the target on the frozen tree, and retain output and accounting. |
 | `compare` | `arm`, `baseline` and `candidate` arrays of run keys, unique `decision` | Save a paired comparison. Incomplete or mismatched evidence is inconclusive. |
@@ -394,22 +419,45 @@ arm tips can run as candidates.
 
 Before `revise`, use `calibration-run` to execute the proposed evaluator
 on independently labeled reference commits and case files. At least two
-distinct commit/input pairs are required, including expected positive and
-negative examples for the same required or candidate-only gate. The
-`calibration` array supplied to `revise` references the settled runs:
+distinct Git-tree/input pairs are required, including expected positive and
+negative examples for the same required or candidate-only gate. When changing
+the contract, evaluator, command or scoring rules, independently label at
+least two different expected values for every primary and guardrail metric and
+every required qualitative criterion. The `calibration` array supplied to
+`revise` references the settled runs; the example assumes `quality` is the
+primary metric and `clarity` is a required qualitative criterion:
 
 ```json
 [
-  {"id": "good", "run_key": "cal-good", "gate": "preserves", "expected": true},
-  {"id": "bad", "run_key": "cal-bad", "gate": "preserves", "expected": false}
+  {"id": "good", "run_key": "cal-good", "gate": "preserves", "expected": true,
+   "metrics": {"quality": 3}, "qualitative": {"clarity": 3}},
+  {"id": "bad", "run_key": "cal-bad", "gate": "preserves", "expected": false,
+   "metrics": {"quality": 1}, "qualitative": {"clarity": 1}}
 ]
 ```
 
-Each run must use the proposed evaluator and the same registered command,
-interpreter, and declared dependencies as the revision. Confirmation input
-bytes cannot be consumed for calibration. Labels still require independent
-human or domain validation. After revision, collect fresh matched baseline and
-candidate runs using the revised contract.
+Each score anchor must exactly match the corresponding finite numeric output;
+qualitative judgments also need a nonempty rationale and `self` evidence in
+the retained evaluator output. Each run must use the proposed evaluator and
+the same registered command, interpreter, and declared dependencies as the
+revision. Confirmation input bytes cannot be consumed for calibration. Labels
+require independent human or domain validation; a verifier repeating its own
+scores as expected labels is not independent. Finite anchors detect only the
+examples supplied and do not prove general evaluator validity or that the
+verifier consumed its input.
+
+Unchanged evaluator and scoring contracts can retain the existing gate-only
+labels when revising cases. The run-backed response's `qualified` and
+`gate_qualified` apply only to `scope: {"kind": "gate", "name": "preserves"}`;
+`metrics` and `qualitative` report named anchor checks separately. The
+standalone `calibrate` action checks only supplied Boolean labels and returns
+`scope: {"kind": "boolean_examples"}`; it does not execute an evaluator or
+establish run provenance. Consumers must check `scope` and must never interpret
+either `qualified` result as qualification of the whole evaluator. The
+optional MAF workflow checks the Boolean scope for its `calibrate` stage;
+`calibration-run` and `revise` provide the separate run-backed checks. After
+revision, collect fresh matched baseline and candidate runs using the revised
+contract.
 
 ### Native test adapter
 
@@ -500,11 +548,12 @@ make host execution a sandbox or prove the judgment is semantically correct.
 ### Bounded host-agent proposals
 
 Host agents can inspect the task brief and frozen development evidence, work on
-separate authorized arms, and submit their changes through `freeze`. For a
-small deterministic text proposal the `propose` action combines scoped edit,
-receipt, and freeze. An `init` request may set `max_proposals` from 1 to 100;
-the default is five. Proposal attempts are counted separately from trial starts
-and remain counted after failed or uncertain attempts.
+separate authorized arms, and submit their changes through the host lifecycle
+above. For a small deterministic text proposal the optional `propose` action
+combines scoped edit, receipt, and freeze. An `init` request may set
+`max_proposals` from 1 to 100; the default is five. Registered host and scripted
+proposal attempts are counted separately from trial starts and remain counted
+after failed or uncertain attempts.
 
 ```json
 {

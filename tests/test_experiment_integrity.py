@@ -172,6 +172,7 @@ class ProductionProtocolTests(unittest.TestCase):
                       evaluator_file=str(self.grader), registry=self.registry, trusted_interpreter=sys.executable)
         labels = [{"id": "good", "run_key": "known-good", "gate": "preserves", "expected": True},
                   {"id": "bad", "run_key": "known-bad", "gate": "preserves", "expected": False}]
+        labels[0]["metrics"], labels[1]["metrics"] = {"quality": 3}, {"quality": 1}
         revised = self.dir / "contract2"
         revised.write_text("new contract")
         new = experiment.digest(revised)
@@ -190,16 +191,83 @@ class ProductionProtocolTests(unittest.TestCase):
     def test_calibration_detects_always_pass_and_wrong_evaluator(self):
         self.init()
         good = self.freeze()
-        for key, commit in (("bad-run", self.base), ("good-run", good["commit"])):
+        twin = subprocess.check_output(["git", "--git-dir", str(self.root / "repo.git"), "-c", "user.name=T",
+                "-c", "user.email=t@e", "commit-tree", good["tree"], "-p", good["commit"]], input="x", text=True).strip()
+        for key, commit in (("bad-run", self.base), ("good-run", good["commit"]), ("twin", twin)):
             self.call("calibration-run", run_key=key, commit=commit, case="sel", case_file=str(self.sel),
                       evaluator_file=str(self.grader), registry=self.registry, trusted_interpreter=sys.executable)
         wrong = [{"id": "good", "run_key": "good-run", "gate": "submit", "expected": True},
                  {"id": "bad", "run_key": "bad-run", "gate": "submit", "expected": False}]
         command = experiment.target_digest(*experiment.validate_target(self.registry, "check", str(self.grader), sys.executable))
         evidence = experiment.calibration_from_runs(self.root, "e", wrong, experiment.digest(self.grader), command)
-        self.assertFalse(evidence["qualified"])
+        self.assertFalse(evidence["gate_qualified"])
+        labels = [wrong[0], dict(wrong[1], run_key="twin")]
+        with self.assertRaisesRegex(ValueError, "distinct"):
+            experiment.calibration_from_runs(self.root, "e", labels, experiment.digest(self.grader), command)
         with self.assertRaisesRegex(ValueError, "different evaluator"):
             experiment.calibration_from_runs(self.root, "e", wrong, "f" * 64, command)
+
+    def test_changed_evaluator_requires_score_anchors_from_settled_runs(self):
+        evaluation = {"cases": ["sel"], "repetitions": 1, "required_gates": ["submit"],
+                      "candidate_only_gates": ["preserves"], "metric": "quality", "direction": "higher",
+                      "min_gain": 1, "noise_floor": 0, "deterministic": True,
+                      "guardrails": [{"metric": "retained", "direction": "higher", "tolerance": 0}],
+                      "required_qualitative": ["clarity"]}
+        self.init(evaluation=evaluation)
+        good = self.freeze()
+        current = experiment.digest(self.contract)
+        self.call("feedback", id="quality", observation="reversed quality",
+                  interpretation="calibrate scores", counterexample="good scores lower",
+                  old_contract=current, new_contract=current, changes=["evaluator"])
+
+        def labels_for(verifier, prefix):
+            registry = {"check": {"argv": [sys.executable, str(verifier), "{{case}}", "{{case_file}}"], "cwd": "."}}
+            for suffix, commit in (("bad", self.base), ("good", good["commit"])):
+                self.call("calibration-run", run_key=f"{prefix}-{suffix}", commit=commit, case="sel",
+                          case_file=str(self.sel), evaluator_file=str(verifier), registry=registry,
+                          trusted_interpreter=sys.executable)
+            labels = [{"id": suffix, "run_key": f"{prefix}-{suffix}", "gate": "preserves",
+                       "expected": suffix == "good"} for suffix in ("bad", "good")]
+            return registry, labels
+
+        correct = self.grader.read_text().replace("'quality':3 if good else 1", "'quality':3 if good else 1,"
+                    "'retained':10 if good else 9").replace("'work_count':1", "'qualitative':{'clarity':"
+                    "{'rating':3 if good else 1,'rationale':'explanation','evidence':['self']}},'work_count':1")
+        biased = self.dir / "biased.py"
+        biased.write_text(correct.replace("3 if good else 1", "1 if good else 3", 1))
+        registry, labels = labels_for(biased, "biased")
+        args = dict(feedback="quality", contract_file=str(self.contract), evaluator_file=str(biased),
+                    registry=registry, trusted_interpreter=sys.executable)
+        with self.assertRaisesRegex(ValueError, "metric"):
+            self.call("revise", **args, calibration=labels)
+        labels[0]["metrics"], labels[1]["metrics"] = {"quality": 1, "retained": 9}, {"quality": 3, "retained": 10}
+        with self.assertRaisesRegex(ValueError, "metric"):
+            self.call("revise", **args, calibration=labels)
+        self.assertEqual(experiment.config_for(self.root)["evaluator"]["sha256"], experiment.digest(self.grader))
+
+        rubric = self.dir / "rubric.py"
+        rubric.write_text(correct.replace("'rating':3 if good else 1", "'rating':1 if good else 3"))
+        registry, labels = labels_for(rubric, "rubric")
+        args.update(evaluator_file=str(rubric), registry=registry)
+        labels[0]["metrics"], labels[1]["metrics"] = {"quality": 1}, {"quality": 3}
+        with self.assertRaisesRegex(ValueError, "metric"):
+            self.call("revise", **args, calibration=labels)
+        labels[0]["metrics"]["retained"], labels[1]["metrics"]["retained"] = 9, 10
+        with self.assertRaisesRegex(ValueError, "qualitative"):
+            self.call("revise", **args, calibration=labels)
+        labels[0]["qualitative"], labels[1]["qualitative"] = {"clarity": 1}, {"clarity": 3}
+        with self.assertRaisesRegex(ValueError, "qualitative"):
+            self.call("revise", **args, calibration=labels)
+
+        corrected = self.dir / "corrected.py"
+        corrected.write_text(correct)
+        registry, labels = labels_for(corrected, "corrected")
+        labels[0]["metrics"], labels[1]["metrics"] = {"quality": 1, "retained": 9}, {"quality": 3, "retained": 10}
+        labels[0]["qualitative"], labels[1]["qualitative"] = {"clarity": 1}, {"clarity": 3}
+        args.update(evaluator_file=str(corrected), registry=registry)
+        revised = self.call("revise", **args, calibration=labels)
+        self.assertEqual(revised["calibration"]["scope"], {"kind": "gate", "name": "preserves"})
+        self.assertTrue(revised["calibration"]["qualitative"]["clarity"]["qualified"])
 
 
     def test_same_case_and_repetition_cannot_be_cherry_picked(self):

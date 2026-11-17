@@ -5,8 +5,8 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 620,
-    "max_bytes": 680000,
+    "max_cases": 630,
+    "max_bytes": 700000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -120,9 +120,9 @@
         ],
         "exclude": [],
         "max_files": 54,
-        "max_bytes": 690000,
+        "max_bytes": 705000,
         "max_depth": 2,
-        "reason": "The automation layer adds reviewed proposal, parallel, process-isolation, optional GEPA and Harbor suites for distinct execution and budget boundaries."
+        "reason": "Distinct host-delegation accounting, crash recovery, calibration and Lean correspondence regressions extend the existing automation suites without adding a test file."
       },
       {
         "id": "documentation",
@@ -167,9 +167,9 @@
           "vendor/**"
         ],
         "max_files": 880,
-        "max_bytes": 9200000,
+        "max_bytes": 9300000,
         "max_depth": 9,
-        "reason": "The reviewed automation layer adds scoped proposer, parallel worker, optional verifier and optimizer modules plus their integration regressions."
+        "reason": "The host proposal lifecycle and calibrated evaluator add scoped runtime code, proofs, behavioral regressions and their compiled skill snapshot."
       }
     ]
   },

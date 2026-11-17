@@ -60,10 +60,12 @@ active `sdlc` workflow owns COW/sparse isolation, BDD/contract testing, evidence
 independent final review, incremental commits, stacked PRs and babysitting.
 This skill does not introduce permission to push or merge unrelated work.
 
-Feedback can reveal a defect in the feature, the harness, or both. An
-evaluator change is calibrated against labeled good and defective examples,
-then both incumbent and challenger are regraded under the same revised
-contract. Changes to agent instructions, skills, context, or workflow need
+Feedback can reveal a defect in the feature, the harness, or both. For an
+evaluator or scoring change, check the selected gate and each score against
+independently labeled reference runs, then regrade incumbent and challenger
+under the same revised contract. These checks cover the supplied examples,
+not the evaluator's overall correctness. Changes to agent instructions,
+skills, context, or workflow need
 fresh matched trials; rescoring existing outputs does not establish that the
 revised workflow produces better work. Keep earlier decisions and evaluator
 revisions so the evidence remains auditable.
@@ -87,11 +89,14 @@ declared dependencies. The included native test adapter requires its configurati
 and JSON parser to be declared and frozen. An optional separate quality judge
 can supply numeric and qualitative criteria alongside the native test gate.
 The evaluator must attest the case digest. Evaluator revisions require
-calibration runs on labeled references. A default 1800-second deadline limits
+calibration runs on labeled references. The `qualified` flag applies only to
+the named Boolean scope, while metric and qualitative anchor checks report
+their coverage separately. A default 1800-second deadline limits
 trial and calibration dispatch and execution. The host's own agent work is not
 timed by that deadline. Record host usage and apply host limits where available;
-otherwise record usage as unknown. The local evaluator's `max_tokens: 0` and
-scripted proposal count do not measure or limit direct host-agent edits.
+otherwise record usage as unknown. The local evaluator's `max_tokens: 0` does
+not limit host-agent tokens. Registered host attempts share the proposal count;
+direct unregistered edits remain outside that count.
 Confirmation data protection and isolation of untrusted code depend on the
 host's available mechanisms.
 The [Git experiment guide](../skills/hill-climb/references/git-experiments.md)

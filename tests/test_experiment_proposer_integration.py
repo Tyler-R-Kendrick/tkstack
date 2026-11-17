@@ -130,10 +130,13 @@ class ProposerIntegrationTests(unittest.TestCase):
         other = self.call("allocate", arm="other")
         def invoke(arm, identity):
             path = self.path / (arm + "-request.json")
-            path.write_text(json.dumps({"action": "propose", "root": str(self.experiment),
-                "arm": arm, "expected": identity, "run_key": arm + "-run",
-                "edits": [{"path": "product.txt", "content": "good"}],
-                "message": arm, "writers_stopped": True}))
+            request = {"root": str(self.experiment), "arm": arm, "expected": identity, "run_key": arm + "-run"}
+            if arm == "fix":
+                request.update(action="host-start", host="host", worker="worker", hypothesis="fix")
+            else:
+                request.update(action="propose", edits=[{"path": "product.txt", "content": "good"}],
+                               message=arm, writers_stopped=True)
+            path.write_text(json.dumps(request))
             return subprocess.run([sys.executable, str(SCRIPT), "--request", str(path)],
                                   capture_output=True, text=True, timeout=30)
         with ThreadPoolExecutor(max_workers=2) as pool:
@@ -151,6 +154,79 @@ class ProposerIntegrationTests(unittest.TestCase):
         self.assertIn("experiment deadline", error)
         self.assertEqual(self.call("status")["ledger"]["proposal_count"], 0)
 
+    def test_host_proposal_recovers_after_freeze_and_is_evaluated(self):
+        denied = self.fail_call
+        ready = self.call("allocate", arm="ready")
+        (Path(ready["worktree"]) / "product.txt").write_text("good")
+        self.call("freeze", arm="ready", message="ready", writers_stopped=True)
+        self.call("run", side="baseline", rep=0, run_key="old")
+        self.call("run", side="candidate", arm="ready", rep=0, run_key="new")
+        self.call("compare", arm="ready", baseline=["old"], candidate=["new"], decision="ready")
+        start = {"arm": "fix", "expected": self.arm["identity"], "run_key": "host-run",
+                 "host": "invoking host", "worker": "subagent-1", "hypothesis": "preserve values"}
+        stale = dict(start, expected={"commit": self.base, "tree": "0" * len(self.base)})
+        self.assertIn("changed", denied("host-start", **stale))
+        begun = self.call("host-start", **start)
+        self.assertEqual(begun["token_usage"], {"status": "unknown"})
+        self.assertIn("already", denied("host-start", **start))
+        self.assertIn("active", denied("freeze", arm="fix", message="unsafe", writers_stopped=True))
+        self.call("host-uncertain", run_key="host-run", reason="lost response")
+        for action, fields in (("select", {"decision": "ready"}),
+                               ("promote", {"arm": "ready", "decision": "ready"}),
+                               ("revise", {}), ("recover", {})):
+            self.assertIn("active host", denied(action, **fields))
+        (Path(self.arm["worktree"]) / "product.txt").write_text("good")
+        finish = {"action": "host-finish", "root": str(self.experiment), "run_key": "host-run",
+                  "outcome": "frozen", "message": "preserve values", "writers_stopped": True,
+                  "host_task_id": "host-assigned-1", "reported_usage": {"tokens": 7, "source": "host report"}}
+        code = ("import json,sys; from unittest.mock import patch; "
+                "sys.path.insert(0,sys.argv[1]); import experiment; "
+                "p=patch.object(experiment.Ledger,'finish_host_proposal',side_effect=RuntimeError('lost')); "
+                "p.start(); experiment.execute(json.loads(sys.argv[2]))")
+        interrupted = subprocess.run([sys.executable, "-c", code, str(SCRIPT.parent), json.dumps(finish)],
+                                    text=True, capture_output=True, timeout=30)
+        self.assertNotEqual(interrupted.returncode, 0)
+        self.assertIn("lost", interrupted.stderr)
+        before = subprocess.check_output(["git", "-C", self.arm["worktree"], "rev-parse", "HEAD"], text=True).strip()
+        self.assertEqual(self.call("status")["ledger"]["runs"][0]["status"], "uncertain")
+        args = {k: v for k, v in finish.items() if k not in ("action", "root")}
+        self.assertIn("stopped", denied("host-finish", **{**args, "writers_stopped": False}))
+        receipt = self.experiment / "host-finishes/host-run.receipt.json"
+        saved = receipt.read_bytes()
+        receipt.unlink()
+        self.assertIn("uncertain", denied("host-finish", **args))
+        receipt.write_bytes(saved)
+        (Path(self.arm["worktree"]) / "product.txt").write_text("changed after freeze")
+        self.assertIn("clean", denied("host-finish", **args))
+        (Path(self.arm["worktree"]) / "product.txt").write_text("good")
+        done = self.call("host-finish", **args)
+        self.assertEqual(done["identity"]["commit"], before)
+        self.assertEqual(done["host_task_id"], "host-assigned-1")
+        self.assertEqual(done["token_usage"], {"status": "reported", "tokens": 7, "source": "host report"})
+        self.assertEqual(self.call("host-finish", **args), done)
+        state = self.call("status")["ledger"]
+        self.assertEqual(state["proposal_count"], 1)
+        self.assertIn("excluded", state["host_token_accounting"])
+        decision = self.call("compare", arm="fix", baseline=["old"], candidate=["new"], decision="pick")
+        self.assertEqual(decision["decision"], "eligible")
+        self.assertEqual(self.call("promote", arm="fix", decision="pick")["commit"], before)
+
+    def test_failed_host_cannot_promote_approval_written_before_receipt(self):
+        denied = self.fail_call
+        self.call("host-start", arm="fix", expected=self.arm["identity"], run_key="host-run",
+                  host="host", worker="worker", hypothesis="fix")
+        (Path(self.arm["worktree"]) / "product.txt").write_text("good")
+        request = {"action": "host-finish", "root": str(self.experiment), "run_key": "host-run",
+                   "outcome": "frozen", "message": "fix", "writers_stopped": True}
+        code = ("import sys,json; sys.path.insert(0,sys.argv[1]); import experiment as e; old=e.write_new; "
+                "e.write_new=lambda p,d: (_ for _ in ()).throw(OSError('crash')) "
+                "if str(p).endswith('.receipt.json') else old(p,d); e.execute(json.loads(sys.argv[2]))")
+        result = subprocess.run([sys.executable, "-c", code, str(SCRIPT.parent), json.dumps(request)],
+                                text=True, capture_output=True, timeout=30)
+        self.assertIn("crash", result.stderr)
+        self.call("host-finish", run_key="host-run", outcome="failed", reason="unknown", writers_stopped=True)
+        error = denied("run", side="candidate", arm="fix", rep=0, run_key="invalid")
+        self.assertIn("no successful settled host proposal", error)
 
 if __name__ == "__main__":
     unittest.main()

@@ -638,11 +638,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "64074f90c4b551e3e20fdaff4b9493e415114f8a"
+          "oid": "912531c94a0c06d54c494bf16c79cf8a492e02ee"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "bb3c0751d096744c6ab96ca18806184103393891"
+          "oid": "a1552984c5e4f67ac772c4e0e96bfc46cc0fcffb"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -699,7 +699,7 @@
         },
         "tests/test_experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "ddc16ffe6c8dbfed27965ebe7205561684de85ba"
+          "oid": "8be4cc6f75d17be85905661466c17e74a69dc0e5"
         },
         "tests/test_experiment_factory.py": {
           "mode": "100644",
@@ -727,7 +727,7 @@
         },
         "tests/test_experiment_harbor_integration.py": {
           "mode": "100644",
-          "oid": "905b4f540a3e66bf0cebcda41d11c485f30ca026"
+          "oid": "216865aa0f7825e06e78d3a66ee83b987f9631a3"
         },
         "tests/test_experiment_harbor_parallel.py": {
           "mode": "100644",
@@ -735,15 +735,15 @@
         },
         "tests/test_experiment_integration.py": {
           "mode": "100644",
-          "oid": "3bc2fa67daa4fe20d47a1903bd1026000344f088"
+          "oid": "5bbdce1fe5e06d2f5b030826bde0cdf1ebf64982"
         },
         "tests/test_experiment_integrity.py": {
           "mode": "100644",
-          "oid": "f5329b4a48c73c9d81c0c14cbd13524652ecd315"
+          "oid": "a3ec47aa644ab705cb55481428892148627b70ca"
         },
         "tests/test_experiment_lean.py": {
           "mode": "100644",
-          "oid": "e85fd954f7837d6cff46903cd2b67b0788351b34"
+          "oid": "2bcacc6a60fe5a5d985005d095386de1ff07ca41"
         },
         "tests/test_experiment_ledger.py": {
           "mode": "100644",
@@ -751,7 +751,7 @@
         },
         "tests/test_experiment_maf.py": {
           "mode": "100644",
-          "oid": "2ecf2dd19177a969cf9d54a93a286f47a05e6ac7"
+          "oid": "e25d13025acccdeda0954c8c631434a946c4f9eb"
         },
         "tests/test_experiment_model.py": {
           "mode": "100644",
@@ -783,7 +783,7 @@
         },
         "tests/test_experiment_proposer_integration.py": {
           "mode": "100644",
-          "oid": "64d014c17d0050c8d1f1eb8724e05a0d8e21ab26"
+          "oid": "b38ccb1cecb31cbf05f7980ae0a1950aa40e0db5"
         },
         "tests/test_experiment_runner.py": {
           "mode": "100644",
@@ -879,7 +879,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed documentation tracking and the host-workflow regression inventory"
+      "reason": "Reviewed documentation tracking and the changed behavioral test inventory"
     },
     "execution": {
       "docs": {
@@ -1009,7 +1009,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "c0b48f390373c7a2c288e574176fa7cc5f288e24"
+          "oid": "0ef9e90e1feda6a9d885aaef3a00b8f49e066905"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1053,7 +1053,7 @@
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "f77b9254af7e32c32d4f083cb79367df5f5c9c48"
+          "oid": "264d84a365207202d741b095be174114b962c991"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1447,7 +1447,7 @@
         },
         "skills/hill-climb/formal/Budget.lean": {
           "mode": "100644",
-          "oid": "a1546651afb03437a7715d6cfa0fd95b0864babf"
+          "oid": "fd93dd4e7ce25fe790033bdaebaa3b272485fad0"
         },
         "skills/hill-climb/formal/Budget.tla": {
           "mode": "100644",
@@ -1479,11 +1479,11 @@
         },
         "skills/hill-climb/formal/README.md": {
           "mode": "100644",
-          "oid": "2974a4b076f5bf2a3f3eb54f6134f6bb6491cd6f"
+          "oid": "0f5aca47939a314899b249538765174c8a62b0ff"
         },
         "skills/hill-climb/formal/lean_bridge.py": {
           "mode": "100644",
-          "oid": "80524757a94232a14090e7f3ccc39bfd85b4bc55"
+          "oid": "553e094efe26bdc0e39efb69e185aa65c3ef23cd"
         },
         "skills/hill-climb/formal/model_check.py": {
           "mode": "100644",
@@ -1503,7 +1503,7 @@
         },
         "skills/hill-climb/references/git-experiments.md": {
           "mode": "100644",
-          "oid": "d4285a12a45d7e55766d92aec5d480accd178e6f"
+          "oid": "221803abf2e890bfaf94a4151cde0b20769487ef"
         },
         "skills/hill-climb/references/git-handoff.md": {
           "mode": "100644",
@@ -1535,7 +1535,7 @@
         },
         "skills/hill-climb/scripts/experiment.py": {
           "mode": "100644",
-          "oid": "d53f708eda78ef00904c94bff32979e6963851dc"
+          "oid": "7f1ff2ec8e6fb46d04a4d4d723680627526665d0"
         },
         "skills/hill-climb/scripts/experiment_agent_arm.py": {
           "mode": "100644",
@@ -1543,7 +1543,7 @@
         },
         "skills/hill-climb/scripts/experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "250ceb2b0ffa764efb04ae74860e815c36da3e3a"
+          "oid": "5d14bc571112fec8b6f9ed1938c31cecdec1377b"
         },
         "skills/hill-climb/scripts/experiment_gepa.py": {
           "mode": "100644",
@@ -1567,7 +1567,7 @@
         },
         "skills/hill-climb/scripts/experiment_ledger.py": {
           "mode": "100644",
-          "oid": "0bae84a431026234b80e1e5dcb3ee1baad0636f0"
+          "oid": "014969e901511dea6c681677e512c43d4c4fbe56"
         },
         "skills/hill-climb/scripts/experiment_native_check.py": {
           "mode": "100644",
@@ -1623,7 +1623,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "1c60a4038807f2907627679aba1bb84a37399762"
+          "oid": "19ebe94d3df0df67201326452aa268b9dea0a88e"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -1639,11 +1639,11 @@
         },
         "skills/hill-climb/workflows/experiment-cycle/README.md": {
           "mode": "100644",
-          "oid": "340699d1a1ed7e2e56e2e7b1009d4544761011de"
+          "oid": "4c7a62085e4e9c83147546b76a9206f9abea417b"
         },
         "skills/hill-climb/workflows/experiment-cycle/bindings.py": {
           "mode": "100644",
-          "oid": "934b84e0c78cba3bc0c0f415a70810c29005d092"
+          "oid": "c5777a56d5fb604718e6f6ab3198c850b3c8d2ac"
         },
         "skills/hill-climb/workflows/experiment-cycle/inputs.json": {
           "mode": "100644",
@@ -2783,7 +2783,7 @@
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "0062f50fea3f618dc8b3ee82a65fd9476b810953"
+          "oid": "7bf90c64c2644b9bb54c6e9df51bb4f247e4e039"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
@@ -2863,7 +2863,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "2bff58705b01baff11de26f8c1c1db3c83451516"
+          "oid": "ecf9a67b84c92cfb0e09cfbc3f8e31061c8d661a"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3175,7 +3175,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented the host-native experiment loop and its accounting boundaries"
+      "reason": "Reviewed host attempt accounting, scoped calibration and proof documentation"
     }
   },
   "object_format": "sha1",

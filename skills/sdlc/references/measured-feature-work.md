@@ -44,8 +44,9 @@ Follow the host's applicable isolation rules and retain the authoritative
 evaluator outside agent-writable code. If the skill or a needed project runtime
 is unavailable, use an equivalent local task-scoped harness and record the gap.
 Record host usage where the host exposes it, including delegated work, and mark
-unavailable usage as unknown. The local evaluator's zero-token setting, trial
-deadline, and scripted proposal counter do not measure the host agent's work.
+unavailable usage as unknown. Register host attempts before delegation. The
+local evaluator's zero-token setting and trial deadline do not measure the
+host agent's work, and direct unregistered edits do not count as proposals.
 Do not expand the experiment to unrelated targets or make new paid calls
 without an established budget.
 

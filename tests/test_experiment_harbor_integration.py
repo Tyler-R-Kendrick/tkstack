@@ -218,8 +218,8 @@ class HarborControllerIntegrationTests(unittest.TestCase):
         new_contract=self.dir/"contract2";new_contract.write_text("revised")
         self.call("feedback",id="F1",observation="preserve fields",interpretation="measure recovery",
                   counterexample="clears data",old_contract=self.sha(self.contract),new_contract=self.sha(new_contract),changes=["contract"])
-        labels=[{"id":"bad","run_key":"bad-cal","gate":"preserves","expected":False},
-                {"id":"good","run_key":"good-cal","gate":"preserves","expected":True}]
+        labels=[{"id":"bad","run_key":"bad-cal","gate":"preserves","expected":False,"metrics":{"quality":1}},
+                {"id":"good","run_key":"good-cal","gate":"preserves","expected":True,"metrics":{"quality":3}}]
         uncalibrated=self.dir/"uncalibrated-verifier";uncalibrated.mkdir()
         (uncalibrated/"test.sh").write_text((new/"test.sh").read_text())
         (uncalibrated/"helper").write_text("different verifier dependency")
@@ -230,6 +230,7 @@ class HarborControllerIntegrationTests(unittest.TestCase):
         result=self.call("revise",feedback="F1",contract_file=str(new_contract),evaluator_file=str(new/"test.sh"),
                          backend=backend,calibration=labels)
         self.assertTrue(result["calibration"]["qualified"])
+        self.assertTrue(result["calibration"]["metrics"]["quality"]["qualified"])
         self.assertEqual(experiment.config_for(self.root)["backend"]["verifier_sha256"],backend["verifier_sha256"])
 
     def test_flat_rewards_reject_gate_metric_name_collision_at_init(self):
