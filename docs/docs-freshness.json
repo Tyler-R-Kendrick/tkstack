@@ -951,7 +951,7 @@
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
-          "oid": "dd4dcb21213bdfd8cbe5e6f82b1674870235d975"
+          "oid": "88fc416b9df0b1ce11efacdae913613b6cbfda15"
         },
         "scripts/install.py": {
           "mode": "100755",
@@ -983,7 +983,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed installer impact; command deadline changes do not alter installation"
+      "reason": "Reviewed equivalent harness directory lookup; installation behavior and documentation are unchanged"
     },
     "skills": {
       "docs": {

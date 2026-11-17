@@ -21,9 +21,7 @@ PROJECT_DIRECTORIES = {"opencode": Path(".opencode/skills"), "copilot": Path(".g
 def skill_directory(harness, scope="home"):
     if scope == "project" and harness in PROJECT_DIRECTORIES:
         return PROJECT_DIRECTORIES[harness]
-    if harness in SKILL_DIRECTORIES:
-        return SKILL_DIRECTORIES[harness]
-    return None
+    return SKILL_DIRECTORIES.get(harness)
 
 
 def codex_directory(target, scope):
