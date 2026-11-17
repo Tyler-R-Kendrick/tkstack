@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 
@@ -57,7 +58,7 @@ class NativeExperimentIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout)
 
-    def initialize(self, dependencies=None, extra_args=None):
+    def initialize(self, dependencies=None, extra_args=None, max_elapsed_seconds=1800):
         return self.call('init', source=str(self.source), experiment='native', base=self.base,
                          paths=['product.py'], target='check',
                          registry={'check': {'argv': [sys.executable, str(ADAPTER),
@@ -71,7 +72,29 @@ class NativeExperimentIntegrationTests(unittest.TestCase):
                                      'required_gates': [], 'candidate_only_gates': ['tests'],
                                      'metric': 'success', 'direction': 'higher', 'min_gain': 1,
                                      'noise_floor': 0, 'deterministic': True},
-                         max_trials=2, max_tokens=0)
+                         max_trials=2, max_tokens=0, max_elapsed_seconds=max_elapsed_seconds)
+
+    def test_controller_deadline_terminates_native_command_descendants(self):
+        started = self.directory / 'started'
+        release = self.directory / 'release'
+        escaped = self.directory / 'escaped'
+        command = ("from pathlib import Path\nimport time\n"
+                   f"Path({str(started)!r}).write_text('started')\n"
+                   f"p=Path({str(release)!r})\n"
+                   "while not p.exists(): time.sleep(0.01)\n"
+                   f"Path({str(escaped)!r}).write_text('escaped')\n")
+        self.config.write_text(json.dumps({
+            'argv': [sys.executable, '-c', command],
+            'work_regex': r'Ran (?P<count>\d+) tests? in',
+            'gate': 'tests', 'metric': 'success', 'timeout_seconds': 10,
+        }))
+        self.initialize(max_elapsed_seconds=3)
+        result = self.call('run', side='baseline', rep=0, run_key='deadline')
+        self.assertEqual(result['result']['status'], 'timeout')
+        self.assertTrue(started.exists(), 'native command did not start before the deadline')
+        release.write_text('release')
+        time.sleep(1)
+        self.assertFalse(escaped.exists(), 'native child survived its controller deadline')
 
     def test_native_configuration_must_be_frozen_at_init(self):
         with self.assertRaisesRegex(AssertionError, "native.*config"):
@@ -120,6 +143,102 @@ class NativeExperimentIntegrationTests(unittest.TestCase):
         self.assertEqual(self.call('promote', arm='fix', decision='choice')['commit'], frozen['commit'])
         self.assertEqual(self.git('rev-parse', 'HEAD'), self.base)
         self.assertEqual((self.source / 'product.py').read_text(), 'VALUE = 0\n')
+
+    def test_native_gate_and_trusted_quality_judge_promote_improved_candidate(self):
+        # Both revisions pass the same real test. A separate trusted judge
+        # supplies the quality criterion that distinguishes the improvement.
+        (self.source / 'test_product.py').write_text(
+            'import json,sys,unittest\nfrom pathlib import Path\nimport product\n'
+            'case=json.loads(Path(sys.argv.pop()).read_text())\n'
+            'class ProductTests(unittest.TestCase):\n'
+            ' def test_supported_value(self): self.assertIn(product.VALUE,(0,case["expected"]))\n'
+            'if __name__ == "__main__": unittest.main()\n')
+        self.git('add', 'test_product.py')
+        self.git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                 'commit', '-qm', 'Preserve both valid outcomes')
+        self.base = self.git('rev-parse', 'HEAD')
+        judge = self.directory / 'quality_judge.py'
+        judge.write_text(
+            "import hashlib,json,sys\nfrom pathlib import Path\n"
+            "case_sha=hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest()\n"
+            "text=Path('product.py').read_text()\n"
+            "rating=3 if text == 'VALUE = 1\\n' else 1\n"
+            "print(json.dumps({'case_sha256':case_sha,'metrics':{'quality':rating},"
+            "'qualitative':{'quality':{'rating':rating,'rationale':'Inspected actual source',"
+            "'evidence':['self']}},'evidence':{'observed_source':text}}))\n")
+        interpreter = Path(sys.executable).resolve()
+        native = json.loads(self.config.read_text())
+        native['quality'] = {
+            'argv': [str(interpreter), str(judge), '{{case_file}}'], 'judge_file': str(judge),
+            'executable_sha256': hashlib.sha256(interpreter.read_bytes()).hexdigest(),
+            'judge_sha256': hashlib.sha256(judge.read_bytes()).hexdigest(),
+        }
+        self.config.write_text(json.dumps(native))
+        self.call('init', source=str(self.source), experiment='quality', base=self.base,
+                  paths=['product.py'], target='check',
+                  registry={'check': {'argv': [sys.executable, str(ADAPTER), '--config', str(self.config),
+                            '--case-file', '{{case_file}}', '--case', '{{case}}'], 'cwd': '.'}},
+                  trusted_interpreter=sys.executable,
+                  contract_file=str(self.contract), evaluator_file=str(ADAPTER),
+                  evaluator_dependencies=[str(self.config), str(JSON_CONTRACT), str(judge)],
+                  case_files={'selection': str(self.case)},
+                  evaluation={'cases': ['selection'], 'repetitions': 1,
+                              'required_gates': ['tests'], 'metric': 'quality',
+                              'required_qualitative': ['quality'],
+                              'guardrails': [{'metric': 'success', 'direction': 'higher', 'tolerance': 0}],
+                              'direction': 'higher', 'min_gain': 1, 'noise_floor': 0, 'deterministic': True},
+                  max_trials=2, max_tokens=0)
+        arm = self.call('allocate', arm='fix')
+        (Path(arm['worktree']) / 'product.py').write_text('VALUE = 1\n')
+        frozen = self.call('freeze', arm='fix', message='Improve quality', writers_stopped=True)
+        old = self.call('run', side='baseline', rep=0, run_key='quality-old')
+        new = self.call('run', side='candidate', arm='fix', rep=0, run_key='quality-new')
+        self.assertTrue(json.loads(old['result']['stdout'])['gates']['tests'])
+        self.assertTrue(json.loads(new['result']['stdout'])['gates']['tests'])
+        result = self.call('compare', arm='fix', baseline=['quality-old'], candidate=['quality-new'], decision='pick')
+        self.assertEqual(result['decision'], 'eligible')
+        self.assertEqual(self.call('promote', arm='fix', decision='pick')['commit'], frozen['commit'])
+
+    def test_quality_judge_uses_snapshot_root_during_calibration_with_nested_cwd(self):
+        nested = self.source / 'nested'
+        nested.mkdir()
+        (self.source / 'product.py').rename(nested / 'product.py')
+        (self.source / 'test_product.py').rename(nested / 'test_product.py')
+        self.git('add', '-A')
+        self.git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                 'commit', '-qm', 'Move product into nested directory')
+        self.base = self.git('rev-parse', 'HEAD')
+        judge = self.directory / 'judge.py'
+        judge.write_text(
+            "import hashlib,json,sys\nfrom pathlib import Path\n"
+            "case_sha=hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest()\n"
+            "print(json.dumps({'case_sha256':case_sha,'metrics':{'quality':1}}))\n")
+        interpreter = Path(sys.executable).resolve()
+        config = json.loads(self.config.read_text())
+        config['quality'] = {
+            'argv': [str(interpreter), str(judge), '{{case_file}}'], 'judge_file': str(judge),
+            'executable_sha256': hashlib.sha256(interpreter.read_bytes()).hexdigest(),
+            'judge_sha256': hashlib.sha256(judge.read_bytes()).hexdigest(),
+        }
+        self.config.write_text(json.dumps(config))
+        registry = {'check': {'argv': [sys.executable, str(ADAPTER), '--config', str(self.config),
+                            '--case-file', '{{case_file}}', '--case', '{{case}}'], 'cwd': 'nested'}}
+        dependencies = [str(self.config), str(JSON_CONTRACT), str(judge)]
+        self.call('init', source=str(self.source), experiment='nested', base=self.base,
+                  paths=['nested/product.py'], target='check', registry=registry,
+                  trusted_interpreter=sys.executable, contract_file=str(self.contract),
+                  evaluator_file=str(ADAPTER), evaluator_dependencies=dependencies,
+                  case_files={'selection': str(self.case)},
+                  evaluation={'cases': ['selection'], 'repetitions': 1, 'required_gates': [],
+                              'candidate_only_gates': ['tests'], 'metric': 'quality',
+                              'direction': 'higher', 'min_gain': 1, 'noise_floor': 0,
+                              'deterministic': True}, max_trials=2, max_tokens=0)
+        result = self.call('calibration-run', run_key='cal', commit=self.base, case='selection',
+                           case_file=str(self.case), evaluator_file=str(ADAPTER), registry=registry,
+                           trusted_interpreter=sys.executable, evaluator_dependencies=dependencies)
+        output = json.loads(result['result']['stdout'])
+        self.assertEqual(output['metrics']['quality'], 1)
+        self.assertFalse(output['gates']['tests'])
 
     def test_changed_native_config_is_rejected_before_start(self):
         self.initialize()

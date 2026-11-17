@@ -18,7 +18,8 @@ MAX_RESULT_BYTES = 1024 * 1024
 ACTIONS = frozenset({
     "init", "status", "allocate", "freeze", "run", "compare", "promote",
     "recover", "recover-run", "retire", "feedback", "calibrate", "revise",
-    "regrade", "regrade-capture", "select", "confirm", "calibration-run", "handoff",
+    "regrade", "regrade-capture", "select", "confirm", "calibration-run", "handoff", "propose",
+    "parallel", "parallel-status", "parallel-recover",
 })
 
 
@@ -89,9 +90,9 @@ def prepare(request_dir, root, target, request_paths):
             raise ValueError("request root does not match the selected experiment")
         if request["action"] == "init" and request.get("target") != target:
             raise ValueError("init target does not match the selected target")
-        if request["action"] == "revise":
-            registry = request.get("registry")
-            if not isinstance(registry, dict) or set(registry) != {target}:
+        if request["action"] == "revise" and "registry" in request:
+            registry = request["registry"]
+            if not isinstance(registry, dict) or set(registry) not in ({target}, set()):
                 raise ValueError("revised registry must retain the selected target")
         snapshots.append((relative, raw, hashlib.sha256(raw).hexdigest(), request["action"]))
     return snapshots
@@ -102,6 +103,10 @@ def _outcome(action, value):
         raise ValueError("controller response must be a JSON object")
     if action in ("run", "calibration-run") and value.get("result", {}).get("status") != "passed":
         raise ValueError("trial did not pass")
+    if action == "parallel" and value.get("status") != "complete":
+        raise ValueError("parallel batch is incomplete")
+    if action == "propose" and value.get("status") != "frozen":
+        raise ValueError("proposal did not freeze an arm")
     if action == "regrade-capture" and value.get("result", {}).get("decision") != "complete":
         raise ValueError("regrade capture is incomplete")
     if action == "handoff" and value.get("state") != "staged":
@@ -122,7 +127,7 @@ def _run(request_dir, root, target, request_paths, controller, timeout):
     if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not 0 < timeout <= 3600:
         raise ValueError("timeout must be greater than zero and at most 3600 seconds")
     snapshots = prepare(request_dir, root, target, request_paths)
-    if timeout < 120 and any(item[3] in ("run", "calibration-run") for item in snapshots):
+    if timeout < 120 and any(item[3] in ("run", "calibration-run", "parallel", "propose") for item in snapshots):
         raise ValueError("run actions require a wrapper timeout of at least 120 seconds")
     controller = Path(controller).resolve(strict=True)
     receipts = []

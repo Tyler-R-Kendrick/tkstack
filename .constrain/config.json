@@ -5,8 +5,8 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 530,
-    "max_bytes": 560000,
+    "max_cases": 620,
+    "max_bytes": 680000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -81,6 +81,31 @@
       },
       {
         "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_proposer.py:ProposerTests.test_mismatched_allowlist_is_rejected_before_reservation",
+        "reason": "The constant self.fail is an unreachable fake-broker sentinel; the test asserts rejection and an empty ledger."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_scope_rejection_and_untrusted_provider_do_not_edit_arm",
+        "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_stale_or_dirty_arm_does_not_spend_budget",
+        "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_exhaustion_is_separate_from_trial_budget",
+        "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_proposal_timeout_cannot_exceed_experiment_deadline",
+        "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
+      },
+      {
+        "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_same_tree_reuse_keeps_the_measured_commit_in_decision",
         "reason": "assert_call_fails checks the real controller exit for a tampered backend identity; the test also checks saved source provenance and promotion."
       }
@@ -94,10 +119,10 @@
           "tests/**"
         ],
         "exclude": [],
-        "max_files": 42,
-        "max_bytes": 565000,
+        "max_files": 54,
+        "max_bytes": 690000,
         "max_depth": 2,
-        "reason": "The controller adds reviewed draft, integration, integrity, MAF, native-adapter and exact-tree handoff suites covering distinct execution and evidence boundaries."
+        "reason": "The automation layer adds reviewed proposal, parallel, process-isolation, optional GEPA and Harbor suites for distinct execution and budget boundaries."
       },
       {
         "id": "documentation",
@@ -129,9 +154,9 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 37000,
+        "max_bytes": 42000,
         "max_depth": 2,
-        "reason": "One policy and per-suite review inventory include the controller suites and exact helper-oracle exceptions."
+        "reason": "One policy and per-suite review inventory include the automation suites and exact helper-oracle exceptions."
       },
       {
         "id": "owned-tree",
@@ -141,10 +166,10 @@
         "exclude": [
           "vendor/**"
         ],
-        "max_files": 856,
-        "max_bytes": 8700000,
+        "max_files": 880,
+        "max_bytes": 9200000,
         "max_depth": 9,
-        "reason": "The controller adds the scoped experiment package, optional workflow, exact-tree handoff, retained evidence contracts and reviewed regressions."
+        "reason": "The reviewed automation layer adds scoped proposer, parallel worker, optional verifier and optimizer modules plus their integration regressions."
       }
     ]
   },

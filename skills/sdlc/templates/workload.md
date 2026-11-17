@@ -31,6 +31,23 @@ Separate facts required by the user from implementation choices.
 | --- | --- | --- | --- | --- | --- |
 | R-001 | `<user/issue reference>` | `<one observable outcome>` | `<contexts and constraints>` | S-001 | `<artifact/report types>` |
 
+## Quality routing and task-scoped harness
+
+For a new feature or an improvement with an observable quality difference,
+use [measured feature work](../references/measured-feature-work.md). Record
+not applicable and the reason for work with a straightforward pass/fail
+outcome.
+
+- Quality routing: `<applicable / not applicable and why>`
+- Desired outcome and quality distinction: `<user result and observable difference>`
+- Task-scoped harness and owner: `<brief/experiment reference and responsible owner>`
+- Baseline and candidate revisions: `<immutable Git IDs or honest missing baseline>`
+- Metrics or qualitative rubric and required gates: `<anchors, threshold, evidence>`
+- Native targets and rationale: `<only the required integration boundaries>`
+- Budget and stop rule: `<total experiments, tokens, time and plateau>`
+- Feedback and harness revision record: `<observation, interpretation, policy/rubric/metric/skills/workflow effects>`
+- Independent calibration and confirmation evidence: `<examples, revisions and results>`
+
 ## BDD scenarios
 
 ### S-001: <one behavior variation>

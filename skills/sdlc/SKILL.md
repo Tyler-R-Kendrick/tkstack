@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Python 3.11+ with SQLite and Git for deterministic task coordination. Typed commands use the shared installed Codify command runtime. Full lifecycle requires actual delegation/PR capabilities and a reflink-capable filesystem for strict COW. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.5.0"
+  version: "0.5.1"
   disable-model-invocation: "true"
 ---
 
@@ -40,6 +40,7 @@ judgment, evidence, and authorized delivery described below.
 | --- | --- |
 | Run durable task commands, recover workers, or revise requirements/ADRs | [Coordination and parameters](references/durable-task-graph.md) |
 | Full implementation lifecycle | [Complete operating guide](references/operating-guide.md) |
+| New feature or improvement with an observable quality difference | [Measured feature work](references/measured-feature-work.md) |
 | Plan or decompose only | [Requirements and planning](references/requirements-and-planning.md) |
 | Architecture or refactor | [Interfaces and refactoring](references/architecture-and-refactoring.md) |
 | Test or verify behavior | [Behavioral verification](references/behavioral-verification.md) |

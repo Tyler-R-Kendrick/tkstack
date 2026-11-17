@@ -11,6 +11,12 @@ its PR workflow. Preserve existing work and keep actions within the workload.
 
 ## 1. Define and freeze the workload
 
+For a new feature or improvement with an observable quality difference, use
+[measured feature work](measured-feature-work.md) during requirements planning.
+It routes to a task-scoped harness and a feedback-driven harness revision
+alongside the feature. Record non-applicability when the task instead has a
+straightforward pass/fail outcome. SDLC keeps ownership of the outer loop.
+
 Read the repository's instructions and shared steering rules. Discover the
 actual test runners, Git/PR conventions, harness delegation tools, model access,
 filesystem capabilities, and available resource budget.

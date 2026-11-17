@@ -61,6 +61,16 @@
     ],
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
+  "tests/test_experiment_agent_arm.py": {
+    "sha256": "3225d3326def8d256f81516804c4687b3415b6c7049bd818f1a408f41f3f5917",
+    "risk": "A proposal could change protected paths or apply to a stale or dirty arm.",
+    "oracle": "Temporary Git worktrees and retained receipts verify scope, preimages, failure handling and frozen identities.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Covers proposal application apart from the public request and provider boundary."
+  },
   "tests/test_experiment_evaluate.py": {
     "risk": "An ineligible, incomplete, substituted or regressing result could be promoted as an improvement.",
     "oracle": "Independent labeled measurements, provenance kinds, changed grade receipts, retained submission/case bytes and repeated noisy baselines must produce the correct eligibility or inconclusive result.",
@@ -79,6 +89,16 @@
       "functional"
     ],
     "overlap": "The draft boundary is distinct from the executable experiment controller."
+  },
+  "tests/test_experiment_gepa.py": {
+    "sha256": "11cea799980f7b02d0263b09f9bcc7b507c35d25e48f53d51f957a38dd216455",
+    "risk": "An exploratory search could exceed shared limits, use wrong cases or suggest an unevaluated tree.",
+    "oracle": "Local GEPA, when installed, executes frozen Git candidates and checks ledger counts, case identity, deadline and collision behavior.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "The pinned optional engine is tested separately from the generic controller and does not establish model performance."
   },
   "tests/test_experiment_git.py": {
     "risk": "Private experiment arms, guarded promotion, and cleanup could lose user work or act on a redirected Git store.",
@@ -99,6 +119,46 @@
       "functional"
     ],
     "overlap": "Exercises the separate-worktree handoff boundary; promotion and controller tests validate the private ref and retained decision."
+  },
+  "tests/test_experiment_harbor.py": {
+    "sha256": "b25d9ceb5b4511a6acdfa4369e85d91d9c882e82f4045a35f170889a69b9f5a0",
+    "risk": "A backend could accept a malformed result, wrong verifier, missing case or uncertain dispatch as a valid trial.",
+    "oracle": "Pinned fixture data and simulated Harbor process outcomes assert separate verifier configuration, receipt validation and error classification.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Adapter-level checks do not substitute for real-container evidence or controller integration."
+  },
+  "tests/test_experiment_harbor_controller.py": {
+    "sha256": "b1d1eee61c4228ba9ed3817fa1f5a90bfc54f9cf6b35c23363d077ab39348a53",
+    "risk": "A backend translation could bind results to the wrong image, verifier, case or candidate.",
+    "oracle": "A fake executable Harbor process and changed receipts exercise the bridge and provenance validation.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Tests translation independently from the broader controller lifecycle."
+  },
+  "tests/test_experiment_harbor_integration.py": {
+    "sha256": "e3f41f5f919a6718ead1a234d4afa6dae215a8ac0fa81793c4d32e344474a14d",
+    "risk": "A Harbor-backed controller or optimizer could use altered evidence or an uncalibrated verifier to select or promote a candidate.",
+    "oracle": "Real controller, Git and SQLite operations use a deterministic fake Harbor executable for selection, confirmation, recovery, same-tree provenance and revision; real GEPA must reject cached results after their Harbor manifest is changed.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Exercises controller decisions; live Harbor compatibility is separately recorded outside the offline suite."
+  },
+  "tests/test_experiment_harbor_parallel.py": {
+    "sha256": "0821850ff534250d3a635440edf54ccd5fca7fd984d98c5390110edf7b7df6db",
+    "risk": "Parallel Harbor trials could lose reservation accounting or reuse uncertain results.",
+    "oracle": "Overlapping fake backend trials assert receipt identity, comparison, tamper rejection and charged unknown outcomes.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Covers parallel backend integration beyond single-run Harbor and local batch tests."
   },
   "tests/test_experiment_integration.py": {
     "sha256": "78220b535f71fb829644cb77f0c2c01489e87d639731dfc8bee6a64098bcc784",
@@ -141,7 +201,7 @@
     "sha256": "a82f48dc4b8d9db54ebd0c025659878488090e6fbcce200935bf6a603df0945d"
   },
   "tests/test_experiment_maf.py": {
-    "sha256": "31987078e7317233206e654097dc0c19b4c98ce73f494aa4dd51eec63ead0649",
+    "sha256": "d7d3f2a457c4c2fba428e40fd4916b5a52d6adb30dce5a2982385faa943cd61d",
     "risk": "The workflow could reorder actions, proceed after failed work or alter request bytes.",
     "oracle": "Validated input snapshots and subprocess receipts establish ordering and failure propagation; optional tests execute a native MAF graph.",
     "kinds": [
@@ -161,9 +221,9 @@
     "sha256": "3b48603b9e86ca597013fe953781586f9213af77f9b4c5af2afdfef2e40f5684"
   },
   "tests/test_experiment_native_check.py": {
-    "sha256": "36502312ea18237f3727d4a1ee1c0033b6973bd909bb22e87caa48b5994ce590",
+    "sha256": "f5d85bc8f4a053dcf115c57c8f067647fdcefcb64c37f35a3294e59eb25e55b6",
     "risk": "A native test command could be counted as passing without real work or with changed case data.",
-    "oracle": "Real local scripts produce passing, failing, empty, timed-out and malformed outcomes, with work counts and case digests checked.",
+    "oracle": "Real native scripts and a separately pinned judge exercise work counts, case identity, output bounds, quality evidence and process cleanup.",
     "kinds": [
       "contract",
       "functional"
@@ -171,14 +231,64 @@
     "overlap": "Exercises adapter parsing and execution independently from controller provenance."
   },
   "tests/test_experiment_native_integration.py": {
-    "sha256": "2bc083861637b0d7e02facfbb160da3d3415698a77d27407b157525d56d709ac",
+    "sha256": "8ba1fb0190b3f1f80ec453a7fb83b35580c5b4b544ba91d40ec24838b39a8dc9",
     "risk": "A controller could run a different native configuration or accept a substituted evaluator.",
-    "oracle": "Real native test execution and configuration, parser and argument mutation cases must preserve frozen identity and reject drift.",
+    "oracle": "Real native and quality-judge executions verify frozen configuration, identity, qualitative evidence and outer deadline behavior.",
     "kinds": [
       "contract",
       "functional"
     ],
     "overlap": "Checks compiled controller-to-adapter integration rather than every native output case."
+  },
+  "tests/test_experiment_parallel.py": {
+    "sha256": "75fec6977ec2d088ec88128b1983b335c5191eb9fd5528a9fac2f63f00c154a1",
+    "risk": "Concurrent trial batches could oversubscribe budgets, duplicate assignments or lose unresolved work.",
+    "oracle": "Real concurrent local trials, atomic SQLite races and shared serial/batch claims are checked through retained ordered receipts and recovery state.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Batch orchestration is distinct from one-at-a-time controller and ledger tests."
+  },
+  "tests/test_experiment_process_isolation.py": {
+    "sha256": "391d4a57a0e5dec1ad9c085d65b16bf728487b403c5d354b62dd6d7f127baa2a",
+    "risk": "A native stage could outlive a trial or contaminate a subsequent quality judgment.",
+    "oracle": "Controlled child processes exercise normal completion, active-stage timeout and startup-handshake interruption against observed process and file effects.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Exercises cross-stage supervision separately from normal runner output and timeout parsing."
+  },
+  "tests/test_experiment_proposal_budget.py": {
+    "sha256": "9fbaa7fcda7582c46c7d24030cc993ebfbdcef1dab61545e84f25cacf6a9ba59",
+    "risk": "Proposal attempts could consume trial capacity or exceed their own limit under concurrency.",
+    "oracle": "Concurrent SQLite reservations and persisted counts establish the distinct proposal quota.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Checks proposal accounting separately from trial reservations and provider invocation."
+  },
+  "tests/test_experiment_proposer.py": {
+    "sha256": "36cd0e0bd9c44dbb7d9e665d9d1aa946281fcaa3580630db23bb9914fd6d60bb",
+    "risk": "An untrusted or over-budget provider could run or alter unauthorized files.",
+    "oracle": "Provider and broker fixtures check frozen inputs, scope, bounded usage, failures and durable receipts.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Fake brokers test contracts and do not prove live provider enforcement."
+  },
+  "tests/test_experiment_proposer_integration.py": {
+    "sha256": "46e7e654d0c6817472e7fda2a8388786374921d478f6a5fc7f24f2c06ae45a5f",
+    "risk": "The public proposal action could mutate a dirty arm, exceed its quota or bypass scope.",
+    "oracle": "Controller requests and real Git worktrees assert unchanged protected files, persisted budget, rejection and frozen candidate identity.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Tests request transport and persisted effects beyond proposer component fixtures."
   },
   "tests/test_experiment_runner.py": {
     "risk": "A trial could execute the wrong source tree or undeclared command, overrun its deadline, or silently accept incomplete execution.",
@@ -189,7 +299,7 @@
       "simulation"
     ],
     "overlap": "Checks materialization and process outcomes; integration tests separately bind them to evaluation decisions.",
-    "sha256": "703148382cf76faf6a77c4b78301435fc8227cb7eb8c7b34858156083ef4917d"
+    "sha256": "657376da1dc61193c6213be942a63a1c8f4142b625fb9ee4a921e7b723e85b52"
   },
   "tests/test_flowify.py": {
     "sha256": "01dcdb7320b8377750ce2f839f3cf40954d3d72475b089d6e1c24d40889ecd52",
@@ -232,7 +342,7 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "e8f88d09d7bd6b56e509734d81f872976040ea6c526e554386211e5b68549362",
+    "sha256": "e6457aa520a202897fd4521ced92357ecd96a6424a28fdfaf96e59baecd8f25a",
     "risk": "Source-only setup, wrong workspace selection, lost host instructions or destructive reapply can leave consumers silently misconfigured.",
     "oracle": "Compare the full owned link set, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
     "kinds": [
@@ -240,7 +350,7 @@
       "simulation",
       "functional"
     ],
-    "overlap": "The installer exercises project selection and ownership. Server tool discovery and provider authorization use separate integration checks."
+    "overlap": "The installer exercises project selection and ownership. Server tool discovery and provider authorization use separate integration checks. Also verifies that the installed SDLC entry and operating guide resolve the measured-feature procedure."
   },
   "tests/test_instructify.py": {
     "sha256": "5f99653c34058ac5e43fbb3b34c36b79df2f22fe90f2911663f4643489dfeb36",

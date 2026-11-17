@@ -123,6 +123,15 @@ class Ledger:
                     details TEXT NOT NULL,
                     timestamp TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS proposal_limits (
+                    experiment TEXT PRIMARY KEY REFERENCES experiments(experiment),
+                    max_proposals INTEGER NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS proposal_reservations (
+                    experiment TEXT NOT NULL, run_key TEXT NOT NULL,
+                    PRIMARY KEY (experiment, run_key),
+                    FOREIGN KEY (experiment, run_key) REFERENCES runs(experiment, run_key)
+                );
                 PRAGMA user_version=1;
                 COMMIT;
             """)
@@ -186,12 +195,48 @@ class Ledger:
             "settled_trials": sum(row["trial_units"] for row in rows if row["status"] in terminal),
         }
 
-    def reserve(self, experiment, run_key, *, tokens, trial_units=1, selection_claim=None):
+    def configure_proposals(self, experiment, *, max_proposals):
+        """Freeze a separate proposal-attempt limit; safe to repeat after restart."""
+        experiment = _text(experiment, "experiment")
+        max_proposals = _number(max_proposals, "max_proposals")
+        if max_proposals < 1:
+            raise ValueError("max_proposals must be positive")
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            self._experiment(connection, experiment)
+            # These additive tables also upgrade ledgers created by older versions.
+            connection.execute("CREATE TABLE IF NOT EXISTS proposal_limits ("
+                               "experiment TEXT PRIMARY KEY REFERENCES experiments(experiment), "
+                               "max_proposals INTEGER NOT NULL)")
+            connection.execute("CREATE TABLE IF NOT EXISTS proposal_reservations ("
+                               "experiment TEXT NOT NULL, run_key TEXT NOT NULL, "
+                               "PRIMARY KEY (experiment, run_key), "
+                               "FOREIGN KEY (experiment, run_key) REFERENCES runs(experiment, run_key))")
+            row = connection.execute("SELECT max_proposals FROM proposal_limits WHERE experiment=?", (experiment,)).fetchone()
+            if row and row["max_proposals"] != max_proposals:
+                raise ValueError("Proposal limits are immutable")
+            if row is None:
+                connection.execute("INSERT INTO proposal_limits(experiment, max_proposals) VALUES (?, ?)",
+                                   (experiment, max_proposals))
+                self._event(connection, experiment, None, "configure_proposals", {"max_proposals": max_proposals})
+            connection.commit()
+            return max_proposals
+        except BaseException:
+            if connection.in_transaction:
+                connection.rollback()
+            raise
+        finally:
+            connection.close()
+
+    def reserve(self, experiment, run_key, *, tokens, trial_units=1, proposal=False, selection_claim=None):
         experiment = _text(experiment, "experiment")
         run_key = _text(run_key, "run_key")
         tokens = _number(tokens, "tokens")
         if type(trial_units) is not int or trial_units not in (0, 1):
             raise ValueError("trial_units must be 0 or 1")
+        if type(proposal) is not bool or (proposal and trial_units != 0):
+            raise ValueError("proposal must be boolean and must not consume a trial start")
         claim_text = _selection_claim(selection_claim) if selection_claim is not None else None
         if selection_claim is not None and trial_units != 1:
             raise ValueError("selection assignment requires one trial start")
@@ -199,11 +244,20 @@ class Ledger:
         try:
             connection.execute("BEGIN IMMEDIATE")
             budget = self._experiment(connection, experiment)
+            has_proposal_table = bool(connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='proposal_reservations'"
+            ).fetchone())
+            if proposal and not has_proposal_table:
+                raise ValueError("Proposal budget is not configured")
             existing = connection.execute(
                 "SELECT * FROM runs WHERE experiment=? AND run_key=?", (experiment, run_key)
             ).fetchone()
             if existing:
-                if (existing["reserved_tokens"], existing["trial_units"]) != (tokens, trial_units):
+                is_proposal = bool(has_proposal_table and connection.execute(
+                    "SELECT 1 FROM proposal_reservations WHERE experiment=? AND run_key=?", (experiment, run_key)
+                ).fetchone())
+                if ((existing["reserved_tokens"], existing["trial_units"]) != (tokens, trial_units)
+                        or proposal != is_proposal):
                     raise ValueError("Run key already reserved with different parameters")
                 if claim_text is not None:
                     has_claims = connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='selection_assignments'").fetchone()
@@ -215,6 +269,13 @@ class Ledger:
                 return dict(existing)
             if budget["overrun"]:
                 raise ValueError("Experiment is stopped after a provider overrun")
+            if proposal:
+                limit = connection.execute("SELECT max_proposals FROM proposal_limits WHERE experiment=?", (experiment,)).fetchone()
+                if limit is None:
+                    raise ValueError("Proposal budget is not configured")
+                count = connection.execute("SELECT COUNT(*) FROM proposal_reservations WHERE experiment=?", (experiment,)).fetchone()[0]
+                if count >= limit["max_proposals"]:
+                    raise ValueError("Experiment proposal budget exhausted")
             rows = connection.execute("SELECT * FROM runs WHERE experiment=?", (experiment,)).fetchall()
             totals = self._totals(rows)
             if (totals["reserved_tokens"] + totals["settled_tokens"] + tokens > budget["max_tokens"] or
@@ -225,6 +286,8 @@ class Ledger:
                 "VALUES (?, ?, ?, ?, 'reserved', ?)",
                 (experiment, run_key, tokens, trial_units, _now()),
             )
+            if proposal:
+                connection.execute("INSERT INTO proposal_reservations(experiment, run_key) VALUES (?, ?)", (experiment, run_key))
             if selection_claim is not None:
                 _insert_selection_claim(connection, experiment, run_key, selection_claim)
             self._event(connection, experiment, run_key, "reserve", {"tokens": tokens, "trial_units": trial_units})
@@ -376,6 +439,17 @@ class Ledger:
             for event in events:
                 event["details"] = json.loads(event["details"])
             budget.update(self._totals(runs), runs=runs, events=events, overrun=bool(budget["overrun"]))
+            has_proposal_table = connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='proposal_limits'"
+            ).fetchone()
+            if has_proposal_table:
+                limit = connection.execute("SELECT max_proposals FROM proposal_limits WHERE experiment=?", (experiment,)).fetchone()
+                budget["max_proposals"] = limit["max_proposals"] if limit else None
+                budget["proposal_count"] = connection.execute(
+                    "SELECT COUNT(*) FROM proposal_reservations WHERE experiment=?", (experiment,)
+                ).fetchone()[0]
+            else:
+                budget.update(max_proposals=None, proposal_count=0)
             connection.commit()
             return budget
         finally:
