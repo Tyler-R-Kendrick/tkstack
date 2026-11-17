@@ -184,7 +184,7 @@ def parser():
         source.add_argument('--input', help='Raw JSON for a directly selected *.lock.json workflow, or - for stdin')
         run.add_argument('--config', type=Path, help='Existing Vercel AI SDK version 1 profile configuration')
         run.add_argument('--dependencies', type=Path, help='Explicit locked node_modules reuse')
-        run.add_argument('--timeout', type=int, default=30)
+        run.add_argument('--timeout', type=int)
     for name in ('tools', 'check'):
         command = commands.add_parser(name, help='Read-only ' + name)
         command.add_argument('kind', choices=['skills', 'workflows'])
@@ -240,16 +240,18 @@ def main(argv=None):
             else:
                 environment = os.environ.copy()
                 environment['TKSTACK_WORKSPACE_DIR'] = str(scopes['workspace'])
-                def invoke(lock, payload, _project, timeout, _dependencies, _config):
+                def invoke(lock, payload, _project, timeout, _dependencies, _config, max_timeout=300):
                     config = configuration(lock, args.config, scopes, settings, environment)
                     dependencies = args.dependencies or (settings.get('dependencies') if lock['runtime'] == 'node' else None)
-                    return codify.invoke(lock, payload, workspace, timeout, dependencies, config, environment=environment)
+                    return codify.invoke(lock, payload, workspace, timeout, dependencies, config, environment=environment,
+                                         max_timeout=max_timeout)
                 engine = SimpleNamespace(check=codify.check, invoke=invoke, project_root=lambda: workspace)
                 if selected.is_file():
                     if args.input is None or args.call is not None or command_argv:
                         raise ValueError('A direct lock requires --input JSON and accepts no command/tool-call arguments')
                     raw = read_input(args.input)
-                    code, out, err = invoke(codify.check(selected), raw, workspace, args.timeout, None, None)
+                    code, out, err = invoke(codify.check(selected), raw, workspace,
+                                            args.timeout if args.timeout is not None else 30, None, None)
                 else:
                     if args.input is not None:
                         raise ValueError('Package invocation uses Markdown commands or --call; --input selects a direct lock')

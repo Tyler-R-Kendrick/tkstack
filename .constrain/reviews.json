@@ -20,9 +20,9 @@
     "overlap": "Acquisition is distinct from target link setup; prerequisite/tarball variants stay in test_install."
   },
   "tests/test_codify.py": {
-    "sha256": "4a9fb5452c51bc992b5916d7077f2b57de19d6fe1fb8dcbfc781aabbc9115211",
+    "sha256": "9ed567366177ace1010bde51af7fd9d38b25b324d5fffe1d7d7c2a9b1333419b",
     "risk": "Frozen executable publication could accept stale, escaping or corrupt inputs, or publish half an artifact.",
-    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication.",
+    "oracle": "Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group.",
     "kinds": [
       "contract",
       "functional",
@@ -91,9 +91,9 @@
     "overlap": "The draft boundary is distinct from the executable experiment controller."
   },
   "tests/test_experiment_gepa.py": {
-    "sha256": "11cea799980f7b02d0263b09f9bcc7b507c35d25e48f53d51f957a38dd216455",
+    "sha256": "62de1bd5d673e911075d3e7d74713f6826ea200dbe32af57213d13207a1e2f6f",
     "risk": "An exploratory search could exceed shared limits, use wrong cases or suggest an unevaluated tree.",
-    "oracle": "Local GEPA, when installed, executes frozen Git candidates and checks ledger counts, case identity, deadline and collision behavior.",
+    "oracle": "Pinned GEPA exercises frozen candidates, case identity and limits; a real interrupted optimizer must stop its local evaluator.",
     "kinds": [
       "contract",
       "functional"
@@ -181,9 +181,9 @@
     "overlap": "Targets authority boundaries and selection uniqueness beyond the general lifecycle."
   },
   "tests/test_experiment_lean.py": {
-    "sha256": "16e6ff8e9a066a20c5d2970401284afed247fb98f7232e161ca50f511b06939c",
+    "sha256": "1ceae8ef7f4d1d8d761d3da424a80cea05ccc525d2ee86a0a2b414e674cd9f10",
     "risk": "An invalid budget theorem or an implementation that undercounts reservations could be mistaken for a proved spending bound.",
-    "oracle": "Run pinned Lean proofs and compare their reservation, settlement and host/scripted proposal cases to SQLite; intentionally weakened proofs and undercounting ledgers must fail.",
+    "oracle": "Run pinned Lean and compare budget and launch-admission definitions to SQLite and actual staged execution; weakened proofs and mutated guards must fail.",
     "kinds": [
       "contract",
       "simulation"
@@ -231,9 +231,9 @@
     "overlap": "Exercises adapter parsing and execution independently from controller provenance."
   },
   "tests/test_experiment_native_integration.py": {
-    "sha256": "8ba1fb0190b3f1f80ec453a7fb83b35580c5b4b544ba91d40ec24838b39a8dc9",
+    "sha256": "a5b0c9764e24a0aa6b47cee453cc7805028a21280536ffa9b3f1c35d02859b1e",
     "risk": "A controller could run a different native configuration or accept a substituted evaluator.",
-    "oracle": "Real native and quality-judge executions verify frozen configuration, identity, qualitative evidence and outer deadline behavior.",
+    "oracle": "Real native and quality-judge executions verify frozen inputs, evidence, installed-command timeouts and interrupted child cleanup.",
     "kinds": [
       "contract",
       "functional"
@@ -241,9 +241,9 @@
     "overlap": "Checks compiled controller-to-adapter integration rather than every native output case."
   },
   "tests/test_experiment_parallel.py": {
-    "sha256": "75fec6977ec2d088ec88128b1983b335c5191eb9fd5528a9fac2f63f00c154a1",
+    "sha256": "b6d8b8b4b3e6080b6718dfba2cb3ce84d3095c7c730f775829562ce1999d830e",
     "risk": "Concurrent trial batches could oversubscribe budgets, duplicate assignments or lose unresolved work.",
-    "oracle": "Real concurrent local trials, atomic SQLite races and shared serial/batch claims are checked through retained ordered receipts and recovery state.",
+    "oracle": "Concurrent trials and SQLite claims verify budget and assignment integrity; interrupted batches must stop their registered workers.",
     "kinds": [
       "contract",
       "functional"
@@ -292,14 +292,14 @@
   },
   "tests/test_experiment_runner.py": {
     "risk": "A trial could execute the wrong source tree or undeclared command, overrun its deadline, or silently accept incomplete execution.",
-    "oracle": "Frozen temporary Git trees and real subprocesses establish status, bounded outputs and cleanup, including a detached-pipe child after normal exit; clocks simulate export/deadline boundaries.",
+    "oracle": "Frozen Git exports and real subprocesses establish output, deadline and ownership behavior; independent cancellation scopes must not poison later trials.",
     "kinds": [
       "contract",
       "functional",
       "simulation"
     ],
     "overlap": "Checks materialization and process outcomes; integration tests separately bind them to evaluation decisions.",
-    "sha256": "657376da1dc61193c6213be942a63a1c8f4142b625fb9ee4a921e7b723e85b52"
+    "sha256": "fd382facfbc1b4f99daa2d8772aae58fed362567c89f4c397dc2ef51fbf3f22a"
   },
   "tests/test_flowify.py": {
     "sha256": "01dcdb7320b8377750ce2f839f3cf40954d3d72475b089d6e1c24d40889ecd52",

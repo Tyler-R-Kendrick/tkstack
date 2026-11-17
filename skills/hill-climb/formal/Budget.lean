@@ -110,6 +110,18 @@ theorem proposal_trace_preserves (limit count final : Nat) (actions : List Bool)
         simp [h] at result
         exact ih next (proposal_start_preserves limit count next h) result
 
+-- The parent decides the child permit while holding the cancellation scope
+-- lock. Registered is an identity check against that scope's active mapping.
+def launchPermit (registered cancelled : Bool) : Bool := registered && !cancelled
+
+theorem launch_requires_registration (registered cancelled : Bool)
+    (h : launchPermit registered cancelled = true) : registered = true := by
+  cases registered <;> cases cancelled <;> simp_all [launchPermit]
+
+theorem launch_respects_cancellation (registered cancelled : Bool)
+    (h : launchPermit registered cancelled = true) : cancelled = false := by
+  cases registered <;> cases cancelled <;> simp_all [launchPermit]
+
 -- Produce concrete oracle rows directly from the definitions proved above.
 def boolBit (b : Bool) : Nat := if b then 1 else 0
 
@@ -132,6 +144,9 @@ def cases : Array String := Id.run do
       if count ≤ limit then
         let started := (proposalStart limit count).isSome
         out := out.push s!"P {limit} {count} {boolBit started} {proposalFinish count}"
+  for registered in #[false, true] do
+    for cancelled in #[false, true] do
+      out := out.push s!"L {boolBit registered} {boolBit cancelled} {boolBit (launchPermit registered cancelled)}"
   return out
 
 end ExperimentBudget

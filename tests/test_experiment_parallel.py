@@ -5,10 +5,12 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from unittest.mock import patch
 
@@ -48,6 +50,13 @@ class ParallelTrialsTests(unittest.TestCase):
         self.evaluator.write_text(
             "import hashlib,json,sys,time\nfrom pathlib import Path\n"
             "barrier,case,case_file=Path(sys.argv[1]),sys.argv[2],Path(sys.argv[3])\n"
+            "if (barrier / 'block').exists():\n"
+            " import signal\n"
+            " signal.signal(signal.SIGTERM, signal.SIG_IGN)\n"
+            " (barrier / case).touch()\n"
+            " while not (barrier / 'release').exists(): time.sleep(.01)\n"
+            " (barrier / ('escaped-'+case)).touch()\n"
+            " sys.exit(0)\n"
             "(barrier / case).write_text('ready')\n"
             "deadline=time.monotonic()+5\n"
             "while len(list(barrier.iterdir())) < 2 and time.monotonic() < deadline: time.sleep(.01)\n"
@@ -124,6 +133,28 @@ class ParallelTrialsTests(unittest.TestCase):
         ], text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["status"], "complete")
+        if os.name != 'posix':
+            return
+        self.setUp()
+        (self.barrier / 'block').touch()
+        request_path = self.path / 'cancel.json'
+        request_path.write_text(json.dumps({'action': 'parallel', **self.request()}))
+        process = subprocess.Popen([
+            sys.executable, str(ROOT / 'src/tkstack.py'), '--project', str(self.path),
+            'skills', 'hill-climb', '--', 'native', 'experiment', '--request', str(request_path),
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.addCleanup(lambda: process.kill() if process.poll() is None else None)
+        for _ in range(160):
+            if all((self.barrier / name).exists() for name in ('one', 'two')) or process.poll() is not None:
+                break
+            time.sleep(.05)
+        self.assertTrue(all((self.barrier / name).exists() for name in ('one', 'two')))
+        process.send_signal(signal.SIGTERM)
+        _, stderr = process.communicate(timeout=15)
+        self.assertNotEqual(process.returncode, 0, stderr)
+        (self.barrier / 'release').touch()
+        time.sleep(1)
+        self.assertFalse(any(self.barrier.glob('escaped-*')))
 
     def test_batch_receipts_are_accepted_by_existing_comparison(self):
         request = {"root":str(self.root), "batch":"comparison", "max_workers":2, "trials":[

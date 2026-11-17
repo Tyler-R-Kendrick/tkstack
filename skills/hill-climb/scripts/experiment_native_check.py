@@ -187,28 +187,49 @@ def _kill_group(pid):
 
 def _handle_termination(signum, frame):
     for pid in tuple(_ACTIVE_GROUPS):
-        _kill_group(pid)
+        try:
+            os.waitid(os.P_PID, pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+            _kill_group(pid)
+        except ChildProcessError:
+            _ACTIVE_GROUPS.discard(pid)
     raise SystemExit(128 + signum)
 
 
 def _can_observe_unreaped():
-    return os.name == 'posix' and all(hasattr(os, name) for name in ('waitid', 'P_PID', 'WEXITED', 'WNOHANG', 'WNOWAIT'))
+    return (os.name == 'posix' and signal.getsignal(signal.SIGCHLD) == signal.SIG_DFL and
+            hasattr(signal, 'pthread_sigmask') and all(hasattr(os, name) for name in ('waitid', 'P_PID', 'WEXITED', 'WNOHANG', 'WNOWAIT')))
 
 
 def _exited_without_reaping(process):
-    if _can_observe_unreaped():
-        return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+    if os.name == 'posix':
+        try:
+            return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+        except ChildProcessError:
+            _ACTIVE_GROUPS.discard(process.pid)
+            process.returncode = 255
+            raise ValueError('native stage child ownership was lost')
     return process.poll() is not None
 
 
 def _stop_stage(process):
     if os.name == 'posix':
+        try:
+            os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+        except ChildProcessError:
+            _ACTIVE_GROUPS.discard(process.pid)
+            process.returncode = 255
+            raise ValueError('native stage child ownership was lost')
         _kill_group(process.pid)
     elif process.poll() is None:
         process.kill()
     # Remove registration before reaping, while the leader PID is still held.
     _ACTIVE_GROUPS.discard(process.pid)
-    process.wait()
+    mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM, signal.SIGINT, signal.SIGCHLD}) if os.name == 'posix' and hasattr(signal, 'pthread_sigmask') else None
+    try:
+        process.wait()
+    finally:
+        if mask is not None:
+            signal.pthread_sigmask(signal.SIG_SETMASK, mask)
 
 
 def _supervise_stage(argv):
@@ -229,6 +250,9 @@ def _supervise_stage(argv):
 
 def execute(argv, timeout, limit):
     start = time.monotonic()
+    if os.name == 'posix' and not _can_observe_unreaped():
+        return {'outcome': 'infrastructure_error', 'error': 'native stages require exclusive non-reaping POSIX child supervision',
+                'evidence': {'output': '', 'bytes_seen': 0}}
     # Python delivers signal handlers only in the main thread. The CLI uses
     # one main-thread wrapper; library callers in other threads should supply
     # their own external supervisor for abrupt wrapper termination.
@@ -308,7 +332,7 @@ def execute(argv, timeout, limit):
                     break
             if outcome:
                 break
-        if outcome or _can_observe_unreaped():
+        if outcome or os.name == 'posix':
             _stop_stage(process)
         else:
             process.wait()

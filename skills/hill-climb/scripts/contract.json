@@ -142,6 +142,7 @@
     },
     "native_experiment": {
       "entrypoint": "scripts/experiment.py",
+      "timeout_seconds": 86100,
       "prefix": [],
       "parameters": {
         "request": {

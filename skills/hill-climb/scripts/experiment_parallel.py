@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import contextvars
 import hashlib
 import json
 import os
@@ -21,7 +22,7 @@ import time
 import experiment
 from experiment_git import GitExperiment
 from experiment_ledger import Ledger, _now, _insert_selection_claim
-from experiment_runner import run_trial
+from experiment_runner import run_trial, cancellation_requested, cancellation_scope
 from json_contract import loads
 
 
@@ -161,7 +162,7 @@ def _run_one(root, config, git, ledger, config_id, deadline, trial):
     key, experiment_id = trial["run_key"], config["experiment"]
     dispatched = False
     try:
-        if time.monotonic() >= deadline:
+        if cancellation_requested() or time.monotonic() >= deadline:
             ledger.cancel(experiment_id, key, reason="deadline before dispatch")
             if trial["claim"] is not None:
                 trial["claim"].unlink()
@@ -183,7 +184,8 @@ def _run_one(root, config, git, ledger, config_id, deadline, trial):
                     for item in entry["argv"]]
             registry = {config["target"]: {"argv": argv, "cwd": entry["cwd"]}}
             result = run_trial(git.repo, identity["commit"], identity["tree"], registry,
-                               [config["target"]], config["target"], deadline=deadline)
+                               [config["target"]], config["target"],
+                               timeout=max(0.001, deadline - time.monotonic()), deadline=deadline)
         try:
             experiment.check_inputs(config)
             if experiment.config_digest(root) != config_id:
@@ -231,6 +233,11 @@ def _run_one(root, config, git, ledger, config_id, deadline, trial):
 
 
 def run_batch(request):
+    with cancellation_scope():
+        return _run_batch(request)
+
+
+def _run_batch(request):
     if not isinstance(request, dict):
         raise ValueError("request must be an object")
     if set(request) - {"root", "batch", "max_workers", "trials", "action"}:
@@ -296,7 +303,7 @@ def run_batch(request):
                 claim.unlink(missing_ok=True)
             raise
         with ThreadPoolExecutor(max_workers=min(workers, len(trials))) as pool:
-            futures = [pool.submit(_run_one, root, config, git, ledger, config_id, deadline, trial)
+            futures = [pool.submit(contextvars.copy_context().run, _run_one, root, config, git, ledger, config_id, deadline, trial)
                        for trial in trials]
             results = [future.result() for future in futures]
         complete = all(item.get("result", {}).get("status") == "passed" for item in results)
@@ -367,6 +374,11 @@ def recover_reserved(root, batch):
 
 
 def main():
+    with experiment.cancellation_handler():
+        return _main()
+
+
+def _main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--request", required=True)
     args = parser.parse_args()
@@ -386,6 +398,9 @@ def main():
             result = run_batch(request)
         print(json.dumps(result, sort_keys=True, allow_nan=False))
         return 0
+    except KeyboardInterrupt:
+        print('experiment interrupted; inspect ledger before retrying', file=sys.stderr)
+        return 130
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, sqlite3.Error) as error:
         print(str(error), file=sys.stderr)
         return 1

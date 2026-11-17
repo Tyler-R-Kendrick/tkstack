@@ -97,6 +97,9 @@ timed by that deadline. Record host usage and apply host limits where available;
 otherwise record usage as unknown. The local evaluator's `max_tokens: 0` does
 not limit host-agent tokens. Registered host attempts share the proposal count;
 direct unregistered edits remain outside that count.
+The compiled command allows long-running trials within the frozen deadline;
+after interrupted or lost process ownership, reconcile the ledger and any
+surviving descendants before retrying.
 Confirmation data protection and isolation of untrusted code depend on the
 host's available mechanisms.
 The [Git experiment guide](../skills/hill-climb/references/git-experiments.md)

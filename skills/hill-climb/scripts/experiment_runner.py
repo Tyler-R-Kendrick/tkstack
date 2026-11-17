@@ -6,6 +6,8 @@ Use a properly isolated runner for untrusted commands or source code.
 """
 from __future__ import annotations
 
+import contextvars
+from contextlib import contextmanager
 import math
 import os
 from pathlib import Path, PurePosixPath
@@ -13,6 +15,8 @@ import re
 import selectors
 import signal
 import subprocess
+import sys
+import threading
 import tempfile
 import time
 
@@ -22,6 +26,51 @@ _TARGET = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
 _MAX_SOURCE_BYTES = 512 * 1024 * 1024
 _MAX_SOURCE_FILES = 100_000
 _MAX_OUTPUT_BYTES = 4 * 1024 * 1024
+class _Cancellation:
+    def __init__(self):
+        self.active = {}
+        self.lock = threading.RLock()
+        self.cancelled = threading.Event()
+
+
+_SCOPE = contextvars.ContextVar('trial_cancellation', default=None)
+
+
+@contextmanager
+def cancellation_scope():
+    token = _SCOPE.set(_Cancellation())
+    try:
+        yield
+    finally:
+        _SCOPE.reset(token)
+
+
+def cancellation_requested():
+    scope = _SCOPE.get()
+    return scope is not None and scope.cancelled.is_set()
+
+
+def launch_permitted(registered: bool, cancelled: bool) -> bool:
+    return registered and not cancelled
+
+
+def cancel_active_trials():
+    """Ask all registered local trial groups to stop, including batch workers."""
+    scope = _SCOPE.get()
+    if scope is not None:
+        with scope.lock:
+            scope.cancelled.set()
+            for process in scope.active.values():
+                try:
+                    if os.name == 'posix':
+                        os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+                        os.killpg(process.pid, signal.SIGTERM)
+                    else:
+                        process.terminate()
+                except ChildProcessError:
+                    process.returncode = 255
+                except ProcessLookupError:
+                    pass
 
 
 def _relative_path(value: str, *, allow_dot: bool = False) -> PurePosixPath:
@@ -185,8 +234,15 @@ def _materialize(repo: Path, commit: str, root: Path):
 
 
 
-def _terminate(process, *, graceful=False):
+def _terminate(process, scope, *, graceful=False):
     if os.name == "posix":
+        try:
+            os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+        except ChildProcessError:
+            with scope.lock:
+                scope.active.pop(process.pid, None)
+                process.returncode = 255
+            raise RuntimeError('trial child ownership was lost')
         if graceful:
             try:
                 os.killpg(process.pid, signal.SIGTERM)
@@ -208,63 +264,148 @@ def _terminate(process, *, graceful=False):
             pass
     elif process.poll() is None:
         process.kill()
-    process.wait()
+    mask = None
+    if os.name == 'posix' and hasattr(signal, 'pthread_sigmask') and threading.current_thread() is threading.main_thread():
+        mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM, signal.SIGINT})
+    try:
+        with scope.lock:
+            scope.active.pop(process.pid, None)
+            process.wait()
+    finally:
+        if mask is not None:
+            signal.pthread_sigmask(signal.SIG_SETMASK, mask)
 
 
 def _can_observe_unreaped():
-    return os.name == "posix" and all(hasattr(os, name) for name in ("waitid", "P_PID", "WEXITED", "WNOHANG", "WNOWAIT"))
+    return (os.name == "posix" and signal.getsignal(signal.SIGCHLD) == signal.SIG_DFL and
+            hasattr(signal, 'pthread_sigmask') and all(hasattr(os, name) for name in ("waitid", "P_PID", "WEXITED", "WNOHANG", "WNOWAIT")))
 
 
 def _exited_without_reaping(process):
     # Preserve the leader PID until its remaining process group is killed.
-    if _can_observe_unreaped():
-        return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+    if os.name == 'posix':
+        try:
+            return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+        except ChildProcessError:
+            process.returncode = 255
+            raise RuntimeError('trial child ownership was lost')
     return process.poll() is not None
 
 
+def _stage_exec(fd, error_fd, argv):
+    """Execute only after the parent has registered the new process group."""
+    if hasattr(signal, 'pthread_sigmask'):
+        signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM, signal.SIGINT})
+    os.set_inheritable(error_fd, False)
+    try:
+        permit = os.read(fd, 1)
+    finally:
+        os.close(fd)
+    if permit != b'1':
+        return 125
+    try:
+        os.execvpe(argv[0], argv, os.environ)
+    except OSError as error:
+        os.write(error_fd, str(error).encode('utf-8', 'replace')[:4096])
+        return 127
+
+
 def _execute(argv, cwd, home, timeout, maximum, snapshot_root):
+    if os.name == 'posix' and not _can_observe_unreaped():
+        raise RuntimeError('local trials require non-reaping POSIX process supervision')
+    scope = _SCOPE.get() or _Cancellation()
     env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": str(home),
            "TMPDIR": str(home), "LC_ALL": "C"}
     env["TKSTACK_EXPERIMENT_SNAPSHOT_ROOT"] = str(snapshot_root.resolve())
     env["TKSTACK_MANAGED_PROCESS_GROUP"] = "1"
     if os.name == "nt" and "SystemRoot" in os.environ:
         env["SystemRoot"] = os.environ["SystemRoot"]
-    process = subprocess.Popen(
-        argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=(os.name == "posix"),
-    )
+    process = None
     captured = {"stdout": bytearray(), "stderr": bytearray()}
     counts = {"stdout": 0, "stderr": 0}
     selector = selectors.DefaultSelector()
     deadline = time.monotonic() + timeout
     timed_out = False
+    read_fd = write_fd = launch_read = launch_write = None
+    launch_error = bytearray()
     try:
+        # A signal delivered in the main thread during Popen must not strand
+        # a newly created session before its process is registered for cleanup.
+        mask = None
+        if (os.name == 'posix' and hasattr(signal, 'pthread_sigmask') and
+                threading.current_thread() is threading.main_thread()):
+            mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM, signal.SIGINT})
+        try:
+            if os.name == 'posix':
+                read_fd, write_fd = os.pipe()
+                launch_read, launch_write = os.pipe()
+                command = [sys.executable, '-B', str(Path(__file__).resolve()), '--stage-exec',
+                           str(read_fd), str(launch_write), *argv]
+                process = subprocess.Popen(command, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                           start_new_session=True, pass_fds=(read_fd, launch_write))
+                os.close(read_fd)
+                read_fd = None
+                os.close(launch_write)
+                launch_write = None
+            else:
+                process = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            with scope.lock:
+                scope.active[process.pid] = process
+                if write_fd is not None:
+                    if launch_permitted(scope.active.get(process.pid) is process, scope.cancelled.is_set()):
+                        os.write(write_fd, b'1')
+                    os.close(write_fd)
+                    write_fd = None
+        finally:
+            if mask is not None:
+                signal.pthread_sigmask(signal.SIG_SETMASK, mask)
+        if scope.cancelled.is_set():
+            try:
+                if os.name == 'posix':
+                    os.killpg(process.pid, signal.SIGTERM)
+                else:
+                    process.terminate()
+            except ProcessLookupError:
+                pass
         for name in captured:
             stream = getattr(process, name)
             os.set_blocking(stream.fileno(), False)
             selector.register(stream, selectors.EVENT_READ, name)
+        if launch_read is not None:
+            os.set_blocking(launch_read, False)
+            selector.register(launch_read, selectors.EVENT_READ, 'launch')
         while selector.get_map() or not _exited_without_reaping(process):
             remaining = deadline - time.monotonic()
-            if remaining <= 0:
+            if scope.cancelled.is_set() or remaining <= 0:
                 timed_out = True
                 break
             for key, _ in selector.select(min(remaining, 0.1)):
                 try:
-                    data = os.read(key.fileobj.fileno(), 65536)
+                    data = os.read(key.fd, 65536)
                 except BlockingIOError:
                     continue
                 if not data:
                     selector.unregister(key.fileobj)
+                    if key.data == 'launch':
+                        os.close(launch_read)
+                        launch_read = None
                     continue
                 name = key.data
+                if name == 'launch':
+                    launch_error.extend(data[:max(0, 4096 - len(launch_error))])
+                    continue
                 counts[name] += len(data)
                 captured[name].extend(data[:max(0, maximum - len(captured[name]))])
-        if timed_out or _can_observe_unreaped():
-            _terminate(process, graceful=timed_out)
+        if timed_out or os.name == 'posix':
+            _terminate(process, scope, graceful=timed_out)
         else:
-            process.wait()
-        return {
-            "status": "timeout" if timed_out else ("passed" if process.returncode == 0 else "failed"),
+            with scope.lock:
+                scope.active.pop(process.pid, None)
+                process.wait()
+        result = {
+            "status": "timeout" if timed_out else ("infra_error" if launch_error else ("passed" if process.returncode == 0 else "failed")),
             "exit_code": None if timed_out else process.returncode,
             "stdout": captured["stdout"].decode("utf-8", "replace"),
             "stderr": captured["stderr"].decode("utf-8", "replace"),
@@ -272,12 +413,26 @@ def _execute(argv, cwd, home, timeout, maximum, snapshot_root):
             "stdout_truncated": counts["stdout"] > maximum,
             "stderr_truncated": counts["stderr"] > maximum,
         }
+        if launch_error:
+            result['error'] = launch_error.decode('utf-8', 'replace')
+        return result
     finally:
+        if read_fd is not None:
+            os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+        if launch_read is not None:
+            os.close(launch_read)
+        if launch_write is not None:
+            os.close(launch_write)
         selector.close()
-        if process.returncode is None:
-            _terminate(process, graceful=True)
-        process.stdout.close()
-        process.stderr.close()
+        if process is not None and process.returncode is None:
+            _terminate(process, scope, graceful=True)
+        if process is not None:
+            with scope.lock:
+                scope.active.pop(process.pid, None)
+            process.stdout.close()
+            process.stderr.close()
 
 
 def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
@@ -347,3 +502,9 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
         result["error"] = str(exc)
     result["duration_seconds"] = time.monotonic() - start
     return result
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 5 or sys.argv[1] != '--stage-exec':
+        raise SystemExit('invalid stage invocation')
+    raise SystemExit(_stage_exec(int(sys.argv[2]), int(sys.argv[3]), sys.argv[4:]))

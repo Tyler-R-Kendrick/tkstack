@@ -6,7 +6,7 @@
     ],
     "exclude": [],
     "max_cases": 630,
-    "max_bytes": 700000,
+    "max_bytes": 710000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -108,6 +108,11 @@
         "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_same_tree_reuse_keeps_the_measured_commit_in_decision",
         "reason": "assert_call_fails checks the real controller exit for a tampered backend identity; the test also checks saved source provenance and promotion."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_lean.py:LeanLedgerBridgeTests.test_real_staged_launch_consults_checked_gate",
+        "reason": "The test observes real target execution and blocked marker creation; the helper call assertions verify which registered/cancelled state reached the proven gate."
       }
     ]
   },
@@ -120,9 +125,9 @@
         ],
         "exclude": [],
         "max_files": 54,
-        "max_bytes": 705000,
+        "max_bytes": 715000,
         "max_depth": 2,
-        "reason": "Distinct host-delegation accounting, crash recovery, calibration and Lean correspondence regressions extend the existing automation suites without adding a test file."
+        "reason": "The host lifecycle, calibration and process-cancellation regressions cover distinct admission, crash and child-ownership boundaries without adding test files."
       },
       {
         "id": "documentation",
@@ -154,9 +159,9 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 42000,
+        "max_bytes": 44000,
         "max_depth": 2,
-        "reason": "One policy and per-suite review inventory include the automation suites and exact helper-oracle exceptions."
+        "reason": "Per-suite behavioral reviews and exact helper-oracle exceptions describe the added host and process-supervision regressions."
       },
       {
         "id": "owned-tree",
@@ -167,9 +172,9 @@
           "vendor/**"
         ],
         "max_files": 880,
-        "max_bytes": 9300000,
+        "max_bytes": 9500000,
         "max_depth": 9,
-        "reason": "The host proposal lifecycle and calibrated evaluator add scoped runtime code, proofs, behavioral regressions and their compiled skill snapshot."
+        "reason": "The shared command-runtime fix must be synchronized into each installed skill and its compiled snapshot, alongside focused process and proof regressions."
       }
     ]
   },

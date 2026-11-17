@@ -393,11 +393,20 @@ appropriate isolation mechanism for untrusted code. Track host-agent and any
 target model usage through the host's available accounting controls; report
 unknown usage instead of treating this setting as a spending measurement.
 The controller's trial-dispatch deadline defaults to 1800 seconds and can be
-set at initialization with a positive finite `max_elapsed_seconds`.
+set at initialization with a positive finite `max_elapsed_seconds` up to
+84,600 seconds. The native command's longer wrapper bound allows the declared
+deadline to govern the trial; an explicit shorter `--timeout` still cancels it.
+Invoke the long-running command as a top-level compiled command; nesting it
+inside another compiled workflow fails because it cannot own a process group.
 Run and calibration dispatch fail when it expires or the observed wall clock
 moves backward. A running target is capped by the remaining time; clock
 changes and descendant processes need the host's normal supervision. The
 deadline does not stop external agents or provide a provider spending limit.
+On POSIX, wrapper timeout and SIGTERM ask the controller to stop registered
+local trial groups before a bounded forced kill. A hard kill, host crash,
+detached child session, or remote Harbor execution can evade this cleanup.
+If child ownership is lost, descendants can survive and require external
+process reconciliation before retrying. Inspect the ledger after interruption.
 A lost run response before a receipt is persisted leaves its reservation
 outstanding for manual reconciliation. Partially initialized, allocated or
 retired workspaces can likewise need manual inspection. Submodules and Git LFS
@@ -649,8 +658,8 @@ allows up to half a second for wrapper cleanup, then sends SIGKILL. An inner
 native timeout stops its stage and produces a noneligible trial.
 
 A deliberately detached session or a hard wrapper/host crash can evade this
-supervision. Without `waitid(WNOWAIT)`, normal-exit child cleanup is not
-guaranteed. Use an OS sandbox or cgroup when commands are untrusted or stronger
+supervision. Local POSIX trials fail closed if `waitid(WNOWAIT)` is unavailable.
+Use an OS sandbox or cgroup when commands are untrusted or stronger
 cleanup is required. Git export has separate subprocess timeouts and can extend
 past the experiment deadline before dispatch is rejected.
 
