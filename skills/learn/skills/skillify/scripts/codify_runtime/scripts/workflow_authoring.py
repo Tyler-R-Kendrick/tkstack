@@ -13,7 +13,7 @@ def workflow_files(backend, description):
     files = {"scripts/LICENSE.tkstack": (PACKAGE / "LICENSE").read_bytes()}
     files["scripts/tkstack_state.py"] = (PACKAGE / "scripts/tkstack_state.py").read_bytes()
     files['references/subcommands.md'] = (PACKAGE / 'references/command-definitions.md').read_bytes()
-    for name in ('codify.py', 'workflow_authoring.py', 'command_schema.py', 'command.schema.json', 'command_manual.py', 'json_contract.py'):
+    for name in ('codify.py', 'workflow_authoring.py', 'command_schema.py', 'command.schema.json', 'command_manual.py', 'json_contract.py', 'package_runtime.py'):
         files['scripts/' + name] = (PACKAGE / 'scripts' / name).read_bytes()
     for name in ('requirements.in', 'requirements.lock'):
         files['scripts/requirements-commands.' + name.split('.')[-1]] = (PACKAGE / 'requirements' / name).read_bytes()

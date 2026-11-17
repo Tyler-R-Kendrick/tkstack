@@ -73,7 +73,7 @@ def normalize(directory, profile, engine, dry_run=False):
              'scripts/run.py': RUNNER.encode(), 'scripts/contract.json': (json.dumps(model, indent=2) + '\n').encode()}
     yaml, _ = engine.command_schema.schema_libraries()
     definitions = []
-    def command(name, route, description, parameters=None):
+    def command(name, route, description, parameters=None, timeout_seconds=None):
         parameters = parameters or {}
         properties = {'operation': {'type': 'string', 'enum': [name]}, **{key: value['schema'] for key, value in parameters.items()}}
         defaults = {'operation': name, **{key: value['default'] for key, value in parameters.items() if 'default' in value}}
@@ -82,6 +82,11 @@ def normalize(directory, profile, engine, dry_run=False):
             'description': description, 'strict': True, 'parameters': object_schema(properties)},
             'cli': {'path': route, 'flags': {key: ['--' + key.replace('_', '-')] for key in parameters}, 'defaults': defaults},
             'run': {'artifact': 'scripts/workflow.lock.json'}}
+        if timeout_seconds is not None:
+            if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= 86100:
+                raise ValueError('Native timeout must be an integer from 1 to 86100 seconds')
+            # Leave the inner native helper time to complete its own cleanup.
+            document['run']['timeout_seconds'] = timeout_seconds + 300
         engine.command_schema.validate_document(document)
         front = yaml.safe_dump(document, sort_keys=False)
         body = f'# {" ".join(route).capitalize()}\n\n{description}\n\n'
@@ -102,7 +107,7 @@ def normalize(directory, profile, engine, dry_run=False):
                 raise ValueError('Unknown native parameter binding')
             if parameter.get('repeat') and parameter['schema'].get('type') != 'array':
                 raise ValueError('Repeated flags require an array')
-        command(name, binding['cli_path'], binding['description'], binding['parameters'])
+        command(name, binding['cli_path'], binding['description'], binding['parameters'], binding.get('timeout_seconds'))
     for name, mount in model.get('subskills', {}).items():
         if not re.fullmatch(r'[a-z][a-z0-9-]*', name) or set(mount) != {'path', 'description'}:
             raise ValueError('Subskills map a command name to a contained path and description')

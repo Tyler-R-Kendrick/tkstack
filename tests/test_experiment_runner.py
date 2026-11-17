@@ -174,6 +174,10 @@ class LocalTrialTests(unittest.TestCase):
              patch.object(runner, "_execute", side_effect=execute):
             result = self.run_target(deadline=105.0, timeout=30)
         self.assertEqual(result["status"], "passed")
+        with runner.cancellation_scope():
+            runner.cancel_active_trials()
+            self.assertEqual(self.run_target()["status"], "timeout")
+        self.assertEqual(self.run_target()["status"], "passed")
 
     def test_invalid_limits_and_abbreviated_objects_are_rejected(self):
         for kwargs in ({"timeout": 0}, {"timeout": float("nan")}, {"max_output_bytes": -1}, {"commit": self.commit[:7]}, {"deadline": float("nan")}):

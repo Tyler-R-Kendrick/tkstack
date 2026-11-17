@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import shutil
 import sqlite3
+import signal
 import sys
 import time
 import math
@@ -21,7 +22,7 @@ import math
 from json_contract import loads as strict_json_loads
 from experiment_git import GitExperiment, _paths, _run
 from experiment_ledger import Ledger
-from experiment_runner import run_trial
+from experiment_runner import run_trial, cancel_active_trials, cancellation_scope
 from experiment_harbor_controller import (run_controller_harbor, validate_controller_harbor, verify_controller_harbor)
 from experiment_evaluate import _validate_spec, compare, feedback_revision, regrade_matrix, validate_calibration
 from experiment_agent_arm import propose_to_arm, _require_clean
@@ -393,6 +394,8 @@ def remaining_time(root, config):
     remaining = config["deadline_epoch"] - now
     if remaining <= 0:
         raise ValueError("experiment deadline expired")
+    if remaining > 84600:
+        raise ValueError("remaining experiment deadline exceeds the 84600 second wrapper limit")
     return remaining
 
 
@@ -424,7 +427,8 @@ def run_selected(root, config, git, identity, case, rep, key, deadline, *,
             for arg in entry["argv"]]
     selected = {config["target"]: {"argv": argv, "cwd": entry["cwd"]}}
     return run_trial(git.repo, identity["commit"], identity["tree"], selected,
-                     [config["target"]], config["target"], deadline=deadline)
+                     [config["target"]], config["target"],
+                     timeout=max(0.001, deadline - time.monotonic()), deadline=deadline)
 
 
 def settle_result(ledger, experiment, key, result, receipt):
@@ -550,6 +554,8 @@ def initialize(request, root):
     elapsed = request.get("max_elapsed_seconds", 1800)
     if isinstance(elapsed, bool) or not isinstance(elapsed, (int, float)) or not math.isfinite(elapsed) or elapsed <= 0:
         raise ValueError("max_elapsed_seconds must be a positive finite number")
+    if elapsed > 84600:
+        raise ValueError("max_elapsed_seconds cannot exceed 84600 seconds")
     started = time.time()
     if not math.isfinite(started) or not math.isfinite(started + elapsed):
         raise ValueError("experiment deadline is invalid")
@@ -1556,15 +1562,37 @@ def execute_locked(request, root):
     raise ValueError("unknown experiment action")
 
 
+@contextmanager
+def cancellation_handler():
+    cancelling = False
+    def cancel(_signum, _frame):
+        nonlocal cancelling
+        if cancelling:
+            return
+        cancelling = True
+        cancel_active_trials()
+        raise KeyboardInterrupt
+    previous = {s: signal.signal(s, cancel) for s in (signal.SIGTERM, signal.SIGINT)} if os.name == 'posix' else {}
+    try:
+        yield
+    finally:
+        for signum, handler in previous.items():
+            signal.signal(signum, handler)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--request", required=True, help="JSON request file")
     args = parser.parse_args()
-    try:
-        print(json.dumps(execute(read(args.request)), sort_keys=True, allow_nan=False))
-    except (OSError, ValueError, TypeError, KeyError, RuntimeError) as error:
-        print(str(error), file=sys.stderr)
-        return 1
+    with cancellation_handler(), cancellation_scope():
+        try:
+            print(json.dumps(execute(read(args.request)), sort_keys=True, allow_nan=False))
+        except KeyboardInterrupt:
+            print('experiment interrupted; inspect ledger before retrying', file=sys.stderr)
+            return 130
+        except (OSError, ValueError, TypeError, KeyError, RuntimeError) as error:
+            print(str(error), file=sys.stderr)
+            return 1
     return 0
 
 

@@ -178,3 +178,24 @@ reject. These are finite implementation-correspondence tests, not a proof of
 SQLite concurrency; the separate simultaneous-dispatch test exercises that
 boundary. Host model token usage remains reported by the host or unknown and is
 not covered by the local token-budget theorem.
+
+## Launch admission
+
+`launch_requires_registration` and `launch_respects_cancellation` prove the
+Boolean admission decision cannot grant a launch unless the process identity is
+registered and the cancellation flag is clear. The production POSIX launch
+path invokes `launch_permitted` with an identity check and the current flag
+while holding the cancellation-scope lock, immediately before writing the
+staged child permit. The bridge checks all four Boolean inputs against the
+checked Lean definition and detects mutations that ignore either input.
+
+A real staged-process integration test observes the registered, uncancelled
+inputs and confirms that replacing the production predicate with a denial
+prevents the target from running. It also observes the registered, cancelled
+inputs after pre-cancellation. Those tests establish that the helper participates
+in the tested path. They do not prove all Python interleavings, lock behavior,
+process identity reuse, signal delivery, reaping, host crashes, nested scopes,
+remote jobs, or detached descendants. Those require the separate lifecycle,
+concurrency, and provider-boundary checks. The Lean theorem assumes the Boolean
+inputs faithfully represent state held under the shared lock and does not prove
+that the process is ultimately terminated.

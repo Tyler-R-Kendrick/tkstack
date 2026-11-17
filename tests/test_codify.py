@@ -5,10 +5,12 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import signal
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -197,6 +199,39 @@ class CodifyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'deadline exceeded'):
             codify.invoke(lock, {}, self.root, timeout=1)
         self.assertEqual(list((self.root / '.tkstack/sessions').iterdir()), [])
+        if os.name != 'posix':
+            return
+        old = signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+        try:
+            with patch.object(os, 'killpg') as killed, self.assertRaisesRegex(ValueError, 'non-reaping'):
+                codify.invoke(lock, {}, self.root, timeout=1)
+            killed.assert_not_called()
+        finally:
+            signal.signal(signal.SIGCHLD, old)
+        started, release, escaped = (self.root / name for name in ('started', 'release', 'escaped'))
+        data = ("from pathlib import Path\nimport time\n"
+                f"Path({str(started)!r}).touch()\n"
+                f"p=Path({str(release)!r}); deadline=time.monotonic()+10\n"
+                "while not p.exists() and time.monotonic()<deadline: time.sleep(.01)\n"
+                f"Path({str(escaped)!r}).touch()\n").encode()
+        lock['files']['scripts/run.py'] = {'sha256': codify.digest(data), 'mode': 0o644, 'base64': base64.b64encode(data).decode()}
+        original = subprocess.Popen._execute_child
+        def interrupt_spawn(process, *args, **kwargs):
+            original(process, *args, **kwargs)
+            for _ in range(500):
+                if started.exists():
+                    break
+                time.sleep(.01)
+            self.assertTrue(started.exists())
+            os.kill(os.getpid(), signal.SIGINT)
+        try:
+            with patch.object(subprocess.Popen, '_execute_child', interrupt_spawn), \
+                    self.assertRaisesRegex(ValueError, 'interrupted'):
+                codify.invoke(lock, {}, self.root)
+        finally:
+            release.touch()
+        time.sleep(.2)
+        self.assertFalse(escaped.exists())
 
     def test_private_checkout_permissions_do_not_hide_executable_drift(self):
         self.compile()

@@ -23,6 +23,8 @@ THEOREMS = (
     "ExperimentBudget.proposal_finish_keeps_count",
     "ExperimentBudget.proposal_finish_does_not_restore_capacity",
     "ExperimentBudget.proposal_trace_preserves",
+    "ExperimentBudget.launch_requires_registration",
+    "ExperimentBudget.launch_respects_cancellation",
 )
 ALLOWED_KERNEL_AXIOMS = {"propext", "Quot.sound", "Classical.choice"}
 
@@ -68,10 +70,10 @@ def oracle(lean):
         rows = []
         for line in evaluated.stdout.splitlines():
             parts = line.split()
-            if not parts or parts[0] not in {"R", "S", "P"}:
+            if not parts or parts[0] not in {"R", "S", "P", "L"}:
                 raise ValueError(f"Unexpected Lean oracle row: {line!r}")
             values = [int(part) for part in parts[1:]]
-            if len(values) != {"R": 5, "S": 7, "P": 4}[parts[0]]:
+            if len(values) != {"R": 5, "S": 7, "P": 4, "L": 3}[parts[0]]:
                 raise ValueError(f"Malformed Lean oracle row: {line!r}")
             rows.append((parts[0], *values))
         if not rows:
@@ -208,6 +210,22 @@ def check_proposals(rows, ledger_type=Ledger):
     return checked
 
 
+def check_launch_policy(rows, policy=None):
+    """Compare the actual launch admission predicate with the Lean oracle."""
+    if policy is None:
+        from experiment_runner import launch_permitted
+        policy = launch_permitted
+    checked = 0
+    for kind, registered, cancelled, expected in rows:
+        if kind != "L" or registered not in (0, 1) or cancelled not in (0, 1):
+            raise ValueError("Expected Boolean launch oracle rows")
+        result = policy(bool(registered), bool(cancelled))
+        if type(result) is not bool or int(result) != expected:
+            raise BridgeMismatch(f"launch admission {(registered, cancelled)}: Lean={expected}, actual={result}")
+        checked += 1
+    return checked
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--lean", required=True)
@@ -216,8 +234,9 @@ def main():
     reservations = check_reservations([row for row in rows if row[0] == "R"])
     settlements = check_settlements([row for row in rows if row[0] == "S"])
     proposals = check_proposals([row for row in rows if row[0] == "P"])
+    launches = check_launch_policy([row for row in rows if row[0] == "L"])
     print(f"Lean theorems checked; {reservations} reservation, {settlements} settlement, "
-          f"and {proposals} proposal cases match SQLite")
+          f"{proposals} proposal, and {launches} launch cases match Python")
 
 
 if __name__ == "__main__":

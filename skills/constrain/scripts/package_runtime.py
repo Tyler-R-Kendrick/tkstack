@@ -8,12 +8,51 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 
 from tkstack_state import state_root, session_tempdir
 from json_contract import loads
 
 
 LIMIT = 1024 * 1024
+
+
+def can_wait_unreaped():
+    return (os.name == 'posix' and signal.getsignal(signal.SIGCHLD) == signal.SIG_DFL and
+            hasattr(signal, 'pthread_sigmask') and all(hasattr(os, name) for name in ('waitid', 'P_PID', 'WEXITED', 'WNOHANG', 'WNOWAIT')))
+
+
+def wait_unreaped(process, timeout):
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            if os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT):
+                return
+        except ChildProcessError:
+            process.returncode = 255
+            raise ValueError('Child process ownership was lost')
+        if time.monotonic() >= deadline:
+            raise subprocess.TimeoutExpired(process.args, timeout)
+        time.sleep(.01)
+
+
+def reap_owned(process, kill_group=False):
+    mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT, signal.SIGTERM, signal.SIGCHLD}) if os.name == 'posix' and hasattr(signal, 'pthread_sigmask') else None
+    try:
+        if kill_group:
+            try:
+                os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+            except ChildProcessError:
+                process.returncode = 255
+                raise ValueError('Child process ownership was lost')
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        return process.wait()
+    finally:
+        if mask is not None:
+            signal.pthread_sigmask(signal.SIG_SETMASK, mask)
 
 
 class NativeFailure(Exception):
@@ -139,28 +178,54 @@ def native(root, model, operation, payload, workspace):
     if (not entrypoint.resolve().is_relative_to(root.resolve()) or entrypoint.is_symlink()
             or not entrypoint.is_file() or entrypoint.suffix != '.py'):
         raise ValueError('Native entrypoint must be a contained Python source file')
+    timeout = binding.get('timeout_seconds', 60) if binding is not None else 60
+    if type(timeout) is not int or not 1 <= timeout <= 86100:
+        raise ValueError('Native helper timeout must be an integer from 1 to 86100 seconds')
     with session_tempdir(prefix='native-', project=workspace) as scratch, \
-            tempfile.TemporaryFile(dir=scratch) as output, tempfile.TemporaryFile(dir=scratch) as errors:
+            tempfile.TemporaryFile(dir=scratch) as output, tempfile.TemporaryFile(dir=scratch) as errors, \
+            tempfile.TemporaryFile(dir=scratch) as input_file:
         shared_group = os.environ.get('TKSTACK_CODIFY_EXECUTION') == '1'
+        if timeout > 60 and not shared_group:
+            raise ValueError('Long-running native commands require the compiled host supervisor')
+        if os.name == 'posix' and not can_wait_unreaped():
+            raise ValueError('Native commands require non-reaping POSIX process supervision')
+        if source is not None:
+            input_file.write(source.encode())
+            input_file.seek(0)
         process = subprocess.Popen([sys.executable, '-B', str(entrypoint), *arguments], cwd=workspace,
-            stdin=subprocess.PIPE, stdout=output, stderr=errors, start_new_session=not shared_group,
+            stdin=input_file, stdout=output, stderr=errors, start_new_session=not shared_group,
             env={**os.environ, 'TKSTACK_WORKSPACE_DIR': str(workspace / '.tkstack'), 'TKSTACK_CODIFY_EXECUTION': '1'})
         try:
             try:
-                process.communicate(source.encode() if source is not None else None, timeout=60)
-            except (subprocess.TimeoutExpired, KeyboardInterrupt):
-                if shared_group:
-                    process.kill()
+                if os.name == 'posix':
+                    wait_unreaped(process, timeout)
+                    reap_owned(process, kill_group=not shared_group)
                 else:
-                    os.killpg(process.pid, signal.SIGKILL)
-                process.communicate()
-                raise ValueError('Native helper deadline exceeded or invocation interrupted')
-        finally:
-            if not shared_group:
+                    process.wait(timeout=timeout)
+            except (subprocess.TimeoutExpired, KeyboardInterrupt):
+                if process.returncode is not None:
+                    raise ValueError('Native helper deadline exceeded or invocation interrupted')
+                if timeout > 60 and os.name == 'posix':
+                    try:
+                        if shared_group:
+                            process.terminate()
+                        else:
+                            os.killpg(process.pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
+                    time.sleep(2)
                 try:
-                    os.killpg(process.pid, signal.SIGKILL)
+                    if shared_group or os.name != 'posix':
+                        process.kill()
                 except ProcessLookupError:
                     pass
+                reap_owned(process, kill_group=not shared_group and os.name == 'posix')
+                raise ValueError('Native helper deadline exceeded or invocation interrupted')
+        finally:
+            if process.returncode is None:
+                if shared_group or os.name != 'posix':
+                    process.kill()
+                reap_owned(process, kill_group=not shared_group and os.name == 'posix')
         output.seek(0)
         errors.seek(0)
         stdout, stderr = output.read(LIMIT + 1), errors.read(LIMIT + 1)

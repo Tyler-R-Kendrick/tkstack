@@ -93,6 +93,12 @@ def _load_gepa():
 
 
 def optimize(request):
+    from experiment_runner import cancellation_scope
+    with cancellation_scope():
+        return _optimize(request)
+
+
+def _optimize(request):
     if not isinstance(request, dict):
         raise ValueError("request must be a JSON object")
     if request.get("max_model_tokens") != 0 or type(request.get("max_model_tokens")) is not int:
@@ -359,6 +365,11 @@ def optimize(request):
 
 
 def main():
+    with experiment.cancellation_handler():
+        return _main()
+
+
+def _main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--request", required=True)
     args = parser.parse_args()
@@ -369,6 +380,9 @@ def main():
         request = loads(data.decode("utf-8"))
         print(json.dumps(optimize(request), sort_keys=True, allow_nan=False))
         return 0
+    except KeyboardInterrupt:
+        print('experiment interrupted; inspect ledger before retrying', file=sys.stderr)
+        return 130
     except (OSError, ValueError, TypeError, KeyError, RuntimeError) as error:
         print(str(error), file=sys.stderr)
         return 1
