@@ -1,5 +1,7 @@
 # 0013: Enforce reviewed documentation at completion and commit
 
+Historical design. Current hook activation and ownership are documented in [documentation maintenance](../documentation.md).
+
 Status: accepted, 2026-10-30.
 
 The user requested an installation/use README plus repository and Git hooks

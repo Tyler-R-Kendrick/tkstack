@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "name": "testify",
+  "purpose": "Create and validate a distinct behavioral test for a concrete observed risk; use static constraints first.",
+  "criteria": [
+    {
+      "id": "risk",
+      "description": "Name the concrete fault and distinct regression not already enforced statically."
+    },
+    {
+      "id": "oracle",
+      "description": "Assert an independently expected public behavior or effect at the appropriate boundary."
+    },
+    {
+      "id": "sensitivity",
+      "description": "Demonstrate the retained test fails for a plausible fault and passes after restoration."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "fault_sensitive": {
+        "type": "boolean",
+        "const": true
+      },
+      "independent_oracle": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "fault_sensitive",
+      "independent_oracle"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_plan": {
+      "entrypoint": "scripts/testify.py",
+      "prefix": [
+        "plan"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--target"
+          ]
+        },
+        "spec": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--spec"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "plan"
+      ],
+      "description": "Preview the generated Python CLI contract test without writes."
+    },
+    "native_create": {
+      "entrypoint": "scripts/testify.py",
+      "prefix": [
+        "create"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--target"
+          ]
+        },
+        "spec": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--spec"
+          ],
+          "path": true
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "create"
+      ],
+      "description": "Create an absent Python CLI contract test from an explicit reviewed case specification."
+    },
+    "native_run": {
+      "entrypoint": "scripts/testify.py",
+      "prefix": [
+        "run"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "target": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--target"
+          ]
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "run"
+      ],
+      "description": "Execute one selected Python test with caller authority and report the real exit."
+    }
+  },
+  "limits": [
+    "Recorded reviews and syntactic cases do not prove semantic value, independence, or actual mutation sensitivity.",
+    "The native generator covers explicit Python CLI contracts only; other test methods use native project tools."
+  ]
+}

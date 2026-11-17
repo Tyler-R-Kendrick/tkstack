@@ -1,14 +1,14 @@
 {
   "name": "tkstack agent dotfiles",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm@sha256:10717c456fb0ac3a9a78c7d9d405599b589d8faf59865f7596a4b26995b7b14c",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
+    "ghcr.io/devcontainers/features/node@sha256:8c0de46939b61958041700ee89e3493f3b2e4131a06dc46b4d9423427d06e5f6": {
       "version": "24"
     }
   },
   "remoteUser": "vscode",
   "remoteEnv": {
-    "PATH": "${containerWorkspaceFolder}/.tkstack/bin:${containerEnv:PATH}"
+    "PATH": "${containerWorkspaceFolder}/.tkstack:${containerEnv:PATH}"
   },
   "postCreateCommand": [
     "bash",

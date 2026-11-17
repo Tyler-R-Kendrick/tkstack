@@ -16,6 +16,11 @@ or configuring a matching rule to reimplementing it. Choose a custom native
 plugin/query only when configuration is insufficient. Preserve a fitting
 existing CLI rather than mandating the examples' engines.
 
+Prefer a native type/constructor or compile-time rule that makes an invalid
+state impossible. Parse untrusted runtime values at their boundary. Route a
+distinct behavioral failure to `testify`; a source linter cannot prove runtime
+behavior, and tests should not repeat a type-system guarantee.
+
 Use AST/type/query structure for code facts when text matching would confuse
 comments, strings, aliases, shadowing, or syntax. A narrow text rule is valid
 when its actual contract is textual. Do not claim whole-program correctness

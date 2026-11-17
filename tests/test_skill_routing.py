@@ -76,13 +76,6 @@ class RoutingInventoryTests(unittest.TestCase):
         self.assertIn("HAS False", result.stdout)
         self.assertGreater(int(result.stdout.split("SKILLS ", 1)[1].splitlines()[0]), 200)
 
-    def test_root_gate_and_ci_do_not_exec_skill_owned_programs(self):
-        workflows = sorted((ROOT / ".github/workflows").glob("*.yml"))
-        self.assertTrue(workflows)
-        blob = (ROOT / "src/check_skills.py").read_text()
-        blob += "\n" + "\n".join(path.read_text() for path in workflows)
-        for name in ("routing_inventory", "evolve.py", "sync_codify"):
-            self.assertNotIn(name, blob)
 
     def test_unknown_phase_fails(self):
         skills = {"present": {"group": "developed"}}

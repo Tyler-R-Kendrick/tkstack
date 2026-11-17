@@ -37,3 +37,10 @@ from `tkstack_state.py locations` and TKSTACK_*_DIR overrides. Write only to the
 selected scope. Keep session scratch in `.tkstack/sessions/<session>/` and use
 Learn session consolidation to extract reusable rules/artifacts through the
 appropriate ___ify skills. Reports/audits and automatic captures keep their scope.
+
+Before adding or changing tests, proofs, files, folders, docs, or budgets, use
+the installed constrain skill and its verification-selection reference. If
+`.constrain/config.json` exists in the working project, run the installed
+constrain checker against that project before completion. Preserve its reviewed
+budgets and suite records; source checkout edits do not initialize another
+workspace. Verify the intended install target with `install.sh --target <absolute-workspace> --check`.

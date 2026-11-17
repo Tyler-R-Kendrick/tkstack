@@ -48,47 +48,9 @@ children of `skills/`, so an Agent Plugins client does not discover them.
 
 ## MCP servers
 
-`mcp.json` uses schema
-`https://agent-plugins.org/schemas/1.0.0/mcp.schema.json`. Commands are one
-executable token. No API key is stored in the file.
+The portable document declares Playwright, Firecrawl, Vercel and Graphify. The Node servers launch installed JavaScript under `${PLUGIN_ROOT}/integrations/mcp/node_modules`. Provision that exact checkout with the committed npm lock. Graphify reads `${PLUGIN_DATA}/graphify-out/graph.json` using the host-provided binary. Vercel uses client OAuth. Keep API keys in the host environment; the portable client expands only its specified plugin variables.
 
-| Server | Launch | Source |
-| --- | --- | --- |
-| `serena` | `uvx --from git+https://github.com/oraios/serena serena start-mcp-server --project-from-cwd` | [Serena](https://github.com/oraios/serena) uvx quick start |
-| `playwright` | `npx` with `@playwright/mcp@latest` | [Playwright MCP](https://playwright.dev/docs/getting-started-mcp) standard config |
-| `firecrawl` | `npx -y firecrawl-mcp@3.33.2` | [Firecrawl local MCP](https://docs.firecrawl.dev/mcp-server/local) |
-| `vercel` | `https://mcp.vercel.com` (Streamable HTTP, OAuth) | [Vercel MCP](https://vercel.com/docs/agent-resources/vercel-mcp) |
-| `graphify` | `graphify-mcp ${PLUGIN_DATA}/graphify-out/graph.json` | [Graphify MCP](https://docs.graphify.com/open-source/mcp-server) |
-
-Agent Plugins expands only `${PLUGIN_ROOT}` and `${PLUGIN_DATA}` in `args`,
-`env` values, and `cwd`. A conformant client leaves `${FIRECRAWL_API_KEY}`
-as literal text (§9.2) and would replace an inherited key with that literal,
-so `mcp.json` does not set `env`. Put `FIRECRAWL_API_KEY` in the MCP client's
-environment UI for this server: Cursor's Settings → MCP env fields, Claude
-Code's server env in `/mcp` or `claude mcp`, or Codex's MCP server env block.
-A shell `export` reaches the process only when that client inherits the
-shell. Firecrawl's cloud tools need the key. The hosted keyless endpoint
-`https://mcp.firecrawl.dev/v2/mcp` is a separate Firecrawl mode and is not
-the shipped entry.
-
-Vercel authenticates in the client and opens an OAuth consent screen. The URL
-does not carry a token.
-
-Graphify's local server is the `graphify-mcp` command from
-`uv tool install "graphifyy[mcp]"`. The argument is the spec's portable
-stand-in for the absolute graph path in Graphify's docs. Build or copy
-`graph.json` into the client-managed plugin data directory before the server
-can answer. Graphify also hosts `https://api.graphify.com/mcp` (Streamable
-HTTP, OAuth, no API key). That hosted server is not the shipped entry.
-
-When `cwd` is omitted, a conformant client starts stdio servers in the plugin
-root. Serena's `--project-from-cwd` therefore activates this package unless
-the client chooses another working directory. The installer still registers
-and indexes a project directory; see [Install](bootstrap.md).
-
-Playwright needs Node.js and downloads a browser on first use. Serena's uvx
-command needs `uvx` on `PATH` and network access the first time it resolves
-the git URL.
+Serena requires the consumer project's absolute path. The portable protocol starts stdio processes in the plugin root by default. Use the project-scoped config emitted by `./install.sh --target /path/to/project --serena-command`. See [runtime provisioning and probes](integrations.md).
 
 ## Client files that stay where the host reads them
 
@@ -117,25 +79,3 @@ schema.
 the tracked `.mdc` files. `.agents/` stays for the installer's steering and
 principles links and for packages that are not immediate children of
 `skills/`.
-
-## Serena during install
-
-On install, `scripts/install.py` runs, when `uvx` is on `PATH`, with the
-working directory set to the indexed project (`--scope project` uses the
-install target; home scope uses this checkout):
-
-```text
-uvx --from git+https://github.com/oraios/serena serena init
-uvx --from git+https://github.com/oraios/serena serena project index <project>
-```
-
-`serena init` is Serena's documented language-server setup. It also writes
-the user-global config at `~/.serena/serena_config.yml`. Setting the working
-directory keeps project files in the selected directory and does not stop
-that global write. `serena project index` receives `<project>` as its
-`[PROJECT]` path, so it does not use the caller's working directory. It does
-not index the home directory. `--dry-run` prints both lines and does not run
-them. Uninstall prints `skip serena: uninstall`. When `uvx` is not on `PATH`,
-or either command exits non-zero (including an offline fetch), install prints
-`skip serena:` and the link step still finishes. The index can write
-`.serena/` in the indexed directory. That directory is gitignored.

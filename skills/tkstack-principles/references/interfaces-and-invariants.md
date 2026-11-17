@@ -7,7 +7,14 @@ The interface includes errors, invariants, ordering, configuration, and resource
 behavior, as well as types. Hide useful complexity behind a small surface; avoid
 pass-through layers that make callers learn nearly the same implementation.
 Use explicit result shapes and state transitions. Parse external data once at
-the appropriate boundary; let sound internal contracts carry validated facts.
+the appropriate boundary into a constrained domain representation; after that,
+pass the parsed value rather than repeatedly validating its raw shape. Prefer
+types, constructors, exhaustive variants and compile-time rules that make an
+invalid state unrepresentable. Keep runtime parsing and error handling for
+untrusted I/O, dynamic values and environments the static type system cannot
+prove. An annotation by itself does not enforce Python runtime values. Do not
+add tests that merely duplicate an enforced type or compiler guarantee; test
+the remaining behavioral contracts and trust boundaries.
 
 Concentrate related knowledge so a correction has one owner. Prefer pure
 transformations and explicit effects. Consider retry, idempotency, cancellation,

@@ -153,3 +153,14 @@ added or removed, add or remove its phase and strengths in
 `python3 skills/sdlc/scripts/routing_inventory.py render` and `check`. Put new personal
 skills, agent definitions, and harness settings alongside the upstream sources,
 not inside them.
+
+Before adding tests or expanding repository structure, apply
+[constrain](../skills/constrain/SKILL.md): choose verification depth by risk,
+prefer contracts with dependency-failure simulation, and compare overlap across
+unit, functional, property and state-machine layers. Core/high-risk proof
+requirements and deployment budgets are scoped to actual invariants and hosts.
+
+Prefer parse-don't-validate at external input boundaries and use static types
+or compile-time constraints when they make invalid states unrepresentable.
+Use Testify for residual runtime behavior, Lintify for source rules, Hookify for
+tool events, and Skillify/Codify for reusable procedures and executable workflows.

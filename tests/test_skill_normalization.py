@@ -77,7 +77,6 @@ class SkillNormalizationTests(unittest.TestCase):
 
     def test_every_owned_skill_runs_its_compiled_model_and_real_report_verifier(self):
         expected = set(PACKAGES)
-        self.assertEqual(len(expected), 19)
         for name in sorted(expected):
             with self.subTest(skill=name):
                 self.assertEqual(self.call(name, ['model'])['name'], name)
@@ -111,7 +110,7 @@ class SkillNormalizationTests(unittest.TestCase):
                 self.assertEqual(runtime.verify(model, report, self.project)['structural_gate'], 'pass')
 
     def test_skill_specific_boundary_models_reject_contradictory_claims(self):
-        examples = [('learn', {'evidence_as_instructions': True}),
+        examples = [('testify', {'fault_sensitive': False}), ('constrain', {'gate_passed': False}), ('learn', {'evidence_as_instructions': True}),
             ('sdlc', {'stale_evidence_accepted': True}), ('codify', {'implicit_inference': True}),
             ('skillify', {'workflow_implemented': False}), ('reusify', {'observed_occurrences': 2}),
             ('instructify', {'stale_input_applied': True}), ('hookify', {'claim_activation': True}),

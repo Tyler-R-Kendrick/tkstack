@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "testify",
+        "purpose": "Create and validate a distinct behavioral test for a concrete observed risk; use static constraints first.",
+        "criteria": [
+          {
+            "id": "risk",
+            "description": "Name the concrete fault and distinct regression not already enforced statically."
+          },
+          {
+            "id": "oracle",
+            "description": "Assert an independently expected public behavior or effect at the appropriate boundary."
+          },
+          {
+            "id": "sensitivity",
+            "description": "Demonstrate the retained test fails for a plausible fault and passes after restoration."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "fault_sensitive": {
+              "type": "boolean",
+              "const": true
+            },
+            "independent_oracle": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "fault_sensitive",
+            "independent_oracle"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Recorded reviews and syntactic cases do not prove semantic value, independence, or actual mutation sensitivity.",
+          "The native generator covers explicit Python CLI contracts only; other test methods use native project tools."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown",
+      "input": {
+        "operation": "unknown"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-extra",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

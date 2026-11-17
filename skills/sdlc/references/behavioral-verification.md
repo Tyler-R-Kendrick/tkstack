@@ -30,3 +30,13 @@ Use verified, contradicted, or inconclusive findings with their exact scope.
 Compilation proves compilation. Mock-host validation proves that host's simulated
 contract. Neither proves deployment, UI quality, model improvement, or a complete
 workflow. Keep semantic inspection separate from mechanical receipt checks.
+
+
+When deciding how to enforce an invariant, first use a type/constructor or
+compile-time check that rules out invalid states. Parse untrusted runtime data
+at its boundary. Use `/learn lintify` for recurring static source rules,
+`/learn testify` for a distinct behavioral regression, `/learn hookify` for
+an observable tool event, `/learn skillify` to package a reusable procedure,
+and `/learn codify` to freeze executable workflow code. Apply Constrain for
+repository budgets and verification selection. Combine them only for distinct
+gaps, and do not test the same type guarantee again as an implementation mirror.

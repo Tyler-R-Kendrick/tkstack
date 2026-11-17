@@ -1,6 +1,8 @@
 # Owned skill normalization
 
-All 19 packages under `skills/` (including Learn's subskills in `skills/learn/skills/`) and `.agents/skills/` share the owned Skillify/Codify command protocol:
+Declare `metadata.kind: guidance` in a prose-only root skill's YAML frontmatter, with its version, license and matching marketplace metadata. The owned-skill gate checks its references and rejects command definitions, mounted subskills and locks for that kind. Use this path for contextual guidance. Preserve the existing typed interfaces of published executable packages. Introduce a compiled command when there is a distinct deterministic action to execute.
+
+Owned packages under `skills/` (including Learn's subskills in `skills/learn/skills/`) and `.agents/skills/` share the owned Skillify/Codify command protocol:
 reserved default help and version, an explicit contract `model`, a retained-report
 `verify`, and a current compiled `scripts/workflow.lock.json`. Existing native
 helpers remain the owners of their actual algorithms. Their typed native
@@ -68,7 +70,7 @@ Skillify's progressive packaging/normalizer, Codify's real compiler/runner, and
 Reusify's shared-code rule. Three equivalent strict JSON readers were extracted
 into canonical `skills/learn/skills/codify/scripts/json_contract.py`; compiler, command and
 contract runtimes reuse it. One canonical `package_runtime.py` supplies packaged
-copies for all 19 standalone skill cores. Generated copies are distribution
+copies for the standalone skill cores. Generated copies are distribution
 outputs, not independent implementations or evidence for further extraction.
 
 `skillify normalize` reads an explicit authored contract/profile and generates
@@ -83,7 +85,7 @@ generation manifest and lock are authored package/build artifacts.
 A profile's optional `subskills` map (`name -> {path, description}`) generates
 one mount command per packaged subskill, `run: {skill: skills/<name>}`, which
 passes its `argv` to that subskill's own commands and lock. Learn mounts its
-seven ___ify subskills this way. Compile a parent with explicit `--include`
+packaged ___ify subskills this way. Compile a parent with explicit `--include`
 entries for its own files so its lock does not snapshot the subskills, which
 keep their own locks.
 
@@ -117,7 +119,7 @@ are labeled as such and do not impersonate production provider evidence.
 ## What the improvement trials showed
 
 [Recorded current-source results](../evals/results/2026-10-31-owned-skills.json)
-cover all 19 current `SKILL.md` hashes and 59 reviewed author-created
+cover the 19 `SKILL.md` hashes reviewed at that time and 59 reviewed author-created
 train/validation/test scenarios. The pinned SkillOpt-Sleep handoff used 65 actual
 fresh-context evaluator calls, including final-source reruns of the two compiler
 skills. Each evaluator received only its exact pending prompt; no inline or mock
@@ -144,7 +146,8 @@ it does not regenerate alias or Graphify views. The repository's
 [CI workflow](../.github/workflows/skills.yml) creates
 `.tkstack/runtime/command-schema` from the Codify lockfile, then runs
 `src/check_skills.py`, `src/check_docs.py check`, and
-`python -m unittest discover -s tests`. The unittest step covers the routing
+`python -m unittest discover -s tests`. The constrain engine checks test-value
+review drift and sparsity before the suite; see [its skill](../skills/constrain/SKILL.md). The unittest step covers the routing
 inventory. It does not run a paid model or provider job.
 Native Graphify and AI SDK integration checks require their explicitly enabled
 local runtimes; those additional checks are covered by the retained local run.
@@ -161,8 +164,8 @@ includes `skills/learn/scripts/evolve.py`, SDLC's includes
 `skills/sdlc/scripts/routing_inventory.py`, and Skillify's includes
 `skills/learn/skills/skillify/scripts/sync_codify.py`. Codify compile omits
 nested skill packages, and those four locks were recompiled with that
-snapshot. Install links `.agents/steering` and does not rewrite instruction
-files.
+snapshot. Install links `.agents/steering` to destination-local state and adds
+hashed owned startup sections to external target instruction files.
 
 Self-project installation retains portable repository-owned instruction pointers
 in `AGENTS.md` and `CLAUDE.md`; external installations preserve checkout-specific

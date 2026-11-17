@@ -28,5 +28,14 @@ jobs:
         run: .tkstack/runtime/command-schema/bin/python -B src/check_skills.py
       - name: Check reviewed documentation
         run: python -B src/check_docs.py check
+      - name: Enforce test value and repository sparsity
+        run: .tkstack/runtime/command-schema/bin/python -B skills/constrain/scripts/constrain.py check --repo . --strict-dependencies
+      - name: Provision locked native discovery client
+        run: |
+          npm ci --prefix integrations/mcp --ignore-scripts --no-audit --no-fund
+          integrations/mcp/node_modules/.bin/codex --version
+          echo "$PWD/integrations/mcp/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Run the full offline regression suite
+        env:
+          REPO_QUALITY_GATE: "1"
         run: .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -v

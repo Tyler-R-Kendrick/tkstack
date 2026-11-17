@@ -13,13 +13,14 @@ testable, and suitable for parallel execution.
 
 | Order | Mechanism | Examples |
 | --- | --- | --- |
-| 1 | Deterministic code and explicit rules | Parse an event; validate a schema; evaluate a decision table; compare hashes; query factual API state; enforce a dependency or exit-code gate |
-| 2 | Narrow decision model or decision API | A fit-for-purpose classifier, scorer, solver, or decision service for the residual ambiguity, with a defined input/output contract |
-| 3 | LLM or agent | Interpret a genuinely ambiguous request or semantic artifact when earlier mechanisms cannot adequately resolve the decision |
+| 1 | Types and compile-time constraints | Make invalid states unrepresentable using supported static types, exhaustive variants, constructors, or compiler checks |
+| 2 | Deterministic runtime code and explicit rules | Parse untrusted input once; compare hashes; evaluate decision tables; enforce a dependency or exit-code gate |
+| 3 | Narrow decision model or decision API | A fit-for-purpose classifier, scorer, solver, or decision service for the residual ambiguity, with a defined input/output contract |
+| 4 | LLM or agent | Interpret a genuinely ambiguous request or semantic artifact when earlier mechanisms cannot adequately resolve the decision |
 
 A rules engine or solver that deterministically applies an explicit contract
-belongs in the first tier. A learned classifier can remain probabilistic even
-when narrowly scoped. An LLM hosted behind a “decision API” remains the third
+belongs in the deterministic tier. A learned classifier can remain probabilistic even
+when narrowly scoped. An LLM hosted behind a “decision API” remains in the final
 tier. Compare mechanisms by what they actually do, not by their product name.
 
 1. Name the decision, its inputs, available facts, authoritative policy, allowed

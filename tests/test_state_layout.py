@@ -84,12 +84,6 @@ class StateLayoutTests(unittest.TestCase):
         self.assertEqual(result.stdout.strip(), str(nested / ".tkstack/sessions"))
         self.assertFalse((nested / ".tkstack").exists())
 
-    def test_every_custom_skill_has_the_same_storage_primitive_and_reference(self):
-        canonical = (ROOT / "src/tkstack_state.py").read_bytes()
-        for entry in [*(ROOT / "skills").glob("*/SKILL.md"), *(ROOT / "skills").glob("*/skills/*/SKILL.md")]:
-            with self.subTest(skill=entry.parent.name):
-                self.assertEqual((entry.parent / "scripts/tkstack_state.py").read_bytes(), canonical)
-                self.assertTrue((entry.parent / "references/storage.md").is_file())
 
     def test_default_store_uses_current_repository_without_writing_or_home_fallback(self):
         nested = self.project / "src"

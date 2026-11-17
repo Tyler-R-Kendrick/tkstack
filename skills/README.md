@@ -21,7 +21,7 @@ Keep upstream edits out of this directory and out of `vendor/`. Configure a
 name collision in `skills/skills.json`; the installer generates the adapted
 view under `.tkstack/`. Personal skills join all selected harnesses on install.
 
-These 8 root packages and Learn's 7 subskills, plus the four
+These root packages and Learn's subskills, plus the four
 third-party-derived packages in `.agents/skills/`, are compatible with the
 [Agent Skills format](https://agentskills.io/specification) and
 [skills.sh discovery](https://github.com/vercel-labs/skills/blob/main/docs/creating-skills.md).

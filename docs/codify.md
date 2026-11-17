@@ -115,7 +115,7 @@ The legacy topic-only help tool remains supported. See
 ## Shared normalized skill runtime
 
 Codify owns `package_runtime.py` and `json_contract.py`, reused by Skillify's
-normalizer and all 19 owned skill cores. The compiler, command protocol and
+normalizer and the owned skill cores. The compiler, command protocol and
 contract runtime share strict duplicate/non-finite JSON handling. Native helper
 bindings preserve typed input validation, actual stdout/exit behavior, scoped
 paths and existing model/provider configuration. Their effects remain those

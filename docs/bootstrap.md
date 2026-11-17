@@ -1,144 +1,32 @@
-# Install agent dotfiles
+# Install and reconcile a destination
 
-One command installs tkstack. Outside a checkout it obtains
-`~/.local/share/tkstack` with Git, or with a curl tarball when Git is absent,
-and continues from there. Inside a checkout, `./install.sh` installs that
-checkout. Bash and curl are the host prerequisites.
+Run the trusted checkout's `install.sh` from any directory. With no arguments it installs personal defaults into your home. For a repository, pass `--target /absolute/repo --scope project`. Setup prints both paths. The checkout supplies shared package code and generated discovery views. The destination owns its steering, startup instructions and `.tkstack/tkstack` runner.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/Tyler-R-Kendrick/tkstack/main/install.sh | bash
-```
+## Lifecycle
 
-`install.sh` is the host wrapper. It execs `scripts/install.py`, which links
-files and then initializes Serena. It does not install language toolchains,
-edit shell startup, register native hooks, write harness MCP config, write
-launchers, or rewrite `AGENTS.md` / `CLAUDE.md`. Portable servers stay in
-root `mcp.json`. See [Agent Plugins](agent-plugins.md).
+1. Preview with `--dry-run`. Run the same command without that flag to apply.
+2. Verify with `--check`. Run `--status` for local prerequisites and integration status. On an adopted project these commands also run the workspace policy. In an unrelated repository use `~/.tkstack/tkstack status`; supply `--project /absolute/path` before `status` to check a specific workspace. Reload your agent to observe native discovery.
+3. Repeat setup after upgrading the checkout. The local receipt records the profile, hosts, and each installed link’s destination and source. Reconciliation preserves user aliases into the same checkout. Existing pre-profile installations retain catalog placement. Use an explicit profile to change selection. Repeat `--harness` when selecting multiple hosts. Reapplying reconciles the selected set.
+4. Remove the target's installation with `--target /absolute/repo --uninstall`. Foreign instructions, modified foreign hooks, project-owned constraints and durable learning state are preserved. The source checkout and other consumers keep their configuration.
 
-The default links Codex, Claude Code, and Cursor. Repeat `--harness` for
-Copilot, Grok, Kimi, Muse, or OpenCode. `--harness t3code` installs the
-`delegates.t3code` hosts and creates no t3code directory. `--scope project`
-uses each host's project skill directory; the default for a home target is
-home scope. Keep the checkout: the links point at it.
+A foreign destination or manually edited owned instruction section stops setup. Read the reported path, reconcile the two owners, and rerun. A nonempty Codex override can shadow the startup file and requires reconciliation. Moving the source breaks absolute links; uninstall from its original location before moving it. Use separate source checkouts to test a new revision.
 
-```sh
-./install.sh --dry-run
-./install.sh --target /repo --scope project
-./install.sh --harness copilot --harness grok
-./install.sh --uninstall
-```
+## Home and project ownership
 
-`--dry-run` prints the link plan and the Serena commands, and writes nothing.
-`--uninstall` removes this checkout's links for every harness, including a
-legacy `.muse/skills` link, unsets `core.hooksPath` when its value is
-`.githooks`, and skips Serena. `--harness` does not limit uninstall. A second
-uninstall changes nothing. Foreign links stay.
+Codex loads user instructions from `$CODEX_HOME/AGENTS.md` or `~/.codex/AGENTS.md`. Claude reads `~/.claude/CLAUDE.md`. Home pointers use absolute paths so the active project can live anywhere. In project scope, setup maintains an owned block in `AGENTS.md` and a Claude import if selected. The rest of each file remains project-owned. The [harness table](harnesses.md) gives skill directory placement.
 
-## Host prerequisites
+External Git project roots receive exact link paths in their local `info/exclude`. Team instructions and the portable `.tkstack/.gitignore` remain visible to Git. Avoid committing machine-specific symlinks. TKStack refuses to take over existing instruction blocks, link destinations or hook managers.
 
-Missing Python **3.12.15** is installed with uv **0.12.23** after sha256
-`b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491` is checked.
-The download is a temporary file. A caller-supplied `UV_INSTALL_DIR` is ignored;
-the script runs `$HOME/.local/bin/uv`. `TKSTACK_PYTHON` wins when it is Python
-3.11 or newer. Otherwise the script tries `python3`, `python3.13`,
-`python3.12`, and `python3.11`.
+## Adopt team constraints
 
-`TKSTACK_HOME` chooses the checkout (default `~/.local/share/tkstack`). A
-directory this run did not create is used only when its git origin matches
-`TKSTACK_REPO` or `TKSTACK_TRUST_HOME=1`. A matching origin is fast-forwarded
-with `git pull --ff-only`. Pull failure tells you to commit or stash.
-`TKSTACK_TRUST_HOME=1` on a non-matching git checkout runs that tree and does
-not pull. On a non-git tree it downloads again and keeps `.tkstack`.
+`./install.sh --target /absolute/project --adopt` seeds `.constrain/config.json` and an empty review inventory. A project starts with zero approved Python tests and a small policy-file budget. Set budgets, globs and reviews to reflect actual project risks before committing. Existing policies remain under team control. Check with `.tkstack/tkstack skills constrain -- native check --repo .`. Serena setup and indexing likewise require an explicit project target outside your home root and the TKStack checkout. See [constraint selection and configuration](../skills/constrain/SKILL.md).
 
-Without Git, the default archive is
-`https://codeload.github.com/Tyler-R-Kendrick/tkstack/tar.gz/main`.
-`TKSTACK_TARBALL` must be `https://`. The archive has no content hash. The
-script rejects curl failure, more than one top-level directory, and members or
-symlinks that escape the extract directory. Extraction uses `--no-same-owner`
-and `--no-same-permissions`. Symlink checks use `readlink`. Replacing a tarball
-checkout copies `.tkstack` into the new tree and restores the old directory if
-the final move fails.
+Add `--constraint-hook` to install a worktree's staged gate when using Git's default hooks directory. If a team already owns its hook, call `.tkstack/tkstack skills constrain -- native check --repo . --staged` from that manager, or run the checker in CI after installing TKStack at a reviewed revision. If the team later switches managers, uninstall removes its original default hook when the contents still match. Stage project policy with the change. Maintainers can opt in with native Git configuration. See [the documentation gate](documentation.md).
 
-`install.sh` wraps its work in `main` and calls it on the last line, so a
-truncated `curl | bash` download does not run a prefix.
+## Bootstrap integrity
 
-## What the link step writes
+The recommended release path uses Git at a reviewed full commit, as shown in the [README](../README.md). An independently verified bootstrap script also accepts `TKSTACK_REV` when obtaining a fresh Git checkout. An existing pinned Git checkout must match the origin, revision and clean working tree. An unpinned Git bootstrap tracks the remote branch and fast-forwards existing matching checkouts. Use that only for intentional development updates.
 
-`scripts/install.py` symlinks each selected host's skill directory at the
-pinned skills, agents, and Cursor rules. It also links `.agents/steering` at
-`.tkstack/steering` when Learn is present, and `.agents/principles` at
-`skills/tkstack-principles`. Alias views under `.tkstack/` rewrite installed
-names (`matt-tdd`, `emil-prototype`, `pstack-unslop`) without changing
-`vendor/`. Graphify has no `SKILL.md` upstream. The installer copies each host
-entrypoint and its reference pages to
-`.tkstack/skill-views/graphify/<host>/graphify/SKILL.md`. That copy is the
-upstream file bytes. It does not rewrite commands or install Graphify.
+Without Git, supply `TKSTACK_TARBALL_SHA256` from a trusted channel and either the full `TKSTACK_REV` or an HTTPS `TKSTACK_TARBALL`. The script verifies downloaded bytes before extraction and checks archive paths and symlinks. A trusted tarball refresh preserves local state. `TKSTACK_HOME` selects the source location. A pre-existing unrelated checkout requires explicit `TKSTACK_TRUST_HOME=1` for development use.
 
-On a git checkout, install sets `core.hooksPath=.githooks`. Git then runs
-`.githooks/pre-commit` and ignores `.git/hooks`. A value that is already
-`.githooks` is left alone. Any other value is replaced. Uninstall unsets the
-key only when it is still `.githooks`. A directory that is not a git checkout, or a PATH with no `git` binary,
-prints `skip git docs hook: not a git checkout` and the link step still
-finishes. Dry-run prints the config change and does not run it.
-
-## Serena
-
-After the links, install runs Serena's documented uvx setup when `uvx` is on
-`PATH`. Both commands use the indexed project as their working directory
-(the install target for `--scope project`, this checkout for home scope):
-
-```text
-uvx --from git+https://github.com/oraios/serena serena init
-uvx --from git+https://github.com/oraios/serena serena project index <project>
-```
-
-`serena init` sets up the language-server backend and also writes the
-user-global config at `~/.serena/serena_config.yml`. The working directory
-does not move that file. `serena project index` takes `<project>` as its
-`[PROJECT]` path and does not walk the home directory. The index may create
-a gitignored `.serena/` directory in that project. `--dry-run` prints the
-two lines and does not execute them. Uninstall prints `skip serena:
-uninstall`. When `uvx` is not on `PATH`, or either command exits non-zero,
-install prints `skip serena:` and keeps the links it already made. That
-includes an offline `uvx` fetch. No API key is written.
-
-Required environment for the shipped MCP servers, not for this index step:
-
-| Variable | Server | When it is required |
-| --- | --- | --- |
-| `FIRECRAWL_API_KEY` | `firecrawl` (`npx -y firecrawl-mcp@3.33.2`) | Cloud Firecrawl tools. Set it in the MCP client's env UI for this server (Cursor Settings → MCP, Claude Code `/mcp` or `claude mcp`, or Codex's MCP server env). `mcp.json` does not reference it, because Agent Plugins would pass `${FIRECRAWL_API_KEY}` through as literal text. |
-| none | `serena`, `playwright`, `graphify` | Local commands. Playwright needs Node. Graphify needs `uv tool install "graphifyy[mcp]"` and a graph at `${PLUGIN_DATA}/graphify-out/graph.json`. |
-| none | `vercel` | OAuth in the MCP client. |
-
-## Devcontainer
-
-[`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json) runs
-`install.sh --target <workspace> --scope project` after create and on later
-starts. The link step does not download skills. The image's Node feature is
-the devcontainer's own, not something `install.sh` downloads.
-
-A dotfiles install in another devcontainer can use:
-
-```json
-{
-  "dotfiles.repository": "Tyler-R-Kendrick/tkstack",
-  "dotfiles.targetPath": "~/.local/share/tkstack",
-  "dotfiles.installCommand": "install.sh"
-}
-```
-
-## Maintainer checks
-
-Preview, link this checkout, and review docs from the repository root:
-
-```sh
-./install.sh --target "$PWD" --scope project --dry-run
-python3 scripts/install.py --target . --scope project
-python3 skills/sdlc/scripts/routing_inventory.py check
-python3 src/check_skills.py
-python3 src/check_docs.py check
-python3 -m unittest discover -s tests
-```
-
-`python3 src/tkstack.py` runs a compiled skill or workflow. There is no
-generated `tkstack` launcher.
+Use an installed Python 3.11+ or select it with `TKSTACK_PYTHON`. When unavailable, the bootstrap can install Python with uv using the pins in the README. First acquisition needs network access; running setup from an existing checkout with its interpreter works offline. The checkout-level preview inspects local files. Running a separately downloaded bootstrap first acquires its source.

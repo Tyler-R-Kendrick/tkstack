@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "author-created test selection decision scenarios",
+  "tasks": [
+    {
+      "id": "constrain-train",
+      "project": "tkstack",
+      "intent": "Tests pass but contain only constant assertions. A) Approve by count. B) Replace with a behavioral oracle and run fault sensitivity. C) Refresh hashes. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose verification appropriate to the concrete risk."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-val",
+      "project": "tkstack",
+      "intent": "A dependency can time out or return malformed data. A) Mock every internal call. B) Require only a live E2E success. C) Exercise the consumer contract against those simulated failures. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose verification appropriate to the concrete risk."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-test",
+      "project": "tkstack",
+      "intent": "A proposed Lean proof only guarantees a decorative gradient. A) Decline the proof and use appropriate visual review. B) Require proofs for all CSS. C) Raise the CI budget. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose verification appropriate to the concrete risk."
+          }
+        ]
+      }
+    }
+  ]
+}

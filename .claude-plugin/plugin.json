@@ -8,6 +8,7 @@
   "license": "MIT",
   "repository": "https://github.com/Tyler-R-Kendrick/tkstack",
   "skills": [
+    "./skills/constrain",
     "./skills/document",
     "./skills/hill-climb",
     "./skills/investigate",

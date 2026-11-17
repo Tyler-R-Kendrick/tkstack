@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "constrain",
+        "purpose": "Enforce configured test-value, dependency integrity, execution, artifact and repository sparsity constraints in the selected workspace.",
+        "criteria": [
+          {
+            "id": "risk",
+            "description": "Choose verification depth and category from the concrete risk and boundary."
+          },
+          {
+            "id": "behavior",
+            "description": "Inspect independent behavioral oracles and distinct fault sensitivity before retaining tests."
+          },
+          {
+            "id": "gate",
+            "description": "Run the actual selected-workspace constraint gate and repair failures without automatic waivers."
+          },
+          {
+            "id": "integrity",
+            "description": "Pin supported dependencies and identify runtime acquisition paths outside the verified lock boundary."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "gate_passed": {
+              "type": "boolean",
+              "const": true
+            },
+            "semantic_review_performed": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "gate_passed",
+            "semantic_review_performed"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Deterministic rules detect supported test, dependency, execution, boundary and budget defects; they do not prove semantic test value or verify downloaded artifacts by themselves.",
+          "Unlocked MCP runtime fetches and unsupported acquisition paths remain explicitly reported; recorded review does not authenticate reviewer judgment or native hook activation."
+        ]
+      }
+    },
+    {
+      "id": "unknown-operation",
+      "input": {
+        "operation": "unknown"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-undeclared-model-field",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

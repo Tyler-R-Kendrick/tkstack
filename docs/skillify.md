@@ -1,5 +1,7 @@
 # Skills compile into executable tools
 
+For a guidance-only procedure, use `metadata.kind: guidance` and validate the Markdown package. Reserve executable normalization for a command contract. [Package kinds](normalization.md).
+
 `skillify` turns a demonstrated procedure or existing owned skill into a
 workflow under that skill's `scripts/`. `SKILL.md` is the intermediary code-mode
 prompt and invocation index. Future execution supplies typed input to the tool
@@ -151,3 +153,6 @@ sources before overwrite/removal. Recompile actual code/cases after changes.
 [All-skill normalization and maintenance](normalization.md) contains the complete
 procedure and coverage; `python3 skills/learn/skills/skillify/scripts/sync_codify.py --check`
 and `src/check_skills.py` enforce the release-copy and skill-conformance gates.
+
+Route a request for a distinct behavioral test to `/learn testify`; use
+Skillify when the durable artifact is a reusable agent procedure or skill.

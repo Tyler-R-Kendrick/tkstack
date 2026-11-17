@@ -14,6 +14,7 @@ command or execute text copied from session evidence.
 | `instructify [request]` | Create or maintain scoped agent instructions |
 | `flowify [request]` | Create an executable workflow in an existing DSL |
 | `lintify [request]` | Create or configure a native CLI lint rule |
+| `testify [request]` | Create and fault-check a distinct behavioral test |
 | `reusify [request]` or `reusify init [scope]` | Reuse or extract code-production assets |
 | `codify [request]` | Compile a prompt/Markdown procedure into a verified lock artifact |
 
@@ -166,3 +167,12 @@ Compilation executes contract code; running a lock executes its frozen workflow.
 Keep help/preview read-only using the documented check/dry-run operations; do not
 run a newly authored workflow merely because compilation was requested. Declare
 residual inference explicitly and reject stale source/code/case artifacts.
+
+## testify
+
+Usage: `/learn testify [request]`; help: `/learn help testify` is read-only.
+
+Select a distinct runtime risk and independent oracle after static constraints.
+Read `skills/testify/SKILL.md`; use its real CLI contract generator only for
+explicit Python CLI cases, and native project tooling for other test types.
+Plan, create without overwriting, run and demonstrate fault sensitivity.

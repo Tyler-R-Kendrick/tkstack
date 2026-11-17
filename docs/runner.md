@@ -1,7 +1,6 @@
 # Run skills and workflows from `.tkstack`
 
-Run the canonical program directly. Install does not write a `tkstack` launcher
-or a PATH shim.
+Use the destination’s `.tkstack/tkstack` launcher or the source program below. From any repository, `~/.tkstack/tkstack status` checks its project installation or your personal baseline.
 
 ```sh
 python3 src/tkstack.py help

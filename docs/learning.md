@@ -13,7 +13,7 @@ pointer without migrating the evidence.
 
 Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 `/learn help <name>` for focused guidance. Directly select `skillify`, `hookify`,
-`instructify`, `flowify`, `lintify`, `reusify`, or `codify` as a Learn subcommand:
+`instructify`, `flowify`, `lintify`, `testify`, `reusify`, or `codify` as a Learn subcommand:
 
 ```text
 /learn help reusify
@@ -24,7 +24,7 @@ Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 ```
 
 Learn preserves the request, nested commands, parameters, evidence, and scope,
-then follows the named subskill's index and actual tools. The seven ___ify
+then follows the named subskill's index and actual tools. The packaged ___ify
 skills are packaged inside Learn at `skills/learn/skills/<name>/`, so they ship
 and install with it rather than as separate skills. Preview/audit intent
 keeps the entire handoff read-only. Help and missing payloads show guidance

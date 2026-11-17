@@ -39,7 +39,9 @@ Read the full reference whose trigger matches the current decision:
 | Data shapes, module ownership, or public behavior | [Interfaces and invariants](references/interfaces-and-invariants.md) |
 | Completion claims, verification, or context expansion | [Evidence and context](references/evidence-and-context.md) |
 
-Use deterministic code/facts/rules first, constrained decision models/APIs for
+Make invalid states unrepresentable with static types or compile-time constraints
+where applicable; parse untrusted inputs once at the runtime boundary. Use
+deterministic code/facts/rules first, constrained decision models/APIs for
 the unresolved part next, and LLMs/agents only for residual judgment. An LLM
 behind an API remains inference; temperature zero does not guarantee determinism.
 
