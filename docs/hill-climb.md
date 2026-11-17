@@ -77,3 +77,8 @@ connects those pieces.
 The local runner executes trusted commands with host privileges. The bounded
 model checks its declared transitions and assumptions, rather than proving the
 implementation or a remote provider.
+
+The private Git store verifies its ownership and its separation from every
+registered source worktree. It disables hooks and rejects configured external
+filter drivers during managed checkout and freezing. These checks do not make
+a worktree a sandbox against another process with the same privileges.

@@ -676,7 +676,7 @@
         },
         "tests/test_experiment_git.py": {
           "mode": "100644",
-          "oid": "0834eff2569c0fbfc4b9117d76dba920dfa930e5"
+          "oid": "0361e86f6a12bf69e67349d3b89a30d2d29f9733"
         },
         "tests/test_experiment_ledger.py": {
           "mode": "100644",
@@ -907,7 +907,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "9636b674075e20afe6cfda0967e93e9f639491e1"
+          "oid": "383d0b8177e879c85342004eed288d6f320bc131"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1253,7 +1253,7 @@
         },
         "skills/hill-climb/scripts/experiment_git.py": {
           "mode": "100644",
-          "oid": "ba32be945239cbf835ed4da89e2590e0f54b2fe9"
+          "oid": "9fa1de9ae320445a8e362adb4abdf2ab8f13e5da"
         },
         "skills/hill-climb/scripts/experiment_ledger.py": {
           "mode": "100644",
@@ -1293,7 +1293,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "186b692b4ad41785967402110b1a91b5331828ce"
+          "oid": "683f65242f775b9757cd1770ab7acabd4388390a"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2713,7 +2713,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Document internal Git experiment, reservation, runner, evaluation and model primitives."
+      "reason": "Document private Git store ownership checks and safe execution constraints."
     }
   },
   "object_format": "sha1",

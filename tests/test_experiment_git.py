@@ -1,6 +1,7 @@
 """Real local Git behavior for isolated experiment arms."""
 import importlib.util
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
@@ -202,6 +203,85 @@ class GitExperimentTests(unittest.TestCase):
         self.experiment._git("update-ref", "-d", "refs/heads/exp/trial/one", candidate["commit"])
         with self.assertRaisesRegex(ValueError, "ambiguous"):
             self.experiment.retire("trial", "one", candidate["commit"], archive=True)
+
+    def test_linked_source_rejects_other_worktrees_and_common_git_dir(self):
+        linked = self.root / "linked"
+        git(self.source, "worktree", "add", "-q", "--detach", str(linked))
+        for destination in (self.source / "private-experiment",
+                            self.source / ".git" / "private-experiment",
+                            linked / "private-experiment"):
+            with self.subTest(destination=destination), self.assertRaises(ValueError):
+                module.GitExperiment.create(linked, destination)
+            self.assertFalse(destination.exists())
+
+    def test_open_rejects_replaced_private_repo(self):
+        private_repo = self.experiment.repo
+        shutil.move(private_repo, self.root / "saved-private.git")
+        private_repo.symlink_to(self.source / ".git", target_is_directory=True)
+        with self.assertRaises(ValueError):
+            module.GitExperiment.open(self.root / "experiments")
+        result = subprocess.run(
+            ["git", "-C", str(self.source), "show-ref", "--verify", "--quiet",
+             "refs/heads/exp/trial/one"],
+            check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_allocate_refuses_redirected_worktree_and_metadata_parents(self):
+        for folder in ("worktrees", "metadata"):
+            with self.subTest(folder=folder):
+                destination = self.source / ("redirected-" + folder)
+                destination.mkdir()
+                (self.experiment.root / folder / "trial").symlink_to(
+                    destination, target_is_directory=True)
+                with self.assertRaises(ValueError):
+                    self.experiment.allocate("trial", "one", self.base)
+                self.assertEqual(list(destination.iterdir()), [])
+                (self.experiment.root / folder / "trial").unlink()
+
+    def test_archive_refuses_redirected_archive_parent(self):
+        worktree, candidate = self.candidate("one", "one\n")
+        archives = self.experiment.root / "archives"
+        archives.rename(self.experiment.root / "saved-archives")
+        archives.symlink_to(self.source, target_is_directory=True)
+        with self.assertRaises(ValueError):
+            self.experiment.retire("trial", "one", candidate["commit"], archive=True)
+        self.assertTrue(worktree.exists())
+        self.assertEqual(list(self.source.glob("*.bundle")), [])
+
+    def test_replaced_repository_is_rechecked_after_open(self):
+        private_repo = self.experiment.repo
+        shutil.move(private_repo, self.root / "saved-private.git")
+        private_repo.symlink_to(self.source / ".git", target_is_directory=True)
+        with self.assertRaises(ValueError):
+            self.experiment.new_generation()
+        with self.assertRaises(ValueError):
+            self.experiment.allocate("trial", "one", self.base)
+
+    def test_git_hooks_are_disabled_for_worktree_checkout(self):
+        hooks = self.root / "hooks"
+        hooks.mkdir()
+        sentinel = self.root / "hook-executed"
+        post_checkout = hooks / "post-checkout"
+        post_checkout.write_text("#!/bin/sh\ntouch " + str(sentinel) + "\n")
+        post_checkout.chmod(0o755)
+        self.experiment._git("config", "core.hooksPath", hooks)
+        self.experiment.allocate("trial", "one", self.base)
+        self.assertFalse(sentinel.exists())
+
+    def test_filter_drivers_are_not_run_during_checkout(self):
+        sentinel = self.root / "filter-executed"
+        attributes = self.source / ".gitattributes"
+        attributes.write_text("feature.txt filter=evil\n")
+        git(self.source, "add", ".gitattributes")
+        git(self.source, "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+            "commit", "-qm", "attributes")
+        experiment = module.GitExperiment.create(self.source, self.root / "filter-experiment")
+        experiment._git("config", "filter.evil.smudge", "touch " + str(sentinel))
+        commit = git(self.source, "rev-parse", "HEAD")
+        with self.assertRaises(ValueError):
+            experiment.allocate("trial", "one", commit)
+        self.assertFalse(sentinel.exists())
 
     def test_rejects_path_traversal_wrong_tip_and_nested_root(self):
         for bad in ("../x", "x/y", "-oops", "a..b"):

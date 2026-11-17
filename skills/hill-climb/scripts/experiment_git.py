@@ -32,7 +32,9 @@ def _environment():
 
 def _run(args, *, cwd=None, text=True, check=True):
     completed = subprocess.run(
-        ["git", *map(str, args)], cwd=cwd, env=_environment(),
+        ["git", "-c", f"core.hooksPath={os.devnull}", "-c", "core.fsmonitor=false",
+         "-c", "credential.helper=", *map(str, args)],
+        cwd=cwd if cwd is not None else os.path.abspath(os.sep), env=_environment(),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=text, check=False,
     )
     if check and completed.returncode:
@@ -75,12 +77,31 @@ class GitExperiment:
     def __init__(self, root):
         self.root = Path(root).resolve()
         self.repo = self.root / "repo.git"
+        self._verify_repository()
+
+    def _verify_repository(self):
+        owner = self.root / "owner.json"
         try:
-            marker = json.loads((self.root / "owner.json").read_text())
+            if owner.is_symlink() or self.repo.is_symlink() or not self.repo.is_dir():
+                raise ValueError("managed repository or owner record was replaced")
+            marker = json.loads(owner.read_text())
+            identity = self.repo.stat()
         except (OSError, ValueError) as error:
             raise ValueError("root is not a managed experiment repository") from error
-        if marker.get("kind") != _MARKER or not self.repo.is_dir():
-            raise ValueError("root is not a managed experiment repository")
+        if (not isinstance(marker, dict) or marker.get("kind") != _MARKER or
+                marker.get("repo_dev") != identity.st_dev or marker.get("repo_ino") != identity.st_ino):
+            raise ValueError("managed repository identity does not match its owner record")
+
+    def _owned_parent(self, group, experiment=None):
+        base = self.root / group
+        if base.is_symlink() or not base.is_dir() or base.resolve() != base:
+            raise ValueError("managed directory has been replaced or redirected")
+        if experiment is None:
+            return base
+        child = base / _name(experiment)
+        if child.is_symlink() or child.resolve() != child:
+            raise ValueError("managed directory has been replaced or redirected")
+        return child
 
     @classmethod
     def create(cls, source, root):
@@ -88,9 +109,15 @@ class GitExperiment:
         root = Path(root).resolve()
         if root.exists():
             raise ValueError("experiment root must not already exist")
-        source_top = Path(_run(["-C", source, "rev-parse", "--show-toplevel"]).stdout.strip()).resolve()
-        if root == source_top or root.is_relative_to(source_top) or source_top.is_relative_to(root):
-            raise ValueError("experiment root and source checkout must not overlap")
+        source_top = Path(_run(["-C", source, "rev-parse", "--show-toplevel"]).stdout.rstrip("\n")).resolve()
+        common = Path(_run(["-C", source, "rev-parse", "--path-format=absolute",
+                            "--git-common-dir"]).stdout.rstrip("\n")).resolve()
+        listing = _run(["-C", source, "worktree", "list", "--porcelain", "-z"], text=False)
+        worktrees = [Path(os.fsdecode(item[len(b"worktree "):])).resolve()
+                     for item in listing.stdout.split(b"\0") if item.startswith(b"worktree ")]
+        for protected in [source_top, common, *worktrees]:
+            if root == protected or root.is_relative_to(protected) or protected.is_relative_to(root):
+                raise ValueError("experiment root must not overlap any source worktree or common Git directory")
         root.mkdir(parents=True, exist_ok=False)
         try:
             _run(["clone", "--bare", "--no-local", "--", source_top, root / "repo.git"])
@@ -98,7 +125,10 @@ class GitExperiment:
             (root / "worktrees").mkdir()
             (root / "metadata").mkdir()
             (root / "archives").mkdir()
-            (root / "owner.json").write_text(json.dumps({"kind": _MARKER}) + "\n")
+            identity = (root / "repo.git").stat()
+            (root / "owner.json").write_text(json.dumps({
+                "kind": _MARKER, "repo_dev": identity.st_dev, "repo_ino": identity.st_ino,
+            }) + "\n")
         except Exception:
             # Keep partial state for inspection; it cannot be opened without the marker.
             raise
@@ -109,16 +139,26 @@ class GitExperiment:
         return cls(root)
 
     def _git(self, *args, text=True, check=True):
+        self._verify_repository()
         return _run(["--git-dir", self.repo, *args], text=text, check=check)
 
+    def _check_filters(self, worktree=None):
+        location = ["-C", worktree] if worktree is not None else ["--git-dir", self.repo]
+        result = _run([*location, "config", "--includes", "--get-regexp",
+                       r"^filter\..*\.(clean|smudge|process)$"], check=False)
+        if result.returncode == 0 and result.stdout.strip():
+            raise ValueError("configured external Git filter drivers are not allowed")
+        if result.returncode not in (0, 1):
+            raise RuntimeError("could not check Git filter configuration")
+
     def _worktree(self, experiment, arm):
-        return self.root / "worktrees" / _name(experiment) / _name(arm)
+        return self._owned_parent("worktrees", experiment) / _name(arm)
 
     def _ref(self, experiment, arm):
         return f"refs/heads/exp/{_name(experiment)}/{_name(arm)}"
 
     def _metadata(self, experiment, arm):
-        return self.root / "metadata" / _name(experiment) / (f"{_name(arm)}.json")
+        return self._owned_parent("metadata", experiment) / (f"{_name(arm)}.json")
 
     def _commit(self, value):
         fmt = self._git("rev-parse", "--show-object-format").stdout.strip()
@@ -134,6 +174,8 @@ class GitExperiment:
         worktree, ref = self._worktree(experiment, arm), self._ref(experiment, arm)
         metadata_path = self._metadata(experiment, arm)
         try:
+            if metadata_path.is_symlink():
+                raise ValueError("arm ownership record was replaced")
             metadata = json.loads(metadata_path.read_text())
         except (OSError, ValueError) as error:
             raise ValueError("arm does not have a managed record") from error
@@ -141,6 +183,8 @@ class GitExperiment:
             raise ValueError("arm ownership record mismatch")
         if worktree.is_symlink() or not worktree.is_dir() or worktree.resolve() != worktree:
             raise ValueError("managed worktree is missing or has been replaced")
+        if not self._registered_worktree(worktree):
+            raise ValueError("managed worktree is not registered")
         common_dir = _run(["-C", worktree, "rev-parse", "--git-common-dir"]).stdout.strip()
         if Path(common_dir).resolve() != self.repo.resolve():
             raise ValueError("worktree is not attached to the managed repository")
@@ -157,6 +201,7 @@ class GitExperiment:
             raise ValueError("arm already exists")
         worktree.parent.mkdir(parents=True, exist_ok=True)
         metadata.parent.mkdir(parents=True, exist_ok=True)
+        self._check_filters()
         self._git("worktree", "add", "-b", ref.removeprefix("refs/heads/"), worktree, base)
         metadata.write_text(json.dumps({"ref": ref, "base": base, "worktree": str(worktree)}) + "\n")
         return worktree
@@ -173,6 +218,7 @@ class GitExperiment:
             raise ValueError("a commit message is required")
         worktree, _, metadata = self._arm(experiment, arm)
         base = self._commit(metadata["base"])
+        self._check_filters(worktree)
         committed = _run(["-C", worktree, "diff", "--name-only", "--no-renames", "-z", base, "HEAD"],
                          text=False)
         modified = _run(["-C", worktree, "diff", "--name-only", "--no-renames", "-z", "HEAD"],
@@ -218,8 +264,11 @@ class GitExperiment:
         return candidate
 
     def new_generation(self):
+        self._verify_repository()
         result = subprocess.run(
-            ["git", "--git-dir", str(self.repo), "hash-object", "-w", "--stdin"],
+            ["git", "-c", f"core.hooksPath={os.devnull}", "-c", "core.fsmonitor=false",
+             "-c", "credential.helper=", "--git-dir", str(self.repo),
+             "hash-object", "-w", "--stdin"],
             input=secrets.token_hex(32), text=True, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, env=_environment(), check=False,
         )
@@ -253,8 +302,10 @@ class GitExperiment:
         commands = (f"start\nupdate {ref} {candidate} {expected}\n"
                     f"update {generation} {new_generation} {expected_generation}\n"
                     f"create {marker} {candidate}\nprepare\ncommit\n")
+        self._verify_repository()
         result = subprocess.run(
-            ["git", "--git-dir", str(self.repo), "update-ref", "--stdin"],
+            ["git", "-c", f"core.hooksPath={os.devnull}", "-c", "credential.helper=",
+             "--git-dir", str(self.repo), "update-ref", "--stdin"],
             input=commands, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             env=_environment(), check=False,
         )
@@ -268,7 +319,7 @@ class GitExperiment:
         return result.stdout.strip() if result.returncode == 0 else None
 
     def _archive_path(self, experiment, arm, expected):
-        return self.root / "archives" / f"{_name(experiment)}-{_name(arm)}-{expected}.bundle"
+        return self._owned_parent("archives") / f"{_name(experiment)}-{_name(arm)}-{expected}.bundle"
 
     def _verify_archive(self, archive, ref, expected):
         if archive.is_symlink() or not archive.is_file():
