@@ -83,11 +83,19 @@ registered source worktree. It disables hooks and rejects configured external
 filter drivers during managed checkout and freezing. These checks do not make
 a worktree a sandbox against another process with the same privileges.
 
-Optional TLA+ and TLC specifications exercise bounded reservation and guarded
-promotion models. They include deliberately weakened configurations whose
+Lean checks unbounded budget arithmetic, with finite correspondence cases
+against SQLite. Optional TLA+ and TLC specifications exercise bounded
+reservation and guarded promotion models. They include deliberately weakened configurations whose
 counterexamples check the model's sensitivity. The [formal guide](../skills/hill-climb/formal/README.md)
 records the pinned checker, assumptions, and scope.
 
 Local trial execution accepts a monotonic deadline. It checks the deadline
 again after exporting the Git tree and caps command time to the remaining
 interval. Git export uses its own subprocess timeout.
+
+The ledger can enforce one claim for a frozen selection assignment per
+candidate tree, case and repetition when the controller supplies that identity. A nondeterministic comparison needs repeated baseline
+observations for every case and a positive declared noise floor; missing
+evidence remains inconclusive.
+Regrading also binds the original submission and case bytes separately from
+the evaluator's grading receipt, which may legitimately change.

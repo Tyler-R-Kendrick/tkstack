@@ -1,177 +1,27 @@
-# Working in tkstack
+# Working in TKStack
 
-This repository manages personal agent dotfiles. Its installed baseline is
-the owned portable skill set, informed by Pstack with Cursor Team Kit, Theo's
-Tstack, Matt Pocock, and the other pinned sources. Read `docs/standards.md` for
-routing and engineering defaults,
-`docs/evaluation.md` for the initial compatibility review, `docs/integrations.md`
-for current runtime readiness, and `GLOSSARY.md` for terminology.
+TKStack manages personal agent dotfiles. The consumer is a developer in another checkout. Keep home preferences, project adoption, optional integrations and maintenance of this repository separately owned. Read [scope](SCOPE.md) and [standards](docs/standards.md) for placement and engineering decisions.
 
-- Apply the personal `tkstack-principles` index and its applicable full
-  principles before designing or reviewing code, skills, hooks, rules, or
-  workflows. Prefer deterministic code/rules, constrained decision models/APIs
-  next, and LLMs/agents last. Design all code for bounded concurrency with
-  explicit dependencies, state ownership, and stable results. See
-  `skills/tkstack-principles/SKILL.md` and `docs/principles.md`.
-- Prefer the owned portable procedures for matching work. Use `investigate` for
-  grounding/research/diagnosis, `write` for human-facing composition, and
-  `document` for repository knowledge and handoffs. Source packages remain
-  available for explicit native workflows. See `docs/skill-distillation.md`.
-- A full implementation invocation of `sdlc` follows its BDD/contract lifecycle,
-  frozen workload,
-  isolated task graph, independent evidence review, and stacked delivery rules.
-  See `docs/sdlc.md`. Scoped plan/design/verify/review/deliver/handoff requests
-  use the matching reference and keep that scope. Creating or installing the
-  skill does not run its workflow.
-- Use Lever for explicit feedback-loop, experiment, briefing, and delivery asks.
-  Read `docs/lever.md` for its repository dials and native Copilot setup. Keep
-  `learn` as the correction evidence store and honor an explicit `sdlc` workflow.
-- Pstack owns `tdd`; Matt's workflows use `matt-tdd`. Emil Kowalski's UI
-  prototype is `emil-prototype` so Matt's `prototype` keeps its name. Alias rules
-  live in `skills/skills.json`; the installer adapts declarations and calls.
-- Personal `unslop` owns cross-artifact anti-slop review and the evolving pattern
-  catalog. Preserve Pstack's prose skill as `pstack-unslop`; its other callers
-  intentionally use the personal `unslop`. See `docs/unslop.md`.
-- Use `hill-climb` for an explicitly requested measured improvement loop:
-  frozen evaluation, noise-aware keep/revert rounds, and untouched confirmation.
-  Honor `sdlc` delivery requirements when that workflow is active. See
-  `docs/hill-climb.md`. Skill creation does not start an experiment.
-- Use `codify` to lower a prompt/Markdown procedure once into native workflow
-  code and a verified executable lock artifact. Codify owns the shared templates,
-  compiler, runner, and optional AI SDK runtime; Skillify consumes its generated
-  standalone release. Execute locks instead of repeatedly inferring the procedure;
-  recompile explicitly after source/code/case drift. Keep lock artifacts in
-  authored paths and private staging under `.tkstack/`. See `docs/codify.md`.
-- Use `skillify` to create, adapt, or update an owned portable skill. Use
-  its main `SKILL.md` as an index/table of contents with direct pointers to
-  tool invocation, topics, features, optional subcommands, and parameter contracts.
-  Define each public subcommand in `commands/<name>.md` with an OpenAI function
-  signature in YAML frontmatter plus separate CLI aliases/flags/path and artifact
-  bindings. Use Codify's shared schema/dispatcher and Skillify-supplied reserved
-  help/version commands. Default help renders a generated man page deterministically;
-  `help --format man` exports source. Keep their builtin names/routes/flags intact.
-  Compile the executable workflow into the skill's `scripts/`; the skill is an
-  intermediary code-mode prompt. Put usage/contracts/design/evidence in
-  `references/` through progressive disclosure. Prefer the locked Vercel AI SDK
-  adapter for explicit chat/Responses, Decisions, or harness inference boundaries.
-  Configuration is a version 1 providers/profiles document passed with
-  `--config`. See `docs/skillify.md`.
-  A scaffold is a draft until its actual workflow and native outcomes are verified.
-  Use `hookify` for explicit mechanically enforceable rules and hook authoring.
-  Prefer an existing linter/contract/CI boundary when it directly establishes
-  the invariant. Keep policy replay, native registration, and observed activation
-  distinct; do not enable demonstration policies. See `docs/authoring.md`.
-- Use `lintify` to create or configure native CLI lint rules, including Markdown
-  intent compiled to deterministic checks or explicitly semantic prompt rules.
-  Prefer existing rules, validate actual CLI fixtures/discovery/exits, and keep
-  model-based checking probabilistic. See `docs/lintify.md`.
-- Before reproducing code patterns, inspect suitable existing code and
-  `.tkstack/reuse/catalog.json` when present. Use `reusify` for three verified occurrences
-  or an upcoming third use: prefer the smallest reusable template, snippet,
-  generator, module, library, or component. Preserve legitimate variation and
-  scope; a count is not semantic equivalence. See `docs/reusify.md`.
-  `/reusify init [scope]` bootstraps actual deterministic code-production assets
-  from existing code: snippets, templates, macros, codegen, and shared modules.
-  Keep ordinary targeted use valid without a subcommand; preview stays read-only.
-- Use `instructify` to create, audit, or update scoped agent instructions.
-  Preserve existing guidance/imports and installer-owned sections, inspect the
-  actual loading scope, and prefer shared instruction sources over duplicated
-  context. Its helper plans owned, hashed changes before applying them.
-- Use `flowify` for reusable executable workflow definitions. Prefer MAF YAML
-  with deterministic code bindings, or Grok-hosted Rhai when that host fits.
-  Keep source inspection, native graph/mock validation, and actual execution
-  evidence distinct. See `docs/flowify.md`; do not invent a private workflow DSL.
-- Preserve every `vendor/<source>/` snapshot exactly, including licenses,
-  references, scripts, symlinks, and executable modes. Record updates in
-  `sources.lock.json`. `vendor/ponytail/` is the pinned DietrichGebert/ponytail
-  5.3.3 snapshot (six skills and Node lifecycle-hook adapters), vendored so
-  install uses those locked bytes instead of cloning upstream. Upstream
-  instructions under `vendor/` describe those packages and are not additional
-  mandatory policy for maintaining this repo.
-- Put personal skills in `skills/`, shared Markdown agents in `agents/`,
-  owned Cursor rules in `.cursor/rules/`, and Copilot dials in
-  `.github/lever.yml`. Generated alias views in `.tkstack/` and installed
-  links are ignored. Do not add a top-level harnesses directory.
-- This checkout is an Agent Plugins 1.0 package: root `plugin.json`, root
-  `mcp.json`, and immediate `skills/*/SKILL.md` directories. Keep
-  `skills/skills.json` as the placement registry and `src/runner.json` as the
-  runner registry. Keep `.claude-plugin/` for the Claude marketplace and
-  `.cursor/rules/` for Cursor. Do not add client fields to root `plugin.json`
-  or secrets to `mcp.json`. See `docs/agent-plugins.md`.
-- The ___ify skills (codify, flowify, hookify, instructify, lintify, reusify,
-  skillify) are Learn subskills at `skills/learn/skills/<name>/`. They ship and
-  install only with Learn; invoke them as `/learn <name>` or
-  `python3 src/tkstack.py skills learn -- <name> ...`. Each stays a complete package
-  with its own lock, and Learn's `commands/<name>.md` mounts it. See
-  `skills/README.md`.
-- Verify changes with `python3 -m unittest discover -s tests -v` and
-  `./install.sh --dry-run`. Tests use temporary installation targets and may
-  regenerate the ignored alias view; leave the user's home and existing
-  configuration alone. Reapply `python3 scripts/install.py --target .` after
-  the suite so generated views match the installation context.
-  Asyncio thread tests require local IPC: restricted sandboxes may deny their
-  wake-up socket. Use a test environment that permits local socket operations;
-  do not replace the production scheduler to work around that restriction.
-- Use `learn` to capture user corrections and expressed frustration as evidence,
-  then improve the scoped reasoning rule behind the mistake. See `docs/learning.md`.
-  Keep procedural task/tool experiences separate from user authority. Explicit
-  `learn` report/audit requests are read-only; skill edits follow their requested
-  change scope and the improvement workflow in `skills/learn/references/`.
-- Use root `install.sh` to link this checkout into a home or project. It does
-  not install private language runtimes, edit shell startup, register native
-  hooks, or write a launcher. It does run Serena's `init` and `project index`
-  when `uvx` is on `PATH`, and skips that step when `uvx` is not on `PATH`
-  or the command fails. `--dry-run` prints the link plan and those
-  Serena commands without running them. See `docs/bootstrap.md` and
-  `docs/agent-plugins.md`. Keep manual application/account requirements explicit.
-- Invoke compiled skills/workflows with `python3 src/tkstack.py`. Reuse Codify's
-  command schema, binding/freshness checks, and frozen execution; uncompiled
-  skills have no prompt/inference fallback. Keep registry and model/provider
-  configuration scoped, preserve named Vercel AI SDK profiles, and leave
-  help/list/export/check read-only. See `docs/runner.md`.
-- Install does not download tool runtimes or apply a separate integrations
-  pin, except the Serena uvx commands above, which fetch Serena only when
-  `uvx` runs. Source versions live in `sources.lock.json`. Portable MCP
-  servers are declared in `mcp.json`; a host still supplies API keys and
-  OAuth. See `docs/integrations.md`.
-- Graphify's installed skill is a byte copy of the upstream skill text. Use the
-  upstream `graphify` command when that package is installed. Installation
-  starts no indexing, watcher, model, or delegated extraction. See
-  `docs/graphify.md`.
-- OpenWiki supplies repository wiki retrieval and maintenance through its official
-  skill and local MCP runtime. Use it for concrete questions or explicit wiki
-  requests; keep user corrections in `learn`. See `docs/openwiki.md`.
-- Official Caveman skills, Cavecrew agents, and native hook scripts are pinned
-  from `JuliusBrussee/caveman`. See `docs/caveman.md` for startup defaults,
-  opt-out, isolated state, and host activation limits. Keep its optional proxy
-  separate from plugin file setup and avoid duplicate native registrations.
-- Store custom skill state in scoped `.tkstack/` roots: workspace, user, and
-  global, with explicit write selection and nearest-scope read precedence.
-  Session scratch belongs in `sessions/<session>/` and stays ignored. Invoked
-  Learn reviews that evidence, abstracts transferable principles, and applies
-  the smallest useful set of ___ify skills to create verified reusable artifacts.
-  Save useful evidence/lessons outside temporary sessions before cleanup.
-  Automatic correction capture and report/audit keep their narrower scopes.
-  Use the shared `src/tkstack_state.py` primitive (bundled unchanged into each
-  package as `scripts/tkstack_state.py`) and keep `.tkstack/.gitignore`
-  protecting histories, sessions, evidence, caches, leases, and locks. Durable
-  reuse metadata is `.tkstack/reuse/catalog.json`; authored deliverables keep
-  their native/requested paths. Read-only operations do not initialize state.
-  See `docs/state-layout.md`.
-- Keep credentials and machine-specific state out of version control.
-- Keep every owned skill on the shared typed contract/model/native interface.
-  Use `skillify normalize` from its explicit authored profile, canonical Codify
-  runtime/JSON helpers, reserved help/version and a current executable lock.
-  Preserve native helper ownership and declared semantic/provider boundaries.
-  Run `python3 src/check_skills.py`. CI uses that same read-only gate. See
-  `docs/normalization.md`.
-- Keep README installation/use and the mapped documentation current. Run
-  `python3 src/check_docs.py check`; after reviewing changed sources, update
-  their docs and explicitly refresh the named areas with an actual reason.
-  Use `--no-doc-impact` only for justified internal-only changes. Never refresh
-  merely to silence a gate. Git pre-commit, via `core.hooksPath=.githooks`,
-  validates the staged snapshot, including the reviewed ledger.
-  See `docs/documentation.md`.
+## Choose the right workflow
+
+| When | Follow |
+| --- | --- |
+| Designing or reviewing changes | Apply [TKStack Principles](skills/tkstack-principles/SKILL.md). Prefer static types and exhaustive cases, parse untrusted values once at the boundary, then deterministic checks. Reserve inference for residual judgment. Bound concurrency and isolate mutable state. |
+| Investigating, writing or documenting | Use the matching owned procedure. [Distillation and provenance](docs/skill-distillation.md). |
+| Explicit SDLC, Lever or measured improvement request | Follow [SDLC](docs/sdlc.md), [Lever](docs/lever.md) or [Hill-climb](docs/hill-climb.md). Honor the requested phase and autonomy. Full SDLC includes its frozen workload, independent review and delivery rules. |
+| Changing tests, proofs, layout, docs or budgets | Read [Constrain](skills/constrain/SKILL.md). Preserve review provenance and verify a distinct failure. Never increase budgets or refresh reviews just to obtain a pass. |
+| Capturing corrections and reusable procedures | Use [Learn](docs/learning.md). Keep user evidence separate from tool observations. A report or audit is read-only. Review slop with [Unslop](docs/unslop.md). |
+| Authoring a skill, lint rule, test, hook, scoped instruction or executable workflow | Learn mounts Skillify, Lintify, Testify, Hookify, Instructify, Codify, Flowify and Reusify. Start with [authoring](docs/authoring.md) and load the selected subcommand. Use a narrower existing mechanism when it completely enforces the rule. |
+| Creating or changing an owned skill | Use Skillify. A prose procedure can declare `metadata.kind: guidance`. Preserve published typed operations. Executable packages keep their native evidence, command definitions and verified workflow lock. [Normalization](docs/normalization.md). |
+| Managing configuration and durable state | Use scoped [state locations](docs/state-layout.md) and the [runner](docs/runner.md). Keep credentials and machine-specific state out of version control. |
+
+## Ownership and verification
+
+- Preserve pinned upstream content, licenses, symlinks and modes in `vendor/`; update `sources.lock.json` for a reviewed upstream revision. Host adaptations belong in placement or generated views. [Catalog](docs/skills.md).
+- Keep owned skills in `skills/`, adopted packages in `.agents/skills/`, shared subagents in `agents/` and native Cursor rules in `.cursor/rules/`. Keep portable manifests, Claude marketplace, and host discovery consistent with their respective contracts. [Distribution](docs/agent-plugins.md).
+- Install into the requested destination and verify it there. Use temporary homes/projects for tests. Native discovery, a linked file, and live service authorization establish different facts. [Bootstrap](docs/bootstrap.md) and [integration probes](docs/integrations.md).
+- Run the full unittest suite, installer preview, skill and routing checks, strict constraint gate and documentation check. Use the locked dependencies from CI. Reapply `python3 scripts/install.py --target .` after the suite to restore source views. Asyncio tests need local IPC.
+- Update mapped docs and explicitly refresh affected areas with an actual review reason. The optional maintainer pre-commit checks Git's staged snapshot. [Documentation maintenance](docs/documentation.md).
 
 ## Agent skills
 

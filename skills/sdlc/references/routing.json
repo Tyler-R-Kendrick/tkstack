@@ -16,7 +16,7 @@
     "developed": {
       "title": "tkstack skills under development",
       "best_for": "The owned lifecycle and the portable branches distilled from the pinned catalogs",
-      "summary": "Eight skills in skills/ plus Learn's seven subskills. sdlc coordinates requirements through delivery. investigate, write, document, unslop, hill-climb, learn, and tkstack-principles own the portable outcomes. The ___ify skills ship inside learn and run as /learn <name>."
+      "summary": "Owned skills in skills/ plus Learn's authoring subskills. sdlc coordinates requirements through delivery. investigate, write, document, unslop, hill-climb, learn, tkstack-principles, and constrain own the portable outcomes. The ___ify skills ship inside learn and run as /learn <name>."
     },
     "adopted": {
       "title": "Third-party-derived packages",
@@ -927,6 +927,14 @@
     "writing-shape": {
       "phase": "docs",
       "strengths": "Choose this to shape material into an article paragraph by paragraph. write is tkstack's human-facing draft; this is Matt's pass after fragments exist."
+    },
+    "constrain": {
+      "phase": "review",
+      "strengths": "Gates test-oracle smells, suite review drift, verification selection and repository sparsity using workspace policy."
+    },
+    "testify": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Choose this to create and fault-check a distinct behavioral test. Lintify enforces source rules; Skillify packages agent procedures."
     }
   }
 }

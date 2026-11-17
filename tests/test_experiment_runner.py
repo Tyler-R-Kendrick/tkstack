@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -94,6 +95,36 @@ class LocalTrialTests(unittest.TestCase):
         self.assertEqual(self.run_target(timeout=0.1)["status"], "timeout")
         self.registry["component"]["argv"] = ["executable-that-does-not-exist-23"]
         self.assertEqual(self.run_target()["status"], "infra_error")
+
+    @unittest.skipUnless(sys.platform.startswith("linux") and hasattr(os, "waitid") and hasattr(os, "WNOWAIT"), "requires POSIX non-reaping wait")
+    def test_success_kills_closed_pipe_descendant_before_return(self):
+        root = Path(self.temp.name)
+        ready, release, escaped = root / "child.pid", root / "release", root / "escaped"
+        self.addCleanup(release.touch)
+        child = ("import os,time; from pathlib import Path; "
+                 f"Path({str(ready)!r}).write_text(str(os.getpid())); "
+                 f"p=Path({str(release)!r}); "
+                 "exec('while not p.exists():\\n time.sleep(0.01)'); "
+                 f"Path({str(escaped)!r}).write_text('alive')")
+        parent = ("import subprocess,sys,time; from pathlib import Path; "
+                  f"subprocess.Popen([sys.executable,'-c',{child!r}],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); "
+                  f"p=Path({str(ready)!r}); "
+                  "exec('while not p.exists():\\n time.sleep(0.01)')")
+        self.registry["component"]["argv"] = [sys.executable, "-c", parent]
+        result = self.run_target(timeout=5)
+        self.assertEqual(result["status"], "passed")
+        pid = int(ready.read_text())
+        release.write_text("go")
+        deadline = time.monotonic() + 2
+        stopped = False
+        while time.monotonic() < deadline:
+            stat = Path(f"/proc/{pid}/stat")
+            if not stat.exists() or stat.read_text().split()[2] == "Z":
+                stopped = True
+                break
+            time.sleep(0.01)
+        self.assertTrue(stopped, "background process remained live after successful trial")
+        self.assertFalse(escaped.exists())
 
     def test_output_capture_is_bounded_with_total_counts(self):
         self.registry["component"]["argv"] = [sys.executable, "-c", "import sys; sys.stdout.write('A'*10000); sys.stderr.write('B'*10000)"]

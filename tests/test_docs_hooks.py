@@ -1,5 +1,3 @@
-import contextlib
-import io
 import json
 import os
 from pathlib import Path
@@ -13,7 +11,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(ROOT / 'src'))
 import check_docs as docs
-import install
 
 
 class DocumentationHookTests(unittest.TestCase):
@@ -27,6 +24,9 @@ class DocumentationHookTests(unittest.TestCase):
         self.git('config', 'user.email', 'docs-fixture@example.invalid')
         for folder in ['scripts', 'docs', 'src', '.githooks']:
             (self.root / folder).mkdir(parents=True, exist_ok=True)
+        shared = Path("skills/constrain/scripts/git_snapshot.py")
+        (self.root / shared.parent).mkdir(parents=True)
+        shutil.copy2(ROOT / shared, self.root / shared)
         shutil.copy2(ROOT / 'src/check_docs.py', self.root / 'src/check_docs.py')
         shutil.copy2(ROOT / 'install.sh', self.root / 'install.sh')
         shutil.copy2(ROOT / '.githooks/pre-commit', self.root / '.githooks/pre-commit')
@@ -77,7 +77,7 @@ class DocumentationHookTests(unittest.TestCase):
         self.change_source()
         docs.refresh(self.snapshot(), ['cli'], 'Internal implementation change with unchanged documented invocation and output contract', no_doc_impact=True)
         self.assertEqual(docs.check(self.snapshot()), [])
-        self.assertTrue(docs.load(self.snapshot(), docs.LEDGER)['areas']['cli']['no_doc_impact'])
+        self.assertTrue(self.snapshot().json(docs.LEDGER)['areas']['cli']['no_doc_impact'])
 
     def test_staged_source_cannot_use_unstaged_documentation_or_receipts(self):
         self.change_source()
@@ -120,7 +120,7 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertTrue(docs.check(self.snapshot()))
 
     def test_real_precommit_blocks_stale_index_and_accepts_reviewed_staged_content(self):
-        install.repo_hooks(self.root)
+        self.git('config', 'core.hooksPath', '.githooks')
         self.change_source()
         self.git('add', 'src/cli.py')
         self.git('commit', '-qm', 'Stale docs must fail', expected=1)
@@ -163,63 +163,3 @@ class DocumentationHookTests(unittest.TestCase):
         self.assertEqual(docs.check(self.snapshot(True)), [])
         path.write_text(path.read_text().replace('# Authored policy', '# Changed authored policy'))
         self.assertTrue(docs.check(self.snapshot()))
-
-    def test_missing_git_uninstall_is_not_a_checkout(self):
-        empty = self.root.parent / 'no-git'
-        empty.mkdir()
-        saved = os.environ.get('PATH')
-        os.environ['PATH'] = str(empty)
-        captured = io.StringIO()
-        try:
-            with contextlib.redirect_stdout(captured):
-                result = install.repo_hooks(self.root, uninstall=True)
-        finally:
-            if saved is None:
-                os.environ.pop('PATH', None)
-            else:
-                os.environ['PATH'] = saved
-        self.assertIsNone(result)
-        self.assertIn('skip git docs hook: not a git checkout', captured.getvalue())
-
-    def test_dry_run_uninstall_plans_the_hook_and_leaves_it_in_place(self):
-        with contextlib.redirect_stdout(io.StringIO()):
-            install.repo_hooks(self.root)
-        self.assertEqual(self.git('config', '--get', 'core.hooksPath').strip(), '.githooks')
-        planned = io.StringIO()
-        with contextlib.redirect_stdout(planned):
-            install.repo_hooks(self.root, dry_run=True, uninstall=True)
-        self.assertIn('Would unset', planned.getvalue())
-        self.assertEqual(self.git('config', '--get', 'core.hooksPath').strip(), '.githooks')
-        with contextlib.redirect_stdout(io.StringIO()):
-            install.repo_hooks(self.root, uninstall=True)
-        shown = subprocess.run(['git', '-C', str(self.root), 'config', '--get', 'core.hooksPath'], capture_output=True, text=True)
-        self.assertNotEqual(shown.returncode, 0)
-        skipped = io.StringIO()
-        with contextlib.redirect_stdout(skipped):
-            install.repo_hooks(self.root, dry_run=True, uninstall=True)
-        self.assertIn('core.hooksPath is not .githooks', skipped.getvalue())
-
-    def test_git_config_failure_is_a_value_error(self):
-        bindir = self.root.parent / 'git-bin'
-        bindir.mkdir()
-        real = shutil.which('git')
-        (bindir / 'git').write_text(
-            '#!/bin/sh\n'
-            'if [ "$1" = -C ] && [ "$3" = config ] && [ "$4" != --get ] && [ "$4" != --unset ]; then\n'
-            '  printf "%s\\n" "config denied" >&2\n'
-            '  exit 4\n'
-            'fi\n'
-            f'exec {real} "$@"\n'
-        )
-        (bindir / 'git').chmod(0o755)
-        saved = os.environ.get('PATH')
-        os.environ['PATH'] = str(bindir) + os.pathsep + (saved or '')
-        try:
-            with self.assertRaises(ValueError) as caught:
-                install.repo_hooks(self.root)
-        finally:
-            if saved is None:
-                os.environ.pop('PATH', None)
-            else:
-                os.environ['PATH'] = saved
-        self.assertIn('config denied', str(caught.exception))

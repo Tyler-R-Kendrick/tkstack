@@ -1,0 +1,64 @@
+{
+  "format": "skillopt_sleep.tasks.v1",
+  "reviewed": true,
+  "provenance": "authored boundary-selection scenarios; not a model-performance claim",
+  "tasks": [
+    {
+      "id": "testify-train",
+      "project": "tkstack",
+      "intent": "A typed enum already excludes invalid build states; JSON from a remote client is untrusted. A) Test every enum variant redundantly. B) Parse the JSON once at the boundary and test malformed and accepted external inputs. C) Trust the static type to validate network bytes. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Choose the method that detects the real residual failure."
+          }
+        ]
+      }
+    },
+    {
+      "id": "testify-val",
+      "project": "tkstack",
+      "intent": "A simulated payment provider returns a timeout after receiving a request. A) Check an internal mock call count only. B) Run an expensive live provider success check. C) Exercise retry/idempotency behavior through the consumer contract with controlled failure. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Choose the method that detects the real residual failure."
+          }
+        ]
+      }
+    },
+    {
+      "id": "testify-test",
+      "project": "tkstack",
+      "intent": "An existing functional test catches an identical defect as a new mocked unit test. A) Retain only the more useful coverage unless independent boundary or diagnosis value is demonstrated. B) Add both because test counts matter. C) Delete the functional test without inspecting it. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Choose the method that detects the real residual failure."
+          }
+        ]
+      }
+    }
+  ]
+}

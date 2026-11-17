@@ -50,6 +50,7 @@
         "sources.lock.json",
         "plugin.json",
         "mcp.json",
+        "integrations/mcp/package*.json",
         ".claude-plugin/**",
         "skills/skills.json",
         ".cursor/rules/*.mdc",
@@ -103,7 +104,9 @@
         ".githooks/**",
         "docs/docs-policy.json",
         "src/check_docs.py",
-        "tests/**"
+        "skills/constrain/scripts/git_snapshot.py",
+        "tests/**",
+        ".constrain/**"
       ],
       "docs": [
         "README.md",

@@ -196,6 +196,17 @@ def _terminate(process):
     process.wait()
 
 
+def _can_observe_unreaped():
+    return os.name == "posix" and all(hasattr(os, name) for name in ("waitid", "P_PID", "WEXITED", "WNOHANG", "WNOWAIT"))
+
+
+def _exited_without_reaping(process):
+    # Preserve the leader PID until its remaining process group is killed.
+    if _can_observe_unreaped():
+        return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+    return process.poll() is not None
+
+
 def _execute(argv, cwd, home, timeout, maximum):
     env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": str(home),
            "TMPDIR": str(home), "LC_ALL": "C"}
@@ -215,7 +226,7 @@ def _execute(argv, cwd, home, timeout, maximum):
             stream = getattr(process, name)
             os.set_blocking(stream.fileno(), False)
             selector.register(stream, selectors.EVENT_READ, name)
-        while selector.get_map() or process.poll() is None:
+        while selector.get_map() or not _exited_without_reaping(process):
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 timed_out = True
@@ -231,7 +242,7 @@ def _execute(argv, cwd, home, timeout, maximum):
                 name = key.data
                 counts[name] += len(data)
                 captured[name].extend(data[:max(0, maximum - len(captured[name]))])
-        if timed_out:
+        if timed_out or _can_observe_unreaped():
             _terminate(process)
         else:
             process.wait()
@@ -246,7 +257,7 @@ def _execute(argv, cwd, home, timeout, maximum):
         }
     finally:
         selector.close()
-        if process.poll() is None:
+        if process.returncode is None:
             _terminate(process)
         process.stdout.close()
         process.stderr.close()
@@ -264,6 +275,8 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
     limits. ``deadline`` is an optional absolute time.monotonic() deadline.
     If it expires before dispatch, return timeout without starting the command;
     otherwise the command timeout is capped to the remaining interval. This local adapter executes with host privileges and is not a sandbox.
+    POSIX waitid(WNOWAIT) permits cleanup of same-group children on successful
+    exit. Detached sessions and other platforms require an external supervisor.
     """
     argv, relative_cwd = _validate(registry, allowed_targets, target, timeout, max_output_bytes)
     if not isinstance(commit, str) or not _OBJECT_ID.fullmatch(commit):

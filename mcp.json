@@ -1,26 +1,19 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
-    "serena": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--project-from-cwd"
-      ]
-    },
     "playwright": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@playwright/mcp@latest"]
+      "command": "node",
+      "args": [
+        "${PLUGIN_ROOT}/integrations/mcp/node_modules/@playwright/mcp/cli.js"
+      ]
     },
     "firecrawl": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "firecrawl-mcp@3.33.2"]
+      "command": "node",
+      "args": [
+        "${PLUGIN_ROOT}/integrations/mcp/node_modules/firecrawl-mcp/dist/index.js"
+      ]
     },
     "vercel": {
       "type": "streamable-http",
@@ -29,7 +22,9 @@
     "graphify": {
       "type": "stdio",
       "command": "graphify-mcp",
-      "args": ["${PLUGIN_DATA}/graphify-out/graph.json"]
+      "args": [
+        "${PLUGIN_DATA}/graphify-out/graph.json"
+      ]
     }
   }
 }

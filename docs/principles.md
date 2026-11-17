@@ -80,3 +80,8 @@ types, state machines, and meaningful checks. For concurrency changes, verify
 the relevant invariants under controlled overlap/failure and measure performance
 when claiming a gain. A universal keyword scanner cannot establish semantic
 correctness or safe parallelization, so this change adds no such proxy gate.
+
+Use parse-don't-validate at external boundaries: parse once into constrained
+domain values. Prefer static types and compile-time rules that prevent invalid
+states, then test remaining behavior and trust boundaries; Python annotations
+alone do not validate runtime input.

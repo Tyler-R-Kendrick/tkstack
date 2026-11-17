@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "name": "constrain",
+  "purpose": "Enforce configured test-value, dependency integrity, execution, artifact and repository sparsity constraints in the selected workspace.",
+  "criteria": [
+    {
+      "id": "risk",
+      "description": "Choose verification depth and category from the concrete risk and boundary."
+    },
+    {
+      "id": "behavior",
+      "description": "Inspect independent behavioral oracles and distinct fault sensitivity before retaining tests."
+    },
+    {
+      "id": "gate",
+      "description": "Run the actual selected-workspace constraint gate and repair failures without automatic waivers."
+    },
+    {
+      "id": "integrity",
+      "description": "Pin supported dependencies and identify runtime acquisition paths outside the verified lock boundary."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "gate_passed": {
+        "type": "boolean",
+        "const": true
+      },
+      "semantic_review_performed": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "gate_passed",
+      "semantic_review_performed"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_check": {
+      "entrypoint": "scripts/constrain.py",
+      "prefix": [
+        "check"
+      ],
+      "parameters": {
+        "repo": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--repo"
+          ],
+          "path": true
+        },
+        "category": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "source",
+              "all",
+              "tests",
+              "layout",
+              "artifacts",
+              "dependencies",
+              "execution",
+              "documents",
+              "boundaries"
+            ]
+          },
+          "flags": [
+            "--category"
+          ],
+          "default": "source"
+        },
+        "staged": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--staged"
+          ],
+          "default": false
+        },
+        "strict_dependencies": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--strict-dependencies"
+          ],
+          "default": false
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "check"
+      ],
+      "description": "Enforce configured constraints in the explicit repository; no writes, imports of tests, or inference."
+    },
+    "native_audit": {
+      "entrypoint": "scripts/constrain.py",
+      "prefix": [
+        "audit"
+      ],
+      "parameters": {
+        "repo": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--repo"
+          ],
+          "path": true
+        },
+        "category": {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "source",
+              "all",
+              "tests",
+              "layout",
+              "artifacts",
+              "dependencies",
+              "execution",
+              "documents",
+              "boundaries"
+            ]
+          },
+          "flags": [
+            "--category"
+          ],
+          "default": "source"
+        },
+        "staged": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--staged"
+          ],
+          "default": false
+        },
+        "strict_dependencies": {
+          "schema": {
+            "type": "boolean"
+          },
+          "flags": [
+            "--strict-dependencies"
+          ],
+          "default": false
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "audit"
+      ],
+      "description": "Inspect configured constraints in the explicit repository; no writes, imports of tests, or inference."
+    }
+  },
+  "limits": [
+    "Deterministic rules detect supported test, dependency, execution, boundary and budget defects; they do not prove semantic test value or verify downloaded artifacts by themselves.",
+    "Unlocked MCP runtime fetches and unsupported acquisition paths remain explicitly reported; recorded review does not authenticate reviewer judgment or native hook activation."
+  ]
+}

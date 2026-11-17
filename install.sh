@@ -60,8 +60,6 @@ checkout_root() {
 }
 
 tarball_url() {
-  # TKSTACK_TARBALL must be https. This script cannot hash its own archive:
-  # tar.gz/main is a mutable ref, and an https URL only protects the transport.
   if [[ -n "${TKSTACK_TARBALL:-}" ]]; then
     case "$TKSTACK_TARBALL" in
       https://*)
@@ -69,15 +67,19 @@ tarball_url() {
         return 0
         ;;
       *)
-        printf '%s\n' 'tkstack: TKSTACK_TARBALL must be an https:// URL. The archive has no content hash; HTTPS does not pin the bytes.' >&2
+        printf '%s\n' 'tkstack: TKSTACK_TARBALL must be an https:// URL.' >&2
         return 1
         ;;
     esac
   fi
+  if [[ ! "${TKSTACK_REV:-}" =~ ^[0-9a-f]{40}$ ]]; then
+    printf '%s\n' 'tkstack: supply a full TKSTACK_REV or an explicit HTTPS TKSTACK_TARBALL.' >&2
+    return 1
+  fi
   local repo
   repo="$(expected_repo)"
   if [[ "$repo" =~ ^https://github\.com/([^/]+)/([^/]+)$ ]]; then
-    printf 'https://codeload.github.com/%s/%s/tar.gz/main\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
+    printf 'https://codeload.github.com/%s/%s/tar.gz/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "$TKSTACK_REV"
     return 0
   fi
   printf '%s\n' 'tkstack: git is not on PATH, and TKSTACK_REPO is not a GitHub HTTPS URL. Install git or set TKSTACK_TARBALL to an https:// archive.' >&2
@@ -267,12 +269,20 @@ write_receipt() {
 download_tarball() {
   local dest="$1" replacing="${2:-}" url archive extract inner candidate
   url="$(tarball_url)"
+  if [[ ! "${TKSTACK_TARBALL_SHA256:-}" =~ ^[a-f0-9]{64}$ ]]; then
+    printf '%s\n' 'tkstack: set TKSTACK_TARBALL_SHA256 to a separately trusted archive digest.' >&2
+    exit 1
+  fi
   archive="$(mktemp)"
   extract="$(mktemp -d)"
   _archive="$archive"
   _extract="$extract"
   if ! curl -fsSL --proto '=https' --tlsv1.2 --retry 0 -o "$archive" -- "$url"; then
     printf '%s\n' 'tkstack: downloading the repository tarball failed.' >&2
+    exit 1
+  fi
+  if [[ "$(file_sha256 "$archive")" != "$TKSTACK_TARBALL_SHA256" ]]; then
+    printf '%s\n' 'tkstack: repository archive sha256 mismatch.' >&2
     exit 1
   fi
   if ! reject_archive_members "$archive"; then
@@ -368,9 +378,13 @@ git_origin_matches() {
 }
 
 fetch_checkout() {
-  local dest expected
+  local dest expected head changes
   dest="${TKSTACK_HOME:-$HOME/.local/share/tkstack}"
   expected="$(expected_repo)"
+  if [[ -n "${TKSTACK_REV:-}" && ! "$TKSTACK_REV" =~ ^[0-9a-f]{40}$ ]]; then
+    printf '%s\n' 'tkstack: TKSTACK_REV requires a full commit ID.' >&2
+    exit 1
+  fi
   if [[ -e "$dest" ]]; then
     if [[ ! -f "$dest/install.sh" || ! -f "$dest/scripts/install.py" ]]; then
       printf '%s\n' "tkstack: $dest exists and is not a tkstack checkout." >&2
@@ -380,7 +394,13 @@ fetch_checkout() {
     # is self-attested. Run it only for a matching git origin, or when
     # TKSTACK_TRUST_HOME=1 names that consent explicitly.
     if git_origin_matches "$dest"; then
-      if ! git -C "$dest" pull --ff-only; then
+      if [[ -n "${TKSTACK_REV:-}" ]]; then
+        if ! head="$(git -C "$dest" rev-parse HEAD)" || ! changes="$(git -C "$dest" status --porcelain)" ||
+           [[ "$head" != "$TKSTACK_REV" || -n "$changes" ]]; then
+          printf '%s\n' 'tkstack: choose a fresh TKSTACK_HOME for this pinned revision.' >&2
+          exit 1
+        fi
+      elif ! git -C "$dest" pull --ff-only; then
         printf '%s\n' "tkstack: git pull --ff-only failed in $dest. Commit or stash local changes so a fast-forward can succeed, then run the installer again." >&2
         exit 1
       fi
@@ -389,6 +409,10 @@ fetch_checkout() {
     fi
     if [[ "${TKSTACK_TRUST_HOME:-}" != 1 ]]; then
       printf '%s\n' "tkstack: $dest already exists and this installer run did not create it. Refusing to run it. Set TKSTACK_TRUST_HOME=1 to use a pre-existing checkout, or use one whose git origin matches $expected." >&2
+      exit 1
+    fi
+    if [[ -d "$dest/.git" && -n "${TKSTACK_REV:-}" ]]; then
+      printf '%s\n' 'tkstack: pinned checkout requires a matching Git origin.' >&2
       exit 1
     fi
     if [[ -d "$dest/.git" ]]; then
@@ -403,7 +427,14 @@ fetch_checkout() {
   fi
   mkdir -p -- "$(dirname -- "$dest")"
   if command -v git >/dev/null 2>&1; then
-    git clone --depth 1 "${TKSTACK_REPO:-https://github.com/Tyler-R-Kendrick/tkstack.git}" "$dest"
+    if [[ -n "${TKSTACK_REV:-}" ]]; then
+      git init -q "$dest"
+      git -C "$dest" remote add origin "$expected"
+      git -C "$dest" fetch --depth 1 origin "$TKSTACK_REV"
+      git -C "$dest" checkout --detach "$TKSTACK_REV"
+    else
+      git clone --depth 1 "${TKSTACK_REPO:-https://github.com/Tyler-R-Kendrick/tkstack.git}" "$dest"
+    fi
   else
     if ! command -v curl >/dev/null 2>&1; then
       printf '%s\n' 'tkstack needs git or curl to download the repository.' >&2

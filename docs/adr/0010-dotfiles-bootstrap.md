@@ -1,5 +1,7 @@
 # 0010: One reproducible dotfiles bootstrap for hosts and environment hooks
 
+Historical design. The current supported consumer lifecycle is in [bootstrap](../bootstrap.md).
+
 Status: accepted, 2026-10-30.
 
 The user clarified that this repository must provision its complete setup as

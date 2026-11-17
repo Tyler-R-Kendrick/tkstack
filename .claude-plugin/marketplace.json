@@ -8,6 +8,17 @@
   },
   "plugins": [
     {
+      "name": "constrain",
+      "source": "./skills/constrain",
+      "description": "Enforce repository constraints when adding or reviewing tests, files, folders, or documentation. Use for constrain, test-value review, sparsity budgets, or preventing low-value CI noise. Run deterministic checks, inspect behavioral oracles, and retain only tests with distinct regression value.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
       "name": "document",
       "source": "./skills/document",
       "description": "Create or maintain source-grounded repository documentation, a knowledge wiki, a glossary, an ADR, or a resumable task handoff. Use for documentation maintenance and knowledge capture. Agent policy belongs in instructify; UI design-system capture belongs in open-design; ordinary articles belong in write.",
@@ -65,7 +76,7 @@
     {
       "name": "learn",
       "source": "./skills/learn",
-      "description": "Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.",
+      "description": "Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.",
       "version": "0.8.0",
       "license": "MIT",
       "strict": false,

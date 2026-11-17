@@ -11,27 +11,10 @@ from agent_plugins import json_object
 
 
 EXPECTED_SERVERS = {
-    "serena": {
-        "type": "stdio",
-        "command": "uvx",
-        "args": [
-            "--from",
-            "git+https://github.com/oraios/serena",
-            "serena",
-            "start-mcp-server",
-            "--project-from-cwd",
-        ],
-    },
-    "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["@playwright/mcp@latest"],
-    },
-    "firecrawl": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "firecrawl-mcp@3.33.2"],
-    },
+    "playwright": {"type": "stdio", "command": "node",
+                   "args": ["${PLUGIN_ROOT}/integrations/mcp/node_modules/@playwright/mcp/cli.js"]},
+    "firecrawl": {"type": "stdio", "command": "node",
+                  "args": ["${PLUGIN_ROOT}/integrations/mcp/node_modules/firecrawl-mcp/dist/index.js"]},
     "vercel": {
         "type": "streamable-http",
         "url": "https://mcp.vercel.com",
@@ -48,7 +31,7 @@ def expected_server_errors(document):
     servers = document.get("mcpServers")
     if not isinstance(servers, dict):
         return ["mcp.json has no mcpServers object"]
-    errors = []
+    errors = ["Serena needs an explicit consumer project in native host configuration"] if "serena" in servers else []
     for name, expected in EXPECTED_SERVERS.items():
         entry = servers.get(name)
         if not isinstance(entry, dict):

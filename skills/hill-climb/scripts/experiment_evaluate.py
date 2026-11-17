@@ -210,6 +210,15 @@ def compare(spec, baseline_rows, candidate_rows, evidence_root):
     target = _helper.paired_metric(baseline, candidate, spec["metric"], spec["direction"])
     if not spec["deterministic"] and target["independent_cases"] < 2:
         return {"decision": "inconclusive", "target": target, "reasons": ["insufficient independent cases"]}
+    observed_noise = 0.0
+    if not spec["deterministic"]:
+        cases = sorted({case for case, _ in expected})
+        samples = [[baseline[key]["metrics"][spec["metric"]] for key in expected if key[0] == case]
+                   for case in cases]
+        if spec["noise_floor"] <= 0 or any(len(sample) < 2 for sample in samples):
+            return {"decision": "inconclusive", "target": target,
+                    "reasons": ["stochastic comparison needs a positive noise floor and repeated baseline for every case"]}
+        observed_noise = max(statistics.stdev(sample) for sample in samples)
     guards = {}
     for guard in spec.get("guardrails", []):
         measured = _helper.paired_metric(baseline, candidate, guard["metric"], guard["direction"])
@@ -231,9 +240,11 @@ def compare(spec, baseline_rows, candidate_rows, evidence_root):
     if target["gain"] < spec["min_gain"]:
         return {"decision": "reject", "target": target, "reasons": ["gain below meaningful improvement"]}
     half_width = target["paired_95_half_width"] or 0
-    if target["gain"] - half_width < spec["min_gain"] or target["gain"] <= spec["noise_floor"]:
-        return {"decision": "inconclusive", "target": target, "reasons": ["gain not established beyond uncertainty"]}
+    if target["gain"] - half_width < spec["min_gain"] or target["gain"] <= max(spec["noise_floor"], observed_noise):
+        return {"decision": "inconclusive", "target": target, "observed_baseline_noise": observed_noise,
+                "reasons": ["gain not established beyond uncertainty"]}
     return {"decision": "eligible", "target": target, "guardrails": guards, "reasons": [],
+            "observed_baseline_noise": observed_noise,
             "limitations": "Numeric eligibility only; semantic correctness, evaluator independence and holdout isolation require separate review."}
 
 
@@ -282,14 +293,28 @@ def regrade_matrix(old_spec, new_spec, old_baseline, old_candidate, new_baseline
         new_expected = _validate_spec(new_spec)
         if old_expected != new_expected or any(old_spec[role] != new_spec[role] for role in ("baseline", "candidate")):
             raise ValueError("regrade must use the same assignments and candidate trees")
+        checked = {}
         for role, old, new in (("baseline", old_baseline, new_baseline), ("candidate", old_candidate, new_candidate)):
             before = _rows(old_spec, old, role, old_expected, evidence_root)
             after = _rows(new_spec, new, role, new_expected, evidence_root)
+            checked[role] = (before, after)
             for key in old_expected:
-                old_digests = sorted(receipt["sha256"] for receipt in before[key]["artifacts"])
-                new_digests = sorted(receipt["sha256"] for receipt in after[key]["artifacts"])
-                if old_digests != new_digests:
+                old_case = _digest(before[key].get("case_sha256"), "old case sha256")
+                new_case = _digest(after[key].get("case_sha256"), "new case sha256")
+                if old_case != new_case:
+                    raise ValueError("regrade substituted the case input")
+                for row in (before[key], after[key]):
+                    case_receipt = row.get("case_artifact")
+                    case_artifacts = _checked_artifacts({"artifacts": [case_receipt]}, evidence_root)
+                    if list(case_artifacts.values()) != [row["case_sha256"]]:
+                        raise ValueError("case receipt differs from the case digest")
+                old_submissions = _checked_artifacts({"artifacts": before[key].get("submission_artifacts")}, evidence_root)
+                new_submissions = _checked_artifacts({"artifacts": after[key].get("submission_artifacts")}, evidence_root)
+                if sorted(old_submissions.values()) != sorted(new_submissions.values()):
                     raise ValueError("regrade substituted the underlying artifacts")
+        for key in old_expected:
+            if checked["baseline"][0][key]["case_sha256"] != checked["candidate"][0][key]["case_sha256"]:
+                raise ValueError("paired submissions used different case input bytes")
     except (OSError, ValueError, TypeError, KeyError) as error:
         return {"decision": "inconclusive", "reasons": [str(error)]}
     return {"decision": "complete", "old": compare(old_spec, old_baseline, old_candidate, evidence_root),

@@ -6,6 +6,7 @@ uncertain reservations outstanding until usage or non-execution is reported.
 """
 
 import json
+import re
 from pathlib import Path
 import sqlite3
 from datetime import datetime, timezone
@@ -29,6 +30,34 @@ def _number(value, name):
 
 def _now():
     return datetime.now(timezone.utc).isoformat()
+
+
+def _selection_claim(value):
+    keys = {"config_digest", "generation", "side", "tree", "case_sha256", "rep"}
+    if not isinstance(value, dict) or set(value) != keys:
+        raise ValueError("invalid selection assignment")
+    for field in ("config_digest", "case_sha256"):
+        if not isinstance(value[field], str) or not re.fullmatch(r"[0-9a-f]{64}", value[field]):
+            raise ValueError("invalid selection assignment digest")
+    for field in ("generation", "tree"):
+        if not isinstance(value[field], str) or not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", value[field]):
+            raise ValueError("invalid selection assignment identity")
+    if value["side"] not in ("baseline", "candidate") or type(value["rep"]) is not int or value["rep"] < 0:
+        raise ValueError("invalid selection assignment")
+    return json.dumps(value, sort_keys=True, separators=(",", ":"))
+
+
+def _insert_selection_claim(connection, experiment, run_key, claim):
+    """Must run in the same transaction as the owning trial reservation."""
+    connection.execute("CREATE TABLE IF NOT EXISTS selection_assignments ("
+                       "experiment TEXT NOT NULL, assignment TEXT NOT NULL, run_key TEXT NOT NULL, "
+                       "PRIMARY KEY (experiment, assignment), UNIQUE (experiment, run_key), "
+                       "FOREIGN KEY (experiment, run_key) REFERENCES runs(experiment, run_key))")
+    try:
+        connection.execute("INSERT INTO selection_assignments(experiment, assignment, run_key) VALUES (?, ?, ?)",
+                           (experiment, _selection_claim(claim), run_key))
+    except sqlite3.IntegrityError as error:
+        raise ValueError("selection assignment was already reserved") from error
 
 
 class Ledger:
@@ -157,12 +186,15 @@ class Ledger:
             "settled_trials": sum(row["trial_units"] for row in rows if row["status"] in terminal),
         }
 
-    def reserve(self, experiment, run_key, *, tokens, trial_units=1):
+    def reserve(self, experiment, run_key, *, tokens, trial_units=1, selection_claim=None):
         experiment = _text(experiment, "experiment")
         run_key = _text(run_key, "run_key")
         tokens = _number(tokens, "tokens")
         if type(trial_units) is not int or trial_units not in (0, 1):
             raise ValueError("trial_units must be 0 or 1")
+        claim_text = _selection_claim(selection_claim) if selection_claim is not None else None
+        if selection_claim is not None and trial_units != 1:
+            raise ValueError("selection assignment requires one trial start")
         connection = self._connect()
         try:
             connection.execute("BEGIN IMMEDIATE")
@@ -173,6 +205,12 @@ class Ledger:
             if existing:
                 if (existing["reserved_tokens"], existing["trial_units"]) != (tokens, trial_units):
                     raise ValueError("Run key already reserved with different parameters")
+                if claim_text is not None:
+                    has_claims = connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='selection_assignments'").fetchone()
+                    row = connection.execute("SELECT assignment FROM selection_assignments WHERE experiment=? AND run_key=?",
+                                             (experiment, run_key)).fetchone() if has_claims else None
+                    if row is None or row["assignment"] != claim_text:
+                        raise ValueError("Run key already reserved with different selection assignment")
                 connection.commit()
                 return dict(existing)
             if budget["overrun"]:
@@ -187,6 +225,8 @@ class Ledger:
                 "VALUES (?, ?, ?, ?, 'reserved', ?)",
                 (experiment, run_key, tokens, trial_units, _now()),
             )
+            if selection_claim is not None:
+                _insert_selection_claim(connection, experiment, run_key, selection_claim)
             self._event(connection, experiment, run_key, "reserve", {"tokens": tokens, "trial_units": trial_units})
             result = dict(self._run(connection, experiment, run_key))
             connection.commit()
@@ -247,6 +287,10 @@ class Ledger:
                     raise ValueError("Run cannot be cancelled after settlement")
                 target = "cancelled"
                 details = {"reason": reason, "non_execution_evidence": non_execution_evidence}
+                if state == "reserved" and connection.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name='selection_assignments'"
+                ).fetchone():
+                    connection.execute("DELETE FROM selection_assignments WHERE experiment=? AND run_key=?", (experiment, run_key))
             elif operation == "settle":
                 if state in ("settled", "overrun"):
                     prior = connection.execute(
@@ -285,6 +329,25 @@ class Ledger:
 
     def dispatch(self, experiment, run_key):
         return self._transition(experiment, run_key, "dispatch")
+
+    def selection_run(self, experiment, claim):
+        """Locate the unique reservation for a frozen selection assignment."""
+        experiment = _text(experiment, "experiment")
+        assignment = _selection_claim(claim)
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN")
+            self._experiment(connection, experiment)
+            exists = connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='selection_assignments'").fetchone()
+            row = (connection.execute(
+                "SELECT r.* FROM selection_assignments AS c JOIN runs AS r "
+                "ON r.experiment=c.experiment AND r.run_key=c.run_key "
+                "WHERE c.experiment=? AND c.assignment=?", (experiment, assignment)
+            ).fetchone() if exists else None)
+            connection.commit()
+            return dict(row) if row else None
+        finally:
+            connection.close()
 
     def uncertain(self, experiment, run_key, reason):
         return self._transition(experiment, run_key, "uncertain", reason=reason)

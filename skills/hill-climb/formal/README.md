@@ -101,3 +101,51 @@ operations, real filesystem permissions, and Git backend crash guarantees are
 outside the finite specification. `OriginSafe` and `CommitSafe` validate the
 modeled guarded origin and acknowledgement, not arbitrary user authorization or
 the content of evaluation evidence.
+
+## Lean proof and implementation correspondence
+
+`Budget.lean` proves three statements over unbounded natural numbers:
+
+- `reservation_preserves` proves that an accepted reservation results in
+  reserved plus settled usage at or below the limit.
+- `bounded_settlement_preserves` proves that replacing held tokens with no more
+  than the held amount preserves an already valid ceiling.
+- `overrun_blocks_reservation` proves that settling more than was held sets an
+  overrun state in which every later reservation is refused.
+
+The checker audits theorem dependencies and permits only Lean's kernel axioms
+`propext`, `Quot.sound`, and `Classical.choice`. `sorryAx`, undeclared result
+axioms, compiler warnings, and an unrecognized Lean version fail the bridge.
+For this proof Lean actually reports `propext` and `Quot.sound` for the first
+two theorems and `propext` for the third. The specification assumes an atomic
+check-and-reserve and truthful provider usage. It does not prove SQLite,
+filesystem durability, trial-unit/proposal limits, or provider-side hard caps.
+An actual provider overrun is recorded and blocks later reservations; the first
+ceiling claim assumes no such overrun.
+
+`lean_bridge.py` executes the proved Lean definitions to obtain oracle cases,
+then exercises the real SQLite `Ledger` against 175 reservation and 175
+settlement cases within values zero through four. It includes zero amounts,
+exact-boundary admissions, release, and overrun blocking. The accompanying tests
+verify that a ledger mutant which ignores active token reservations disagrees
+with the oracle and that replacing a proof with `sorry` is rejected. This is
+finite behavioral correspondence evidence, not a proof of the Python program
+for every integer or interleaving. The real concurrent admission test exercises
+SQLite's `BEGIN IMMEDIATE` boundary separately. The TLA+ model checks bounded
+interleavings and does not establish Lean-to-Python equivalence.
+
+Run with the official Lean 4.19.0 Linux x86-64 release binary:
+
+```sh
+LEAN_BIN=/path/to/lean-4.19.0-linux/bin/lean \
+  python3 -B -m unittest discover -s tests -p test_experiment_lean.py -v
+```
+
+The existing CI job downloads
+`https://github.com/leanprover/lean4/releases/download/v4.19.0/lean-4.19.0-linux.tar.zst`
+and checks SHA-256 `6fe3ce97a58f44e2b3567d455b994eacec5bfe9ae7774f2a573444480ba813fe`
+before extraction. The hash was calculated from the downloaded official
+release asset; it is a reproducibility pin, not an independent attestation.
+The checker also verifies the compiler identifies itself as Lean 4.19.0, commit
+`6caaee842e94`. The normal offline suite explicitly skips this bridge if
+`LEAN_BIN` is unavailable. The CI job always runs it.

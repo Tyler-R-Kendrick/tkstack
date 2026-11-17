@@ -1,19 +1,17 @@
 # Custom skill distribution
 
-All **19 packages** ship in **12 plugins**: 8 skills under development live at
-root `skills/<name>/`, the four third-party-derived packages (`fal-ai`,
-`headroom`, `open-design`, `rtk`) live at `.agents/skills/<name>/`, and Learn
-carries 7 subskills (`codify`, `flowify`, `hookify`, `instructify`, `lintify`,
-`reusify`, `skillify`) at `skills/learn/skills/<name>/`. Each contains a matching
-`SKILL.md`, license, conditional Markdown references, and its required local
-resources. The root `.claude-plugin/marketplace.json` has one entry per root
-package; installing `learn@tkstack` installs its subskills as `/learn <name>`.
+Owned root packages live under `skills/<name>/`; third-party-derived packages
+live in `.agents/skills/<name>/`. Learn carries `codify`, `flowify`, `hookify`,
+`instructify`, `lintify`, `reusify`, `skillify`, and `testify` under its own
+`skills/` directory. Each contains its own skill index, license, conditional
+references and resources. The root marketplace lists each root package;
+installing `learn@tkstack` installs its subskills as `/learn <name>`.
 
 | Area | Packages |
 | --- | --- |
 | Engineering | `tkstack-principles`, `investigate`, `sdlc` |
-| Learning and authoring | `learn`, `skillify`, `codify`, `reusify`, `lintify`, `hookify`, `instructify`, `flowify` |
-| Quality and optimization | `unslop`, `hill-climb` |
+| Learning and authoring | `learn`, `skillify`, `codify`, `reusify`, `lintify`, `testify`, `hookify`, `instructify`, `flowify` |
+| Quality and optimization | `unslop`, `hill-climb`, `constrain` |
 | Knowledge and writing | `document`, `write` |
 | Design, media, context | `open-design`, `fal-ai`, `headroom`, `rtk` |
 
@@ -69,10 +67,10 @@ instructions; they do not claim a remote revision contains local uncommitted
 changes.
 
 Use a single installation route for a package to avoid duplicate names.
-The dotfiles route installs all pinned and owned skills into selected harnesses:
+The catalog profile installs the full placement. Omit the profile option for the small personal selection:
 
 ```sh
-python3 scripts/install.py --target /path/to/project
+python3 scripts/install.py --target /path/to/project --profile catalog
 ```
 
 Standalone packages cannot assume sibling skills or vendor trees exist. Guidance is portable; actual helpers, models, native adapters,

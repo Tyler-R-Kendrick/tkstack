@@ -20,7 +20,9 @@ class EvaluationTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        for name, value in (("base.txt", "lost fields"), ("fixed.txt", "values retained")):
+        for name, value in (("base.txt", "lost fields"), ("fixed.txt", "values retained"),
+                            ("base-submission", "baseline payload"), ("fixed-submission", "candidate payload"),
+                            ("case-input", "invalid last field fixture")):
             (self.root / name).write_text(value)
         self.spec = {
             "version": 1, "contract": "a" * 64, "evaluator": "b" * 64,
@@ -35,6 +37,7 @@ class EvaluationTests(unittest.TestCase):
         self.candidate = [self.row("candidate", "fixed.txt", 3)]
 
     def row(self, which, name, score):
+        submission = "base-submission" if which == "baseline" else "fixed-submission"
         return {
             **self.spec[which], "contract": self.spec["contract"],
             "evaluator": self.spec["evaluator"], "case": "invalid-last-field", "rep": 0,
@@ -42,6 +45,9 @@ class EvaluationTests(unittest.TestCase):
             "metrics": {"recovery": score}, "work_count": 1,
             "qualitative": {"recovery": {"rating": score, "evidence": [name], "rationale": "Observed interaction"}},
             "artifacts": [{"path": name, "sha256": hashlib.sha256((self.root / name).read_bytes()).hexdigest()}],
+            "case_sha256": hashlib.sha256((self.root / "case-input").read_bytes()).hexdigest(),
+            "case_artifact": {"path": "case-input", "sha256": hashlib.sha256((self.root / "case-input").read_bytes()).hexdigest()},
+            "submission_artifacts": [{"path": submission, "sha256": hashlib.sha256((self.root / submission).read_bytes()).hexdigest()}],
         }
 
     def compare(self):
@@ -146,13 +152,78 @@ class EvaluationTests(unittest.TestCase):
         new_base, new_fixed = copy.deepcopy(self.baseline), copy.deepcopy(self.candidate)
         for row in new_base + new_fixed:
             row.update(contract=new_spec["contract"], evaluator=new_spec["evaluator"])
+        (self.root / "new-grade").write_text("new evaluator gives rating 4")
+        new_fixed[0]["artifacts"] = [{"path": "new-grade", "sha256": hashlib.sha256((self.root / "new-grade").read_bytes()).hexdigest()}]
+        new_fixed[0]["metrics"]["recovery"] = 4
+        new_fixed[0]["qualitative"]["recovery"].update(rating=4, evidence=["new-grade"])
         matrix = evaluation.regrade_matrix(self.spec, new_spec, self.baseline, self.candidate,
                                             new_base, new_fixed, self.root)
         self.assertEqual(matrix["decision"], "complete")
+        self.assertEqual(matrix["old"]["target"]["gain"], 2)
+        self.assertEqual(matrix["new"]["target"]["gain"], 3)
         (self.root / "other.txt").write_text("substitution")
-        new_fixed[0]["artifacts"] = [{"path": "other.txt", "sha256": hashlib.sha256(b"substitution").hexdigest()}]
+        new_fixed[0]["submission_artifacts"] = [{"path": "other.txt", "sha256": hashlib.sha256(b"substitution").hexdigest()}]
         self.assertEqual(evaluation.regrade_matrix(self.spec, new_spec, self.baseline,
             self.candidate, new_base, new_fixed, self.root)["decision"], "inconclusive")
+
+    def test_regrade_rejects_changed_or_missing_case_input_digest(self):
+        new_spec = copy.deepcopy(self.spec)
+        new_spec.update(contract="c" * 64, evaluator="d" * 64)
+        before, after = copy.deepcopy(self.baseline), copy.deepcopy(self.candidate)
+        for row in before + after:
+            row.update(contract=new_spec["contract"], evaluator=new_spec["evaluator"])
+        after[0]["case_sha256"] = "e" * 64
+        self.assertEqual(evaluation.regrade_matrix(self.spec, new_spec, self.baseline,
+            self.candidate, before, after, self.root)["decision"], "inconclusive")
+        del after[0]["case_sha256"]
+        self.assertEqual(evaluation.regrade_matrix(self.spec, new_spec, self.baseline,
+            self.candidate, before, after, self.root)["decision"], "inconclusive")
+
+    def test_regrade_rejects_missing_or_tampered_case_and_submission_bytes(self):
+        new_spec = copy.deepcopy(self.spec)
+        new_spec.update(contract="c" * 64, evaluator="d" * 64)
+        before, after = copy.deepcopy(self.baseline), copy.deepcopy(self.candidate)
+        for row in before + after:
+            row.update(contract=new_spec["contract"], evaluator=new_spec["evaluator"])
+        del after[0]["case_artifact"]
+        self.assertEqual(evaluation.regrade_matrix(self.spec, new_spec, self.baseline,
+            self.candidate, before, after, self.root)["decision"], "inconclusive")
+        after[0]["case_artifact"] = copy.deepcopy(self.candidate[0]["case_artifact"])
+        (self.root / "case-input").write_text("mutated fixture")
+        self.assertEqual(evaluation.regrade_matrix(self.spec, new_spec, self.baseline,
+            self.candidate, before, after, self.root)["decision"], "inconclusive")
+
+    def test_stochastic_zero_noise_without_baseline_repetitions_is_inconclusive(self):
+        self.spec["deterministic"] = False
+        self.spec["assignments"].append({"case": "second", "rep": 0})
+        for rows in (self.baseline, self.candidate):
+            row = copy.deepcopy(rows[0])
+            row["case"] = "second"
+            rows.append(row)
+        self.assertEqual(self.compare()["decision"], "inconclusive")
+
+    def test_stochastic_comparison_uses_observed_baseline_noise(self):
+        self.spec.update(deterministic=False, noise_floor=0.1)
+        self.spec["assignments"] = [{"case": case, "rep": rep} for case in ("a", "b") for rep in (0, 1)]
+        self.baseline, self.candidate = [], []
+        for case in ("a", "b"):
+            for rep in (0, 1):
+                self.baseline.append(self.row("baseline", "base.txt", 1 + rep))
+                self.candidate.append(self.row("candidate", "fixed.txt", 3 + rep))
+                self.baseline[-1].update(case=case, rep=rep)
+                self.candidate[-1].update(case=case, rep=rep)
+        result = self.compare()
+        self.assertEqual(result["decision"], "eligible")
+        self.assertGreater(result["observed_baseline_noise"], 0.1)
+        for row in self.baseline:
+            if row["rep"]:
+                row["metrics"]["recovery"] = 11
+                row["qualitative"]["recovery"]["rating"] = 11
+        for row in self.candidate:
+            if row["rep"]:
+                row["metrics"]["recovery"] = 13
+                row["qualitative"]["recovery"]["rating"] = 13
+        self.assertEqual(self.compare()["decision"], "inconclusive")
 
 
 if __name__ == "__main__":

@@ -118,5 +118,40 @@ class ExperimentLedgerTests(unittest.TestCase):
         self.assertEqual(self.ledger.reserve("task", "one", tokens=100)["status"], "reserved")
 
 
+class SelectionLedgerTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.path = Path(self.temp.name) / "ledger.sqlite3"
+        self.ledger = Ledger(self.path)
+        self.ledger.initialize("e", max_trials=10, max_tokens=0)
+        self.claim = {"config_digest": "a" * 64, "generation": "b" * 40,
+                      "side": "baseline", "tree": "c" * 40,
+                      "case_sha256": "d" * 64, "rep": 0}
+
+    def test_concurrent_claim_is_atomic_and_reusable_only_if_never_dispatched(self):
+        def attempt(i):
+            try:
+                return Ledger(self.path).reserve("e", str(i), tokens=0, selection_claim=self.claim)
+            except ValueError:
+                return None
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            reserved = [item for item in pool.map(attempt, range(8)) if item]
+        self.assertEqual(len(reserved), 1)
+        self.ledger.cancel("e", reserved[0]["run_key"], reason="pre-dispatch")
+        self.ledger.reserve("e", "second", tokens=0, selection_claim=self.claim)
+        self.ledger.dispatch("e", "second")
+        self.ledger.uncertain("e", "second", reason="lost response")
+        with self.assertRaisesRegex(ValueError, "selection assignment"):
+            Ledger(self.path).reserve("e", "third", tokens=0, selection_claim=self.claim)
+        self.assertEqual(Ledger(self.path).selection_run("e", self.claim)["status"], "uncertain")
+
+    def test_generation_and_repetition_create_distinct_assignments(self):
+        self.ledger.reserve("e", "one", tokens=0, selection_claim=self.claim)
+        self.ledger.reserve("e", "two", tokens=0, selection_claim=dict(self.claim, rep=1))
+        self.ledger.reserve("e", "three", tokens=0, selection_claim=dict(self.claim, generation="e" * 40))
+        self.assertEqual(self.ledger.status("e")["reserved_trials"], 3)
+
+
 if __name__ == "__main__":
     unittest.main()

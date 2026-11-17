@@ -2,4 +2,8 @@
 set -euo pipefail
 tkstack_source="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 tkstack_repo="$(git rev-parse --show-toplevel)"
+# The policy and sources are read from the index, never unstaged repairs.
+if git cat-file -e :.constrain/config.json 2>/dev/null; then
+  "${TKSTACK_PYTHON:-python3}" -B "$tkstack_source/skills/constrain/scripts/constrain.py" check --repo "$tkstack_repo" --staged
+fi
 exec "${TKSTACK_PYTHON:-python3}" -B "$tkstack_source/src/check_docs.py" --repo "$tkstack_repo" check --staged

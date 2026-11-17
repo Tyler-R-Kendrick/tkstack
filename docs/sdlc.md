@@ -138,3 +138,9 @@ worktree isolation, task ownership and stale proof rejection, contract identity,
 per-requirement artifacts, and exact-payload review invalidation. Synthetic
 reports test the helper's rules; they do not claim production provider checks,
 browser captures, remote CI, or an actual merged PR stack.
+
+For verification mechanism selection, prefer valid-state types and boundary
+parsing, then use `/learn lintify` for static artifact rules, `/learn testify`
+for distinct behavioral faults, and `/learn hookify` for tool-event gates.
+Skillify packages reusable procedures; Codify compiles workflow artifacts.
+See [behavioral verification](../skills/sdlc/references/behavioral-verification.md).

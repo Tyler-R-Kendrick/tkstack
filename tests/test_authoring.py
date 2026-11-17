@@ -219,5 +219,84 @@ class AuthoringTests(unittest.TestCase):
         self.assertEqual(result.stdout, "")
 
 
+class TestifyTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        (self.root / 'src').mkdir()
+        (self.root / 'tests').mkdir()
+        self.program = self.root / 'src/cli.py'
+        self.program.write_text('import json,sys\nif sys.argv[1:] == ["ok"]: print(json.dumps({"value": 7}))\nelse: print("invalid request", file=sys.stderr); sys.exit(2)\n')
+        self.spec = self.root / 'spec.json'
+        self.data = {'version': 1, 'entrypoint': 'src/cli.py', 'risk': 'A malformed request may be accepted or return an incorrect value.',
+            'distinction': 'The actual CLI contract exercises the consumer boundary without internal mocks.', 'timeout': 4,
+            'cases': [{'name': 'valid', 'args': ['ok'], 'exit': 0, 'stdout_json': {'value': 7}},
+                      {'name': 'invalid', 'args': ['bad'], 'exit': 2, 'stderr_contains': 'invalid request'}]}
+        self.save_spec()
+        self.script = ROOT / 'skills/learn/skills/testify/scripts/testify.py'
+        self.target = self.root / 'tests/test_cli.py'
+
+    def save_spec(self):
+        self.spec.write_text(json.dumps(self.data))
+
+    def invoke(self, command, expected=0, target='tests/test_cli.py'):
+        args = [sys.executable, '-B', str(self.script), command, '--project', str(self.root), '--target', target]
+        if command != 'run':
+            args += ['--spec', str(self.spec)]
+        result = subprocess.run(args, cwd=self.root, capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+        return result
+
+    def test_plan_create_and_real_run_detect_a_behavioral_fault(self):
+        planned = json.loads(self.invoke('plan').stdout)
+        self.assertEqual(planned['status'], 'planned')
+        self.assertFalse(self.target.exists())
+        self.assertIn('invalid request', planned['content'])
+        routed = subprocess.run([sys.executable, '-B', str(ROOT / 'src/tkstack.py'), '--project', str(self.root),
+                                 'skills', 'learn', '--', 'testify', 'native', 'plan',
+                                 '--project', str(self.root), '--target', 'tests/test_cli.py', '--spec', str(self.spec)],
+                                cwd=self.root, capture_output=True, text=True, timeout=45)
+        self.assertEqual(routed.returncode, 0, routed.stdout + routed.stderr)
+        self.assertEqual(json.loads(routed.stdout)['content'], planned['content'])
+        self.assertFalse(self.target.exists())
+        self.invoke('create')
+        before = self.target.read_bytes()
+        self.invoke('create', expected=1)
+        self.assertEqual(self.target.read_bytes(), before)
+        self.assertEqual(json.loads(self.invoke('run').stdout)['status'], 'pass')
+        original = self.program.read_text()
+        self.program.write_text(original.replace('"value": 7', '"value": 8'))
+        failed = json.loads(self.invoke('run', expected=1).stdout)
+        self.assertIn('FAIL', failed['stderr'])
+        self.program.write_text(original)
+        self.assertEqual(json.loads(self.invoke('run').stdout)['status'], 'pass')
+
+    def test_invalid_specs_and_unsafe_paths_do_not_create_or_replace_a_test(self):
+        for mutation in ('no_oracle', 'bool_exit', 'escape', 'duplicate_case', 'duplicate'):
+            data = copy.deepcopy(self.data)
+            if mutation == 'no_oracle':
+                del data['cases'][0]['stdout_json']
+            elif mutation == 'bool_exit':
+                data['cases'][0]['exit'] = True
+            elif mutation == 'escape':
+                data['entrypoint'] = '../outside.py'
+            elif mutation == 'duplicate_case':
+                data['cases'].append({**data['cases'][0], 'name': 'repeated'})
+            if mutation == 'duplicate':
+                self.spec.write_text('{"version":1,"version":1}')
+            else:
+                self.spec.write_text(json.dumps(data))
+            with self.subTest(mutation=mutation):
+                self.invoke('create', expected=1)
+                self.assertFalse(self.target.exists())
+        self.save_spec()
+        outside = self.root / 'outside'
+        outside.mkdir()
+        (self.root / 'tests/link').symlink_to(outside, target_is_directory=True)
+        self.invoke('create', expected=1, target='tests/link/test_escape.py')
+        self.assertEqual(list(outside.iterdir()), [])
+
+
 if __name__ == "__main__":
     unittest.main()
