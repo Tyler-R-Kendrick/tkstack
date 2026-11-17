@@ -5,8 +5,8 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 380,
-    "max_bytes": 390000,
+    "max_cases": 445,
+    "max_bytes": 445000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -24,10 +24,10 @@
           "tests/**"
         ],
         "exclude": [],
-        "max_files": 29,
-        "max_bytes": 400000,
+        "max_files": 35,
+        "max_bytes": 450000,
         "max_depth": 2,
-        "reason": "Regression suites and shared fixtures include the requested Testify and constraint gate behavior; no extra test directory is introduced."
+        "reason": "The Git experiment foundation adds five reviewed suites for scoped Git lifecycle, SQLite budgets, frozen-tree execution, evaluation, and bounded models, with room for its proof regressions."
       },
       {
         "id": "documentation",
@@ -59,9 +59,9 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 22000,
+        "max_bytes": 26000,
         "max_depth": 2,
-        "reason": "One policy and one compact suite review inventory; reports stay on stdout."
+        "reason": "Retain one policy and one per-suite review inventory, including the individually reviewed experiment foundation suites."
       },
       {
         "id": "owned-tree",
@@ -71,10 +71,10 @@
         "exclude": [
           "vendor/**"
         ],
-        "max_files": 810,
-        "max_bytes": 7800000,
+        "max_files": 836,
+        "max_bytes": 8100000,
         "max_depth": 9,
-        "reason": "Adds the requested self-contained Testify subskill, constraint category references and deterministic security checks; counts all owned non-vendor paths to prevent relocation of bloat."
+        "reason": "The experiment foundation adds Git, ledger, evaluation, runner, and formal-model sources with their scoped regressions to the prior owned tree."
       }
     ]
   },

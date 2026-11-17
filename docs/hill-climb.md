@@ -65,3 +65,37 @@ reviewer. See [measurement details](../skills/hill-climb/references/measurement.
 Tests use synthetic measurements to verify comparison and evidence boundaries.
 No paid experiments, measured application improvement, or held-out model
 performance gain is claimed from creating this skill.
+
+## Experiment primitives
+
+The package includes local building blocks for private Git experiment arms,
+SQLite trial reservations, frozen-tree command execution, paired evaluation,
+and a bounded controller model. These modules are internal foundations. The
+measurement helper above remains the public entry point until a controller
+connects those pieces.
+
+The local runner executes trusted commands with host privileges. The bounded
+model checks its declared transitions and assumptions, rather than proving the
+implementation or a remote provider.
+
+The private Git store verifies its ownership and its separation from every
+registered source worktree. It disables hooks and rejects configured external
+filter drivers during managed checkout and freezing. These checks do not make
+a worktree a sandbox against another process with the same privileges.
+
+Lean checks unbounded budget arithmetic, with finite correspondence cases
+against SQLite. Optional TLA+ and TLC specifications exercise bounded
+reservation and guarded promotion models. They include deliberately weakened configurations whose
+counterexamples check the model's sensitivity. The [formal guide](../skills/hill-climb/formal/README.md)
+records the pinned checker, assumptions, and scope.
+
+Local trial execution accepts a monotonic deadline. It checks the deadline
+again after exporting the Git tree and caps command time to the remaining
+interval. Git export uses its own subprocess timeout.
+
+The ledger can enforce one claim for a frozen selection assignment per
+candidate tree, case and repetition when the controller supplies that identity. A nondeterministic comparison needs repeated baseline
+observations for every case and a positive declared noise floor; missing
+evidence remains inconclusive.
+Regrading also binds the original submission and case bytes separately from
+the evaluator's grading receipt, which may legitimately change.

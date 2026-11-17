@@ -24,6 +24,13 @@ jobs:
         run: |
           python -m venv .tkstack/runtime/command-schema
           .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
+      - name: Install checksum-pinned Lean 4.19.0
+        run: |
+          curl -fSL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst" https://github.com/leanprover/lean4/releases/download/v4.19.0/lean-4.19.0-linux.tar.zst
+          echo '6fe3ce97a58f44e2b3567d455b994eacec5bfe9ae7774f2a573444480ba813fe  '"$RUNNER_TEMP/lean.tar.zst" | sha256sum --check
+          tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP" --wildcards 'lean-4.19.0-linux/bin/lean' 'lean-4.19.0-linux/lib/lean/*'
+      - name: Check Lean proof and bridge to SQLite
+        run: LEAN_BIN="$RUNNER_TEMP/lean-4.19.0-linux/bin/lean" python -B -m unittest discover -s tests -p test_experiment_lean.py -v
       - name: Check every owned skill and executable artifact
         run: .tkstack/runtime/command-schema/bin/python -B src/check_skills.py
       - name: Check reviewed documentation

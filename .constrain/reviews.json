@@ -61,6 +61,66 @@
     ],
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
+  "tests/test_experiment_evaluate.py": {
+    "risk": "An ineligible, incomplete, substituted or regressing result could be promoted as an improvement.",
+    "oracle": "Independent labeled measurements, changed grade receipts, retained submission/case bytes and repeated noisy baselines must produce the correct eligibility or inconclusive result.",
+    "kinds": [
+      "contract"
+    ],
+    "overlap": "Tests pure paired evaluation and regrade decisions; higher-layer tests exercise persisted controller receipts.",
+    "sha256": "a3eed5e747b81ac1e63acf7de6c1739d1b19cbf1afce0d191ff900d8878d3bdb"
+  },
+  "tests/test_experiment_git.py": {
+    "risk": "Private experiment arms, guarded promotion, and cleanup could lose user work or act on a redirected Git store.",
+    "oracle": "Real temporary Git repositories exercise guarded competing ref moves, scoped freezing, retained bundles, interrupted retirement, path redirection, and disabled hooks and filters.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Exercises Git ownership and lifecycle; controller tests separately cover decisions and evidence.",
+    "sha256": "03cd1e80a6455a3cf018c97aa8cfe49fa2f6c3b14491fdb0b8c71177f2ff2b47"
+  },
+  "tests/test_experiment_lean.py": {
+    "sha256": "dd15162d6ddbcdafad8aaea90070b8490355f2c09d6df96b75f3a4fdbb186bad",
+    "risk": "An invalid budget theorem or an implementation that undercounts reservations could be mistaken for a proved spending bound.",
+    "oracle": "Run the pinned Lean checker and compare its generated reservation and settlement cases to SQLite; deliberately weakened proofs and an undercounting ledger must be rejected.",
+    "kinds": [
+      "contract",
+      "simulation"
+    ],
+    "overlap": "Lean proves abstract arithmetic and the finite bridge checks correspondence; concurrent SQLite and TLA+ tests exercise distinct implementation and state-machine risks."
+  },
+  "tests/test_experiment_ledger.py": {
+    "risk": "Concurrent reservations, duplicate dispatches, ambiguous outcomes, or overruns could exceed the experiment budget.",
+    "oracle": "Real SQLite transactions and concurrent claimants assert persisted reservations, selection uniqueness, settlement, cancellation evidence, and restart behavior.",
+    "kinds": [
+      "contract",
+      "functional"
+    ],
+    "overlap": "Checks the durable ledger directly; the finite model explores an abstract state machine and controller tests verify callers.",
+    "sha256": "a82f48dc4b8d9db54ebd0c025659878488090e6fbcce200935bf6a603df0945d"
+  },
+  "tests/test_experiment_model.py": {
+    "risk": "Reservation or promotion guards might fail under modeled concurrency, crash, or stale-ref transitions.",
+    "oracle": "Finite state exploration must preserve stated invariants, while deliberately weakened transitions yield counterexamples; the optional pinned TLC checker exercises TLA+ specifications.",
+    "kinds": [
+      "contract",
+      "simulation"
+    ],
+    "overlap": "Model checks assumptions and bounded transitions independently; real SQLite and Git tests exercise implementation behavior.",
+    "sha256": "3b48603b9e86ca597013fe953781586f9213af77f9b4c5af2afdfef2e40f5684"
+  },
+  "tests/test_experiment_runner.py": {
+    "risk": "A trial could execute the wrong source tree or undeclared command, overrun its deadline, or silently accept incomplete execution.",
+    "oracle": "Frozen temporary Git trees and real subprocesses establish status, bounded outputs and cleanup, including a detached-pipe child after normal exit; clocks simulate export/deadline boundaries.",
+    "kinds": [
+      "contract",
+      "functional",
+      "simulation"
+    ],
+    "overlap": "Checks materialization and process outcomes; integration tests separately bind them to evaluation decisions.",
+    "sha256": "703148382cf76faf6a77c4b78301435fc8227cb7eb8c7b34858156083ef4917d"
+  },
   "tests/test_flowify.py": {
     "sha256": "01dcdb7320b8377750ce2f839f3cf40954d3d72475b089d6e1c24d40889ecd52",
     "risk": "Workflow scaffolds or asynchronous file bindings could escape scope, publish partial output or race cancellation.",
