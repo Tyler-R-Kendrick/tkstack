@@ -3,7 +3,9 @@
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
+import signal
 import shlex
 import shutil
 import subprocess
@@ -306,6 +308,31 @@ class TestifyTests(unittest.TestCase):
         (self.root / 'tests/link').symlink_to(outside, target_is_directory=True)
         self.invoke('create', expected=1, target='tests/link/test_escape.py')
         self.assertEqual(list(outside.iterdir()), [])
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_generated_case_timeout_cleans_ordinary_descendants(self):
+        self.program.write_text('''import pathlib, subprocess, sys, time
+root = pathlib.Path(__file__).resolve().parent.parent
+child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+(root / 'child.pid').write_text(str(child.pid))
+time.sleep(30)
+''')
+        self.data['timeout'] = 1
+        self.data['cases'] = [{'name': 'slow', 'args': [], 'exit': 0, 'stdout_text': ''}]
+        self.save_spec()
+        self.invoke('create')
+        self.invoke('run', expected=1)
+        pid = int((self.root / 'child.pid').read_text())
+        try:
+            state = Path(f'/proc/{pid}/stat')
+            alive = state.exists() and state.read_text().split(') ', 1)[1].split()[0] != 'Z'
+            self.assertFalse(alive, 'Timed-out test left its ordinary child running')
+        finally:
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
 
 
 if __name__ == "__main__":

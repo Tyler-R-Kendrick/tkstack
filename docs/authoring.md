@@ -227,7 +227,9 @@ Use `/learn testify` to create and fault-check a distinct behavioral test.
 Its Python CLI backend plans, creates and runs explicitly specified contract
 cases without overwriting an existing suite. Each generated case defaults to
 a 30-second deadline unless the specification selects 1–60 seconds; other
-methods use native tools and their supported deadlines.
+methods use native tools and their supported deadlines. Direct POSIX runs
+clean up the case's ordinary subprocess group; detached and remote work still
+require separate supervision. Generated cases reject captured streams over 1 MiB.
 Prefer static types and boundary parsing when they make invalid states
 impossible, `lintify` for recurring static predicates, `hookify` for tool events,
 and `skillify`/`codify` for reusable procedures and executable workflow locks.

@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "a66405d5eff0e6c372897db7296d600939816a7d"
+          "oid": "6473543c05bbcf470c8374aa488ada2a9a1cdd82"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -673,7 +673,7 @@
         },
         "tests/test_authoring.py": {
           "mode": "100644",
-          "oid": "1190ecff95dfda8ccd0f6874a6b5a6f2c05528ca"
+          "oid": "e5fa5c8a6114f6bd1f24d44b95049fc13bcbcbf8"
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed statistical boundary regressions using paired independent case means."
+      "reason": "Reviewed the real descendant-process timeout regression and scoped test review."
     },
     "execution": {
       "docs": {
@@ -1005,7 +1005,7 @@
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "ebb3d1463d94e81bd1981ca92cdf61088b03d2f5"
+          "oid": "93bcfd3e78da5a28f8a87723607ae558e2103aaf"
         },
         "docs/flowify.md": {
           "mode": "100644",
@@ -2727,7 +2727,7 @@
         },
         "skills/learn/skills/testify/references/cli-contracts.md": {
           "mode": "100644",
-          "oid": "d31198f879951d5e025147c2fb50b3a061638ea2"
+          "oid": "9edc523bf6eaa8a2877c1f318919a7c0b63eb2fc"
         },
         "skills/learn/skills/testify/references/execution.md": {
           "mode": "100644",
@@ -2763,7 +2763,7 @@
         },
         "skills/learn/skills/testify/scripts/testify.py": {
           "mode": "100644",
-          "oid": "d5765e9834042f03c37171cb03a6c9cd9c79fa70"
+          "oid": "6552cb9f512f1fb7cfb4082965bae8a452981a19"
         },
         "skills/learn/skills/testify/scripts/tkstack_state.py": {
           "mode": "100644",
@@ -2775,7 +2775,7 @@
         },
         "skills/learn/skills/testify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "517cc4145b032b8094fa9c59c06254bebd351f9c"
+          "oid": "f4aeb50d9d02c299bd4be929a79eb899f26b25bc"
         },
         "skills/learn/templates/improvement.json": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Hill-climb uncertainty thresholds and their conservative large-sample interpretation."
+      "reason": "Reviewed generated Testify deadline cleanup, bounded output reads, and compiled-runner limitations."
     }
   },
   "object_format": "sha1",

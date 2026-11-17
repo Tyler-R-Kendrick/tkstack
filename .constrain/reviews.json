@@ -1,8 +1,8 @@
 {
   "tests/test_authoring.py": {
-    "sha256": "d3e3f83b0733075f95b00d251fb5e36ee560ba07c8177c9698e1ec69dbaf30be",
+    "sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
     "risk": "Hook policies or generated CLI contract tests could permit invalid actions, overwrite files, hang, or miss real behavioral faults.",
-    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression.",
+    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression. A real generated CLI deadline must stop its ordinary POSIX child processes.",
     "kinds": [
       "contract",
       "simulation"

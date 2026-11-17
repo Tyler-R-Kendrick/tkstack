@@ -122,7 +122,10 @@ def render(spec, target):
     # repr produces inert Python literals; test input is passed as argv, never shell text.
     return f'''"""Behavioral CLI contract generated from reviewed case evidence."""
 import json
+import locale
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
@@ -135,13 +138,44 @@ DISTINCTION = {spec.distinction!r}
 CASES = {rows!r}
 
 
+def run_case(args, cwd, timeout):
+    # Direct POSIX runs own a process group so a timed-out CLI cannot leave
+    # ordinary descendants behind. The compiled runner owns its outer group.
+    own_group = os.name == 'posix' and os.environ.get('TKSTACK_CODIFY_EXECUTION') != '1'
+    with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+        process = subprocess.Popen(args, cwd=cwd, stdout=out, stderr=err,
+                                   start_new_session=own_group)
+        try:
+            try:
+                code = process.wait(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                if own_group:
+                    os.killpg(process.pid, signal.SIGKILL)
+                else:
+                    process.kill()
+                process.wait(timeout=2)
+                raise
+        finally:
+            if own_group:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+        out.seek(0)
+        err.seek(0)
+        stdout, stderr = out.read(1048577), err.read(1048577)
+        if len(stdout) > 1048576 or len(stderr) > 1048576:
+            raise ValueError('Case output exceeds 1 MiB per stream')
+        encoding = locale.getpreferredencoding(False)
+        return subprocess.CompletedProcess(args, code, stdout.decode(encoding), stderr.decode(encoding))
+
+
 class CliContractTests(unittest.TestCase):
     def test_contract_cases(self):
         for case in CASES:
             with self.subTest(case=case['name']), tempfile.TemporaryDirectory(prefix='testify-') as temp:
                 args = [arg.replace('{{root}}', str(ROOT)).replace('{{tmp}}', temp) for arg in case['args']]
-                result = subprocess.run([sys.executable, str(ENTRYPOINT), *args], cwd=temp,
-                                        capture_output=True, text=True, timeout={spec.timeout})
+                result = run_case([sys.executable, str(ENTRYPOINT), *args], cwd=temp, timeout={spec.timeout})
                 self.assertEqual(result.returncode, case['exit'], result.stderr)
                 if 'stdout_text' in case:
                     self.assertEqual(result.stdout, case['stdout_text'])

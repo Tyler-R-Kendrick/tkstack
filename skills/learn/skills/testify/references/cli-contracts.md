@@ -8,9 +8,13 @@ string `args`, an integer `exit`, and at least one independent `stdout_text`,
 `stdout_json` are mutually exclusive. JSON null is a valid expected value.
 `{root}` and `{tmp}` in arguments resolve to the checkout and an isolated
 per-case temporary directory. The CLI is invoked via `sys.executable` with
-`shell=False`, and each case runs with its temporary directory as cwd. Python's
-subprocess deadline stops the direct child and reports a timeout; descendant
-processes or remote effects may need a separate supervisor and reconciliation.
+`shell=False`, and each case runs with its temporary directory as cwd. Direct
+POSIX runs place a case in its own process group and stop ordinary descendants
+on completion or timeout. Under the compiled runner, the case shares the outer
+group, which is cleaned up when that invocation finishes. Detached descendants,
+non-POSIX children, and remote effects can outlive cancellation and require
+separate supervision and reconciliation. Captured output is read with a 1 MiB
+per-stream limit after the process stops; temporary files may grow during the run.
 
 ```sh
 python3 <testify>/scripts/testify.py plan --project /project --target tests/test_cli.py --spec /tmp/cases.json
