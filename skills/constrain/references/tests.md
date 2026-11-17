@@ -198,8 +198,10 @@ a linter's work. Generated artifacts need consumer/freshness checks, not one
 assertion per generated file. No test-count or coverage target is a value metric.
 
 The deterministic Python AST rules reject constant oracles, self-comparisons,
-identical executable test bodies (ignoring names/docstrings), and tests with no
-visible assertion. Helper-owned assertions need an exact, reasoned exception;
+identical executable test bodies in the same fixture context with the same
+signature and decorators (ignoring names/docstrings), and tests with no visible
+assertion. A body shared by different fixtures or parametrizations is a review
+candidate, not proof of redundant behavior. Helper-owned assertions need an exact, reasoned exception;
 no glob exceptions. Stale exceptions fail. Rules are deliberately narrow:
 assertion presence does not establish its independence or adequacy. The current
 adapter discovers Python unittest-style functions with `test_` names in the

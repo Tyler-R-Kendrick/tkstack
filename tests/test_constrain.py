@@ -81,7 +81,7 @@ class ConstrainTests(unittest.TestCase):
         self.assertEqual(self.cli(expected=1)['errors'][0]['rule'], 'tests.stale-exception')
 
     def test_duplicate_renamed_tests_and_budget_growth_block_without_automatic_baseline(self):
-        self.suite.write_text(GOOD + '\n' + GOOD.replace('Contract', 'SecondContract').replace('test_result', 'test_other'))
+        self.suite.write_text(GOOD + "\n    def test_other(self):\n        actual = int('42')\n        self.assertEqual(actual, 42)\n")
         self.review()
         self.policy['tests']['max_cases'] = 1
         self.write_policy()
@@ -91,6 +91,21 @@ class ConstrainTests(unittest.TestCase):
         self.policy['layout']['budgets'][0]['max_files'] = 0
         self.write_policy()
         self.assertIn('layout.budget', {e['rule'] for e in self.cli(expected=1)['errors']})
+
+    def test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates(self):
+        self.suite.write_text('''import unittest
+def another_case(function): return function
+class First(unittest.TestCase):
+    def setUp(self): self.value, self.expected = 'primary', 'primary'
+    def test_result(self): self.assertEqual(self.value, self.expected)
+    @another_case
+    def test_decorated_case(self): self.assertEqual(self.value, self.expected)
+class Second(unittest.TestCase):
+    def setUp(self): self.value, self.expected = 'replica', 'replica'
+    def test_result(self): self.assertEqual(self.value, self.expected)
+''')
+        self.review()
+        self.assertEqual(self.cli()['status'], 'pass')
 
     def test_staged_policy_reviews_and_tests_cannot_be_hidden_by_unstaged_repairs(self):
         self.git('add', '.')

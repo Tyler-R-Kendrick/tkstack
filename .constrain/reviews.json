@@ -41,9 +41,9 @@
     "overlap": "Boundary coercion and routing cases are not repeated as whole skill workflows; compiler freeze invariants remain in test_codify."
   },
   "tests/test_constrain.py": {
-    "sha256": "e94a9b72cabbf84f196cb356e70dee2ca22f1bf29ad0470ad2b708dc549f5887",
+    "sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
     "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs.",
-    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries.",
+    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail.",
     "kinds": [
       "contract",
       "simulation"
