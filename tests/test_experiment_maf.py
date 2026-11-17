@@ -82,6 +82,14 @@ class BindingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "inspect descendant processes"):
                 self.invoke(["a.json"])
 
+    def test_parallel_partial_and_failed_proposal_stop_workflow(self):
+        with self.assertRaisesRegex(ValueError, "parallel batch is incomplete"):
+            bindings._outcome("parallel", {"status": "partial"})
+        bindings._outcome("parallel", {"status": "complete"})
+        with self.assertRaisesRegex(ValueError, "proposal did not freeze"):
+            bindings._outcome("propose", {"status": "rejected"})
+        bindings._outcome("propose", {"status": "frozen"})
+
     def test_incomplete_capture_or_handoff_stops_workflow(self):
         with self.assertRaisesRegex(ValueError, "regrade capture is incomplete"):
             bindings._outcome("regrade-capture", {"result": {"decision": "inconclusive"}})
@@ -195,6 +203,22 @@ class NativeWorkflowTests(unittest.TestCase):
         receipts = json.loads(result.stdout)["results"]
         self.assertEqual(receipts[-2]["response"]["decision"], "eligible")
         self.assertNotEqual(receipts[-1]["response"]["commit"], self.base)
+
+    def test_native_graph_executes_parallel_batch(self):
+        init = json.loads((self.requests / "init.json").read_text())
+        init["evaluation"]["repetitions"] = 2
+        (self.requests / "init.json").write_text(json.dumps(init))
+        self.request("batch.json", "parallel", batch="paired", max_workers=2, trials=[
+            {"side": "baseline", "rep": 0, "run_key": "rep-0"},
+            {"side": "baseline", "rep": 1, "run_key": "rep-1"},
+        ])
+        self.request("batch-status.json", "parallel-status", batch="paired")
+        result = self.run_workflow(["init.json", "batch.json", "batch-status.json"])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipts = json.loads(result.stdout)["results"]
+        self.assertEqual(receipts[1]["response"]["status"], "complete")
+        self.assertEqual([r["status"] for r in receipts[2]["response"]["runs"]],
+                         ["settled", "settled"])
 
     def test_native_graph_runs_real_calibration_stage(self):
         self.request("calibrate-run.json", "calibration-run",

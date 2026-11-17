@@ -22,8 +22,13 @@ from json_contract import loads as strict_json_loads
 from experiment_git import GitExperiment, _paths, _run
 from experiment_ledger import Ledger
 from experiment_runner import run_trial
+from experiment_harbor_controller import (run_controller_harbor, validate_controller_harbor, verify_controller_harbor)
 from experiment_evaluate import _validate_spec, compare, feedback_revision, regrade_matrix, validate_calibration
+from experiment_agent_arm import propose_to_arm
+from experiment_proposer import ProposalRunner, ScriptedProvider
 
+
+_BACKEND_UNSET = object()
 
 IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}\Z")
 
@@ -105,8 +110,10 @@ def retain_cases(root, cases):
                 raise ValueError("retained case evidence does not match")
 
 
-def target_digest(registry, executable, dependencies=None):
+def target_digest(registry, executable, dependencies=None, backend=None):
     payload = {"registry": registry, "executable": executable, "dependencies": dependencies or []}
+    if backend is not None:
+        payload["backend"] = backend
     return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
@@ -133,6 +140,10 @@ def calibration_from_runs(root, experiment, records, evaluator_digest, command_d
         result = saved["result"]
         if result["status"] != "passed" or result["stdout_truncated"]:
             raise ValueError("calibration run did not produce complete output")
+        if "backend" in saved:
+            verify_controller_harbor(result, saved["backend"], saved["evaluator"],
+                                     case_sha256=saved["case_sha256"],
+                                     required_gates=saved["gates"], metric_names=saved["metrics"])
         payload = strict_json_loads(result["stdout"])
         if not isinstance(payload, dict) or payload.get("case_sha256") != saved["case_sha256"]:
             raise ValueError("calibration output does not attest the case input")
@@ -178,6 +189,8 @@ def config_for(root):
 
 
 def check_inputs(config):
+    if "backend" in config:
+        validate_controller_harbor(config["backend"], config["evaluator"])
     for key in ("contract", "evaluator", "executable"):
         if digest(config[key]["path"]) != config[key]["sha256"]:
             raise ValueError(f"{key} file changed; start a revised comparison")
@@ -187,8 +200,9 @@ def check_inputs(config):
     for item in config["case_files"].values():
         if digest(item["path"]) != item["sha256"]:
             raise ValueError("case input changed; start a revised comparison")
-    check_native_config(config["evaluator"]["path"], config["registry"], config["target"],
-                        config.get("evaluator_dependencies", []))
+    if "backend" not in config:
+        check_native_config(config["evaluator"]["path"], config["registry"], config["target"],
+                            config.get("evaluator_dependencies", []))
 
 
 def dependency_manifest(paths):
@@ -343,6 +357,43 @@ def remaining_time(root, config):
     return remaining
 
 
+def harbor_measurement_names(evaluation):
+    gates = evaluation["required_gates"] + evaluation.get("candidate_only_gates", [])
+    metrics = list(dict.fromkeys([evaluation["metric"]] + [item["metric"] for item in evaluation.get("guardrails", [])]))
+    if not gates or not metrics or set(gates) & set(metrics) or "work_count" in gates + metrics:
+        raise ValueError("Harbor gate and metric names must be distinct and cannot use work_count")
+    return gates, metrics
+
+
+def run_selected(root, config, git, identity, case, rep, key, deadline, *,
+                 backend=_BACKEND_UNSET, evaluator=None, registry=None, case_file=None, evaluation=None):
+    backend = config.get("backend") if backend is _BACKEND_UNSET else backend
+    evaluator = config["evaluator"] if evaluator is None else evaluator
+    case_file = config["case_files"][case] if case_file is None else case_file
+    evaluation = config["evaluation"] if evaluation is None else evaluation
+    if backend is not None:
+        gates, metrics = harbor_measurement_names(evaluation)
+        return run_controller_harbor(git.repo, identity["commit"], identity["tree"], backend,
+                                     evaluator, [config["target"]], config["target"],
+                                     case_file["path"], case_file["sha256"], root / "harbor-runs" / key,
+                                     gates, metrics, deadline=deadline)
+    registry = config["registry"] if registry is None else registry
+    entry = registry[config["target"]]
+    argv = [case if arg == "{{case}}" else str(rep) if arg == "{{rep}}"
+            else case_file["path"] if arg == "{{case_file}}"
+            else case_file["sha256"] if arg == "{{case_sha256}}" else arg
+            for arg in entry["argv"]]
+    selected = {config["target"]: {"argv": argv, "cwd": entry["cwd"]}}
+    return run_trial(git.repo, identity["commit"], identity["tree"], selected,
+                     [config["target"]], config["target"], deadline=deadline)
+
+
+def settle_result(ledger, experiment, key, result, receipt):
+    if result["status"] == "unknown":
+        return ledger.uncertain(experiment, key, reason=result.get("error") or "uncertain backend outcome")
+    return ledger.settle(experiment, key, actual_tokens=0, receipt_sha256=digest(receipt))
+
+
 def selection_claim(root, config, git, side, identity, case, rep):
     """Identify one frozen selection attempt in the current integration round."""
     return {"config_digest": config_digest(root), "generation": git.generation(config["experiment"]),
@@ -386,22 +437,25 @@ def evaluation_spec(config, baseline, candidate, split="selection"):
 def initialize(request, root):
     experiment = name(request["experiment"])
     paths = request["paths"]
-    registry = request["registry"]
-    target = request["target"]
+    backend = request.get("backend")
+    registry = request.get("registry", {})
+    target = name(request["target"])
     evaluation = request["evaluation"]
     if not isinstance(paths, list) or not paths:
         raise ValueError("paths must be a nonempty list")
-    if not isinstance(registry, dict) or set(registry) != {target}:
-        raise ValueError("register exactly the selected target for this experiment")
-    entry = registry[target]
-    if not isinstance(entry, dict) or set(entry) != {"argv", "cwd"}:
-        raise ValueError("target must specify argv and cwd")
-    if not isinstance(entry["argv"], list) or not entry["argv"]:
-        raise ValueError("target argv must be a nonempty list")
     evaluator = str(Path(request["evaluator_file"]).resolve(strict=True))
     contract = str(Path(request["contract_file"]).resolve(strict=True))
-    registry, executable = validate_target(registry, target, evaluator, request.get("trusted_interpreter"))
-    entry = registry[target]
+    evaluator_identity = {"path": evaluator, "sha256": digest(evaluator)}
+    if backend is not None:
+        if registry or request.get("evaluator_dependencies"):
+            raise ValueError("Harbor owns verifier execution and cannot use a local target registry")
+        validate_controller_harbor(backend, evaluator_identity)
+        registry = {}
+        executable = {"path": backend["harbor_bin"], "sha256": backend["harbor_bin_sha256"]}
+        entry = None
+    else:
+        registry, executable = validate_target(registry, target, evaluator, request.get("trusted_interpreter"))
+        entry = registry[target]
     check_evaluation_fields(evaluation)
     if not isinstance(evaluation, dict):
         raise ValueError("evaluation must be an object")
@@ -429,16 +483,21 @@ def initialize(request, root):
             raise ValueError("confirmation cases must be nonempty, unique, and disjoint from selection")
         if type(confirmation["repetitions"]) is not int or not 1 <= confirmation["repetitions"] <= 100:
             raise ValueError("confirmation repetitions must be between 1 and 100")
-    if (len(cases) > 1 or confirmation is not None) and "{{case}}" not in entry["argv"]:
+    if entry is not None and (len(cases) > 1 or confirmation is not None) and "{{case}}" not in entry["argv"]:
         raise ValueError("multi-case targets must pass {{case}} as an argument")
-    if "{{case_file}}" not in entry["argv"]:
+    if entry is not None and "{{case_file}}" not in entry["argv"]:
         raise ValueError("target must pass {{case_file}} to the evaluator")
+    if backend is not None and evaluation.get("required_qualitative"):
+        raise ValueError("Harbor rewards do not support structured qualitative evidence")
     case_files = freeze_cases(request.get("case_files"), cases,
                               [] if confirmation is None else confirmation["cases"])
     max_trials = request["max_trials"]
     max_tokens = request["max_tokens"]
+    max_proposals = request.get("max_proposals", 5)
     if type(max_trials) is not int or max_trials < 1 or type(max_tokens) is not int or max_tokens != 0:
         raise ValueError("the local runner requires max_tokens=0 and a trusted non-model target")
+    if type(max_proposals) is not int or not 1 <= max_proposals <= 100:
+        raise ValueError("max_proposals must be between 1 and 100")
     elapsed = request.get("max_elapsed_seconds", 1800)
     if isinstance(elapsed, bool) or not isinstance(elapsed, (int, float)) or not math.isfinite(elapsed) or elapsed <= 0:
         raise ValueError("max_elapsed_seconds must be a positive finite number")
@@ -452,20 +511,26 @@ def initialize(request, root):
         "evaluator": {"path": evaluator, "sha256": digest(evaluator)},
         "executable": executable, "case_files": case_files,
         "evaluator_dependencies": dependency_manifest(request.get("evaluator_dependencies", [])),
-        "max_trials": max_trials, "max_tokens": max_tokens,
+        "max_trials": max_trials, "max_tokens": max_tokens, "max_proposals": max_proposals,
         "started_at_epoch": started, "deadline_epoch": started + elapsed,
     }
+    if backend is not None:
+        config["backend"] = backend
     if confirmation is not None:
         config["confirmation"] = confirmation
-    check_native_config(evaluator, registry, target, config["evaluator_dependencies"])
+    if backend is None:
+        check_native_config(evaluator, registry, target, config["evaluator_dependencies"])
     # Check the comparison contract before creating any workspace.
     identity = {"commit": request["base"], "tree": request["base"]}
     _validate_spec(evaluation_spec(config, identity, identity))
+    if backend is not None:
+        harbor_measurement_names(config["evaluation"])
     git = GitExperiment.create(request["source"], root)
     retain_cases(root, config["case_files"])
     baseline = commit_identity(git, config["base"])
     git.initialize_integration(experiment, baseline["commit"])
     Ledger(root / "ledger.sqlite3").initialize(experiment, max_trials=max_trials, max_tokens=max_tokens)
+    Ledger(root / "ledger.sqlite3").configure_proposals(experiment, max_proposals=max_proposals)
     write_new(root / "experiment.json", config)
     with sqlite3.connect(root / "ledger.sqlite3") as db:
         db.execute("CREATE TABLE controller_config (id INTEGER PRIMARY KEY CHECK (id=1), digest TEXT NOT NULL, path TEXT NOT NULL)")
@@ -497,6 +562,10 @@ def rows_for(root, config, keys, side, identity, split="selection", revision=Non
         if record.get("generation") != current_generation:
             raise ValueError("run belongs to a different integration generation")
         result = record["result"]
+        if "backend" in config and result.get("status") == "passed":
+            gates, metrics = harbor_measurement_names(config["evaluation"])
+            verify_controller_harbor(result, config["backend"], config["evaluator"],
+                                     case_sha256=record["case_sha256"], required_gates=gates, metric_names=metrics)
         if record.get("case_sha256") != config["case_files"][record["case"]]["sha256"]:
             raise ValueError("run case input differs from frozen case manifest")
         if record.get("split", "selection") != split:
@@ -536,6 +605,18 @@ def rows_for(root, config, keys, side, identity, split="selection", revision=Non
             "provenance": provenance,
         }
         qualitative = measurement.get("qualitative")
+        if isinstance(qualitative, dict):
+            # `self` refers to the retained, hashed evaluator output for this run.
+            # It lets a grader cite evidence embedded in its own receipt without
+            # knowing the controller's run key in advance.
+            qualitative = {
+                criterion: ({**judgment, "evidence": [
+                    key + ".json" if reference == "self" else reference
+                    for reference in judgment["evidence"]
+                ]} if isinstance(judgment, dict) and isinstance(judgment.get("evidence"), list)
+                    else judgment)
+                for criterion, judgment in qualitative.items()
+            }
         if qualitative is not None:
             row["qualitative"] = qualitative
         rows.append(row)
@@ -619,14 +700,17 @@ def validate_revised_cases(config):
                 any(not isinstance(case, str) or not case.strip() for case in cases2) or
                 len(cases2) != len(set(cases2)) or type(reps2) is not int or not 1 <= reps2 <= 100):
             raise ValueError("invalid confirmation assignments")
-    entry = config["registry"][config["target"]]
-    if (not isinstance(entry, dict) or set(entry) != {"argv", "cwd"} or
-            not isinstance(entry["argv"], list) or not entry["argv"]):
-        raise ValueError("invalid target")
-    if (len(cases) > 1 or confirmation is not None) and "{{case}}" not in entry["argv"]:
-        raise ValueError("multi-case targets must pass {{case}} as an argument")
-    if "{{case_file}}" not in entry["argv"]:
-        raise ValueError("target must pass {{case_file}} to the evaluator")
+    if "backend" not in config:
+        entry = config["registry"][config["target"]]
+        if (not isinstance(entry, dict) or set(entry) != {"argv", "cwd"} or
+                not isinstance(entry["argv"], list) or not entry["argv"]):
+            raise ValueError("invalid target")
+        if (len(cases) > 1 or confirmation is not None) and "{{case}}" not in entry["argv"]:
+            raise ValueError("multi-case targets must pass {{case}} as an argument")
+        if "{{case_file}}" not in entry["argv"]:
+            raise ValueError("target must pass {{case_file}} to the evaluator")
+    elif evaluation.get("required_qualitative"):
+        raise ValueError("Harbor rewards do not support structured qualitative evidence")
 
 
 def selected_finalist(root, config, git):
@@ -723,18 +807,12 @@ def run(request, root, config, git, ledger):
     grant = ledger.dispatch(config["experiment"], key)
     if not grant["dispatch_granted"]:
         raise ValueError("run already dispatched; reconcile before retrying")
-    entry = config["registry"][config["target"]]
-    argv = [case if arg == "{{case}}" else str(rep) if arg == "{{rep}}"
-            else case_file["path"] if arg == "{{case_file}}"
-            else case_file["sha256"] if arg == "{{case_sha256}}" else arg
-            for arg in entry["argv"]]
-    registry = {config["target"]: {"argv": argv, "cwd": entry["cwd"]}}
-    result = run_trial(git.repo, identity["commit"], identity["tree"],
-                       registry, [config["target"]], config["target"], deadline=deadline)
+    result = run_selected(root, config, git, identity, case, rep, key, deadline)
     try:
         check_inputs(config)
     except (OSError, ValueError) as error:
-        result["status"] = "infra_error"
+        if result["status"] != "unknown":
+            result["status"] = "infra_error"
         result["error"] = str(error)
     artifact_path = root / "evidence" / (key + ".json")
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
@@ -751,7 +829,7 @@ def run(request, root, config, git, ledger):
         "result": result, "artifact_sha256": digest(artifact_path),
     }
     write_new(result_path, record)
-    ledger.settle(config["experiment"], key, actual_tokens=0, receipt_sha256=digest(result_path))
+    settle_result(ledger, config["experiment"], key, result, result_path)
     return record
 
 
@@ -760,13 +838,22 @@ def calibration_run(request, root, config, git, ledger):
     remaining_time(root, config)
     check_inputs(config)
     evaluator = str(Path(request["evaluator_file"]).resolve(strict=True))
-    registry, executable = validate_target(request["registry"], config["target"], evaluator,
-                                           request.get("trusted_interpreter"))
-    dependencies = dependency_manifest(request.get("evaluator_dependencies", [item["path"] for item in config.get("evaluator_dependencies", [])]))
-    check_native_config(evaluator, registry, config["target"], dependencies)
-    entry = registry[config["target"]]
-    if "{{case_file}}" not in entry["argv"]:
-        raise ValueError("calibration evaluator must receive {{case_file}}")
+    backend = request.get("backend", config.get("backend"))
+    evaluator_identity = {"path": evaluator, "sha256": digest(evaluator)}
+    if backend is not None:
+        if request.get("registry") or request.get("evaluator_dependencies"):
+            raise ValueError("Harbor calibration cannot use a local target registry")
+        validate_controller_harbor(backend, evaluator_identity)
+        registry, dependencies = {}, []
+        executable = {"path": backend["harbor_bin"], "sha256": backend["harbor_bin_sha256"]}
+    else:
+        registry, executable = validate_target(request["registry"], config["target"], evaluator,
+                                               request.get("trusted_interpreter"))
+        dependencies = dependency_manifest(request.get("evaluator_dependencies", [item["path"] for item in config.get("evaluator_dependencies", [])]))
+        check_native_config(evaluator, registry, config["target"], dependencies)
+        entry = registry[config["target"]]
+        if "{{case_file}}" not in entry["argv"]:
+            raise ValueError("calibration evaluator must receive {{case_file}}")
     case = request["case"]
     if not isinstance(case, str) or not case.strip():
         raise ValueError("calibration case must be named")
@@ -776,6 +863,12 @@ def calibration_run(request, root, config, git, ledger):
     previous_holdout = {read(path)["case_sha256"] for path in (root / "confirmation-claims").glob("*/*.json")}
     if case_hash in current_holdout | previous_holdout:
         raise ValueError("calibration cannot consume a confirmation input")
+    evaluation = request.get("evaluation", config["evaluation"])
+    check_evaluation_fields(evaluation)
+    if backend is not None:
+        if evaluation.get("required_qualitative"):
+            raise ValueError("Harbor rewards do not support structured qualitative evidence")
+        harbor_measurement_names(evaluation)
     evaluator_hash = digest(evaluator)
     identity = commit_identity(git, request["commit"])
     key = name(request["run_key"])
@@ -794,11 +887,9 @@ def calibration_run(request, root, config, git, ledger):
         write_new(exposure, {"case": case, "case_sha256": case_hash})
     if not ledger.dispatch(config["experiment"], key)["dispatch_granted"]:
         raise ValueError("calibration already dispatched")
-    argv = [case if arg == "{{case}}" else "0" if arg == "{{rep}}"
-            else case_path if arg == "{{case_file}}" else case_hash if arg == "{{case_sha256}}" else arg
-            for arg in entry["argv"]]
-    selected = {config["target"]: {"argv": argv, "cwd": entry["cwd"]}}
-    result = run_trial(git.repo, identity["commit"], identity["tree"], selected, [config["target"]], config["target"], deadline=deadline)
+    result = run_selected(root, config, git, identity, case, 0, key, deadline,
+                          backend=backend, evaluator=evaluator_identity, registry=registry,
+                          case_file={"path": case_path, "sha256": case_hash}, evaluation=evaluation)
     try:
         check_inputs(config)
         if digest(evaluator) != evaluator_hash or digest(case_path) != case_hash or digest(executable["path"]) != executable["sha256"]:
@@ -807,12 +898,17 @@ def calibration_run(request, root, config, git, ledger):
             if digest(item["path"]) != item["sha256"]:
                 raise ValueError("calibration dependency changed during execution")
     except (OSError, ValueError) as error:
-        result["status"], result["error"] = "infra_error", str(error)
+        if result["status"] != "unknown":
+            result["status"] = "infra_error"
+        result["error"] = str(error)
     record = {"identity": identity, "case": case, "case_sha256": case_hash, "result": result,
               "config_digest": config_digest(root), "evaluator_sha256": evaluator_hash,
-              "command_sha256": target_digest(registry, executable, dependencies)}
+              "command_sha256": target_digest(registry, executable, dependencies, backend)}
+    if backend is not None:
+        gates, metrics = harbor_measurement_names(evaluation)
+        record.update({"backend": backend, "evaluator": evaluator_identity, "gates": gates, "metrics": metrics})
     write_new(path, record)
-    ledger.settle(config["experiment"], key, actual_tokens=0, receipt_sha256=digest(path))
+    settle_result(ledger, config["experiment"], key, result, path)
     return record
 
 
@@ -881,6 +977,18 @@ def execute(request):
     action = request["action"]
     if action == "draft":
         return draft(request)
+    # Parallel operations own their own locking; invoking them under the
+    # controller lock would deadlock. Status deliberately remains readable
+    # while a batch is running.
+    if action in ("parallel", "parallel-status", "parallel-recover"):
+        from experiment_parallel import run_batch, batch_status, recover_reserved
+        if action == "parallel":
+            return run_batch(request)
+        if set(request) != {"action", "root", "batch"}:
+            raise ValueError("batch status/recovery accepts only root and batch")
+        if action == "parallel-status":
+            return batch_status(request["root"], request["batch"])
+        return recover_reserved(request["root"], request["batch"])
     root = Path(request["root"]).resolve()
     if action == "init":
         return initialize(request, root)
@@ -908,7 +1016,7 @@ def execute_locked(request, root):
             if confirmation_path(root, git, config).exists():
                 status["confirmation"] = read(confirmation_path(root, git, config))["result"]
         return status
-    if action in ("allocate", "freeze") and selection_path(root, git, config).exists():
+    if action in ("allocate", "freeze", "propose") and selection_path(root, git, config).exists():
         raise ValueError("selection is locked after selecting a finalist")
     if action == "revise" and selection_path(root, git, config).exists():
         confirmation = confirmation_path(root, git, config)
@@ -919,6 +1027,46 @@ def execute_locked(request, root):
     if action == "allocate":
         path = git.allocate(experiment, name(request["arm"]), git.resolve_integration(experiment))
         return {"worktree": str(path), "identity": git.resolve(experiment, request["arm"])}
+    if action == "propose":
+        # The native request exposes only a deterministic, zero-model provider.
+        # Trusted host code can inject a broker via the Python proposer API.
+        allowed = {"action", "root", "arm", "expected", "edits", "prompt", "run_key",
+                   "timeout", "message", "writers_stopped"}
+        if set(request) - allowed:
+            raise ValueError("unknown proposer field or untrusted provider configuration")
+        check_inputs(config)
+        remaining = remaining_time(root, config)
+        # Older experiments predate the separately metered proposal allowance.
+        ledger.configure_proposals(experiment, max_proposals=config.get("max_proposals", 5))
+        timeout = request.get("timeout", min(30.0, remaining))
+        if (isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or
+                not math.isfinite(timeout) or timeout <= 0 or timeout > remaining):
+            raise ValueError("proposal timeout must be within the experiment deadline")
+        edits = request.get("edits")
+        if not isinstance(edits, list) or not edits:
+            raise ValueError("scripted proposal needs an array of edits")
+        converted = {}
+        for edit in edits:
+            if not isinstance(edit, dict) or set(edit) != {"path", "content"}:
+                raise ValueError("each scripted edit must specify path and text content or null")
+            path, content = edit["path"], edit["content"]
+            if not isinstance(path, str) or path in converted or (content is not None and not isinstance(content, str)):
+                raise ValueError("scripted paths must be unique and contents must be text or null")
+            converted[path] = content.encode("utf-8") if content is not None else None
+        runner = ProposalRunner(ledger, {"scripted": ScriptedProvider(converted)})
+        def freeze_proposal(arm, message):
+            check_inputs(config)
+            remaining_time(root, config)
+            return execute_locked({"action": "freeze", "arm": arm, "message": message,
+                                   "writers_stopped": True}, root)
+        return propose_to_arm(
+            git=git, ledger=ledger, experiment=experiment, arm=name(request["arm"]),
+            expected=request["expected"], paths=config["paths"], runner=runner,
+            provider="scripted", prompt=request.get("prompt", "Apply the reviewed scripted edit"),
+            run_key=request["run_key"], max_tokens=0, timeout=timeout,
+            message=request["message"], freeze=freeze_proposal,
+            writers_stopped=request.get("writers_stopped"),
+        )
     if action == "freeze":
         if request.get("writers_stopped") is not True:
             raise ValueError("confirm all arm writers have stopped")
@@ -940,6 +1088,12 @@ def execute_locked(request, root):
         key = name(request["run_key"])
         run_path = root / "runs" / (key + ".json")
         record = read(run_path)
+        if record["result"]["status"] == "unknown":
+            raise ValueError("uncertain backend outcome requires independent reconciliation")
+        if "backend" in config and record["result"]["status"] == "passed":
+            gates, metrics = harbor_measurement_names(config["evaluation"])
+            verify_controller_harbor(record["result"], config["backend"], config["evaluator"],
+                                     case_sha256=record["case_sha256"], required_gates=gates, metric_names=metrics)
         artifact_path = root / "evidence" / (key + ".json")
         if (record.get("config_digest") != config_digest(root) or
                 digest(artifact_path) != record.get("artifact_sha256") or
@@ -1068,16 +1222,30 @@ def execute_locked(request, root):
         evaluator_path = str(Path(request["evaluator_file"]).resolve(strict=True))
         if digest(contract_path) != feedback["new_contract"]:
             raise ValueError("new contract does not match feedback revision")
-        registry, executable = validate_target(request["registry"], config["target"], evaluator_path,
-                                               request.get("trusted_interpreter"))
+        backend = request.get("backend", config.get("backend"))
+        if backend is not None:
+            if request.get("registry") or request.get("evaluator_dependencies"):
+                raise ValueError("Harbor revision cannot use a local target registry")
+            validate_controller_harbor(backend, {"path": evaluator_path, "sha256": digest(evaluator_path)})
+            registry = {}
+            executable = {"path": backend["harbor_bin"], "sha256": backend["harbor_bin_sha256"]}
+        else:
+            registry, executable = validate_target(request["registry"], config["target"], evaluator_path,
+                                                   request.get("trusted_interpreter"))
         updated = dict(config)
+        if backend is not None:
+            updated["backend"] = backend
+            updated["evaluator_dependencies"] = []
+        else:
+            updated.pop("backend", None)
         updated["contract"] = {"path": contract_path, "sha256": digest(contract_path)}
         updated["evaluator"] = {"path": evaluator_path, "sha256": digest(evaluator_path)}
         updated["executable"] = executable
         updated["registry"] = registry
         if "evaluator_dependencies" in request:
             updated["evaluator_dependencies"] = dependency_manifest(request["evaluator_dependencies"])
-        check_native_config(evaluator_path, registry, config["target"], updated.get("evaluator_dependencies", []))
+        if backend is None:
+            check_native_config(evaluator_path, registry, config["target"], updated.get("evaluator_dependencies", []))
         # Preserve the comparison rules unless a new one is explicitly supplied.
         updated["evaluation"] = dict(request.get("evaluation", config["evaluation"]))
         check_evaluation_fields(updated["evaluation"])
@@ -1108,7 +1276,7 @@ def execute_locked(request, root):
             if (set(new_cases) & (set(selection_cases) | used_cases) or
                     set(selection_cases) & used_cases):
                 raise ValueError("fresh confirmation and selection cases must exclude exposed confirmation cases")
-            if "{{case}}" not in registry[config["target"]]["argv"]:
+            if backend is None and "{{case}}" not in registry[config["target"]]["argv"]:
                 raise ValueError("confirmation target must pass {{case}}")
             updated["confirmation"] = confirmation
         validate_revised_cases(updated)
@@ -1119,13 +1287,15 @@ def execute_locked(request, root):
         check_case_separation(root, updated)
         identity = baseline_identity(git, config)
         _validate_spec(evaluation_spec(updated, identity, identity))
+        if backend is not None:
+            harbor_measurement_names(updated["evaluation"])
         labels = request["calibration"]
         permitted_gates = set(updated["evaluation"]["required_gates"] + updated["evaluation"].get("candidate_only_gates", []))
         if (not isinstance(labels, list) or not labels or any(not isinstance(label, dict) or label.get("gate") not in permitted_gates for label in labels) or
                 len({label["gate"] for label in labels}) != 1):
             raise ValueError("calibration labels must exercise one required gate")
         calibration = calibration_from_runs(root, experiment, labels, digest(evaluator_path),
-                                            target_digest(registry, executable, updated.get("evaluator_dependencies", [])))
+                                            target_digest(registry, executable, updated.get("evaluator_dependencies", []), backend))
         if not calibration["qualified"]:
             raise ValueError("new evaluator calibration did not qualify")
         content = json.dumps(updated, sort_keys=True, allow_nan=False) + "\n"

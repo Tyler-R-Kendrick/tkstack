@@ -1,0 +1,4 @@
+# Optional local GEPA engine, tested with CPython 3.12 on Linux x86_64.
+# Install in an isolated environment with: pip install --require-hashes -r requirements-gepa.lock
+# This pin has no mandatory transitive dependencies and provides no model provider.
+gepa==0.1.4 --hash=sha256:12b971039599625c156d2231f6d72a29c31a22e9c237689459b5f1a3c353f532

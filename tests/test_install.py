@@ -87,6 +87,14 @@ class InstallTests(unittest.TestCase):
         self.assertTrue(reference.is_file())
         script = self.target / ".cursor/skills/show-me-your-work/scripts/log.sh"
         self.assertTrue(script.stat().st_mode & 0o111)
+        installed_sdlc = self.target / '.agents/skills/sdlc'
+        self.assertEqual(installed_sdlc.resolve(), ROOT / 'skills/sdlc')
+        for document in (installed_sdlc / 'SKILL.md',
+                         installed_sdlc / 'references/operating-guide.md'):
+            links = re.findall(r'\]\(([^)]+)\)', document.read_text())
+            measured = [link for link in links if link.endswith('measured-feature-work.md')]
+            self.assertEqual(len(measured), 1, str(document))
+            self.assertTrue((document.parent / measured[0]).is_file(), str(document))
 
     def test_skills_install_into_the_directory_matching_their_origin(self):
         by_directory = {}

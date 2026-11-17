@@ -185,8 +185,23 @@ def _materialize(repo: Path, commit: str, root: Path):
 
 
 
-def _terminate(process):
+def _terminate(process, *, graceful=False):
     if os.name == "posix":
+        if graceful:
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+            # Allow a trusted wrapper to terminate its registered stage groups.
+            # Keep this grace bounded and preserve the leader PID until SIGKILL.
+            if _can_observe_unreaped():
+                deadline = time.monotonic() + 0.5
+                while time.monotonic() < deadline:
+                    if _exited_without_reaping(process):
+                        break
+                    time.sleep(0.01)
+            else:
+                time.sleep(0.5)
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
@@ -207,9 +222,11 @@ def _exited_without_reaping(process):
     return process.poll() is not None
 
 
-def _execute(argv, cwd, home, timeout, maximum):
+def _execute(argv, cwd, home, timeout, maximum, snapshot_root):
     env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": str(home),
            "TMPDIR": str(home), "LC_ALL": "C"}
+    env["TKSTACK_EXPERIMENT_SNAPSHOT_ROOT"] = str(snapshot_root.resolve())
+    env["TKSTACK_MANAGED_PROCESS_GROUP"] = "1"
     if os.name == "nt" and "SystemRoot" in os.environ:
         env["SystemRoot"] = os.environ["SystemRoot"]
     process = subprocess.Popen(
@@ -243,7 +260,7 @@ def _execute(argv, cwd, home, timeout, maximum):
                 counts[name] += len(data)
                 captured[name].extend(data[:max(0, maximum - len(captured[name]))])
         if timed_out or _can_observe_unreaped():
-            _terminate(process)
+            _terminate(process, graceful=timed_out)
         else:
             process.wait()
         return {
@@ -258,7 +275,7 @@ def _execute(argv, cwd, home, timeout, maximum):
     finally:
         selector.close()
         if process.returncode is None:
-            _terminate(process)
+            _terminate(process, graceful=True)
         process.stdout.close()
         process.stderr.close()
 
@@ -324,7 +341,7 @@ def run_trial(repo, commit, expected_tree, registry, allowed_targets, target, *,
                     result["duration_seconds"] = time.monotonic() - start
                     return result
                 timeout = min(timeout, remaining)
-            result.update(_execute(argv, cwd, home, timeout, max_output_bytes))
+            result.update(_execute(argv, cwd, home, timeout, max_output_bytes, root))
     except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
         result["status"] = "infra_error"
         result["error"] = str(exc)

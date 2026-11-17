@@ -5,6 +5,11 @@ current behavior, owner, exclusions, acceptance conditions, evidence, budget,
 and the actual publication/merge boundary. Resolve observable facts from the
 repository; do not add a default interview or approval gate.
 
+For qualifying new feature and quality-improvement work, plan the measurable
+outcome, task-scoped harness, budget, and user-feedback revision using
+[measured feature work](measured-feature-work.md). Record an evidence-based
+reason if measurement is not applicable to the current task.
+
 Give requirements stable IDs and express behavior as Given/When/Then examples.
 Identify real consumer/provider contracts and supported versions. Record what
 each check can and cannot prove. A schema is not proof of producer behavior.

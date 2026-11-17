@@ -14,10 +14,12 @@ import os
 from pathlib import Path
 import re
 import selectors
+import shutil
 import signal
 import subprocess
 import sys
 import time
+import threading
 
 from json_contract import loads
 
@@ -28,7 +30,7 @@ MAX_TIMEOUT = 3600
 def validate(config):
     if not isinstance(config, dict):
         raise ValueError('config must be an object')
-    allowed = {'argv', 'work_regex', 'gate', 'metric', 'timeout_seconds', 'max_output_bytes', 'failure_exit_codes'}
+    allowed = {'argv', 'work_regex', 'gate', 'metric', 'timeout_seconds', 'max_output_bytes', 'failure_exit_codes', 'quality'}
     if set(config) - allowed or not {'argv', 'work_regex', 'gate', 'metric'} <= set(config):
         raise ValueError('invalid native-check config fields')
     argv = config['argv']
@@ -57,30 +59,228 @@ def validate(config):
     if (not isinstance(codes, list) or not codes or len(set(codes)) != len(codes) or
             any(type(code) is not int or not 1 <= code <= 255 for code in codes)):
         raise ValueError('failure_exit_codes must contain distinct positive exit codes')
+    if 'quality' in config:
+        validate_quality(config['quality'])
+        if limit > 4096:
+            raise ValueError('combined checks require max_output_bytes at most 4096')
     return argv, pattern, timeout, limit, codes
 
 
-def stop(process):
+
+def file_hash(path):
+    with Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def validate_quality(config):
+    if not isinstance(config, dict):
+        raise ValueError('quality must be an object')
+    required = {'argv', 'judge_file', 'judge_sha256', 'executable_sha256'}
+    if set(config) - (required | {'dependencies', 'timeout_seconds'}) or not required <= set(config):
+        raise ValueError('invalid quality judge config')
+    argv = config['argv']
+    if not isinstance(argv, list) or not argv or any(not isinstance(a, str) or '\0' in a for a in argv):
+        raise ValueError('quality argv must be a string array')
+    executable = Path(argv[0])
+    judge = Path(config['judge_file'])
+    if not executable.is_absolute() or not judge.is_absolute():
+        raise ValueError('quality executable and judge must have absolute paths')
+    executable = executable.resolve(strict=True)
+    judge = judge.resolve(strict=True)
+    root_value = os.environ.get('TKSTACK_EXPERIMENT_SNAPSHOT_ROOT')
+    if not root_value or not Path(root_value).is_absolute():
+        raise ValueError('quality checks require the runner-owned snapshot root')
+    snapshot_root = Path(root_value).resolve(strict=True)
+    if not snapshot_root.is_dir() or not Path.cwd().resolve().is_relative_to(snapshot_root):
+        raise ValueError('working directory is outside the runner-owned snapshot root')
+    if not executable.is_file() or not judge.is_file() or judge.is_relative_to(snapshot_root):
+        raise ValueError('quality judge must be a trusted file outside the candidate snapshot')
+    direct = executable == judge
+    if not direct and (len(argv) < 2 or not Path(argv[1]).is_absolute() or Path(argv[1]).resolve(strict=True) != judge):
+        raise ValueError('quality executable must directly invoke the trusted judge')
+    if '{{case_file}}' not in argv:
+        raise ValueError('quality judge must receive the case file')
+    # Execute the resolved paths that were checked, not mutable symlink aliases.
+    argv = list(argv)
+    argv[0] = str(executable)
+    if not direct:
+        argv[1] = str(judge)
+    pinned = [(executable, config['executable_sha256']), (judge, config['judge_sha256'])]
+    dependencies = config.get('dependencies', [])
+    if not isinstance(dependencies, list):
+        raise ValueError('quality dependencies must be a list')
+    for item in dependencies:
+        if not isinstance(item, dict) or set(item) != {'path', 'sha256'}:
+            raise ValueError('invalid quality dependency')
+        dependency = Path(item['path'])
+        if not dependency.is_absolute():
+            raise ValueError('quality dependency must have an absolute path')
+        dependency = dependency.resolve(strict=True)
+        if not dependency.is_file() or dependency.is_relative_to(snapshot_root):
+            raise ValueError('quality dependencies must be trusted files outside the candidate snapshot')
+        pinned.append((dependency, item['sha256']))
+    for path, expected in pinned:
+        if not isinstance(expected, str) or not re.fullmatch(r'[0-9a-f]{64}', expected) or file_hash(path) != expected:
+            raise ValueError('quality judge executable or dependency changed')
+    timeout = config.get('timeout_seconds', 30)
+    if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 < timeout <= MAX_TIMEOUT:
+        raise ValueError('invalid quality timeout')
+    return argv, pinned, timeout
+
+
+def apply_quality(result, config, case_file, case, case_sha, native_metric):
+    argv, pinned, timeout = validate_quality(config)
+    if '{{case}}' in argv and case is None:
+        raise ValueError('quality command requires --case')
+    argv = [str(case_file) if arg == '{{case_file}}' else case if arg == '{{case}}' else arg for arg in argv]
+    judge = execute(argv, timeout, 4096)
+    if judge['outcome'] is not None or judge['exit_code'] != 0:
+        raise ValueError('quality judge did not complete successfully')
+    for path, expected in pinned:
+        if file_hash(path) != expected:
+            raise ValueError('quality judge executable or dependency changed')
+    if file_hash(case_file) != case_sha:
+        raise ValueError('case file changed during quality judgment')
+    payload = loads(judge['evidence']['output'])
+    if (not isinstance(payload, dict) or set(payload) - {'case_sha256', 'metrics', 'qualitative', 'evidence'} or
+            payload.get('case_sha256') != case_sha):
+        raise ValueError('quality judge did not attest the case input')
+    metrics = payload.get('metrics')
+    if not isinstance(metrics, dict) or not metrics or native_metric in metrics:
+        raise ValueError('quality judge must supply distinct numeric metrics')
+    for name, value in metrics.items():
+        if (not isinstance(name, str) or not re.fullmatch(r'[A-Za-z][A-Za-z0-9_.-]{0,63}', name) or
+                type(value) not in (int, float) or not math.isfinite(value)):
+            raise ValueError('quality metrics must be finite numbers')
+    qualitative = payload.get('qualitative', {})
+    if not isinstance(qualitative, dict):
+        raise ValueError('qualitative judgments must be an object')
+    if qualitative and payload.get('evidence') in (None, '', [], {}):
+        raise ValueError('qualitative judgment must include observed evidence')
+    for name, judgment in qualitative.items():
+        if (not isinstance(name, str) or not isinstance(judgment, dict) or
+                type(judgment.get('rating')) not in (int, float) or
+                not math.isfinite(judgment['rating']) or
+                not isinstance(judgment.get('rationale'), str) or not judgment['rationale'].strip() or
+                judgment.get('evidence') != ['self']):
+            raise ValueError('qualitative judgment requires rating, rationale and self evidence')
+        if name in metrics and judgment['rating'] != metrics[name]:
+            raise ValueError('qualitative rating differs from its metric')
+    result['metrics'].update(metrics)
+    if qualitative:
+        result['qualitative'] = qualitative
+    result['evidence']['quality'] = payload
+
+
+# Each native stage owns a process group. The runner signals this wrapper on
+# timeout; the wrapper then terminates every active stage group. A supervisor
+# handshake prevents a stage from starting before its PID is registered.
+_ACTIVE_GROUPS = set()
+
+
+def _kill_group(pid):
+    try:
+        os.killpg(pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+
+
+def _handle_termination(signum, frame):
+    for pid in tuple(_ACTIVE_GROUPS):
+        _kill_group(pid)
+    raise SystemExit(128 + signum)
+
+
+def _can_observe_unreaped():
+    return os.name == 'posix' and all(hasattr(os, name) for name in ('waitid', 'P_PID', 'WEXITED', 'WNOHANG', 'WNOWAIT'))
+
+
+def _exited_without_reaping(process):
+    if _can_observe_unreaped():
+        return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+    return process.poll() is not None
+
+
+def _stop_stage(process):
     if os.name == 'posix':
-        # Descendants may still hold the output pipe after the leader exits.
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+        _kill_group(process.pid)
     elif process.poll() is None:
         process.kill()
-    if process.poll() is None:
-        process.wait()
+    # Remove registration before reaping, while the leader PID is still held.
+    _ACTIVE_GROUPS.discard(process.pid)
+    process.wait()
+
+
+def _supervise_stage(argv):
+    """Wait for parent registration before replacing this group leader."""
+    if len(argv) < 2:
+        return 125
+    try:
+        fd = int(argv[0])
+        token = os.read(fd, 1)
+        os.close(fd)
+        if token != b'1':
+            return 125
+        os.execvpe(argv[1], argv[1:], os.environ)
+    except (OSError, ValueError) as error:
+        print(f'stage launch failed: {error}', file=sys.stderr)
+        return 127
 
 
 def execute(argv, timeout, limit):
     start = time.monotonic()
+    # Python delivers signal handlers only in the main thread. The CLI uses
+    # one main-thread wrapper; library callers in other threads should supply
+    # their own external supervisor for abrupt wrapper termination.
+    install_handler = os.name == 'posix' and threading.current_thread() is threading.main_thread()
+    previous = signal.getsignal(signal.SIGTERM) if install_handler else None
+    if install_handler:
+        signal.signal(signal.SIGTERM, _handle_termination)
+    read_fd = write_fd = None
+    process = None
     try:
-        process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, start_new_session=os.name == 'posix')
+        if shutil.which(argv[0]) is None:
+            raise FileNotFoundError(f'executable not found: {argv[0]}')
+        if os.name == 'posix':
+            read_fd, write_fd = os.pipe()
+            command = [sys.executable, str(Path(__file__).resolve()), '--stage-exec', str(read_fd), *argv]
+            process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT, start_new_session=True,
+                                       pass_fds=(read_fd,))
+            os.close(read_fd)
+            read_fd = None
+            _ACTIVE_GROUPS.add(process.pid)
+            os.write(write_fd, b'1')
+            os.close(write_fd)
+            write_fd = None
+        else:
+            process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT)
     except OSError as error:
+        if process is not None:
+            _stop_stage(process)
+            _ACTIVE_GROUPS.discard(process.pid)
+        if read_fd is not None:
+            os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+        if install_handler:
+            signal.signal(signal.SIGTERM, previous)
         return {'outcome': 'infrastructure_error', 'error': str(error),
                 'evidence': {'output': '', 'bytes_seen': 0}}
+    except BaseException:
+        # If Popen was interrupted before returning, the supervisor receives
+        # EOF on this pipe and exits without executing the target.
+        if read_fd is not None:
+            os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+        if process is not None:
+            _stop_stage(process)
+            _ACTIVE_GROUPS.discard(process.pid)
+        if install_handler:
+            signal.signal(signal.SIGTERM, previous)
+        raise
     output = bytearray()
     seen = 0
     selector = selectors.DefaultSelector()
@@ -88,7 +288,7 @@ def execute(argv, timeout, limit):
         os.set_blocking(process.stdout.fileno(), False)
         selector.register(process.stdout, selectors.EVENT_READ)
         outcome = None
-        while selector.get_map() or process.poll() is None:
+        while selector.get_map() or not _exited_without_reaping(process):
             remaining = timeout - (time.monotonic() - start)
             if remaining <= 0:
                 outcome = 'timeout'
@@ -108,19 +308,21 @@ def execute(argv, timeout, limit):
                     break
             if outcome:
                 break
-        if outcome:
-            stop(process)
+        if outcome or _can_observe_unreaped():
+            _stop_stage(process)
         else:
             process.wait()
-        result = {'outcome': outcome, 'exit_code': process.returncode,
-                  'duration_seconds': time.monotonic() - start,
-                  'evidence': {'output': output.decode('utf-8', 'replace'), 'bytes_seen': seen}}
-        return result
+        return {'outcome': outcome, 'exit_code': process.returncode,
+                'duration_seconds': time.monotonic() - start,
+                'evidence': {'output': output.decode('utf-8', 'replace'), 'bytes_seen': seen}}
     finally:
         selector.close()
-        if process.poll() is None:
-            stop(process)
+        if process.returncode is None:
+            _stop_stage(process)
+        _ACTIVE_GROUPS.discard(process.pid)
         process.stdout.close()
+        if install_handler:
+            signal.signal(signal.SIGTERM, previous)
 
 
 def evaluate(config, case_file, case=None):
@@ -165,6 +367,8 @@ def evaluate(config, case_file, case=None):
     result.update(outcome='passed' if passed else 'test_failure',
                   gates={config['gate']: passed}, metrics={config['metric']: int(passed)},
                   work_count=count)
+    if 'quality' in config:
+        apply_quality(result, config['quality'], case_file, case, case_sha, config['metric'])
     return result
 
 
@@ -183,4 +387,6 @@ def main():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == '--stage-exec':
+        raise SystemExit(_supervise_stage(sys.argv[2:]))
     raise SystemExit(main())

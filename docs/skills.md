@@ -27,8 +27,8 @@ Use `/name` in slash-command harnesses or `$name` in Codex. User-only entries
 preserve upstream `disable-model-invocation: true` policy. Owned `hill-climb`
 and `sdlc` store that flag under `metadata` so their `SKILL.md` files stay
 within the Agent Skills frontmatter set. Their `.claude-plugin/marketplace.json`
-entries use the same descriptions, including the explicit `/hill-climb` and
-`/sdlc` triggers. See [Agent Plugins](agent-plugins.md).
+entries use the same descriptions. Direct `/hill-climb` and `/sdlc` triggers
+remain user initiated; SDLC may also use hill-climb as a measured subworkflow. See [Agent Plugins](agent-plugins.md).
 
 The personal `learn` skill maintains the shared steering store and supports
 explicit report/audit and procedural skill-improvement modes. See
@@ -45,7 +45,7 @@ is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
 | [`document`](../skills/document/SKILL.md) | personal | User or model |
-| [`hill-climb`](../skills/hill-climb/SKILL.md) | personal | User only |
+| [`hill-climb`](../skills/hill-climb/SKILL.md) | personal | User or SDLC subworkflow |
 | [`investigate`](../skills/investigate/SKILL.md) | personal | User or model |
 | [`learn`](../skills/learn/SKILL.md) | personal | User or model |
 | [`sdlc`](../skills/sdlc/SKILL.md) | personal | User only |

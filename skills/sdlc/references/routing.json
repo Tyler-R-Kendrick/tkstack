@@ -426,7 +426,7 @@
     },
     "hill-climb": {
       "phase": "learning",
-      "strengths": "Choose this for one measured keep-or-revert hypothesis against a frozen evaluation. find-the-loop only writes the card; experiment-arms uses do-not-merge pull requests."
+      "strengths": "Choose this for a measured keep-or-revert hypothesis against a frozen evaluation, including qualifying SDLC feature work. find-the-loop only writes the card; experiment-arms uses do-not-merge pull requests."
     },
     "hookify": {
       "phase": "implementation",

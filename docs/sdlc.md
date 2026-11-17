@@ -17,6 +17,14 @@ links that guide from its request table and keeps this page on the outer loop.
 `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing
 entry or an entry names a missing skill.
 
+For new features and improvements with an observable quality difference,
+SDLC planning includes a task-scoped rubric and measurement harness. The
+[measured feature procedure](../skills/sdlc/references/measured-feature-work.md)
+routes this work to `hill-climb`, including revisions to the harness when user
+feedback exposes a gap. It uses only the integration targets needed by the
+task. Routine pass/fail work records why the measurement subworkflow does not
+apply. Installing either skill starts no experiment or paid calls.
+
 The outer loop defines the outcome, decomposes it, challenges the result, and
 delivers it. Each worker runs an inner red → green → refactor loop at a public
 behavior or contract seam. Given/When/Then scenarios and real consumer/provider

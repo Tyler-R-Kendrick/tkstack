@@ -119,7 +119,12 @@ class LocalTrialTests(unittest.TestCase):
         stopped = False
         while time.monotonic() < deadline:
             stat = Path(f"/proc/{pid}/stat")
-            if not stat.exists() or stat.read_text().split()[2] == "Z":
+            try:
+                state = stat.read_text().split()[2]
+            except FileNotFoundError:
+                stopped = True
+                break
+            if state == "Z":
                 stopped = True
                 break
             time.sleep(0.01)
@@ -161,7 +166,7 @@ class LocalTrialTests(unittest.TestCase):
 
     def test_deadline_caps_execution_timeout(self):
         clock = [100.0]
-        def execute(argv, cwd, home, timeout, maximum):
+        def execute(argv, cwd, home, timeout, maximum, snapshot_root):
             self.assertEqual(timeout, 5.0)
             return {"status": "passed", "exit_code": 0}
         with patch.object(runner.time, "monotonic", side_effect=lambda: clock[0]), \

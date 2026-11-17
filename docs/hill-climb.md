@@ -4,8 +4,9 @@ Use `/hill-climb <objective>` or `$hill-climb` for sustained improvement of a
 measurable outcome. The canonical package is
 [`skills/hill-climb`](../skills/hill-climb/SKILL.md), with a bounded plan template,
 measurement contract, source notes, and an optional offline comparison helper.
-It is user-invoked and installs into every selected harness; the default
-profile selects Codex, Claude Code, and Cursor. Restart the
+It is directly user-invoked or used as a subworkflow by SDLC for qualifying
+feature work. It installs into every selected harness; the default profile
+selects Codex, Claude Code, and Cursor. Restart the
 harness session to discover it. Installation does not start a run.
 
 For a task that needs competing implementations or a revised evaluator, use
@@ -77,13 +78,17 @@ paired evidence, and advances an eligible private integration ref. Its local
 runner executes trusted commands with host privileges. It hashes declared
 case files, the evaluator, its direct executable or trusted interpreter, and
 declared dependencies. The included native test adapter requires its configuration
-and JSON parser to be declared and frozen. The evaluator must attest the case digest. Evaluator
+and JSON parser to be declared and frozen. An optional separate quality judge
+can supply numeric and qualitative criteria alongside the native test gate.
+The evaluator must attest the case digest. Evaluator
 revisions require calibration runs on labeled references. A default 1800-second
 experiment deadline limits trial dispatch and execution. Provider spending
 controls, protecting confirmation data from host processes, and external
 sandboxes require separate integration.
 The [Git experiment guide](../skills/hill-climb/references/git-experiments.md)
-documents the request format and recovery limits. The optional
+documents the request format and recovery limits, including bounded scripted
+proposals, host-agent handoff, preallocated parallel trials, and an optional
+Harbor separate-verifier backend and bounded local GEPA search. The optional
 [MAF YAML workflow](../skills/hill-climb/workflows/experiment-cycle/README.md)
 runs a bounded sequence of those requests with its own Python and .NET runtime
 prerequisites.
