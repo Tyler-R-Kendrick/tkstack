@@ -222,11 +222,11 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "4e7ed26737b5cf30db817e897607d627cdbce932"
+          "oid": "bcb1ee3859159566ab65123f528d95131c70aeeb"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "673d9456d685907413c876013d88b5bebd296088"
+          "oid": "1ea9a9cb908cb22934fe8e0ab5a62398e58ded22"
         },
         "skills/learn/skills/codify/templates/ai-sdk/run.ts": {
           "mode": "100644",
@@ -438,7 +438,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "673d9456d685907413c876013d88b5bebd296088"
+          "oid": "1ea9a9cb908cb22934fe8e0ab5a62398e58ded22"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/templates/ai-sdk/run.ts": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a828f635a33d1ab06cb3eab58b44a6e6694c6e25"
+          "oid": "9e48b688c83d29e95561bf5aee3dfb7badc9bcb2"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -537,8 +537,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Documented lock-bound command timeout authoring"
+      "no_doc_impact": true,
+      "reason": "Reviewed the standalone Codify and Skillify scaffold and command documentation; bundling the already documented shared runtime restores the existing contract without changing its usage."
     },
     "catalog": {
       "docs": {
