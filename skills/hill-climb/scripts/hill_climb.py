@@ -100,12 +100,15 @@ def paired_metric(baseline, candidate, metric, direction):
     half_width = None
     if len(deltas) > 1:
         # Case means are the independent units; repeated draws of one case are not extra cases.
-        critical = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262,
-                    2.228, 2.201, 2.179, 2.160, 2.145, 2.131, 2.120, 2.110, 2.101,
-                    2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052,
-                    2.048, 2.045, 2.042]
+        # Rounded upward 97.5% t quantiles. Above 30 df, use the next
+        # lower tabulated df so the interval remains conservative.
+        critical = [12.707, 4.303, 3.183, 2.777, 2.571, 2.447, 2.365, 2.307, 2.263,
+                    2.229, 2.201, 2.179, 2.161, 2.145, 2.132, 2.120, 2.110, 2.101,
+                    2.094, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052,
+                    2.049, 2.046, 2.043]
         df = len(deltas) - 1
-        t = critical[df - 1] if df <= 30 else 1.96
+        t = (critical[df - 1] if df <= 30 else 2.040 if df < 40 else
+             2.022 if df < 60 else 2.001 if df < 120 else 1.980)
         half_width = t * statistics.stdev(deltas) / math.sqrt(len(deltas))
     before = statistics.mean(row["metrics"][metric] for row in baseline.values())
     after = statistics.mean(row["metrics"][metric] for row in candidate.values())

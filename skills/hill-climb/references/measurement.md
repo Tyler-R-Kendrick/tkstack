@@ -48,8 +48,9 @@ winner versus the **original** baseline, using untouched cases and fresh
 receipts. Any semantic confirmation isolation must be checked separately.
 
 The helper averages repetitions within a case, then computes paired case-level
-gain and an approximate 95% Student-t interval (normal approximation above 30
-degrees of freedom). It requires gain strictly above both the registered
+gain and a 95% Student-t interval using upward-rounded critical values. Above
+30 degrees of freedom it uses a conservative coarser table, which can reject
+a marginal improvement that a more exact analysis would accept. It requires gain strictly above both the registered
 actionable margin and the larger of baseline noise and interval half-width.
 Guardrails require the lower bound of oriented gain to remain at or above the
 negative allowed tolerance. A one-case deterministic benchmark can be compared

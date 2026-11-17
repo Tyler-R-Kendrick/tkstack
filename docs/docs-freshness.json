@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "83aec48ca5be422f9a326fcd4821e05b6cb7804c"
+          "oid": "a66405d5eff0e6c372897db7296d600939816a7d"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -809,7 +809,7 @@
         },
         "tests/test_hill_climb.py": {
           "mode": "100644",
-          "oid": "3e4166baaa62675f721d3b3c7012ce48d7613d22"
+          "oid": "b0aa76401e8f5266e7a8eea0b30040b711b64502"
         },
         "tests/test_install.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed Constrain duplicate-test true-positive and distinct-context regressions."
+      "reason": "Reviewed statistical boundary regressions using paired independent case means."
     },
     "execution": {
       "docs": {
@@ -1017,7 +1017,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "61bef49384e88c2ab4351fabb986c9675f70f6eb"
+          "oid": "f49b417fb3251c4ef141c18bdc9966528d6644ce"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -1527,7 +1527,7 @@
         },
         "skills/hill-climb/references/measurement.md": {
           "mode": "100644",
-          "oid": "c48581ae62c06f97b00f4cb66b6334a866be9658"
+          "oid": "c91b5ceee4505ef766b166328b4f776d3fff6d3c"
         },
         "skills/hill-climb/references/operating-guide.md": {
           "mode": "100644",
@@ -1603,7 +1603,7 @@
         },
         "skills/hill-climb/scripts/hill_climb.py": {
           "mode": "100644",
-          "oid": "2a6ac1093e54ea46c0e0a0d12ffc7ddcc5094afd"
+          "oid": "15946364a36788c6522ff1feaff7ce35c56c1e90"
         },
         "skills/hill-climb/scripts/json_contract.py": {
           "mode": "100644",
@@ -1635,7 +1635,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "89c4e08e8d1deb3c6bc32e6ab816e7fbdedfdbf3"
+          "oid": "15049222c205503090859af62a6bcb18471910a2"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed duplicate-test detection against fixture and decorator boundaries and documented its limits."
+      "reason": "Reviewed Hill-climb uncertainty thresholds and their conservative large-sample interpretation."
     }
   },
   "object_format": "sha1",

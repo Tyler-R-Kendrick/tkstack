@@ -344,9 +344,9 @@
     "overlap": "Experiences/locator behavior is not correction activation; that lifecycle stays in test_learn."
   },
   "tests/test_hill_climb.py": {
-    "sha256": "8c6f1c8222fbb7f870fb30bd1347183854cb7fbdcbbd71984e2595872417280f",
+    "sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
     "risk": "A noisy, regressing or workload-changing candidate could be accepted as a measured improvement.",
-    "oracle": "Feed paired receipts with missing samples, drift, leakage and quality regressions; assert actual keep/reject decisions and evidence requirements.",
+    "oracle": "Feed paired receipts with missing samples, drift, leakage and quality regressions; assert actual keep/reject decisions and evidence requirements. Borderline paired gains at larger sample sizes must fail when the Student-t interval includes zero.",
     "kinds": [
       "contract"
     ],
