@@ -34,7 +34,10 @@ revision; they are not claimed to be in the PyPI 0.2.0 wheel. Research code,
 datasets, WebUI, global plugins, transcript harvesting, and scheduling are not
 required by this integration.
 
-[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) targets any owned `skills/<name>/SKILL.md`, with isolated state under `.tkstack/evolution/`.
+[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) targets an
+owned skill or nested subskill with a reviewed authored decision suite, with
+isolated state under `.tkstack/evolution/`. Testify's boundary-selection
+fixtures are authored cases, not evidence of general model performance.
 It ignores global Sleep configuration, disables memory evolution and automatic
 adoption, limits the edit budget to one, and enables strict improvement plus
 per-task no-regression gates. Input hashes pin the live skill, tasks, optimizer

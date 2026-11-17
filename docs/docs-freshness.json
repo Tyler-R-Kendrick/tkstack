@@ -644,7 +644,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "c6dfd30e9ebe568e1a044c7e091a242c4e4418b9"
+          "oid": "5459350f4bbc69929dcd31f7a5c6749efd07f476"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -857,7 +857,7 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "730d1b52b6abd856a03e35524b930af21c2e4d4f"
+          "oid": "782d4515165f6e7c15c1a8565318cadacb1c571d"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
@@ -885,7 +885,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed distinct measured regression cases and documented the justified test and guidance budget allowance."
+      "reason": "Reviewed the distinct multi-skill evolution preparation regression."
     },
     "execution": {
       "docs": {
@@ -1053,7 +1053,7 @@
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
-          "oid": "085de420caa755642bf10a00c2930c2759b72f17"
+          "oid": "2d4e72585c86331eb4d9f3f8302fd842e9ccf9d7"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -1203,7 +1203,7 @@
         },
         "evals/testify/tasks.json": {
           "mode": "100644",
-          "oid": "ddf28c0d9a4c343e08f794cbe19877e1f5795759"
+          "oid": "e4ceecd235a2902a808f7e4989bdabfd486a6e69"
         },
         "evals/tkstack-principles/tasks.json": {
           "mode": "100644",
@@ -3279,7 +3279,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Evalify path reservation, crash recovery, and the Promptfoo invocation boundary."
+      "reason": "Reviewed authored-suite provenance and documented nested skill evolution readiness without claiming model performance."
     }
   },
   "object_format": "sha1",

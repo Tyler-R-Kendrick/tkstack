@@ -98,6 +98,13 @@ class SkillEvolutionTests(unittest.TestCase):
         self.assertEqual({task.split for task in tasks}, {"train", "val", "test"})
         self.assertTrue(all(task.origin == "authored" for task in tasks))
 
+    def test_all_requested_authored_suites_can_prepare_for_evolution(self):
+        for skill in ('learn', 'testify', 'constrain', 'hill-climb'):
+            with self.subTest(skill=skill):
+                cfg, tasks, _ = evolve.prepare(skill, self.root / '.tkstack' / ('run-' + skill), 'mock')
+                self.assertFalse(cfg.auto_adopt)
+                self.assertEqual({task.split for task in tasks}, {'train', 'val', 'test'})
+
     def test_changed_live_skill_cannot_reuse_old_evolution_proof(self):
         with patch.object(evolve, "ROOT", self.fixture):
             evolve.prepare("learn", self.run_dir, "handoff")
