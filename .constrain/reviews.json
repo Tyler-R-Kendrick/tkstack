@@ -73,12 +73,12 @@
   },
   "tests/test_experiment_evaluate.py": {
     "risk": "An ineligible, incomplete, substituted or regressing result could be promoted as an improvement.",
-    "oracle": "Independent labeled measurements, provenance kinds, changed grade receipts, retained submission/case bytes and repeated noisy baselines must produce the correct eligibility or inconclusive result.",
+    "oracle": "Labeled Boolean measurements must report their actual scope; provenance, grader receipts and noisy paired measurements must produce the correct eligibility or inconclusive result.",
     "kinds": [
       "contract"
     ],
     "overlap": "Tests pure paired evaluation and regrade decisions; higher-layer tests exercise persisted controller receipts.",
-    "sha256": "3c062c7eac9f0f67a9ab580a7da5fb0f141d6d398dcc38df780eca7abe2b6ad9"
+    "sha256": "3455731706321db4a5882cb5041a1c397c9d1487596a1d51dbeb8527d891311b"
   },
   "tests/test_experiment_factory.py": {
     "sha256": "2cc92b8b966c6af67000318cd8e9b0d70ea9fd1bbaa0a6abbcf62bc02a57c7b4",
@@ -141,9 +141,9 @@
     "overlap": "Tests translation independently from the broader controller lifecycle."
   },
   "tests/test_experiment_harbor_integration.py": {
-    "sha256": "e3f41f5f919a6718ead1a234d4afa6dae215a8ac0fa81793c4d32e344474a14d",
+    "sha256": "b311c319810fa24f65caac09996cc8bf7f18f0c421a277b2d336e13e9b581ce1",
     "risk": "A Harbor-backed controller or optimizer could use altered evidence or an uncalibrated verifier to select or promote a candidate.",
-    "oracle": "Real controller, Git and SQLite operations use a deterministic fake Harbor executable for selection, confirmation, recovery, same-tree provenance and revision; real GEPA must reject cached results after their Harbor manifest is changed.",
+    "oracle": "Real controller, Git and SQLite operations use a deterministic fake Harbor executable for selection, confirmation, scoped score calibration and revision; real GEPA rejects a tampered cached manifest.",
     "kinds": [
       "contract",
       "functional"
@@ -161,9 +161,9 @@
     "overlap": "Covers parallel backend integration beyond single-run Harbor and local batch tests."
   },
   "tests/test_experiment_integration.py": {
-    "sha256": "78220b535f71fb829644cb77f0c2c01489e87d639731dfc8bee6a64098bcc784",
+    "sha256": "4883e8acf64c392cf1db5fe758bb087b141759c83860bd7a119a5b32f23f0b9a",
     "risk": "Stale evidence, invalid confirmation, changed evaluator inputs or interrupted promotion could advance the wrong candidate.",
-    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery, same-tree source provenance and tamper rejection against retained decisions and refs.",
+    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery and same-tree provenance; the compiled skill must register and compare a host-written arm.",
     "kinds": [
       "contract",
       "functional"
@@ -171,9 +171,9 @@
     "overlap": "Covers public controller integration; component evaluation and Git lifecycle tests cover narrower invariants."
   },
   "tests/test_experiment_integrity.py": {
-    "sha256": "dd362ff4d1febbb61609e457839f81521c06da8c0bdac92c052256f6d5ec0b84",
+    "sha256": "a97f5d7909b5b88c2da35e7dd90aa80d781bec4dffa63b127be2b7df07a27ecd",
     "risk": "Spoofed verifiers, reused assignments, wrong case bytes or fabricated calibration could authorize an invalid comparison.",
-    "oracle": "Real controller calls and stored receipts must reject forged, duplicate, stale and unattested inputs while accepting a bound case.",
+    "oracle": "Real settled receipts must reject forged or duplicate evidence, equivalent reference trees and inverted metric or qualitative anchors, while accepting a calibrated evaluator.",
     "kinds": [
       "contract",
       "functional"
@@ -181,9 +181,9 @@
     "overlap": "Targets authority boundaries and selection uniqueness beyond the general lifecycle."
   },
   "tests/test_experiment_lean.py": {
-    "sha256": "dd15162d6ddbcdafad8aaea90070b8490355f2c09d6df96b75f3a4fdbb186bad",
+    "sha256": "16e6ff8e9a066a20c5d2970401284afed247fb98f7232e161ca50f511b06939c",
     "risk": "An invalid budget theorem or an implementation that undercounts reservations could be mistaken for a proved spending bound.",
-    "oracle": "Run the pinned Lean checker and compare its generated reservation and settlement cases to SQLite; deliberately weakened proofs and an undercounting ledger must be rejected.",
+    "oracle": "Run pinned Lean proofs and compare their reservation, settlement and host/scripted proposal cases to SQLite; intentionally weakened proofs and undercounting ledgers must fail.",
     "kinds": [
       "contract",
       "simulation"
@@ -201,9 +201,9 @@
     "sha256": "a82f48dc4b8d9db54ebd0c025659878488090e6fbcce200935bf6a603df0945d"
   },
   "tests/test_experiment_maf.py": {
-    "sha256": "d7d3f2a457c4c2fba428e40fd4916b5a52d6adb30dce5a2982385faa943cd61d",
+    "sha256": "0651fa09e8ad1ff1b5439306cf907907ceea21c348041ce431102d1c2cb90a61",
     "risk": "The workflow could reorder actions, proceed after failed work or alter request bytes.",
-    "oracle": "Validated input snapshots and subprocess receipts establish ordering and failure propagation; optional tests execute a native MAF graph.",
+    "oracle": "Validated input snapshots and subprocess receipts establish ordering and failure propagation, scoped calibration and host lifecycle routing; optional tests execute a native MAF graph.",
     "kinds": [
       "contract",
       "functional"
@@ -281,9 +281,9 @@
     "overlap": "Fake brokers test contracts and do not prove live provider enforcement."
   },
   "tests/test_experiment_proposer_integration.py": {
-    "sha256": "46e7e654d0c6817472e7fda2a8388786374921d478f6a5fc7f24f2c06ae45a5f",
+    "sha256": "ff24e1d4f88cde3130f344204ccfeeb1bcf0ef6d1754712d921bacfcb053cfa6",
     "risk": "The public proposal action could mutate a dirty arm, exceed its quota or bypass scope.",
-    "oracle": "Controller requests and real Git worktrees assert unchanged protected files, persisted budget, rejection and frozen candidate identity.",
+    "oracle": "Real controller and Git operations check host and scripted quotas, concurrent admission, crash recovery, failed-host approval rejection and frozen candidate identity.",
     "kinds": [
       "contract",
       "functional"

@@ -5,6 +5,7 @@ import collections
 import os
 from pathlib import Path
 import re
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -18,6 +19,10 @@ THEOREMS = (
     "ExperimentBudget.reservation_preserves",
     "ExperimentBudget.bounded_settlement_preserves",
     "ExperimentBudget.overrun_blocks_reservation",
+    "ExperimentBudget.proposal_start_preserves",
+    "ExperimentBudget.proposal_finish_keeps_count",
+    "ExperimentBudget.proposal_finish_does_not_restore_capacity",
+    "ExperimentBudget.proposal_trace_preserves",
 )
 ALLOWED_KERNEL_AXIOMS = {"propext", "Quot.sound", "Classical.choice"}
 
@@ -48,6 +53,8 @@ def oracle(lean):
         if len(lines) != len(THEOREMS):
             raise ValueError("Lean axiom audit did not report all theorems")
         for name, line in zip(THEOREMS, lines):
+            if line == f"'{name}' does not depend on any axioms":
+                continue
             match = re.fullmatch(r"'([^']+)' depends on axioms: \[(.*)\]", line)
             if not match or match.group(1) != name:
                 raise ValueError(f"Unexpected Lean axiom audit: {line}")
@@ -61,10 +68,10 @@ def oracle(lean):
         rows = []
         for line in evaluated.stdout.splitlines():
             parts = line.split()
-            if not parts or parts[0] not in {"R", "S"}:
+            if not parts or parts[0] not in {"R", "S", "P"}:
                 raise ValueError(f"Unexpected Lean oracle row: {line!r}")
             values = [int(part) for part in parts[1:]]
-            if len(values) != (5 if parts[0] == "R" else 7):
+            if len(values) != {"R": 5, "S": 7, "P": 4}[parts[0]]:
                 raise ValueError(f"Malformed Lean oracle row: {line!r}")
             rows.append((parts[0], *values))
         if not rows:
@@ -138,6 +145,69 @@ def check_settlements(rows):
     return checked
 
 
+def _proposal_count(database):
+    # Independent of a potentially undercounting ledger implementation.
+    with sqlite3.connect(database) as connection:
+        return connection.execute("SELECT COUNT(*) FROM proposal_reservations WHERE experiment='test'").fetchone()[0]
+
+
+def check_proposals(rows, ledger_type=Ledger):
+    """Bridge Lean's attempt budget to real host and scripted reservations."""
+    checked = 0
+    with tempfile.TemporaryDirectory(prefix="lean-ledger-proposals-") as temporary:
+        for number, (kind, limit, count, expected_allowed, expected_finished) in enumerate(rows):
+            if kind != "P":
+                raise ValueError("Expected proposal oracle rows")
+            database = Path(temporary) / f"{number}.sqlite"
+            ledger = ledger_type(database)
+            ledger.initialize("test", max_trials=0, max_tokens=0)
+            ledger.configure_proposals("test", max_proposals=limit)
+            for index in range(count):
+                key = f"prior-{index}"
+                if index % 2 == 0:
+                    ledger.reserve("test", key, tokens=0, trial_units=0, proposal=True,
+                                   host_proposal={"arm": key})
+                    ledger.uncertain("test", key, "response lost")
+                    if _proposal_count(database) != index + 1:
+                        raise BridgeMismatch("Uncertain host proposal refunded an attempt")
+                    ledger.finish_host_proposal("test", key, {"outcome": "failed"})
+                else:
+                    ledger.reserve("test", key, tokens=0, trial_units=0, proposal=True)
+                    ledger.cancel("test", key, reason="cancelled before dispatch")
+                if _proposal_count(database) != index + 1:
+                    raise BridgeMismatch("Completing or cancelling a proposal refunded an attempt")
+            if _proposal_count(database) != expected_finished:
+                raise BridgeMismatch("Finished attempts disagree with Lean's proposal count")
+            try:
+                result = ledger.reserve("test", "candidate", tokens=0, trial_units=0, proposal=True,
+                                        host_proposal={"arm": "candidate"})
+                allowed = 1
+            except ValueError as exc:
+                if "proposal budget exhausted" not in str(exc):
+                    raise
+                allowed = 0
+            if allowed != expected_allowed:
+                raise BridgeMismatch(f"proposal limit={limit}, count={count}: Lean={expected_allowed}, ledger={allowed}")
+            if allowed:
+                if not result.get("dispatch_granted") or result.get("status") != "dispatched":
+                    raise BridgeMismatch("Host admission did not atomically grant one dispatch")
+                try:
+                    ledger.reserve("test", "candidate", tokens=0, trial_units=0, proposal=True,
+                                   host_proposal={"arm": "candidate"})
+                except ValueError as exc:
+                    if "already used" not in str(exc):
+                        raise
+                else:
+                    raise BridgeMismatch("Duplicate host key authorized a second dispatch")
+                ledger.finish_host_proposal("test", "candidate", {"outcome": "finished"})
+                if _proposal_count(database) != count + 1:
+                    raise BridgeMismatch("Host finish refunded its proposal attempt")
+            elif _proposal_count(database) != count:
+                raise BridgeMismatch("Rejected host admission consumed a proposal attempt")
+            checked += 1
+    return checked
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--lean", required=True)
@@ -145,7 +215,9 @@ def main():
     rows = oracle(args.lean)
     reservations = check_reservations([row for row in rows if row[0] == "R"])
     settlements = check_settlements([row for row in rows if row[0] == "S"])
-    print(f"Lean theorems checked; {reservations} reservation and {settlements} settlement cases match SQLite")
+    proposals = check_proposals([row for row in rows if row[0] == "P"])
+    print(f"Lean theorems checked; {reservations} reservation, {settlements} settlement, "
+          f"and {proposals} proposal cases match SQLite")
 
 
 if __name__ == "__main__":

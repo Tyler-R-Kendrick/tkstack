@@ -19,7 +19,7 @@ ACTIONS = frozenset({
     "init", "status", "allocate", "freeze", "run", "compare", "promote",
     "recover", "recover-run", "retire", "feedback", "calibrate", "revise",
     "regrade", "regrade-capture", "select", "confirm", "calibration-run", "handoff", "propose",
-    "parallel", "parallel-status", "parallel-recover",
+    "parallel", "parallel-status", "parallel-recover", "host-start", "host-uncertain", "host-finish",
 })
 
 
@@ -115,7 +115,8 @@ def _outcome(action, value):
         raise ValueError("comparison is not eligible")
     if action == "confirm" and value.get("decision", value.get("result", {}).get("decision")) != "eligible":
         raise ValueError("confirmation is not eligible")
-    if action == "calibrate" and value.get("qualified") is not True:
+    if action == "calibrate" and (value.get("qualified") is not True or
+                                  value.get("scope") != {"kind": "boolean_examples"}):
         raise ValueError("calibration is not qualified")
     if action in ("recover", "recover-run") and value.get("state", value.get("status")) not in ("completed", "settled"):
         raise ValueError("recovery remains unresolved")

@@ -51,6 +51,12 @@ class BindingTests(unittest.TestCase):
         self.assertEqual([r["action"] for r in result], ["init", "status"])
         self.assertEqual(result[0]["request_sha256"],
                          hashlib.sha256((self.requests / "a.json").read_bytes()).hexdigest())
+        bindings._outcome("calibrate", {"qualified": True, "scope": {"kind": "boolean_examples"}})
+        with self.assertRaisesRegex(ValueError, "calibration"):
+            bindings._outcome("calibrate", {"qualified": True, "scope": {"kind": "gate", "name": "x"}})
+        for action in ("host-start", "host-uncertain", "host-finish"):
+            self.request("host.json", action)
+            self.assertEqual(self.invoke(["host.json"])[0]["action"], action)
 
     def test_compare_rejection_stops_later_effects(self):
         self.request("a.json", "init", target="check")

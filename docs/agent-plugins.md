@@ -40,7 +40,10 @@ skill must be skipped. Agent Plugins v1 has no skill-level extension point
 top-level gate. Claude Code's skills reference treats `metadata` as an opaque
 map and does not act on its contents (checked 2026-11-05), so those two
 skills can still be auto-invoked there. Their descriptions say to invoke them
-only for an explicit `/hill-climb` or `/sdlc` request.
+for an explicit measured-improvement or SDLC request. SDLC can also route
+qualifying feature work through `hill-climb` as its measured subworkflow.
+The invoking host agent uses its existing tools and any authorized native
+delegation; this routing does not require another agent runtime or provider.
 
 `.agents/skills/` (`fal-ai`, `headroom`, `open-design`, `rtk`) stays on the
 Claude marketplace and the installer. Those packages are not immediate

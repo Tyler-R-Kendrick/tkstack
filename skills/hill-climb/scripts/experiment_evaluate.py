@@ -291,9 +291,10 @@ def validate_calibration(records):
         labels.add(row["expected"])
         if type(row.get("observed")) is not bool or row["observed"] != row["expected"]:
             mismatches.append(identity)
-    return {"qualified": labels == {True, False} and not mismatches,
+    matched = labels == {True, False} and not mismatches
+    return {"qualified": matched, "boolean_labels_match": matched, "scope": {"kind": "boolean_examples"},
             "examples": len(records), "mismatches_or_abstentions": mismatches,
-            "limitations": "Supplied labels and examples are not independently verified."}
+            "limitations": "Boolean labels alone do not qualify an evaluator. Supplied labels and examples are not independently verified."}
 
 
 def regrade_matrix(old_spec, new_spec, old_baseline, old_candidate, new_baseline, new_candidate, evidence_root):

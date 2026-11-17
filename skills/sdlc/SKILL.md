@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Python 3.11+ with SQLite and Git for deterministic task coordination. Typed commands use the shared installed Codify command runtime. Full lifecycle requires actual delegation/PR capabilities and a reflink-capable filesystem for strict COW. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.5.1"
+  version: "0.5.2"
   disable-model-invocation: "true"
 ---
 

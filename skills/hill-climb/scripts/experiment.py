@@ -24,7 +24,7 @@ from experiment_ledger import Ledger
 from experiment_runner import run_trial
 from experiment_harbor_controller import (run_controller_harbor, validate_controller_harbor, verify_controller_harbor)
 from experiment_evaluate import _validate_spec, compare, feedback_revision, regrade_matrix, validate_calibration
-from experiment_agent_arm import propose_to_arm
+from experiment_agent_arm import propose_to_arm, _require_clean
 from experiment_proposer import ProposalRunner, ScriptedProvider
 
 
@@ -117,11 +117,19 @@ def target_digest(registry, executable, dependencies=None, backend=None):
     return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
-def calibration_from_runs(root, experiment, records, evaluator_digest, command_digest):
+def calibration_from_runs(root, experiment, records, evaluator_digest, command_digest,
+                          required_metrics=(), required_qualitative=()):
     if not isinstance(records, list) or len(records) < 2:
         raise ValueError("calibration needs labeled settled run records")
-    if any(not isinstance(record, dict) or set(record) != {"id", "run_key", "gate", "expected"} for record in records):
+    required = {"id", "run_key", "gate", "expected"}
+    if any(not isinstance(record, dict) or not required <= set(record) or
+           set(record) - required - {"metrics", "qualitative"} for record in records):
         raise ValueError("calibration labels must reference actual run records")
+    if any(not isinstance(record["gate"], str) or not record["gate"].strip() for record in records) or len({record["gate"] for record in records}) != 1:
+        raise ValueError("calibration labels must exercise one gate")
+    metric_names, qualitative_names = set(required_metrics), set(required_qualitative)
+    checks = {"metrics": {item: [] for item in metric_names},
+              "qualitative": {item: [] for item in qualitative_names}}
     state = Ledger(root / "ledger.sqlite3").status(experiment)
     runs = {item["run_key"]: item for item in state["runs"]}
     receipts = {item["run_key"]: item["details"] for item in state["events"] if item["operation"] == "settle"}
@@ -148,11 +156,42 @@ def calibration_from_runs(root, experiment, records, evaluator_digest, command_d
         if not isinstance(payload, dict) or payload.get("case_sha256") != saved["case_sha256"]:
             raise ValueError("calibration output does not attest the case input")
         observed = payload.get("gates", {}).get(record["gate"])
-        identities.add((saved["identity"]["commit"], saved["case_sha256"]))
+        for kind, names in (("metrics", metric_names), ("qualitative", qualitative_names)):
+            anchors = record.get(kind, {})
+            if not isinstance(anchors, dict) or set(anchors) - names:
+                raise ValueError(f"unknown or invalid {kind} calibration anchors")
+            for criterion, expected in anchors.items():
+                if isinstance(expected, bool) or not isinstance(expected, (int, float)) or not math.isfinite(expected):
+                    raise ValueError(f"{kind} calibration anchors must be finite numbers")
+                values = payload.get(kind)
+                actual = values.get(criterion) if isinstance(values, dict) else None
+                valid = True
+                if kind == "qualitative":
+                    valid = (isinstance(actual, dict) and isinstance(actual.get("rationale"), str) and
+                             bool(actual["rationale"].strip()) and isinstance(actual.get("evidence"), list) and
+                             bool(actual["evidence"]) and all(ref == "self" for ref in actual["evidence"]))
+                    actual = actual.get("rating") if isinstance(actual, dict) else None
+                valid = (valid and not isinstance(actual, bool) and isinstance(actual, (int, float)) and
+                         math.isfinite(actual) and actual == expected)
+                checks[kind][criterion].append((record["id"], expected, valid))
+        identities.add((saved["identity"]["tree"], saved["case_sha256"]))
         observations.append({"id": record["id"], "expected": record["expected"], "observed": observed})
     if len(identities) != len(records):
         raise ValueError("calibration examples must identify distinct artifacts")
     result = validate_calibration(observations)
+    result["gate"] = records[0]["gate"]
+    result["scope"] = {"kind": "gate", "name": records[0]["gate"]}
+    result["gate_qualified"] = result["boolean_labels_match"]
+    for kind, criteria in checks.items():
+        result[kind] = {}
+        for criterion, anchors in criteria.items():
+            mismatches = [identity for identity, _, valid in anchors if not valid]
+            distinct = len({expected for _, expected, _ in anchors})
+            result[kind][criterion] = {
+                "qualified": distinct >= 2 and not mismatches,
+                "examples": len(anchors), "distinct_expected_values": distinct,
+                "mismatches_or_abstentions": mismatches,
+            }
     result["runs"] = [record["run_key"] for record in records]
     return result
 
@@ -409,8 +448,18 @@ def approved_identity(root, config, git, arm):
         approval = read(approval_path)
     except FileNotFoundError as error:
         raise ValueError("arm tip has not passed scoped freeze") from error
-    if approval != {"identity": identity, "paths": config["paths"]}:
+    base_approval = {"identity": identity, "paths": config["paths"]}
+    if approval == base_approval:
+        return identity
+    if not isinstance(approval, dict) or set(approval) != {"identity", "paths", "host_run_key"}:
         raise ValueError("scoped freeze approval does not match arm")
+    if {key: approval[key] for key in ("identity", "paths")} != base_approval:
+        raise ValueError("scoped freeze approval does not match arm")
+    record = host_record(Ledger(root / "ledger.sqlite3"), config["experiment"], name(approval["host_run_key"]))
+    if (record["status"] != "settled" or not isinstance(record["outcome"], dict) or
+            record["outcome"].get("outcome") != "frozen" or record["outcome"].get("arm") != arm or
+            record["outcome"].get("identity") != identity):
+        raise ValueError("host scoped freeze has no successful settled host proposal")
     return identity
 
 
@@ -997,6 +1046,46 @@ def execute(request):
         return execute_locked(request, root)
 
 
+def host_record(ledger, experiment, run_key):
+    records = ledger.status(experiment)["host_proposals"]
+    record = next((item for item in records if item["run_key"] == run_key), None)
+    if record is None:
+        raise ValueError("unknown host proposal")
+    return record
+
+
+def active_host_on_arm(ledger, experiment, arm):
+    return any(item["arm"] == arm and item["status"] in ("reserved", "dispatched", "uncertain")
+               for item in ledger.status(experiment)["host_proposals"])
+
+
+def freeze_arm(root, config, git, arm, message, *, host_run_key=None):
+    identity = git.freeze(config["experiment"], arm, config["paths"], message)
+    approval_path = root / "approvals" / arm / (identity["commit"] + ".json")
+    approval = {"identity": identity, "paths": config["paths"]}
+    if host_run_key is not None:
+        approval["host_run_key"] = name(host_run_key)
+    if approval_path.exists():
+        existing = read(approval_path)
+        if existing != approval and not (host_run_key is not None and existing == {
+                "identity": identity, "paths": config["paths"]}):
+            raise ValueError("existing scoped freeze approval differs")
+    else:
+        write_new(approval_path, approval)
+    return identity
+
+
+def host_usage(value):
+    if value is None:
+        return {"status": "unknown"}
+    if (not isinstance(value, dict) or set(value) != {"tokens", "source"} or
+            type(value["tokens"]) is not int or not 0 <= value["tokens"] < (1 << 63) or
+            not isinstance(value["source"], str) or not value["source"].strip() or
+            len(value["source"]) > 1024 or "\x00" in value["source"]):
+        raise ValueError("reported host usage requires nonnegative tokens and its source")
+    return {"status": "reported", **value}
+
+
 def execute_locked(request, root):
     action = request["action"]
     config = config_for(root)
@@ -1016,7 +1105,11 @@ def execute_locked(request, root):
             if confirmation_path(root, git, config).exists():
                 status["confirmation"] = read(confirmation_path(root, git, config))["result"]
         return status
-    if action in ("allocate", "freeze", "propose") and selection_path(root, git, config).exists():
+    if action in ("select", "promote", "revise", "recover") and any(
+            item["status"] in ("reserved", "dispatched", "uncertain")
+            for item in ledger.status(experiment)["host_proposals"]):
+        raise ValueError("resolve all active host proposals before selection, promotion or revision")
+    if action in ("allocate", "freeze", "propose", "host-start") and selection_path(root, git, config).exists():
         raise ValueError("selection is locked after selecting a finalist")
     if action == "revise" and selection_path(root, git, config).exists():
         confirmation = confirmation_path(root, git, config)
@@ -1026,7 +1119,113 @@ def execute_locked(request, root):
             raise ValueError("failed confirmation requires fresh confirmation cases")
     if action == "allocate":
         path = git.allocate(experiment, name(request["arm"]), git.resolve_integration(experiment))
-        return {"worktree": str(path), "identity": git.resolve(experiment, request["arm"])}
+        return {"worktree": str(path), "identity": git.resolve(experiment, request["arm"]),
+                "proposal_accounting": "unmetered until host-start"}
+    if action == "host-start":
+        if set(request) != {"action", "root", "arm", "run_key", "expected", "host", "worker", "hypothesis"}:
+            raise ValueError("host-start requires arm, run key, expected identity and host provenance")
+        for field in ("host", "worker", "hypothesis"):
+            value = request[field]
+            if not isinstance(value, str) or not value.strip() or len(value) > 1024 or "\x00" in value:
+                raise ValueError(f"{field} must be nonempty text of at most 1024 characters")
+        check_inputs(config)
+        remaining_time(root, config)
+        arm, key = name(request["arm"]), name(request["run_key"])
+        worktree = _require_clean(git, experiment, arm, request["expected"])
+        ledger.configure_proposals(experiment, max_proposals=config.get("max_proposals", 5))
+        provenance = {"arm": arm, "before": request["expected"], "host": request["host"],
+                      "worker": request["worker"], "hypothesis": request["hypothesis"],
+                      "config_digest": config_digest(root), "generation": git.generation(experiment),
+                      "token_usage": {"status": "unknown"}}
+        dispatch = ledger.reserve(experiment, key, tokens=0, trial_units=0, proposal=True,
+                                  host_proposal=provenance)
+        if not dispatch["dispatch_granted"]:
+            raise ValueError("host proposal already dispatched; reconcile before retrying")
+        return {"run_key": key, "worktree": str(worktree), "identity": request["expected"],
+                "token_usage": {"status": "unknown"}}
+    if action == "host-uncertain":
+        if set(request) != {"action", "root", "run_key", "reason"}:
+            raise ValueError("host-uncertain requires run key and reason")
+        key = name(request["run_key"])
+        host_record(ledger, experiment, key)
+        return ledger.uncertain(experiment, key, request["reason"])
+    if action == "host-finish":
+        if set(request) - {"action", "root", "run_key", "outcome", "message", "reason",
+                           "writers_stopped", "reported_usage", "host_task_id"}:
+            raise ValueError("unknown host-finish field")
+        key = name(request["run_key"])
+        saved = host_record(ledger, experiment, key)
+        provenance = saved["input"]
+        outcome = request.get("outcome")
+        usage = host_usage(request.get("reported_usage"))
+        if outcome not in ("frozen", "failed"):
+            raise ValueError("host outcome must be frozen or failed")
+        if request.get("writers_stopped") is not True:
+            raise ValueError("confirm all arm writers have stopped")
+        reason = request.get("reason")
+        message = request.get("message")
+        if outcome == "failed" and (not isinstance(reason, str) or not reason.strip() or len(reason) > 1024):
+            raise ValueError("failed host work requires a reason")
+        if outcome == "frozen" and (not isinstance(message, str) or not message.strip() or len(message) > 1024):
+            raise ValueError("frozen host work requires a message")
+        result = {"run_key": key, "arm": provenance["arm"], "before": provenance["before"],
+                  "outcome": outcome, "token_usage": usage}
+        task_id = request.get("host_task_id")
+        if task_id is not None:
+            if not isinstance(task_id, str) or not task_id.strip() or len(task_id) > 1024 or "\x00" in task_id:
+                raise ValueError("host task ID must be nonempty text of at most 1024 characters")
+            result["host_task_id"] = task_id
+        result["reason" if outcome == "failed" else "message"] = reason if outcome == "failed" else message
+        if saved["outcome"] is not None:
+            prior = saved["outcome"]
+            if {k: v for k, v in prior.items() if k != "identity"} != result:
+                raise ValueError("host proposal already finished with a different outcome")
+            return prior
+        if saved["status"] not in ("dispatched", "uncertain"):
+            raise ValueError("host proposal was not dispatched")
+        if outcome == "frozen":
+            if selection_path(root, git, config).exists():
+                raise ValueError("selection is locked after selecting a finalist")
+            check_inputs(config)
+            if (provenance["config_digest"] != config_digest(root) or
+                    provenance["generation"] != git.generation(experiment)):
+                raise ValueError("host proposal belongs to a prior configuration or generation")
+            current = git.resolve(experiment, provenance["arm"])
+            worktree, _, _ = git._arm(experiment, provenance["arm"])
+            if _run(["-C", worktree, "merge-base", "--is-ancestor", provenance["before"]["commit"],
+                     current["commit"]], check=False).returncode:
+                raise ValueError("host arm no longer descends from its reserved starting commit")
+            directory = root / "host-finishes"
+            intent_path = directory / (key + ".intent.json")
+            receipt_path = directory / (key + ".receipt.json")
+            intent = {"result": result, "config_digest": provenance["config_digest"],
+                      "generation": provenance["generation"]}
+            if intent_path.is_symlink() or receipt_path.is_symlink():
+                raise ValueError("host completion evidence cannot be a symlink")
+            if intent_path.exists():
+                if read(intent_path) != intent:
+                    raise ValueError("host completion intent differs; reconcile manually")
+                if not receipt_path.is_file():
+                    raise ValueError("host freeze outcome is uncertain; inspect the arm and finish as failed")
+                receipt = read(receipt_path)
+                identity = receipt.get("identity")
+                if ({k: v for k, v in receipt.items() if k != "identity"} != result or
+                        not isinstance(identity, dict) or set(identity) != {"commit", "tree"}):
+                    raise ValueError("host completion receipt differs from the intent")
+                _require_clean(git, experiment, provenance["arm"], identity)
+                approval = root / "approvals" / provenance["arm"] / (identity["commit"] + ".json")
+                approved = read(approval)
+                if approved not in ({"identity": identity, "paths": config["paths"], "host_run_key": key},
+                                    {"identity": identity, "paths": config["paths"]}):
+                    raise ValueError("host completion receipt lacks scoped freeze approval")
+                result = receipt
+            else:
+                if receipt_path.exists():
+                    raise ValueError("host completion receipt lacks its intent")
+                write_new(intent_path, intent)
+                result["identity"] = freeze_arm(root, config, git, provenance["arm"], message, host_run_key=key)
+                write_new(receipt_path, result)
+        return ledger.finish_host_proposal(experiment, key, result)
     if action == "propose":
         # The native request exposes only a deterministic, zero-model provider.
         # Trusted host code can inject a broker via the Python proposer API.
@@ -1034,6 +1233,8 @@ def execute_locked(request, root):
                    "timeout", "message", "writers_stopped"}
         if set(request) - allowed:
             raise ValueError("unknown proposer field or untrusted provider configuration")
+        if active_host_on_arm(ledger, experiment, name(request["arm"])):
+            raise ValueError("arm has an active host proposal")
         check_inputs(config)
         remaining = remaining_time(root, config)
         # Older experiments predate the separately metered proposal allowance.
@@ -1071,15 +1272,9 @@ def execute_locked(request, root):
         if request.get("writers_stopped") is not True:
             raise ValueError("confirm all arm writers have stopped")
         arm = name(request["arm"])
-        identity = git.freeze(experiment, arm, config["paths"], request["message"])
-        approval_path = root / "approvals" / arm / (identity["commit"] + ".json")
-        approval = {"identity": identity, "paths": config["paths"]}
-        if approval_path.exists():
-            if read(approval_path) != approval:
-                raise ValueError("existing scoped freeze approval differs")
-        else:
-            write_new(approval_path, approval)
-        return identity
+        if active_host_on_arm(ledger, experiment, arm):
+            raise ValueError("arm has an active host proposal")
+        return freeze_arm(root, config, git, arm, request["message"])
     if action == "run":
         return run(request, root, config, git, ledger)
     if action == "calibration-run":
@@ -1197,6 +1392,8 @@ def execute_locked(request, root):
             write_new(completed, completion)
         return {"state": "completed", "commit": current}
     if action == "retire":
+        if active_host_on_arm(ledger, experiment, name(request["arm"])):
+            raise ValueError("arm has an active host proposal")
         if selection_path(root, git, config).exists():
             _, decision = selected_finalist(root, config, git)
             if request.get("arm") == decision["arm"]:
@@ -1294,10 +1491,27 @@ def execute_locked(request, root):
         if (not isinstance(labels, list) or not labels or any(not isinstance(label, dict) or label.get("gate") not in permitted_gates for label in labels) or
                 len({label["gate"] for label in labels}) != 1):
             raise ValueError("calibration labels must exercise one required gate")
-        calibration = calibration_from_runs(root, experiment, labels, digest(evaluator_path),
-                                            target_digest(registry, executable, updated.get("evaluator_dependencies", []), backend))
-        if not calibration["qualified"]:
-            raise ValueError("new evaluator calibration did not qualify")
+        command_hash = target_digest(registry, executable, updated.get("evaluator_dependencies", []), backend)
+        old_command_hash = target_digest(config["registry"], config["executable"],
+                                         config.get("evaluator_dependencies", []), config.get("backend"))
+        score_fields = ("metric", "direction", "min_gain", "noise_floor", "deterministic",
+                        "guardrails", "required_qualitative")
+        scores_changed = (updated["contract"]["sha256"] != config["contract"]["sha256"] or
+                          updated["evaluator"]["sha256"] != config["evaluator"]["sha256"] or
+                          command_hash != old_command_hash or
+                          any(updated["evaluation"].get(key) != config["evaluation"].get(key) for key in score_fields))
+        metrics = {updated["evaluation"]["metric"]} | {
+            guard["metric"] for guard in updated["evaluation"].get("guardrails", [])}
+        qualitative = set(updated["evaluation"].get("required_qualitative", []))
+        calibration = calibration_from_runs(root, experiment, labels, digest(evaluator_path), command_hash,
+                                            metrics, qualitative)
+        if not calibration["gate_qualified"]:
+            raise ValueError("required gate calibration did not qualify")
+        if scores_changed and any(not item["qualified"] for item in calibration["metrics"].values()):
+            raise ValueError("changed evaluator or scoring contract requires calibrated metric anchors")
+        if scores_changed and any(not item["qualified"] for item in calibration["qualitative"].values()):
+            raise ValueError("changed evaluator or scoring contract requires calibrated qualitative anchors")
+        calibration["score_anchors_required"] = scores_changed
         content = json.dumps(updated, sort_keys=True, allow_nan=False) + "\n"
         sha = hashlib.sha256(content.encode()).hexdigest()
         if sha == config_digest(root):
