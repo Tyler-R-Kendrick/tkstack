@@ -1,6 +1,11 @@
 # Installed skill inventory
 
-This is the full catalog. Select it with `--profile catalog`; new personal installations use four skills. See [bootstrap](bootstrap.md).
+The catalog is the default dotfiles profile. The tables describe the bundled
+reference snapshots; a current upstream may add or remove skills. See
+[bootstrap](bootstrap.md).
+
+Landmines is an Oxlint plugin rather than a skill. Its installed runtime
+and project invocation are in [integration readiness](integrations.md#landmines).
 
 All 19 repository packages share reserved help/version, explicit contract models,
 retained-report verification, native helper bindings where applicable, and

@@ -66,7 +66,13 @@ while [ $# -gt 0 ]; do
   esac
 done
 case "$url" in
-  https://astral.sh/uv/0.12.23/install.sh) ;;
+  https://github.com/astral-sh/uv/releases/latest/download/uv-*.tar.gz.sha256)
+    [ -n "$out" ] || exit 1
+    digest=${UV_DIGEST_OVERRIDE:-$(sha256sum "$UV_INSTALLER_FILE" | awk '{print $1}')}
+    printf '%s  archive\n' "$digest" > "$out"
+    exit 0
+    ;;
+  https://github.com/astral-sh/uv/releases/latest/download/uv-*.tar.gz) ;;
   *) printf '%s\n' "unexpected url: $url" >&2; exit 1 ;;
 esac
 [ -n "$out" ] || { printf '%s\n' 'missing -o' >&2; exit 1; }

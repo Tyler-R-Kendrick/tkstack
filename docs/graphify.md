@@ -2,15 +2,14 @@
 
 The official [Graphify Labs](https://github.com/Graphify-Labs/graphify) local
 integration is installed for Codex, Claude Code, and Cursor. Its PyPI package is
-**`graphifyy` 0.9.97** (double y); the commands are `graphify` and `graphify-mcp`.
-The runtime includes the local MCP extra. No cloud account is needed for local
+**`graphifyy`** (double y); home dotfiles setup installs the current version and
+the commands are `graphify` and `graphify-mcp`. The runtime includes the local MCP extra. No cloud account is needed for local
 code extraction or graph queries.
 
 Use `$graphify` in Codex or `/graphify` in slash-command harnesses. Install
-copies each host's upstream skill file to
-`.tkstack/skill-views/graphify/<host>/graphify/SKILL.md`, plus that host's
-reference pages. The copy is the upstream bytes. It does not rewrite commands,
-install `graphifyy`, or start an index.
+copies each host's current upstream skill file and reference pages into its
+generation under `.tkstack/cache/upstreams/`. The copy is the upstream bytes.
+Home dotfiles setup installs `graphifyy`; it does not start an index.
 
 When `graphify` is on PATH, the upstream skill's own commands are the interface.
 tkstack does not wrap them.
@@ -40,9 +39,8 @@ MCP project selection for repository context. Native global graph storage uses
 
 Root `mcp.json` declares Graphify as the official `graphify-mcp` stdio
 command, with `${PLUGIN_DATA}/graphify-out/graph.json` as the graph path.
-Install does not run `uv tool install "graphifyy[mcp]"` and does not build
-that graph. A host that wants the server installs the extra and builds
-`graph.json` first. The hosted endpoint `https://api.graphify.com/mcp` is
+Home setup installs the MCP extra; a host still builds `graph.json` first.
+The hosted endpoint `https://api.graphify.com/mcp` is
 Graphify's OAuth server and is not the shipped entry.
 
 The default relative output path preserves native `project_path` selection;
@@ -58,7 +56,7 @@ the skill, MCP integration, and a managed rule for using existing graph context.
 Runtime readiness gates MCP and Claude hook registration.
 
 `GRAPHIFY_NO_AUTO_REFRESH=1` prevents the upstream CLI from rewriting installed
-skill/configuration files behind tkstack's source pins. Generated native views
+skill/configuration files outside tkstack's update process. Generated native views
 adapt only interpreter/CLI invocation, local output/cache paths, and the setup
 step. Their canonical source bytes remain unchanged under `vendor/graphify/`. Doctor
 also checks generated view bytes/modes against the selected source and adapter.
@@ -71,14 +69,13 @@ command should not manage tkstack-owned links or instructions.
 python3 scripts/install.py --target . --harness codex --harness claude --harness cursor
 ```
 
-That links the three host views. It does not install `graphifyy` or register MCP.
-The package version recorded with the source pin is **graphifyy 0.9.97**
-(`sources.lock.json`). Installing that package is a host step. This repository
-does not commit a Python dependency lock for it.
+That links the three host views in project scope. Home dotfiles setup also
+provisions the current `graphifyy[mcp]` package. Native MCP registration follows
+the host's configuration route.
 
 ## Verification and limits
 
-The source snapshot pins **32 files** to
+The historical source snapshot records **32 files** from
 [`0a8cd4e1e342235fe53e881fb5d591bf0460071f`](https://github.com/Graphify-Labs/graphify/tree/0a8cd4e1e342235fe53e881fb5d591bf0460071f),
 including the native skill variants, all their sidecars, metadata, Apache 2.0
 license, original MIT license, and NOTICE. Git blob identities and file modes

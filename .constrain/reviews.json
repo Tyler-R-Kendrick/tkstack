@@ -3,7 +3,10 @@
     "sha256": "3f902eeee5313603d3836c43c1a1cd0815dd455117f55e7e7310d6aaf9797c54",
     "risk": "Project catalog selection may omit portable skills, remove foreign links, or change home and personal placement.",
     "oracle": "Known Cursor-source skills appear in project Codex plans, Muse preserves recorded links and uses the working shared Graphify view, changing profile removes only owned links, and home and personal installs preserve placement.",
-    "kinds": ["contract", "functional"],
+    "kinds": [
+      "contract",
+      "functional"
+    ],
     "overlap": "Exercises project catalog and receipt reconciliation; general installer tests cover the default profile and target lifecycle."
   },
   "tests/test_authoring.py": {
@@ -58,9 +61,9 @@
     "overlap": "Exercises lock, staged snapshot, missing parser, recognized bootstrap fetches, document, boundary and built-directory budgets; each detects a separate user-visible rule failure."
   },
   "tests/test_docs_hooks.py": {
-    "sha256": "e517c47e4d1c30fe0066333392b6eb2bb65ab3b35f752e381ee32b4a3548db08",
+    "sha256": "208c125ffe036b8e4d634064a78a99e028710e71fb4482a97f3f59a6264e84ae",
     "risk": "A staged check can read working-tree bytes, miss sparse files, or accept stale documentation.",
-    "oracle": "Execute the actual Git hook and compare worktree, sparse and staged observations. Maintainer hook selection now belongs to Git itself.",
+    "oracle": "Execute the actual Git hook and compare worktree, sparse and staged observations; changing the bootstrap setting must make the generated README stale. A mutant that ignores that setting fails the test.",
     "kinds": [
       "contract",
       "functional",
@@ -310,9 +313,9 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "d696aba0c62e2faf6dfdf002b46b253475e95364a7bd1506371a670f689cfb01",
-    "risk": "Source-only setup, wrong workspace selection, lost host instructions or destructive reapply can leave consumers silently misconfigured.",
-    "oracle": "Compare the full owned link set, selective Pstack caller aliases, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
+    "sha256": "08418f63c70f5c3ebf971f58deb17c0b65f4ad5bd01649590959f7cf748fb8b0",
+    "risk": "Stale upstreams, incompatible Python, failed updates, missing cache generations, wrong workspace selection or destructive reapply can leave consumers misconfigured or overwrite their files.",
+    "oracle": "Exercise current source and alias selection with a local Git remote, interpreter constraints, update rollback and concurrent edits, missing-generation uninstall, and four native Landmines rule groups. Compare owned links, Pstack caller aliases, native Codex discovery, Git gates and Serena argv/cwd. Rollback and interpreter-constraint mutants are detected.",
     "kinds": [
       "contract",
       "simulation",

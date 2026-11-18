@@ -51,7 +51,12 @@ children of `skills/`, so an Agent Plugins client does not discover them.
 
 ## MCP servers
 
-The portable document declares Playwright, Firecrawl, Vercel and Graphify. The Node servers launch installed JavaScript under `${PLUGIN_ROOT}/integrations/mcp/node_modules`. Provision that exact checkout with the committed npm lock. Graphify reads `${PLUGIN_DATA}/graphify-out/graph.json` using the host-provided binary. Vercel uses client OAuth. Keep API keys in the host environment; the portable client expands only its specified plugin variables.
+The portable document declares Playwright, Firecrawl, Vercel and Graphify. The
+Node servers and Graphify use the current runtime provisioned under
+`${PLUGIN_ROOT}/.tkstack/runtime/current` by home dotfiles setup. Graphify reads
+`${PLUGIN_DATA}/graphify-out/graph.json`. Vercel uses client OAuth. Keep API
+keys in the host environment; the portable client expands only its specified
+plugin variables.
 
 Serena requires the consumer project's absolute path. The portable protocol starts stdio processes in the plugin root by default. Use the project-scoped config emitted by `./install.sh --target /path/to/project --serena-command`. See [runtime provisioning and probes](integrations.md).
 

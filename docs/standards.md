@@ -91,7 +91,9 @@ See [installation, examples, and boundaries](principles.md).
   to a deterministic check; semantic prompt checking remains a model fallback
   with explicit runtime, scope, budget, and false-positive/unknown behavior.
   Validate real CLI discovery, fixtures, diagnostics, and exits. See
-  [lint authoring](lintify.md). `hookify` owns event interception and may call
+  [lint authoring](lintify.md). The optional [Landmines Oxlint plugin](integrations.md#landmines)
+  supplies testing, style, structure, and type rules for JS/TS projects.
+  `hookify` owns event interception and may call
   an existing lint command when that integration is requested.
 - Before reproducing a code pattern, look for suitable existing code and reuse
   assets, including the project's catalog when present. Use `reusify` for three
@@ -146,9 +148,11 @@ the repository.
 
 ## Keeping the setup reproducible
 
-Keep upstream snapshots unchanged. Pin revisions, file contents, symlink
-targets, and executable modes in `sources.lock.json`. Keep name adaptations in
-`skills/skills.json`; generated views belong in `.tkstack/`. When a skill is
+Keep historical upstream snapshots unchanged. Normal dotfiles setup resolves
+current upstream sources and records their observed revisions in `.tkstack/`;
+`sources.lock.json` describes the bundled reference inventory and selection.
+Keep name adaptations in `skills/skills.json`; generated views belong in
+`.tkstack/`. When a skill is
 added or removed, add or remove its phase and strengths in
 `skills/sdlc/references/routing.json`, then run
 `python3 skills/sdlc/scripts/routing_inventory.py render` and `check`. Put new personal

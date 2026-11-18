@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 import os
+import platform
 import re
 import tarfile
 from contextlib import redirect_stdout
@@ -14,13 +15,13 @@ import shutil
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from installer_stubs import (  # noqa: E402
     CURL_TARBALL as _CURL_TARBALL,
     CURL_UV as _CURL_UV,
     GIT_ORIGIN_STUB,
-    UV_INSTALLER_BODY as _UV_INSTALLER_BODY,
     UV_STUB as _UV_STUB,
     stub_path as _stub_path,
 )
@@ -46,6 +47,7 @@ def _env_without_uv():
         kept.append(entry)
     env = os.environ.copy()
     env["PATH"] = os.pathsep.join(kept)
+    env["TKSTACK_OFFLINE"] = "1"
     return env
 
 
@@ -86,6 +88,182 @@ class InstallTests(unittest.TestCase):
         self.assertIn("`/unslop`", help_text)
         self.assertNotIn("`/pstack-unslop`", help_text)
         self.assertTrue((skills["statechart"] / "scripts/statechart").stat().st_mode & 0o111)
+
+    def test_current_sources_update_and_keep_the_previous_generation_on_failure(self):
+        updater = load("latest_source_test", ROOT / "integrations/latest.py")
+        repository = self.target / "upstream"
+        repository.mkdir()
+        subprocess.run(["git", "init", "-q", "--initial-branch=main", str(repository)], check=True)
+        def commit(message):
+            subprocess.run(["git", "-C", str(repository), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(repository), "-c", "user.name=Fixture", "-c",
+                            "user.email=fixture@example.invalid", "commit", "-qm", message], check=True)
+        first = repository / "skills/example/SKILL.md"
+        first.parent.mkdir(parents=True)
+        first.write_text("first version\n")
+        commit("first")
+        checkout = self.target / "checkout"
+        checkout.mkdir()
+        catalog = {"sources": {"example": {"repository": "https://github.com/example/repo", "path": ".",
+                                               "revision": "old-fixed-value", "files": {"skills/example/SKILL.md": {}}}}}
+        (checkout / "sources.lock.json").write_text(json.dumps(catalog))
+        rewrite = {"GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "url." + repository.as_uri() + ".insteadOf",
+                   "GIT_CONFIG_VALUE_0": "https://github.com/example/repo.git"}
+        with patch.dict(os.environ, rewrite):
+            initial = updater.prepare_sources(checkout)
+            updater.publish(checkout / ".tkstack/cache/upstreams/current", initial)
+            first.write_text("second version\n")
+            added = repository / "skills/added/SKILL.md"
+            added.parent.mkdir(parents=True)
+            added.write_text("new skill\n")
+            commit("second")
+            updated = updater.prepare_sources(checkout)
+            self.assertNotEqual(updated, initial)
+            self.assertEqual((initial / "sources/example/skills/example/SKILL.md").read_text(), "first version\n")
+            self.assertEqual((updated / "sources/example/skills/example/SKILL.md").read_text(), "second version\n")
+            self.assertEqual((updated / "sources/example/skills/added/SKILL.md").read_text(), "new skill\n")
+            updater.publish(checkout / ".tkstack/cache/upstreams/current", updated)
+            self.assertEqual(updater.prepare_sources(checkout), updated)
+            catalog["sources"]["example"]["paths"] = {"skills": "skills/example"}
+            (checkout / "sources.lock.json").write_text(json.dumps(catalog))
+            reselection = updater.prepare_sources(checkout)
+            self.assertNotEqual(reselection, updated)
+            self.assertFalse((reselection / "sources/example/skills/added/SKILL.md").exists())
+            updater.publish(checkout / ".tkstack/cache/upstreams/current", reselection)
+            (checkout / "skills").mkdir()
+            (checkout / "skills/skills.json").write_text('{"aliases": {}}')
+            changed_views = updater.prepare_sources(checkout)
+            self.assertNotEqual(changed_views, reselection)
+            updater.publish(checkout / ".tkstack/cache/upstreams/current", updated)
+            with patch.dict(os.environ, {"GIT_CONFIG_KEY_0": "url." + (self.target / "missing").as_uri() + ".insteadOf",
+                                        "GIT_CONFIG_VALUE_0": "https://github.com/unreachable/repo.git"}):
+                catalog["sources"]["example"]["repository"] = "https://github.com/unreachable/repo"
+                (checkout / "sources.lock.json").write_text(json.dumps(catalog))
+                with self.assertRaises(ValueError):
+                    updater.prepare_sources(checkout)
+            self.assertEqual((checkout / ".tkstack/cache/upstreams/current").resolve(), updated)
+            self.assertEqual((updated / "sources/example/skills/example/SKILL.md").read_text(), "second version\n")
+        previous = checkout / ".tkstack/runtime/versions/previous"
+        previous.mkdir(parents=True)
+        (previous / "marker").write_text("working runtime")
+        pointer = checkout / ".tkstack/runtime/current"
+        updater.publish(pointer, previous)
+        fake_uv = checkout / "uv"
+        fake_uv.write_text("fixture")
+        with patch.object(updater, "latest_node", return_value=("v1.2.3", "node-fixture")), \
+             patch.object(updater, "current_uv", return_value=(fake_uv, "fixture")), \
+             patch.object(updater, "current_python", return_value={}), \
+             patch.object(updater, "runtime_current", return_value=None), \
+             patch.object(updater, "python_runtime"), patch.object(updater, "binary_release"), \
+             patch.object(updater, "install_node", side_effect=ValueError("download failed")):
+            with self.assertRaisesRegex(ValueError, "download failed"):
+                updater.prepare_runtime(checkout)
+        self.assertEqual(pointer.resolve(), previous)
+        self.assertEqual((pointer / "marker").read_text(), "working runtime")
+        self.assertEqual(list((checkout / ".tkstack/runtime/versions").iterdir()), [previous])
+        old_file, new_file = checkout / "old-skill", checkout / "new-skill"
+        old_file.write_text("old")
+        new_file.write_text("new")
+        destination, added_link, stale = (self.target / name for name in ("existing", "added", "stale"))
+        destination.symlink_to(old_file)
+        stale.symlink_to(old_file)
+        config = self.target / "instructions"
+        config.write_text("before")
+        plan = [(new_file, destination), (new_file, added_link)]
+        edits = [(config, "before", "after")]
+        state = updater.SimpleNamespace(source_generation=reselection, runtime_generation=previous, applied=True)
+        with self.assertRaisesRegex(OSError, "simulated write failure"):
+            with updater.apply_transaction(checkout, state, plan, [stale], edits,
+                                           install.target_setup.instructify(ROOT).atomic_write):
+                install.apply(plan, migrations={destination: old_file})
+                install.remove_stale([stale])
+                install.target_setup.apply_instructions(edits)
+                updater.publish(checkout / ".tkstack/cache/upstreams/current", reselection)
+                raise OSError("simulated write failure")
+        self.assertEqual(destination.resolve(), old_file)
+        self.assertEqual(stale.resolve(), old_file)
+        self.assertFalse(added_link.exists() or added_link.is_symlink())
+        self.assertEqual(config.read_text(), "before")
+        self.assertEqual((checkout / ".tkstack/cache/upstreams/current").resolve(), updated)
+        self.assertFalse(state.applied)
+        state.applied = True
+        with self.assertRaisesRegex(ValueError, "could not restore"):
+            with updater.apply_transaction(checkout, state, plan, [], [],
+                                           install.target_setup.instructify(ROOT).atomic_write):
+                install.apply(plan, migrations={destination: old_file})
+                destination.unlink()
+                destination.write_text("user changed this")
+                raise OSError("simulated concurrent edit")
+        self.assertEqual(destination.read_text(), "user changed this")
+        self.assertTrue(state.applied)
+        missing = {"upstreams": str(checkout / ".tkstack/cache/upstreams/missing/sources"),
+                   "runtime": str(checkout / ".tkstack/runtime/versions/missing")}
+        args = updater.SimpleNamespace(dry_run=False, check=False, status=False, uninstall=False)
+        with patch.dict(os.environ, {"TKSTACK_OFFLINE": "0"}), \
+             patch.object(updater, "prepare_sources", return_value=updated), \
+             patch.object(updater, "prepare_runtime", return_value=previous):
+            with updater.installation(checkout, self.target, "home", missing, args, lambda root: None,
+                                      lambda path, root: None) as recovered:
+                self.assertEqual(recovered.upstreams, updated / "sources")
+                self.assertEqual(recovered.runtime, previous)
+
+    def test_latest_python_packages_choose_compatible_interpreters(self):
+        updater = load("latest_python_test", ROOT / "integrations/latest.py")
+        uv = self.target / "uv"
+        uv.write_text("""#!/usr/bin/env python3
+import json, os, sys
+action = sys.argv[2]
+if action == 'list':
+    versions = ['3.14.8', '3.13.16'] if '<3.15' in sys.argv[-1] else ['3.15.1', '3.14.8']
+    print(json.dumps([{'version': v, 'implementation': 'cpython', 'variant': 'default'} for v in versions]))
+elif action == 'install':
+    with open(os.environ['INSTALL_LOG'], 'a') as f: f.write(sys.argv[-1] + '\\n')
+elif action == 'find':
+    print('/managed/python-' + sys.argv[-1])
+""")
+        uv.chmod(0o755)
+        log = self.target / "installed"
+        def metadata(url):
+            name = url.split('/')[-2]
+            required = '>=3.11,<3.15' if name in ('graphifyy', 'serena-agent') else '>=3.11'
+            return json.dumps({'info': {'version': '9.9.0', 'requires_python': required}}).encode()
+        with patch.object(updater, 'get', side_effect=metadata):
+            releases = updater.current_python(self.target, uv, {**os.environ, 'INSTALL_LOG': str(log)})
+        self.assertEqual(releases['graphify']['version'], '3.14.8')
+        self.assertEqual(releases['serena']['version'], '3.14.8')
+        self.assertEqual(releases['headroom']['version'], '3.15.1')
+        self.assertEqual(releases['graphify']['requirements'], ['graphifyy[mcp]==9.9.0'])
+        self.assertCountEqual(log.read_text().splitlines(), ['3.14.8', '3.15.1'])
+
+    @unittest.skipUnless((ROOT / ".tkstack/runtime/current/bin/landmines").is_file(),
+                         "Provision the Landmines runtime to test native linting")
+    def test_landmines_runs_in_an_external_project(self):
+        managed = ROOT / ".tkstack/runtime/current"
+        command = [str(managed / "bin/landmines"), "--format=json", "--threads=1"]
+        fixtures = {
+            "bad.test.ts": "import { test } from 'vitest';\ntest('waits', async () => { await new Promise(resolve => setTimeout(resolve, 100)); });\n",
+            "transfer.test.ts": "import { test } from 'vitest';\n// This comment should be removed.\ntest('waits again', async () => { await new Promise(resolve => globalThis.setTimeout(resolve, 100)); });\n",
+            "good.test.ts": "import { test, expect } from 'vitest';\n// WARNING: Stable public behavior is under test.\ntest('returns', () => { expect(1 + 1).toBe(2); });\n",
+            "typed.ts": "export function value(): number { return 1; }\n",
+            "misnamed.spec.ts": "import { test, expect } from 'vitest';\ntest('works', () => { expect(1).toBe(1); });\n",
+        }
+        for name, content in fixtures.items():
+            (self.target / name).write_text(content)
+        linted = subprocess.run(command + list(fixtures), cwd=self.target, text=True, capture_output=True, timeout=30)
+        self.assertEqual(linted.returncode, 1, linted.stderr)
+        report = json.loads(linted.stdout)
+        self.assertEqual(report["number_of_files"], len(fixtures))
+        self.assertEqual({(item["filename"], item["code"]) for item in report["diagnostics"]}, {
+            ("bad.test.ts", "landmines-testing(no-fixed-sleep)"),
+            ("transfer.test.ts", "landmines-testing(no-fixed-sleep)"),
+            ("transfer.test.ts", "landmines-style(no-comments)"),
+            ("typed.ts", "landmines-types(no-explicit-return-types)"),
+            ("misnamed.spec.ts", "landmines-structure(test-file-names)"),
+        })
+        clean = subprocess.run(command + ["good.test.ts"], cwd=self.target, text=True, capture_output=True, timeout=30)
+        self.assertEqual(clean.returncode, 0, clean.stderr)
+        self.assertEqual(json.loads(clean.stdout)["number_of_files"], 1)
+        self.assertEqual(json.loads(clean.stdout)["diagnostics"], [])
 
     def test_install_preserves_references_and_is_repeatable(self):
         self.assertEqual(install.apply(self.plan), self.expected_links)
@@ -217,6 +395,20 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((self.target / ".grok/skills/graphify").exists())
         self.assertFalse((self.target / ".github/skills").exists())
         self.assertNotIn("t3code", {path.name for path in self.target.iterdir()})
+        receipt = self.target / ".tkstack/install.json"
+        saved = json.loads(receipt.read_text())
+        vanished_source = ROOT / ".tkstack/cache/upstreams/generation-removed/sources"
+        vanished_runtime = ROOT / ".tkstack/runtime/versions/generation-removed"
+        saved.update(upstreams=str(vanished_source), runtime=str(vanished_runtime))
+        old_tool = vanished_runtime / "bin/landmines"
+        owned_tool = self.target / ".tkstack/bin/landmines"
+        owned_tool.parent.mkdir(parents=True, exist_ok=True)
+        owned_tool.symlink_to(old_tool)
+        foreign_tool = self.target / ".local/bin/landmines"
+        foreign_tool.parent.mkdir(parents=True, exist_ok=True)
+        foreign_tool.write_text("user command")
+        saved["links"].update({".tkstack/bin/landmines": str(old_tool), ".local/bin/landmines": str(old_tool)})
+        receipt.write_text(json.dumps(saved))
         dry_remove = subprocess.run(
             [sys.executable, str(ROOT / "scripts/install.py"), "--dry-run", "--uninstall", "--target", str(self.target)],
             capture_output=True, text=True, env=env)
@@ -228,6 +420,8 @@ class InstallTests(unittest.TestCase):
             capture_output=True, text=True, env=env)
         self.assertEqual(removed.returncode, 0, removed.stdout + removed.stderr)
         self.assertFalse((self.target / ".copilot/skills/learn").exists())
+        self.assertFalse(owned_tool.exists() or owned_tool.is_symlink())
+        self.assertEqual(foreign_tool.read_text(), "user command")
         self.assertFalse((self.target / ".claude/skills/learn").exists())
 
     def test_uninstall_succeeds_when_delegates_are_broken(self):
@@ -461,7 +655,7 @@ class InstallTests(unittest.TestCase):
     def test_install_into_own_checkout_preserves_portable_instruction_sources(self):
         checkout = self.target / 'self checkout'
         checkout.mkdir()
-        for directory in ('vendor', 'scripts', 'src', 'skills'):
+        for directory in ('vendor', 'scripts', 'src', 'skills', 'integrations'):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
                             ignore=shutil.ignore_patterns('__pycache__', 'node_modules'))
         for name in ('sources.lock.json', 'AGENTS.md', 'CLAUDE.md'):
@@ -513,6 +707,8 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((target / '.tkstack').exists())
         invoke()
         invoke('--check')
+        self.assertEqual(json.loads((target / '.tkstack/install.json').read_text())['profile'], 'catalog')
+        self.assertTrue((target / '.cursor/skills/architect/SKILL.md').is_file())
         self.assertEqual((target / '.agents/steering').resolve(), target / '.tkstack/steering')
         self.assertEqual((target / '.agents/skills/constrain').resolve(), ROOT / 'skills/constrain')
         result = subprocess.run([str(target / '.tkstack/tkstack'), 'skills', 'constrain', '--', 'native', 'check', '--repo', '.'], cwd=target,
@@ -558,9 +754,9 @@ class InstallTests(unittest.TestCase):
     def test_fresh_checkout_installs_without_a_preexisting_alias_view(self):
         checkout = self.target / "checkout"
         checkout.mkdir()
-        for directory in ("vendor", "scripts", "src", "skills"):
+        for directory in ("vendor", "scripts", "src", "skills", "integrations"):
             shutil.copytree(ROOT / directory, checkout / directory, symlinks=True,
-                            ignore=shutil.ignore_patterns("__pycache__"))
+                            ignore=shutil.ignore_patterns("__pycache__", "node_modules"))
         shutil.copy2(ROOT / "sources.lock.json", checkout / "sources.lock.json")
         target = self.target / "installation"
         command = [sys.executable, str(checkout / "scripts/install.py"),
@@ -586,7 +782,7 @@ class InstallTests(unittest.TestCase):
         project.mkdir()
         home.mkdir()
         profile = home / "custom-codex"
-        env = {**os.environ, "HOME": str(home), "CODEX_HOME": str(profile)}
+        env = {**os.environ, "HOME": str(home), "CODEX_HOME": str(profile), "TKSTACK_OFFLINE": "1"}
         subprocess.run(["git", "init", "-q", str(project)], check=True)
         setup = [str(ROOT / "install.sh")]
         subprocess.run(setup, cwd=project, env=env, check=True, capture_output=True)
@@ -596,8 +792,9 @@ class InstallTests(unittest.TestCase):
         self.assertIn("constrain/SKILL.md", prompt)
         self.assertNotIn("testify/SKILL.md", prompt)
         self.assertNotIn("codify/SKILL.md", prompt)
-        self.assertEqual({p.name for p in (home / ".agents/skills").iterdir()},
-                         {"constrain", "investigate", "learn", "tkstack-principles"})
+        self.assertLessEqual({"constrain", "investigate", "learn", "tkstack-principles", "matt-tdd", "caveman"},
+                             {p.name for p in (home / ".agents/skills").iterdir()})
+        self.assertTrue((home / ".cursor/skills/architect/SKILL.md").is_file())
         self.assertTrue((home / ".claude/CLAUDE.md").is_file())
         subprocess.run(setup + ["--uninstall"], cwd=project, env=env, check=True, capture_output=True)
         self.assertFalse((profile / "AGENTS.md").exists())
@@ -642,17 +839,23 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         return environment
 
     def _installer_body(self):
-        path = self.base / "uv-installer.sh"
-        path.write_text(_UV_INSTALLER_BODY)
+        path = self.base / "uv.tar.gz"
+        arch = {"x86_64": "x86_64", "amd64": "x86_64", "arm64": "aarch64", "aarch64": "aarch64"}[platform.machine().lower()]
+        system = "unknown-linux-gnu" if platform.system() == "Linux" else "apple-darwin"
+        content = _UV_STUB.encode()
+        with tarfile.open(path, "w:gz") as archive:
+            member = tarfile.TarInfo(f"uv-{arch}-{system}/uv")
+            member.size, member.mode = len(content), 0o755
+            archive.addfile(member, io.BytesIO(content))
+            extra = tarfile.TarInfo("../unexpected")
+            extra.size = 1
+            archive.addfile(extra, io.BytesIO(b"x"))
         return path
 
-    def _pinned_checkout(self, digest=None):
+    def _pinned_checkout(self):
         checkout = self.base / "checkout"
         (checkout / "scripts").mkdir(parents=True)
         text = (ROOT / "install.sh").read_text()
-        if digest:
-            pin = "UV_INSTALLER_SHA256=b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491"
-            text = text.replace(pin, "UV_INSTALLER_SHA256=" + digest, 1)
         script = checkout / "install.sh"
         script.write_text(text)
         script.chmod(0o755)
@@ -704,29 +907,28 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         result = self._run(ROOT / "install.sh", path, "--dry-run", "--target", str(target))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         log = self.uv_log.read_text()
-        self.assertIn("python install 3.12.15", log)
-        self.assertIn("run --python 3.12.15 --no-project -- python -B ", log)
+        self.assertIn("python install 3", log)
+        self.assertIn("run --python 3 --no-project -- python -B ", log)
         self.assertIn(str(ROOT / "scripts" / "install.py"), log)
         self.assertIn("--dry-run", log)
         self.assertNotIn("requires Python 3.11+", result.stderr)
         self.assertFalse(self.curl_log.exists())
 
-    def test_missing_python_and_uv_bootstraps_the_pinned_uv_installer(self):
+    def test_missing_python_and_uv_bootstraps_the_current_uv_release(self):
         body = self._installer_body()
-        digest = hashlib.sha256(body.read_bytes()).hexdigest()
         path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV})
         poison = self.base / "poison-bin"
-        script = self._pinned_checkout(digest)
+        script = self._pinned_checkout()
         result = self._run(
             script, path, "--dry-run", "--target", str(self.base / "target"),
             extra={"UV_INSTALLER_FILE": str(body), "UV_INSTALL_DIR": str(poison)},
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("https://astral.sh/uv/0.12.23/install.sh", self.curl_log.read_text())
+        self.assertIn("https://github.com/astral-sh/uv/releases/latest/download/", self.curl_log.read_text())
         self.assertIn(" -o ", " " + self.curl_log.read_text())
         log = self.uv_log.read_text()
-        self.assertIn("python install 3.12.15", log)
-        self.assertIn("run --python 3.12.15", log)
+        self.assertIn("python install 3", log)
+        self.assertIn("run --python 3", log)
         installed = self.home / ".local" / "bin" / "uv"
         self.assertTrue(installed.is_file())
         self.assertFalse(poison.exists())
@@ -736,7 +938,7 @@ class InstallerPrerequisiteTests(unittest.TestCase):
         body = self._installer_body()
         path = _stub_path(self.base / "bins", ("python", "uv"), {"curl": _CURL_UV, "sh": "#!/bin/sh\nprintf '%s\\n' ran-sh >> \"$UV_LOG\"\nexit 0\n"})
         script = self._pinned_checkout()
-        result = self._run(script, path, extra={"UV_INSTALLER_FILE": str(body)})
+        result = self._run(script, path, extra={"UV_INSTALLER_FILE": str(body), "UV_DIGEST_OVERRIDE": "0" * 64})
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("sha256", result.stderr)
         self.assertFalse((self.home / ".local" / "bin" / "uv").exists())
@@ -976,18 +1178,15 @@ exec "$REAL_MV" "$@"
         self.assertIn("ORIGINAL", (checkout / "install.sh").read_text())
         self.assertTrue(mv_log.is_file())
 
-    def test_chatty_uv_installer_does_not_pollute_the_uv_path(self):
-        body = self.base / "uv-installer.sh"
-        body.write_text(_UV_INSTALLER_BODY + "\nprintf '%s\\n' 'chatty installer revision'\n")
-        digest = hashlib.sha256(body.read_bytes()).hexdigest()
+    def test_uv_archive_extracts_only_the_expected_executable(self):
+        body = self._installer_body()
         path = _stub_path(self.base / "bins-chatty", ("python", "uv"), {"curl": _CURL_UV})
-        script = self._pinned_checkout(digest)
+        script = self._pinned_checkout()
         result = self._run(script, path, "--dry-run", "--target", str(self.base / "target"), extra={"UV_INSTALLER_FILE": str(body)})
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("chatty installer revision", result.stderr)
         log = self.uv_log.read_text()
-        self.assertIn("python install 3.12.15", log)
-        self.assertNotIn("chatty", log)
+        self.assertIn("python install 3", log)
+        self.assertFalse((self.base / "unexpected").exists())
 
 
 class SerenaInstallTests(unittest.TestCase):
@@ -999,6 +1198,7 @@ class SerenaInstallTests(unittest.TestCase):
             binary.chmod(0o755)
             env = {**os.environ, "PATH": str(base) + os.pathsep + os.environ["PATH"]}
             env["HOME"] = str(base)
+            env["TKSTACK_SERENA"] = str(binary)
             for target_args in ([], ["--target", str(base)]):
                 result = subprocess.run([sys.executable, str(ROOT / "scripts/install.py"), "--scope", "project",
                                          "--index-serena", *target_args], env=env, capture_output=True, text=True)

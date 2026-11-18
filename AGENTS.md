@@ -18,7 +18,7 @@ TKStack manages personal agent dotfiles. The consumer is a developer in another 
 
 ## Ownership and verification
 
-- Preserve pinned upstream content, licenses, symlinks and modes in `vendor/`; update `sources.lock.json` for a reviewed upstream revision. Host adaptations belong in placement or generated views. [Catalog](docs/skills.md).
+- Preserve historical upstream content, licenses, symlinks and modes in `vendor/`. Dotfiles setup resolves current upstream sources and records the revision it actually used. Host adaptations belong in placement or generated views. [Catalog](docs/skills.md).
 - Keep owned skills in `skills/`, adopted packages in `.agents/skills/`, shared subagents in `agents/` and native Cursor rules in `.cursor/rules/`. Keep portable manifests, Claude marketplace, and host discovery consistent with their respective contracts. [Distribution](docs/agent-plugins.md).
 - Install into the requested destination and verify it there. Use temporary homes/projects for tests. Native discovery, a linked file, and live service authorization establish different facts. [Bootstrap](docs/bootstrap.md) and [integration probes](docs/integrations.md).
 - Run the full unittest suite, installer preview, skill and routing checks, strict constraint gate and documentation check. Use the locked dependencies from CI. Reapply `python3 scripts/install.py --target .` after the suite to restore source views. Asyncio tests need local IPC.
