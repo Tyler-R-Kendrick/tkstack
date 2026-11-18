@@ -47,6 +47,8 @@ Calibration reports false positives and false negatives separately when reviewed
 reference labels are supplied.
 Host-observed case durations are summarized separately from offline processing
 time, with missing durations counted rather than filled in.
+The [host-bound testing evidence](../evals/results/2026-11-17-host-bound-hill-climb.md)
+records repeated local regressions and the limits of same-conversation evaluation.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:

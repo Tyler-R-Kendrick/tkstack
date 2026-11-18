@@ -897,7 +897,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "56ac179c144ca55c711a4c0d9047587c762c199a"
+          "oid": "e2251f50594ce7d14a6db165c50de7964c1ca0bd"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -947,7 +947,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a196e19fd869a071632b74bde7a6ff8fbe232713"
+          "oid": "8c640ced409c5c7f0c5fcb1abab3193ae5bece29"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1052,6 +1052,14 @@
         "evals/results/2026-10-31-owned-skills.json": {
           "mode": "100644",
           "oid": "a5aa31d8718ccdda8827bc656533970cae828c9e"
+        },
+        "evals/results/2026-11-17-host-bound-hill-climb.json": {
+          "mode": "100644",
+          "oid": "7400291ab77e2ded5fc12d3299c6f63e0851fbe2"
+        },
+        "evals/results/2026-11-17-host-bound-hill-climb.md": {
+          "mode": "100644",
+          "oid": "32e1f14bf364e6211c53033912c1bd228e636670"
         },
         "evals/reusify/tasks.json": {
           "mode": "100644",
@@ -3082,8 +3090,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed clean rejection of unrepresentable host durations; existing documentation already requires finite timing values."
+      "no_doc_impact": false,
+      "reason": "Reviewed repeated host-bound correctness experiments, superseded attempts and evidence limitations."
     }
   },
   "object_format": "sha1",
