@@ -2,6 +2,8 @@
 
 Run the trusted checkout's `install.sh` from any directory. With no arguments it installs personal defaults into your home. For a repository, pass `--target /absolute/repo --scope project`. Setup prints both paths. The checkout supplies shared package code and generated discovery views. The destination owns its steering, startup instructions and `.tkstack/tkstack` runner.
 
+The destination's ignored `.tkstack/` is reserved for state written by TKstack-owned helpers. Agent-authored checkpoints, progress notes, handoffs, copied work, and arbitrary scratch belong in an OS temporary directory outside every source checkout; promote requested durable artifacts to their canonical tracked location after review.
+
 ## Lifecycle
 
 1. Preview with `--dry-run`. Run the same command without that flag to apply.
@@ -57,7 +59,7 @@ requires Node, Bun or Deno and Java 11 or later, plus pinned TLC installed via
 mise or an explicit `TLA2TOOLS` jar. Network, credentials and Benny automation
 integrations remain separate requirements; installation starts no automations.
 
-External Git project roots receive exact link paths in their local `info/exclude`. Team instructions and the portable `.tkstack/.gitignore` remain visible to Git. Avoid committing machine-specific symlinks. TKStack refuses to take over existing instruction blocks, link destinations or hook managers.
+External Git project roots receive exact link paths and the entire helper-owned `.tkstack/` directory in their local `info/exclude`. Team instructions remain visible to Git. Avoid committing machine-specific symlinks or local runtime state. TKStack refuses to take over existing instruction blocks, link destinations or hook managers.
 
 ## Adopt team constraints
 

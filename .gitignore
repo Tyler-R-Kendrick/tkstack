@@ -33,3 +33,4 @@ evals/repo-quality/results/latest.json
 
 # Task scratch and local verification logs.
 /work/
+/.tkstack/

@@ -482,7 +482,7 @@
         },
         ".cursor/rules/tkstack-steering.mdc": {
           "mode": "100644",
-          "oid": "e595df2141c248591d08cfc30296dfaf9fe7074f"
+          "oid": "7fab444803216b47ca4d68d7125dfe3e4c4d64a7"
         },
         ".github/lever.yml": {
           "mode": "100644",
@@ -534,7 +534,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "f2911ee24f5c747d8de2a03113a6f64cd9b14381"
+          "oid": "385cc07428aaef396ce6d5316a2f889634756d98"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -683,7 +683,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "07dde9d034faa7f91054e9a4528dcb0e9ac1d70b"
+          "oid": "21bdba401173fb764b76266d388564e159944a62"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "The new checker and graph regressions update test review inputs. The documentation checker, commands, hook and review procedure still work as documented."
+      "reason": "Reviewed the documentation gate after compacting the rebased installer test review metadata; the maintenance workflow is unchanged."
     },
     "execution": {
       "docs": {
@@ -801,7 +801,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "5decc9de4fb7fee1b8577d4b6964c77c9ce85095"
+          "oid": "54c3b8a7ad542226072a53eb2e172f239e6bd137"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -839,7 +839,7 @@
         },
         "scripts/target_setup.py": {
           "mode": "100644",
-          "oid": "a8ddd69f6b6263f1c60ce5f8437659f7b9144c2c"
+          "oid": "d118ab28849a04a318c5154663287c287102d614"
         },
         "src/README.md": {
           "mode": "100644",
@@ -863,7 +863,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
+      "reason": "Reviewed current installation, bundled tool paths, update recovery, and bootstrap guidance after rebasing the complete TKstack-state exclusion onto main."
     },
     "skills": {
       "docs": {
@@ -937,7 +937,7 @@
         },
         "docs/state-layout.md": {
           "mode": "100644",
-          "oid": "d0c075fdbb4e73fd482e821adce7cf1c0fd3e623"
+          "oid": "4196c7db44cd78eaca8e22c98c9bf3c53d3147c5"
         },
         "docs/unslop.md": {
           "mode": "100644",
@@ -2899,7 +2899,7 @@
         },
         "skills/tkstack-principles/references/storage.md": {
           "mode": "100644",
-          "oid": "c5823db25a62fe98ce0340fccc923c0727e12f6b"
+          "oid": "1b56dc4f78a7a43b4d82fe619b848a179a001db1"
         },
         "skills/tkstack-principles/scripts/contract.json": {
           "mode": "100644",
@@ -2931,7 +2931,7 @@
         },
         "skills/tkstack-principles/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "8d998fbff159aa16d9ca3f55968bb9474aa010ec"
+          "oid": "84b224414cf0db03aabd48a18c77fdfe0ae85a01"
         },
         "skills/unslop/LICENSE": {
           "mode": "100644",
