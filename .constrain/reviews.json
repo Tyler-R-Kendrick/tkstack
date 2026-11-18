@@ -421,9 +421,9 @@
     "overlap": "Includes behavioral-test and nondeterministic evaluation routing alongside other decision-record mechanisms."
   },
   "tests/test_skill_evolution.py": {
-    "sha256": "012f4206071fdbd798d0f3e426423d9f89d9b4bc60de1690282e9fc3d559dd3a",
+    "sha256": "1d6598777178c9b2ee327c7512e9be056bf08e0d8ca8998791202a03022fe26a",
     "risk": "Skill improvement could publish changed or unanswered candidates using stale proof or weak substring grading.",
-    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes. Prepare each requested authored suite and check its splits and non-adoption gate. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
+    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes. Prepare each requested authored suite and check its splits and non-adoption gate. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Evolution preparation rejects an alternate backend option without changing its recorded run state.",
     "kinds": [
       "contract",
       "functional",
