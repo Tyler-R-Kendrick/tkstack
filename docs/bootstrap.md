@@ -23,6 +23,22 @@ continue to honor each source's normal host placement. Skill instructions are
 portable guidance; host-specific tools, agents, hooks and credentials need
 their own configuration.
 
+## Pstack in Codex
+
+After installation, start a fresh Codex session and invoke `$poteto-mode`, or
+invoke `$create-formal-verification-skill`, `$maintain-formal-verification-skill`
+and `$statechart` directly. The Pstack 0.15.43 snapshot keeps upstream bytes.
+Its `teach` and `unslop` install as `pstack-teach` and `pstack-unslop`; generated
+Pstack caller views use `pstack-teach` while preserving the personal `unslop`.
+
+Treat Cursor subagent and model names as roles, using only tools and models the
+active session offers when delegation is authorized. `setup-pstack`, Cursor
+Custom Modes and `/loop` do not configure equivalent Codex features. Skill
+links do not register Cursor agents or rules as native Codex plugins. Statechart
+requires Node, Bun or Deno and Java 11 or later, plus pinned TLC installed via
+mise or an explicit `TLA2TOOLS` jar. Network, credentials and Benny automation
+integrations remain separate requirements; installation starts no automations.
+
 External Git project roots receive exact link paths in their local `info/exclude`. Team instructions and the portable `.tkstack/.gitignore` remain visible to Git. Avoid committing machine-specific symlinks. TKStack refuses to take over existing instruction blocks, link destinations or hook managers.
 
 ## Adopt team constraints

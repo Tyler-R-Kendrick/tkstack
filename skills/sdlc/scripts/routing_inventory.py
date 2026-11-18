@@ -98,6 +98,8 @@ DUPLICATE_SKILL_PATHS = frozenset({
     "vendor/matt-pocock/skills/productivity/wait-what/SKILL.md",
     "vendor/matt-pocock/skills/productivity/writing-for-agents/SKILL.md",
     "vendor/pstack/skills/unslop/SKILL.md",
+    "vendor/pstack/skills/teach/SKILL.md",
+    "vendor/pstack/skills/poteto-help/SKILL.md",
 })
 
 

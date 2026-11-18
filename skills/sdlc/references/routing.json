@@ -26,7 +26,7 @@
     "pstack": {
       "title": "Pstack",
       "best_for": "Deep-first implementation, principles, and explicit TDD",
-      "summary": "poteto's deep-first workflows and engineering principles. poteto-mode is the preferred engineering entry. pstack owns the installed name tdd. Its prose skill is pstack-unslop so the personal unslop skill keeps the short name. Cursor-only placement. The principles are the discipline layer underneath the workflows."
+      "summary": "poteto's deep-first workflows and engineering principles. poteto-mode is the preferred engineering entry. pstack owns the installed name tdd. Its prose skill is pstack-unslop so the personal unslop skill keeps the short name. Default placement is Cursor; the project catalog also exposes its skills to Codex and Muse. The principles are the discipline layer underneath the workflows."
     },
     "cursor-team-kit": {
       "title": "Cursor Team Kit",
@@ -939,6 +939,114 @@
     "evalify": {
       "phase": "TDD/clean-code discipline",
       "strengths": "Use for calibrated model-graded evaluations of nondeterministic behavior, with bounded execution and timing evidence. Testify owns deterministic behavioral tests."
+    },
+    "benchmark-checklist": {
+      "phase": "review",
+      "strengths": "Vet benchmark claims against tuning, limiter, correctness, repeatability and relevance."
+    },
+    "blast-radius": {
+      "phase": "review",
+      "strengths": "Trace a change's downstream effects and exercise the safety premise."
+    },
+    "bro": {
+      "phase": "docs",
+      "strengths": "Restate the last message in plain language."
+    },
+    "correct": {
+      "phase": "learning",
+      "strengths": "Turn recurring mistakes into checks proven against real examples."
+    },
+    "create-formal-verification-skill": {
+      "phase": "review",
+      "strengths": "Build a maintained formal check for a costly property that tests rarely reach."
+    },
+    "create-verification-skill": {
+      "phase": "review",
+      "strengths": "Build a project skill that drives and verifies real user behavior."
+    },
+    "in-your-own-words": {
+      "phase": "discovery/requirements",
+      "strengths": "Restate the user's goals and intended problem."
+    },
+    "ketchup": {
+      "phase": "docs",
+      "strengths": "Explain work since the user's last message and outstanding decisions."
+    },
+    "ketchup-video": {
+      "phase": "docs",
+      "strengths": "Present the work and outstanding decisions as a short subtitled video."
+    },
+    "maintain-formal-verification-skill": {
+      "phase": "review",
+      "strengths": "Reconcile formal verification with changed source and distinguish drift from bugs."
+    },
+    "maintain-verification-skill": {
+      "phase": "review",
+      "strengths": "Check a project verification skill and feature map against source and live behavior."
+    },
+    "make-bot-ui": {
+      "phase": "design & UI polish",
+      "strengths": "Design and implement a user interface for an automation agent."
+    },
+    "no-comments": {
+      "phase": "review",
+      "strengths": "Review comments and encode necessary constraints more directly."
+    },
+    "poteto-help": {
+      "phase": "discovery/requirements",
+      "strengths": "Help choose a Pstack skill or playbook."
+    },
+    "principle-attack-the-premise": {
+      "phase": "debugging",
+      "strengths": "Test a shared assumption after repeated failed fixes."
+    },
+    "principle-explain-the-number": {
+      "phase": "review",
+      "strengths": "Explain the limiter and validity of a measurement."
+    },
+    "principle-model-the-domain": {
+      "phase": "architecture",
+      "strengths": "Represent domain state and invariants in explicit structures."
+    },
+    "principle-test-behavior-not-implementation": {
+      "phase": "TDD/clean-code discipline",
+      "strengths": "Test observable behavior rather than internal implementation details."
+    },
+    "recall": {
+      "phase": "discovery/requirements",
+      "strengths": "Recover prior working context from available records."
+    },
+    "sharpen": {
+      "phase": "discovery/requirements",
+      "strengths": "Strengthen a task's depth and rewrite its prompt."
+    },
+    "statechart": {
+      "phase": "review",
+      "strengths": "Check a TLA+ state model and explain paths as statecharts."
+    },
+    "swarm": {
+      "phase": "implementation",
+      "strengths": "Coordinate independently scoped workers when delegation is authorized."
+    },
+    "pstack-teach": {
+      "phase": "learning",
+      "strengths": "Explain a system using Pstack how and why; Matt's teach keeps the short name."
+    },
+    "technical-writing": {
+      "phase": "docs",
+      "strengths": "Apply layered structure and plain technical-writing rules."
+    },
+    "reproduce-and-fix-issues": {
+      "phase": "debugging",
+      "strengths": "Benny automation reproduces and verifies configured issue reports."
+    },
+    "setup-benny": {
+      "phase": "release/ops",
+      "strengths": "Configure Benny's explicit integrations and automation budgets."
+    },
+    "triage-issue-reports": {
+      "phase": "release/ops",
+      "strengths": "Benny automation triages reports through configured destinations."
     }
   }
 }

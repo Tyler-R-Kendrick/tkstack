@@ -145,7 +145,8 @@ def prepare_aliases(root, profile="catalog"):
                 continue
             content = path.read_bytes()
             if path.suffix in (".md", ".yaml", ".yml"):
-                content = rewrite_invocations(content.decode(), aliases).encode()
+                selected = _placement_doc(root).get("caller_aliases", {}).get(source, {}).get(path.relative_to(upstream).parts[0], aliases)
+                content = rewrite_invocations(content.decode(), selected).encode()
             _write_file(destination, content)
             destination.chmod(path.stat().st_mode & 0o777)
         # A source update must also remove deleted references from the view.
@@ -197,7 +198,8 @@ def sourced(root, kind, harness=None):
             name = aliases.get(path.name, path.name)
             if name in items:
                 raise ValueError(f"Duplicate {kind} name: {name}")
-            if aliases and (path.name in aliases or config.get("rewrite_callers", {}).get(source_name, True)):
+            callers = config.get("caller_aliases", {}).get(source_name, {})
+            if aliases and (path.name in aliases or path.name in callers or config.get("rewrite_callers", {}).get(source_name, True)):
                 path = root / ".tkstack" / source_name / kind / path.relative_to(directory)
             items[name] = (source_name, path.resolve())
     return items

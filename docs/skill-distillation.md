@@ -83,3 +83,7 @@ experiments; no optimizer scores or model-quality improvement are claimed.
 The before-state packages and transformation/validation receipts are retained
 locally under `.tkstack/evidence/distillation/`. The decision inventory and
 package-contained provenance are the shareable source record.
+
+The distillation record describes the source revision reviewed at that time;
+the later Pstack 0.15.43 pin adds native skills without claiming they were
+part of that earlier distillation.

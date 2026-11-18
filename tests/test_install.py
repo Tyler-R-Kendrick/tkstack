@@ -66,7 +66,7 @@ class InstallTests(unittest.TestCase):
 
     def test_pinned_snapshot_is_complete_and_unchanged(self):
         install.verify_vendor(ROOT)
-        self.assertEqual(len(list((ROOT / "vendor/pstack/skills").glob("*/SKILL.md"))), 34)
+        self.assertEqual(len(list((ROOT / "vendor/pstack/skills").glob("*/SKILL.md"))), 58)
         destinations = {destination.parent.relative_to(self.target)
                         for _, destination in self.plan}
         self.assertEqual(destinations, {Path(".agents/skills"), Path(".claude/skills"),
@@ -78,12 +78,21 @@ class InstallTests(unittest.TestCase):
                                        Path(".copilot/skills"),
                                        Path(".config/muse/skills")})
 
+        skills = install.collect(ROOT, "skills")
+        self.assertEqual(skills["tdd"], ROOT / "vendor/pstack/skills/tdd")
+        self.assertIn("name: pstack-teach", (skills["pstack-teach"] / "SKILL.md").read_text())
+        help_text = (skills["poteto-help"] / "SKILL.md").read_text()
+        self.assertIn("`/pstack-teach`", help_text)
+        self.assertIn("`/unslop`", help_text)
+        self.assertNotIn("`/pstack-unslop`", help_text)
+        self.assertTrue((skills["statechart"] / "scripts/statechart").stat().st_mode & 0o111)
+
     def test_install_preserves_references_and_is_repeatable(self):
         self.assertEqual(install.apply(self.plan), self.expected_links)
         self.assertEqual(install.apply(self.plan), 0)
         for source, destination in self.plan:
             self.assertTrue(install.matches(destination, source))
-        reference = self.target / ".cursor/skills/architect/references/runner-prompt.md"
+        reference = self.target / ".cursor/skills/create-verification-skill/references/feature-map-example/README.md"
         self.assertTrue(reference.is_file())
         script = self.target / ".cursor/skills/show-me-your-work/scripts/log.sh"
         self.assertTrue(script.stat().st_mode & 0o111)
