@@ -6,12 +6,22 @@ qualitative, such as clarity, usability, maintainability, or relevance. Apply
 this procedure as part of the SDLC lifecycle without requiring a separate
 user invocation. Record the reason when a task does not qualify. A routine
 fix with a clear pass/fail regression, a documentation-only edit, or a scoped
-review can use its existing evidence plan.
+review can use its existing evidence plan, subject to the web and binary
+triggers below.
 
 This decision requires interpreting the request and its real context. The
 helper can validate recorded facts, but cannot determine intent or whether a
 rubric captures user-perceived quality. Do not invent a numeric score as
 proof of a semantic judgment.
+
+For web implementation that can affect loading, rendering, or interaction,
+use the installed `web-performance` skill to establish a representative browser
+baseline and evaluate applicable Chrome guidance before and after the change.
+Include its evidence and any unavailable measurements in the workload. For a
+shipped native binary whose size is in scope, use hill-climb's profile-guided
+binary-size procedure with representative profiles and runtime guardrails.
+Record why a procedure is inapplicable or unavailable; do not treat installation
+as a measurement or launch optimization outside the task scope.
 
 ## Set up the task-scoped harness
 

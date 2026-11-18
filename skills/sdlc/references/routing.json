@@ -1052,6 +1052,10 @@
     "triage-issue-reports": {
       "phase": "release/ops",
       "strengths": "Benny automation triages reports through configured destinations."
+    },
+    "web-performance": {
+      "phase": "implementation",
+      "strengths": "Use for browser-measured web performance and Chrome guidance; hill-climb coordinates broader measured experiments."
     }
   }
 }

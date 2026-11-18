@@ -140,6 +140,17 @@
       ]
     },
     {
+      "name": "web-performance",
+      "source": "./skills/web-performance",
+      "description": "Improve web performance with Chrome Modern Web Guidance and agent-browser vitals in a bounded, measured loop. Use for web performance optimization or as part of SDLC web implementation when rendering or loading can change. Compare actual browser measurements and preserve behavior and accessibility.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
       "name": "write",
       "source": "./skills/write",
       "description": "Develop a human-facing article, explanation, proposal, or narrative from supplied ideas or source material. Use for drafting, shaping an argument, or a collaborative writing session. Not for ordinary file writes, agent instructions, repository reference maintenance, or anti-slop grading alone.",

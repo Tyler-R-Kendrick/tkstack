@@ -442,9 +442,9 @@
     "overlap": "Checks that Testify and Evalify ship as self-contained mounted Learn authoring subskills."
   },
   "tests/test_skill_normalization.py": {
-    "sha256": "a97762d45978aeb78f56ea05da3f1ce38bcf9424909da56da5b224fa99618f31",
+    "sha256": "98693a0927df435ba096569056be9c47b5b8dbacd7fae183e73a5650d3233a09",
     "risk": "Shared typed skill transport could ignore native failures, change scope or omit resources after commit/clone.",
-    "oracle": "Execute every owned compiled model/report boundary and representative real native helpers; test tampered evidence, raw args, process cleanup and standalone clone behavior.",
+    "oracle": "Execute every owned compiled model/report boundary and representative real native helpers; exclude declared guidance-only packages, and test tampered evidence, raw args, process cleanup and standalone clone behavior.",
     "kinds": [
       "contract",
       "functional",

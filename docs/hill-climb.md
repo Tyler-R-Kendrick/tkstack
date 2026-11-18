@@ -45,6 +45,11 @@ Examples:
 /hill-climb improve this landing page against the brief, using unslop as a quality gate
 ```
 
+For browser performance, the separately installable `web-performance` skill
+uses Chrome guidance and repeated agent-browser measurements. For native binary
+size, [profile-guided experiments](../skills/hill-climb/references/binary-size.md)
+compare the actual release artifact and preserve runtime guardrails.
+
 Visual examples require actual rendering and artifact inspection; source-only
 or keyword scores cannot establish a design win. A fixed unslop rubric snapshot
 is hashed with the run; new user corrections change the rubric and require a
