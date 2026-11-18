@@ -62,8 +62,9 @@ review the lock. A project-owned input must be at most 1 MiB and contain:
 
 `reference` is a reviewed expected judgment for calibration, or null for a
 current case. `elapsed_ms` is a real host-observed duration, or null when not
-available; never invent it. The output counts matching labeled judgments and
-current pass judgments. It is a descriptive summary, not proof of calibration,
+available; never invent it. The output counts matching labeled judgments,
+separates false positives from false negatives, and counts current pass judgments.
+It is a descriptive summary, not proof of calibration,
 host identity, an independent evaluator, or model performance.
 
 ```sh

@@ -43,6 +43,8 @@ need their own supported instrumentation.
 Evalify reserves its receipt and result paths before dispatch so concurrent
 runs cannot silently reuse them; reconcile incomplete reservations after a crash.
 The helper accepts at most 1 MiB of host-judged cases and uses only offline assertions.
+Calibration reports false positives and false negatives separately when reviewed
+reference labels are supplied.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:

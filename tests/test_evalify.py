@@ -55,7 +55,9 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertEqual(result.returncode, 0, result.stderr)
         receipt = json.loads((self.root / 'run.time.json').read_text())
         scores = json.loads((self.root / 'result.json').read_text())
-        self.assertEqual(scores, {'calibration': {'matched': 2, 'total': 2}, 'current': {'passed': 1, 'total': 1}})
+        self.assertEqual(scores['calibration']['matched'], 2)
+        self.assertEqual(scores['calibration']['total'], 2)
+        self.assertEqual(scores['current'], {'passed': 1, 'total': 1})
         self.assertEqual((receipt['source'], receipt['framework'], receipt['status']),
                          ('invoking-agent', 'promptfoo assertions', 'pass'))
         self.assertGreaterEqual(receipt['elapsed_ms'], 0)
@@ -63,6 +65,19 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.save()
         self.assertEqual(self.cli('run', 'mismatch.time.json', ['--output', 'mismatch.json']).returncode, 0)
         self.assertEqual(json.loads((self.root / 'mismatch.json').read_text())['calibration']['matched'], 1)
+
+    def test_calibration_distinguishes_false_positives_from_false_negatives(self):
+        self.data['cases'] = [
+            {'id': 'true-positive', 'judgment': True, 'reference': True, 'elapsed_ms': 1},
+            {'id': 'true-negative', 'judgment': False, 'reference': False, 'elapsed_ms': 1},
+            {'id': 'false-positive', 'judgment': True, 'reference': False, 'elapsed_ms': 1},
+            {'id': 'false-negative', 'judgment': False, 'reference': True, 'elapsed_ms': 1}]
+        self.save()
+        result = self.cli('run', 'confusion.time.json', ['--output', 'confusion.json'])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        calibration = json.loads((self.root / 'confusion.json').read_text())['calibration']
+        self.assertEqual(calibration['confusion'], {'true_positive': 1, 'true_negative': 1,
+                                                    'false_positive': 1, 'false_negative': 1})
 
     def test_alternate_model_executable_and_malformed_records_are_rejected_before_dispatch(self):
         for flag in ('--model', '--provider', '--executable', '--config'):
@@ -132,7 +147,9 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         result = self.cli('run', 'native.time.json', ['--output', 'native.json'])
         self.assertEqual(result.returncode, 0, result.stderr)
         scores = json.loads((self.root / 'native.json').read_text())
-        self.assertEqual(scores, {'calibration': {'matched': 2, 'total': 2}, 'current': {'passed': 1, 'total': 1}})
+        self.assertEqual(scores['calibration']['matched'], 2)
+        self.assertEqual(scores['calibration']['total'], 2)
+        self.assertEqual(scores['current'], {'passed': 1, 'total': 1})
 
 
 if __name__ == '__main__':

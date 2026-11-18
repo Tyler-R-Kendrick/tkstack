@@ -62,9 +62,9 @@
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
   "tests/test_evalify.py": {
-    "sha256": "0212a6e8742ba2adb8cbdad956fc8d7ad1f56053901334c482f1cdbbfe026a3e",
+    "sha256": "8053553cc9cb4a76b72b170e00f21a1d2b7c97daed6c88ca5ca2a6fdcd92b648",
     "risk": "The evaluation adapter could hide failed or empty runs, reuse outputs, or hang without recording timeout evidence.",
-    "oracle": "Run the adapter with passing, failing, empty and hanging processes; inspect exit, timing, receipt and ordinary child cleanup. Optionally run real Promptfoo with a fixture judge and explicit grader errors. Concurrent runs must reserve output and receipt before starting a provider, with only one dispatch per contested path. Oversized valid framework output must be rejected before parsing with an explicit receipt. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
+    "oracle": "Run the adapter with passing, failing, empty and hanging processes; inspect exit, timing, receipt and ordinary child cleanup. Optionally run real Promptfoo with a fixture judge and explicit grader errors. Concurrent runs must reserve output and receipt before starting a provider, with only one dispatch per contested path. Oversized valid framework output must be rejected before parsing with an explicit receipt. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Human-labeled calibration examples distinguish false positive from false negative judgments.",
     "kinds": [
       "contract",
       "simulation",
