@@ -141,9 +141,10 @@ class DurableSdlcTests(unittest.TestCase):
             self.call("recover", task="a", reason="try again", evidence=[str(file)])
 
     def test_backedge_pauses_descendants_and_allows_independent_work(self):
-        self.initialize([self.node("a"), self.node("b"), self.node("c", depends_on=["a"])])
+        self.initialize([self.node("a"), self.node("b"), self.node("c", depends_on=["a"]),
+                         self.node("d", depends_on=["c"])])
         claim = self.call("claim", "worker", task="a")
-        self.assertEqual(self.issue()["affected"], ["a", "c"])
+        self.assertEqual(self.issue()["affected"], ["a", "c", "d"])
         self.assertEqual(self.call("claim", "other")["task"], "b")
         with self.assertRaisesRegex(ValueError, "paused"):
             self.call("finish", "worker", task="a", token=claim["token"], outcome="retry")

@@ -564,7 +564,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ba99defde817d41c413438f1805509a9bb441d1c"
+          "oid": "bb106600de2fe255563f4ab38784524162c23398"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -574,7 +574,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "86049ceefe5b082fcdf062a3ebfa9006ec943311"
+          "oid": "aab4a69a0de7bb4f3a5530fa3cb708838bc89d2f"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -622,7 +622,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed plugin routing and updated skill package versions"
+      "reason": "Reviewed SDLC 0.6.1 and Constrain 0.1.1 verification selection, evaluation and formal evidence guidance against the SDLC and skill catalog documentation and versioned packages."
     },
     "documentation": {
       "docs": {
@@ -642,7 +642,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "8ec95b7f17db6819e79bbcfa59796d5968aec5b1"
+          "oid": "0a8650c6d23011e1042b33a3b04b8e0cb89f6bb9"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -839,11 +839,11 @@
         },
         "tests/test_sdlc.py": {
           "mode": "100644",
-          "oid": "7732570618840a0893b53d8f9aee3c55d1ada0f4"
+          "oid": "7dcb96609d6d19091122bc8c7b9cb15d2fa8af00"
         },
         "tests/test_sdlc_store.py": {
           "mode": "100644",
-          "oid": "555eb74225dd39f55ad4a0f84b173df5a6c30e7f"
+          "oid": "f77533eeeaf70898e19049607f33218f3e802ce3"
         },
         "tests/test_session_learning.py": {
           "mode": "100644",
@@ -879,7 +879,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed source and test inventory for process supervision changes"
+      "reason": "Reviewed the focused gate regression that distinguishes both binary and text rereads of the same bound verdict. Documentation maintenance and installation commands are unchanged."
     },
     "execution": {
       "docs": {
@@ -1037,7 +1037,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "6e673ac7e2a905f4a0a483e4edb6b6f971d3b455"
+          "oid": "d39b22bf53941b557508ced740679fee01ca4db3"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -1049,7 +1049,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ba99defde817d41c413438f1805509a9bb441d1c"
+          "oid": "bb106600de2fe255563f4ab38784524162c23398"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1215,7 +1215,7 @@
         },
         "skills/constrain/SKILL.md": {
           "mode": "100644",
-          "oid": "9f89a60a9d22abf1417601094feb6e638aeb7d7c"
+          "oid": "4de781f69404390bcff2bfcf760cd840e07a827e"
         },
         "skills/constrain/commands/help.md": {
           "mode": "100644",
@@ -1271,7 +1271,7 @@
         },
         "skills/constrain/references/selection.md": {
           "mode": "100644",
-          "oid": "dc1a507cca1faa93456034b20b6558860ee52875"
+          "oid": "6450c342927647d9c2494670500c2a804ee9edc4"
         },
         "skills/constrain/references/storage.md": {
           "mode": "100644",
@@ -1283,7 +1283,7 @@
         },
         "skills/constrain/references/tests.md": {
           "mode": "100644",
-          "oid": "a1d418fdc5ef5d75765988bb6a0d41dc835160f1"
+          "oid": "303cf91241a9254427527c73f09a336cacad3bb0"
         },
         "skills/constrain/scripts/boundaries.py": {
           "mode": "100644",
@@ -1331,7 +1331,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ea034767d09cd3c5fc5c435a5dd952fc635e772d"
+          "oid": "ae9196a515b11996b4f285a5644b1e90085f4583"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -2687,7 +2687,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "d820d1cd7424d2a12187fc952be2b5b870f86112"
+          "oid": "4c77cac816e6cc6d93245c548478ad7d49d0e53e"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2751,19 +2751,19 @@
         },
         "skills/sdlc/references/architecture-and-refactoring.md": {
           "mode": "100644",
-          "oid": "788ef5c8815b3df1d9e021492475c2410c3e4611"
+          "oid": "2ddd67c9299f70ef49c852fc6f5fa004e2adb8dd"
         },
         "skills/sdlc/references/behavioral-verification.md": {
           "mode": "100644",
-          "oid": "0cb829f8f3bc0632caefd7074becc533038134c2"
+          "oid": "3507812b291856378abf91f8375fa41df41619f6"
         },
         "skills/sdlc/references/delivery-and-handoff.md": {
           "mode": "100644",
-          "oid": "0c6f17079318b1bbb396dcb94d0d896a4d71daad"
+          "oid": "da66615d20bdd80abbfe64ef8b6e19ef4338d143"
         },
         "skills/sdlc/references/distilled-sources.md": {
           "mode": "100644",
-          "oid": "ca1dd6c80328fc652ffbd9872a2e02bbb813d62e"
+          "oid": "0dab933a429a31c36eea69d38ecac85be57ab3cb"
         },
         "skills/sdlc/references/durable-task-graph.md": {
           "mode": "100644",
@@ -2771,7 +2771,7 @@
         },
         "skills/sdlc/references/evidence-format.md": {
           "mode": "100644",
-          "oid": "54438239349147b8b276910ebd26f3ebe503e1c6"
+          "oid": "ad08dafe6c3f064a97f29e06ffd55922c7d8ba71"
         },
         "skills/sdlc/references/execution.md": {
           "mode": "100644",
@@ -2779,19 +2779,19 @@
         },
         "skills/sdlc/references/loops-and-contracts.md": {
           "mode": "100644",
-          "oid": "5c51709f9bf68fb8ae804ed8321cc7c5ea423d40"
+          "oid": "0ba6305e4ef6311930d1fdd274b47012d72612f0"
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "7bf90c64c2644b9bb54c6e9df51bb4f247e4e039"
+          "oid": "8c8a86c4e087db33071849cbf3269eca5d2aa598"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "7bdc8f2b1be8d0a22e95996080655abfd10da0b0"
+          "oid": "60656f456ae6154485f8ed42f487c34e51c1a11f"
         },
         "skills/sdlc/references/requirements-and-planning.md": {
           "mode": "100644",
-          "oid": "da956e3a27bec0c32d8818cda8dceb2e365828f1"
+          "oid": "a59197a8d18b64f46d64511ba582e745a222aa23"
         },
         "skills/sdlc/references/review-and-stacks.md": {
           "mode": "100644",
@@ -2799,7 +2799,7 @@
         },
         "skills/sdlc/references/review-findings.md": {
           "mode": "100644",
-          "oid": "428deea952d93b122257a354a9de5b1c47f9036b"
+          "oid": "d3a52f428cda09604f6b75bd38ea6832caba9239"
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
@@ -2812,6 +2812,10 @@
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
           "oid": "a8f364a8cb24785ed4d359cd7fbc7a5780aa91b2"
+        },
+        "skills/sdlc/references/testing-strategy.md": {
+          "mode": "100644",
+          "oid": "894392b9d23d68e04b5ed4724c606f4e9a7a8d91"
         },
         "skills/sdlc/references/worktrees-and-swarm.md": {
           "mode": "100644",
@@ -2843,7 +2847,7 @@
         },
         "skills/sdlc/scripts/sdlc.py": {
           "mode": "100644",
-          "oid": "4f6e4ba85ae0902420de4cd85a9f39ee69e62185"
+          "oid": "ad295df8b5ebd76aacd0a7721c2c20badd9b1446"
         },
         "skills/sdlc/scripts/task_graph_tool.py": {
           "mode": "100644",
@@ -2863,7 +2867,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "32ee7c5d827c4461f3f3a2ad680362457448d32f"
+          "oid": "74ec9bd26f125ca8b1d9cd86c6312b4b703ab6ad"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2879,7 +2883,7 @@
         },
         "skills/sdlc/templates/review.md": {
           "mode": "100644",
-          "oid": "bdd75c46cbc318c4e1d3876eaf183a9026710fb6"
+          "oid": "ec5e92ed8a40fc1c51227e8ced1636d3d8993252"
         },
         "skills/sdlc/templates/revision.json": {
           "mode": "100644",
@@ -2895,7 +2899,7 @@
         },
         "skills/sdlc/templates/workload.md": {
           "mode": "100644",
-          "oid": "2d35709cdfc621f67918c9d00f619fc4439aee8b"
+          "oid": "1f13ab493d11400737af9a9b7f51d741210e5ad7"
         },
         "skills/skills.json": {
           "mode": "100644",
@@ -3175,7 +3179,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Documented the hill-climb trial deadline and recovery boundary"
+      "reason": "Reviewed SDLC 0.6.1 and Constrain 0.1.1 verification selection, evaluation and formal evidence guidance against the SDLC and skill catalog documentation and versioned packages."
     }
   },
   "object_format": "sha1",

@@ -23,6 +23,12 @@ evidence. Replace placeholders with observations; an empty row is incomplete.
 | --- | --- | --- | --- | --- | --- |
 | <R-ID> | <Given/When/Then or boundary obligation> | <BDD/consumer/provider check IDs> | <appropriate proof or workload-backed applicability decision> | pending | <what was actually inspected> |
 
+For a replacement, identify the shared obligation, fault sensitivity and any
+distinct boundary that still needs an owner. For a proof or model, inspect the
+production correspondence. For an eval, inspect per-slice results and hard
+failures before accepting an aggregate. Record why the old check can retire,
+shrink or must stay.
+
 ## Adversarial findings and mitigation
 
 | Finding ID | Reviewer and reviewed head | Requirement / failure mechanism | Severity | Mitigation commit or counterevidence | Verification head and result | Status |

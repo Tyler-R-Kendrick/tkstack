@@ -71,6 +71,19 @@ changed task rows, and batches branch-ref reads. Static ownership/cycle checks
 run at graph registration/revision. The complete engineering lifecycle still
 requires actual agents, evidence judgments, and authorized delivery operations.
 
+## Selecting and replacing tests
+
+At planning time, identify what would go wrong and where a caller could observe
+it. At review, compare two executable tests on a fault and a correct build.
+For a formal replacement, check its scope and connection to production code.
+Use the existing requirement evidence plan to retain a checker verdict when
+acceptance depends on a particular history or schedule. The evidence gate
+checks the selected report. The reviewer inspects the history and the oracle.
+Use an eval for quality across cases, a bounded model check for protocol
+interleavings, and a Lean theorem for a universal rule. Keep implementation
+checks for assumptions about the actual parser, transaction, or deployed
+dependency. [Method and framework selection](../skills/sdlc/references/testing-strategy.md) · [Verification methods](../skills/sdlc/references/behavioral-verification.md) · [Evidence format](../skills/sdlc/references/evidence-format.md)
+
 ## Workload to delivery
 
 1. Freeze the complete initial workload and each branch's assigned workload.

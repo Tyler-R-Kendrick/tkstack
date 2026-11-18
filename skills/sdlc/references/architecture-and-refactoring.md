@@ -10,6 +10,15 @@ illegal states difficult to represent and parse untrusted input at boundaries.
 Keep factual policy and transformations deterministic. Inject real varying
 dependencies without introducing a speculative abstraction for every function.
 
+For a protocol or core invariant, distinguish a transition that must be atomic
+from the production mechanism providing atomicity. Select a [model check,
+theorem or real-boundary test](testing-strategy.md) for the respective claim.
+
+For an ordering-sensitive design, sketch the two legal event orders at the
+caller boundary and the outcomes each permits. Prefer controlling the existing
+clock, callback or adapter. Introduce a wider simulation seam only for a named
+fault that the smaller setup cannot expose.
+
 For a consequential unresolved design, compare a few meaningfully different
 shapes against the same caller and acceptance cases. Reuse known patterns for
 a settled mechanical change. Diverse-agent exploration is optional and needs

@@ -5,7 +5,7 @@ license: MIT
 compatibility: Python 3.11+ and Git for the standalone checker. Typed commands use tkstack's shared runtime.
 metadata:
   author: Tyler Kendrick
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Constrain

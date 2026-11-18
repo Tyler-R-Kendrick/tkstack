@@ -17,6 +17,7 @@ sys.dont_write_bytecode = True
 import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from json_contract import loads as load_strict_json
 from tkstack_state import ensure_state, state_container
 
 
@@ -467,15 +468,24 @@ def worktree(repo, root, branch, base, paths, seed=None, cache_root=None, requir
             "cache_root": str(cache), "environment": environment}
 
 
-def verified_file(root, record):
-    path = Path(record["path"])
+def verified_file(root, entry, *, checker_verdict=False):
+    path = Path(entry["path"])
     if path.is_absolute() or ".." in path.parts:
         raise ValueError("Evidence paths must stay relative to the manifest")
     resolved = (root / path).resolve()
     if not resolved.is_relative_to(root.resolve()) or not resolved.is_file():
         raise ValueError("Evidence artifact is missing or outside its retained directory: " + str(path))
-    if file_digest(resolved) != record["sha256"]:
+    if checker_verdict:
+        raw = resolved.read_bytes()
+        actual_digest = digest(raw)
+    else:
+        actual_digest = file_digest(resolved)
+    if actual_digest != entry["sha256"]:
         raise ValueError("Evidence artifact hash mismatch: " + str(path))
+    if checker_verdict:
+        report = record(load_strict_json(raw.decode("utf-8")), "checker verdict")
+        if report.get("verdict") != "accepted" or report.get("target_reached") is not True:
+            raise ValueError("Unaccepted or unreached checker verdict: " + str(path))
     return str(path)
 
 
@@ -535,11 +545,21 @@ def gate(repo, baseline, manifest_path, merge=False):
     required_kinds = {kind for requirement, policy in policies.items() if requirement not in superseded for kind in policy["check_kinds"]}
     if not required_kinds <= {check.get("kind") for check in checks.values()}:
         raise ValueError("Required BDD/contract check kinds are missing")
+    checker_requirements = {
+        requirement for requirement, policy in policies.items()
+        if requirement not in superseded and "checker-verdict" in policy["artifact_kinds"]
+    }
     artifacts = {}
     for artifact in records(manifest.get("artifacts", []), "artifacts"):
         record(artifact, "artifact")
-        path = verified_file(manifest_path.parent, artifact)
-        if path in artifacts or not set(string_list(artifact.get("requirements"), "artifact.requirements")) <= requirements:
+        artifact_requirements = string_list(artifact.get("requirements"), "artifact.requirements")
+        checker = (artifact.get("kind") == "checker-verdict"
+                   and not checker_requirements.isdisjoint(artifact_requirements))
+        side = artifact.get("side", "after")
+        if checker and side not in ("before", "after"):
+            raise ValueError("Unknown checker verdict side: " + str(artifact.get("path")))
+        path = verified_file(manifest_path.parent, artifact, checker_verdict=checker and side == "after")
+        if path in artifacts or not set(artifact_requirements) <= requirements:
             raise ValueError("Artifact paths must be unique and map to known requirements")
         revision = initial["git_base_sha"] if artifact.get("side") == "before" else head
         if artifact.get("revision") != revision:
@@ -588,6 +608,8 @@ def gate(repo, baseline, manifest_path, merge=False):
             matching = [artifacts[path] for path in row.get("evidence", []) if artifacts[path].get("kind") == kind]
             if not matching:
                 raise ValueError("Required artifact kind is missing for " + requirement + ": " + kind)
+            if kind == "checker-verdict" and all(item.get("side") == "before" for item in matching):
+                raise ValueError("Missing candidate checker verdict for " + requirement)
             if kind == "screenshot":
                 paired = False
                 for before in matching:

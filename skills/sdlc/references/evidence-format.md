@@ -30,6 +30,38 @@ and `contract_sha256`; the retained artifact is hashed and maps to that
 requirement. Set `real_provider: true` only when actual producer code was
 exercised. Schema validation or a mock alone cannot satisfy that role.
 
+Reuse the existing plan for specialized evidence. For example, require a
+workload-specific `eval-report`, `model-check` or `lean-proof` artifact and
+cite the actual run under an applicable check. The evidence gate verifies
+required artifact presence, identity and linkage. The reviewer inspects the
+score and slices, completed model configuration, or checked theorem and its
+implementation correspondence. A theorem's hypotheses and an eval's quality
+threshold belong in their native reports. Reserve the reachability-based
+`checker-verdict` format below for runners where that field has a real meaning.
+
+## Checker-backed requirements
+
+When acceptance depends on a history, model or simulation checker, the workload
+can opt in through its existing evidence plan, for example:
+
+```json
+{"R-001": {"check_kinds": ["bdd", "contract"], "artifact_kinds": ["checker-verdict"]}}
+```
+
+Keep the requirement's BDD and applicable contract checks. The runner emits a JSON file from the
+actual checker return value and observed reachability condition, for example
+`{"verdict":"accepted","target_reached":true}`. Emit `rejected` for an illegal
+execution and `inconclusive` for unknown results or exhausted checker time.
+Record the artifact, hash, candidate revision, command, environment and
+requirement in the manifest, and cite its path in the matching compliance row.
+Run `sdlc.py gate` with the frozen baseline and manifest. It requires a cited
+candidate report. Every candidate checker verdict submitted for that requirement
+must say `accepted` with JSON boolean `true` for reachability, including reports
+omitted from the compliance row. A rejected baseline can serve as red evidence.
+Keep calibration runs and raw traces as separately labeled artifacts. Review the
+actual runner output, model and target for every planned case: the gate checks
+the supplied records and cannot discover missing runs or authenticate a verdict.
+
 ## Artifacts and screenshots
 
 Artifacts are retained relative to the manifest directory. Each has `path`,

@@ -118,10 +118,17 @@ verification covers the required version matrix. Treat a contract change as
 a versioned deliverable with affected consumers, migration ordering, and fresh
 verification rather than a shared-file edit by every worker.
 
+For example, a verified Pact interaction can establish that the provider
+accepts an idempotency key and returns 202. Send a duplicate request to the
+owning component and inspect durable state to establish a single effect.
+Use a broker-backed adapter test when real acknowledgement or redelivery is
+part of the promise. Retire duplicate journey coverage using the
+[comparison procedure](behavioral-verification.md#decide-whether-to-retire-a-test).
+
 Keep the acceptance suite at behavior, component, and contract boundaries.
-Do not replace missing contract verification with an E2E run. Existing E2E
-results may be additional observations if relevant, but do not make them the
-acceptance strategy or add new E2E coverage to satisfy these requirements.
+Do not replace missing contract verification with an E2E run. Use an existing journey as supplemental
+evidence when it observes a distinct deployed behavior. If wiring itself is a
+requirement, select the narrowest real probe with an owner, trigger and cleanup.
 
 ## Collect the evidence the requirement needs
 

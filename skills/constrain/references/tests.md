@@ -58,13 +58,12 @@ exercise external failure contracts; they are not wholesale internal mocks.
 There is no blanket deletion of unit/component tests based on size or labels.
 
 Local CLI/filesystem/Git workflows are contract/functional simulations, not live
-provider E2E. Optional judge/provider checks remain opt-in. The repo has no
-owned application login flow, Lean/TLA+ suite, randomized property framework,
-performance workload or deployment binary. No formal-proof or performance
-result is claimed. State-transition cases are example-based; the selection
-rules require a real proof/model and implementation correspondence for a newly
-changed qualifying core or high-risk invariant. Do not add a decorative proof
-to inflate assurance or treat this inventory as a completed formal audit.
+provider E2E. Optional judge/provider checks remain opt-in. At the time of this
+audit, the inventory contained no owned login flow, formal suite, randomized
+property framework, performance workload or deployment binary. The later hill-climb package includes
+TLC configurations, Lean theorems and implementation bridge tests for its own
+controller. SDLC task-store transition examples exercise a different component.
+Consult the current [selection policy](selection.md) for changed invariants.
 
 The constraint test fixtures run outside the source repo without importing test
 code. Two unchanged runs passed. In isolated copies, disabling constant-oracle

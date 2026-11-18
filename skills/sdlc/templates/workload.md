@@ -60,6 +60,8 @@ outcome.
 - Then: `<observable result, including relevant side effects>`
 - Negative/boundary cases: `<invalid input, denial, empty data, retry, race, or limits as relevant>`
 - Deterministic acceptance check: `<test IDs/command and independently derived expected values>`
+- Verification choice: `<fault, cheapest adequate method/runner, what it observes, and any remaining assumption>`
+- For an eval, model or proof: `<population and threshold, finite bounds and fairness, or theorem and production correspondence, as applicable>`
 - Red reproduction: `<how to observe the intended failure before implementation>`
 - Green proof: `<expected successful observation>`
 

@@ -26,7 +26,9 @@ fill [the workload definition](../templates/workload.md). Capture stable require
 IDs, Given/When/Then scenarios, real producer/consumer boundaries, compatibility,
 acceptance, exclusions, and applicable evidence before implementation. BDD and
 contract tests are the acceptance strategy; use narrow component tests where
-appropriate. Browser evidence does not require adding an E2E suite.
+appropriate. Use [testing strategy](testing-strategy.md) to select the method and
+[behavioral verification](behavioral-verification.md) to exercise it and
+review a proposed replacement. Browser evidence does not require adding an E2E suite.
 
 Freeze both the complete initial workload and each task branch's assigned
 workload. Branch atoms state their own bounded acceptance obligations and trace

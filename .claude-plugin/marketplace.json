@@ -11,7 +11,7 @@
       "name": "constrain",
       "source": "./skills/constrain",
       "description": "Enforce repository constraints when adding or reviewing tests, files, folders, or documentation. Use for constrain, test-value review, sparsity budgets, or preventing low-value CI noise. Run deterministic checks, inspect behavioral oracles, and retain only tests with distinct regression value.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "license": "MIT",
       "strict": false,
       "skills": [
@@ -110,7 +110,7 @@
       "name": "sdlc",
       "source": "./skills/sdlc",
       "description": "Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Invoke only when the user explicitly asks for /sdlc or one of those modes. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.",
-      "version": "0.5.2",
+      "version": "0.6.1",
       "license": "MIT",
       "strict": false,
       "skills": [
