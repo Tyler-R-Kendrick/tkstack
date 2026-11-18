@@ -13,12 +13,21 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
+sys.dont_write_bytecode = True
+from package_runtime import can_wait_unreaped, reap_owned, wait_unreaped
 from tkstack_state import ensure_state
 
 LIMIT = 1024 * 1024
 FRAMEWORK_VERSION = '0.125.1'
 CASE_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_-]{0,63}\Z')
+
+
+class AnalysisInterrupted(Exception):
+    def __init__(self, signum):
+        self.signum = signum
+        super().__init__(f'Analysis interrupted by signal {signum}')
 
 
 def pairs(items):
@@ -98,7 +107,7 @@ def main():
     parser.add_argument('--output')
     parser.add_argument('--timeout', type=int, default=20)
     args = parser.parse_args()
-    reserved, dispatched = [], False
+    reserved, dispatched, interrupted_signal = [], False, None
     try:
         if not 1 <= args.timeout <= 25:
             raise ValueError('Timeout must be 1..25 seconds')
@@ -138,34 +147,55 @@ def main():
             runtime = ensure_state(root / '.tkstack/runs/evalify')
             script = Path(__file__).resolve().parent / 'calibrate.cjs'
             with tempfile.TemporaryDirectory(prefix='promptfoo-', dir=runtime) as temp, \
-                    tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors:
+                    tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors, \
+                    tempfile.TemporaryFile() as input_file:
                 env = {**os.environ, 'PROMPTFOO_CONFIG_DIR': temp,
                        'PROMPTFOO_DISABLE_TELEMETRY': '1', 'PROMPTFOO_DISABLE_UPDATE': '1'}
                 own_group = os.name == 'posix' and os.environ.get('TKSTACK_CODIFY_EXECUTION') != '1'
-                process = subprocess.Popen([node, str(script)], cwd=root, env=env, stdin=subprocess.PIPE,
-                                           stdout=output, stderr=errors, start_new_session=own_group)
-                dispatched = True
+                if own_group and (not can_wait_unreaped() or threading.current_thread() is not threading.main_thread()):
+                    raise ValueError('Analysis requires non-reaping POSIX process supervision')
+                input_file.write(json.dumps(cases, allow_nan=False).encode())
+                input_file.seek(0)
+                process, pending = None, None
+                def interrupt(signum, _frame):
+                    nonlocal pending
+                    if process is None:
+                        pending = signum
+                    else:
+                        raise AnalysisInterrupted(signum)
+                previous = {sig: signal.signal(sig, interrupt) for sig in (signal.SIGTERM, signal.SIGINT)} if own_group else {}
                 try:
                     try:
-                        process.communicate(json.dumps(cases, allow_nan=False).encode(), timeout=args.timeout)
-                        code = process.returncode
-                        status = 'pass' if code == 0 else 'error'
+                        if pending is not None:
+                            raise AnalysisInterrupted(pending)
+                        process = subprocess.Popen([node, str(script)], cwd=root, env=env, stdin=input_file,
+                                                   stdout=output, stderr=errors, start_new_session=own_group)
+                        dispatched = True
+                        if pending is not None:
+                            raise AnalysisInterrupted(pending)
+                        if own_group:
+                            wait_unreaped(process, args.timeout)
+                        else:
+                            process.wait(timeout=args.timeout)
                     except subprocess.TimeoutExpired:
-                        try:
-                            if own_group:
-                                os.killpg(process.pid, signal.SIGKILL)
-                            else:
-                                process.kill()
-                        except ProcessLookupError:
-                            pass
-                        process.wait()
                         code, status = None, 'timeout'
+                    except AnalysisInterrupted as error:
+                        dispatched = process is not None
+                        code, status, interrupted_signal = None, 'interrupted', error.signum
+                        for sig in previous:
+                            signal.signal(sig, signal.SIG_IGN)
+                    finally:
+                        if process is not None and own_group and process.returncode is None:
+                            reap_owned(process, kill_group=True)
+                        elif process is not None and process.returncode is None:
+                            process.kill()
+                            process.wait()
                 finally:
-                    if own_group:
-                        try:
-                            os.killpg(process.pid, signal.SIGKILL)
-                        except ProcessLookupError:
-                            pass
+                    for sig, handler in previous.items():
+                        signal.signal(sig, handler)
+                if status not in ('timeout', 'interrupted'):
+                    code = process.returncode
+                    status = 'pass' if code == 0 else 'error'
                 output.seek(0)
                 errors.seek(0)
                 stdout, stderr = output.read(LIMIT + 1), errors.read(4096)
@@ -187,19 +217,22 @@ def main():
                   'case_count': len(cases['cases']), 'source': 'invoking-agent',
                   'framework': 'promptfoo assertions' if args.operation == 'run' else None,
                   'framework_version': FRAMEWORK_VERSION if args.operation == 'run' else None,
+                  'signal': interrupted_signal,
                   'output': str(result_path) if result_path else None, 'receipt': str(receipt),
                   'limits': 'Source and per-case timings are supplied records, not authenticated host provenance.'}
         write_reserved(receipt_fd, record)
         if status != 'pass':
             print(diagnostic[-4096:], file=sys.stderr)
         print(json.dumps(record, sort_keys=True))
-        return 0 if status == 'pass' else (124 if status == 'timeout' else 1)
+        return (0 if status == 'pass' else 124 if status == 'timeout' else
+                128 + interrupted_signal if status == 'interrupted' else 1)
     except (OSError, ValueError, TypeError) as error:
         print('evalify: ' + str(error), file=sys.stderr)
         return 1
     finally:
         for path, fd in reversed(reserved):
-            if not dispatched and args.operation == 'run':
+            if (not dispatched and args.operation == 'run' and
+                    not (interrupted_signal is not None and path == receipt)):
                 try:
                     current, original = path.lstat(), os.fstat(fd)
                     if (current.st_dev, current.st_ino) == (original.st_dev, original.st_ino):

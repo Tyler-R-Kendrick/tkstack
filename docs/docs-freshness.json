@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "f0f704d4a2bc49bf63ab6f739fc0fc3d204b4546"
+          "oid": "79280338098130d599b2e0dc5d893e4ed7e00485"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -567,7 +567,7 @@
         },
         "tests/test_authoring.py": {
           "mode": "100644",
-          "oid": "e5fa5c8a6114f6bd1f24d44b95049fc13bcbcbf8"
+          "oid": "80c3c8e291b0227dded3f56e99e3dc5fb3bd4044"
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
@@ -591,7 +591,7 @@
         },
         "tests/test_evalify.py": {
           "mode": "100644",
-          "oid": "482f767faa78a4d1dd99236cdb744cf47821b098"
+          "oid": "aa59bfc9a3f676f5b5a14309df68028ed636cee8"
         },
         "tests/test_experiment_agent_arm.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the revised setup-timeout behavioral oracle and suite digest; documentation ownership and staged policy behavior are unchanged."
+      "reason": "Reviewed the compiled Learn dispatch checks and updated suite digests; documentation ownership and policy behavior are unchanged."
     },
     "execution": {
       "docs": {
@@ -877,7 +877,7 @@
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "ae8166b49d7c227431d3eeff5b5a84a528bfe182"
+          "oid": "67a242e237293f493492b51a01bbc6593ac39963"
         },
         "docs/flowify.md": {
           "mode": "100644",
@@ -1819,7 +1819,7 @@
         },
         "skills/learn/skills/evalify/references/evaluation.md": {
           "mode": "100644",
-          "oid": "3069cdb7cc63ce7fbe865441c4b5652a6544ce39"
+          "oid": "76a0fd63de431c23d971b1b1a243ede484485c2f"
         },
         "skills/learn/skills/evalify/references/execution.md": {
           "mode": "100644",
@@ -1843,7 +1843,7 @@
         },
         "skills/learn/skills/evalify/scripts/evalify.py": {
           "mode": "100644",
-          "oid": "3e82b4be3673e62e5c5c7903e92e0d19596f3fc0"
+          "oid": "3f404cec9a912816a5b26bfcf2ea28a8c496b58c"
         },
         "skills/learn/skills/evalify/scripts/json_contract.py": {
           "mode": "100644",
@@ -1871,7 +1871,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "c639c93b78d5140b4d79a48fcb6ff8733411206a"
+          "oid": "a49f37bc8fa0d3a6f1bb80cfd163a02b4af532fe"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -2563,7 +2563,7 @@
         },
         "skills/learn/skills/testify/references/cli-contracts.md": {
           "mode": "100644",
-          "oid": "9edc523bf6eaa8a2877c1f318919a7c0b63eb2fc"
+          "oid": "dfee6dd8050c57ece7538e5a13fb8fa4da8ad7de"
         },
         "skills/learn/skills/testify/references/execution.md": {
           "mode": "100644",
@@ -2599,7 +2599,7 @@
         },
         "skills/learn/skills/testify/scripts/testify.py": {
           "mode": "100644",
-          "oid": "6552cb9f512f1fb7cfb4082965bae8a452981a19"
+          "oid": "9271590951534fbbd6df14915b99077621d498ff"
         },
         "skills/learn/skills/testify/scripts/tkstack_state.py": {
           "mode": "100644",
@@ -2611,7 +2611,7 @@
         },
         "skills/learn/skills/testify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e1d57b315ee17ba796192f5c9bd94603758078bd"
+          "oid": "69e76d616a8f932de93c0df51800810e7a92c27d"
         },
         "skills/learn/templates/improvement.json": {
           "mode": "100644",
@@ -3115,7 +3115,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the retained setup-timeout receipt; the detailed mutation reference explains it and existing README and skill links remain accurate."
+      "reason": "Reviewed direct helper startup and local imports; disabling bytecode writes preserves the already documented execution and interruption behavior."
     }
   },
   "object_format": "sha1",
