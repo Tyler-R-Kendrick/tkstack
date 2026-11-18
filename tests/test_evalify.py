@@ -88,6 +88,12 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertEqual(result.returncode, 0, result.stderr)
         summary = json.loads((self.root / 'timing.json').read_text())['timing']
         self.assertEqual(summary, {'observed': 2, 'missing': 1, 'median_ms': 7, 'max_ms': 10})
+        self.data['cases'][0]['elapsed_ms'] = 0
+        self.save()
+        result = self.cli('run', 'zero.time.json', ['--output', 'zero.json'])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads((self.root / 'zero.json').read_text())['timing']
+        self.assertEqual(summary, {'observed': 2, 'missing': 1, 'median_ms': 2, 'max_ms': 4})
         for case in self.data['cases']:
             case['elapsed_ms'] = None
         self.save()
