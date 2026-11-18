@@ -80,6 +80,43 @@ class CodifyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Stale'):
             codify.check(self.output)
 
+    def test_explicit_runtime_inventory_limits_snapshot_and_detects_missing_dependencies(self):
+        (self.scripts / 'contract.json').write_text('{}')
+        manifest = self.scripts / 'lock-runtime.json'
+        dependencies = ['scripts/json_contract.py', 'scripts/workflow.py']
+        manifest.write_text(json.dumps({'version': 1, 'files': dependencies}))
+        guide = self.root / 'references/guide.md'
+        guide.parent.mkdir()
+        guide.write_text('Agent-facing guidance, not executable data.')
+        self.compile()
+        lock = codify.check(self.output)
+        self.assertEqual(lock['format'], 'tkstack.codify/v3')
+        self.assertNotIn('references/guide.md', lock['files'])
+        self.assertIn('scripts/workflow.py', lock['files'])
+        incomplete = json.loads(json.dumps(lock))
+        del incomplete['files']['scripts/workflow.py']
+        incomplete['artifact_sha256'] = codify.digest(codify.canonical({k: v for k, v in incomplete.items() if k != 'artifact_sha256'}))
+        with self.assertRaisesRegex(ValueError, 'missing artifact'):
+            codify.validate_lock(incomplete)
+        guide.write_text('Changed guidance.')
+        codify.check(self.output)
+        workflow = self.scripts / 'workflow.py'
+        original = workflow.read_bytes()
+        workflow.write_bytes(original + b'\n')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            codify.check(self.output)
+        workflow.write_bytes(original)
+        manifest.write_text(json.dumps({'version': 1, 'files': ['scripts/json_contract.py']}))
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            codify.check(self.output)
+        before = self.output.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'exit'):
+            self.compile()
+        self.assertEqual(self.output.read_bytes(), before)
+        manifest.write_text(json.dumps({'version': 1, 'files': ['../escape']}))
+        with self.assertRaisesRegex(ValueError, 'Unsafe'):
+            self.compile()
+
     def test_preview_and_check_are_read_only_and_drafts_cannot_compile(self):
         self.assertEqual(self.compile(dry_run=True)['status'], 'planned')
         self.assertFalse((self.root / '.tkstack').exists())

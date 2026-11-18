@@ -65,7 +65,8 @@ accepts 1–16. Successful no-inference cases repeat twice. `--dry-run` only pla
 Use `--dependencies /path/to/node_modules` only for a trusted deterministic
 workflow requiring existing dependencies. The generic CLI also supports
 timeouts, project state and additional included resources. Its `--help` is
-authoritative. The default artifact includes the entrypoint's whole directory.
+authoritative. By default the artifact includes the entrypoint directory; a
+package with `scripts/lock-runtime.json` opts into the scoped v3 inventory.
 
 After a source/implementation/case change, `check`/`run` fail stale rather than
 rebuild or invoke an agent. Compile explicitly. Source checks and contract cases
@@ -73,4 +74,7 @@ are bounded evidence, not a proof of semantic equivalence or zero network calls.
 The native process executes trusted code with the caller's normal authority.
 
 Compilation forwards the selected project, deadline, dependencies and jobs to canonical Codify.
-Normalized packages include their owned templates/resources by default. Use `--include` for an explicit resource set; supplying code without required native assets is not a complete tool.
+Normalized packages include their owned templates/resources by default unless
+they declare a scoped runtime inventory. List every import, dynamic helper and
+required data file in the manifest. Use `--include` for additional resources;
+exercise actual native branches because compile cases may miss dependencies.

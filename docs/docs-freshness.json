@@ -8,11 +8,11 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "a75bf56bc4d997bba55632356e17091e2223013d"
+          "oid": "7838cc0f8a23deb3912924dc05dfe1a36aed6233"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -94,7 +94,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "dd69bb1048e2af0279f88d64568691ecb0a1856c"
+          "oid": "f7314fa09cafc0c7a9d01c6111674d548f82e238"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -138,7 +138,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "ae5eb37ec1e0f08d0f37c2ecd73ec9fab1182463"
+          "oid": "82d8992e02007bff0fa8186eecdef9ab03045aec"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -182,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "63d16d3a9914318900de6e2200df11368e520860"
+          "oid": "05ab5a49a3e1582ec7e3200f6f9e05d5655cce35"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -258,7 +258,7 @@
         },
         "skills/learn/skills/skillify/references/commands.md": {
           "mode": "100644",
-          "oid": "3c17226ea9c9bd36ff79d20a1cdd72480e7cee36"
+          "oid": "2758f321defec47209aa05ec6c86d915693c1b0f"
         },
         "skills/learn/skills/skillify/references/distilled-sources.md": {
           "mode": "100644",
@@ -318,7 +318,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "ae5eb37ec1e0f08d0f37c2ecd73ec9fab1182463"
+          "oid": "82d8992e02007bff0fa8186eecdef9ab03045aec"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -398,7 +398,7 @@
         },
         "skills/learn/skills/skillify/scripts/skillify.py": {
           "mode": "100644",
-          "oid": "5b37edddff3764f4eda09eb8968c4f439571d009"
+          "oid": "5f37dedd4efaa658e2609f104d4ca9c91e6b05dc"
         },
         "skills/learn/skills/skillify/scripts/sync_codify.py": {
           "mode": "100644",
@@ -414,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "00317d0a702f05c1f11cf520f97ba4c52d79129f"
+          "oid": "99df7dfcbef77b7d03305a7d725312706059ae6a"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -433,8 +433,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed compression, artifact provenance and v1 compatibility wording"
+      "no_doc_impact": false,
+      "reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds"
     },
     "catalog": {
       "docs": {
@@ -456,7 +456,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -467,6 +467,7 @@
           "oid": "9411acdc5aa81d526e88e52f44f42caaee0c9d67"
         }
       },
+      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -534,7 +535,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "7e82a46bf7bdfdcec8635de8073eb3b8669dcddc"
+          "oid": "efaaaedec43c73423777c8b73a92672f34a6d8a5"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -571,7 +572,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "f3e96e1bbf4cffbefcbf8b0c3364aaecc1dce3a4"
+          "oid": "12f1d4e3b3f2f0c7eea87ea9ee8e75e701eec72f"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -759,7 +760,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed Codify compressed-lock regression and bounded decoding evidence; documentation process unchanged"
+      "reason": "Reviewed new runtime-inventory execution and stale-input tests; documentation process is unchanged"
     },
     "execution": {
       "docs": {
@@ -769,13 +770,14 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "f37747bd3c5a757eed1106afb9c07ed40eb6a2ff"
         }
       },
+      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -809,9 +811,10 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
         }
       },
+      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -905,7 +908,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1505,6 +1508,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/hill-climb/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "ce7df570fa53a30d7638e410a58ea18fee63c026"
+        },
         "skills/hill-climb/scripts/normalization.json": {
           "mode": "100644",
           "oid": "7b63531ed7393f8d5f6b28c9a52cc40ace0795b1"
@@ -1531,7 +1538,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "6232c1ce11ce2b9b43f50de9c30a2e5b3c9c01dc"
+          "oid": "3dad8bb15d4b5aa0f8c32975e3a651df6f0db0f3"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2769,6 +2776,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/sdlc/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "573cf6a18fe997c0770277b77acebcf501382127"
+        },
         "skills/sdlc/scripts/normalization.json": {
           "mode": "100644",
           "oid": "411708d697836277959646dd9a5d6770a4f491d5"
@@ -2807,7 +2818,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e81420a99149d98787bb34caa02426cabb87bcec"
+          "oid": "b126deacd0684f84be56b39aaf4a84ed5f55e807"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3126,8 +3137,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed rebuilt compressed workflow locks; skill behavior and usage are unchanged"
+      "no_doc_impact": false,
+      "reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds"
     }
   },
   "object_format": "sha1",

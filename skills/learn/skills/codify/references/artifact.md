@@ -1,7 +1,7 @@
 # Executable artifact contract
 
-`tkstack.codify/v2` is a canonical JSON build artifact, not a prompt cache or
-another orchestration language. The runner also reads existing v1 locks. It freezes:
+`tkstack.codify/v2` and scoped `tkstack.codify/v3` are canonical JSON build
+artifacts, not prompt caches. The runner also reads existing v1 locks. They freeze:
 
 - Compiler name/version and a SHA-256 of canonical artifact content.
 - Source and contract-case paths/hashes relative to the build root.
@@ -9,7 +9,8 @@ another orchestration language. The runner also reads existing v1 locks. It free
 - A native Python/Node entrypoint and sorted code/resource inventory, each with
   SHA-256, file mode, and base64-encoded bytes. V2 optionally compresses each
   file with zlib before base64; decompression is bounded and hashes cover the
-  original bytes. A v1-only runner cannot read v2 locks.
+  original bytes. A v1-only runner cannot read v2 or v3 locks; a v2-only
+  runner cannot read v3 locks.
 - A no-inference declaration and passed case IDs/repetition count.
 - Caller-supplied `--include` paths, sorted and unique, relative to the build
   root (`.` is the root). Locks compiled before this field omit `includes`.
@@ -52,10 +53,22 @@ Recompile explicitly. The runner never falls back to Markdown or silently
 regenerates the artifact. Complete source trees are required for freshness;
 there is currently no detached-source or ignore-staleness execution mode.
 
+A package may opt into v3 by adding `scripts/lock-runtime.json` containing
+`{"version": 1, "files": ["relative/path", ...]}` with sorted unique file
+paths. The compiler embeds those regular files, the manifest, the entrypoint,
+command definitions, and explicit `--include` inputs. It separately hashes the
+source and cases. It no longer snapshots unrelated package files. It checks
+changes, deletion and executable modes of declared files, and additions under
+included directories. Editing unrelated files does not stale a v3 lock. The
+maintainer must include every runtime import, dynamic helper and data file;
+compile cases alone may not exercise all of them. Test the actual native paths,
+including less-common dynamic branches. A complete source tree is still needed
+for freshness checks; v3 does not make the artifact a standalone package.
+
 Inventory discovery excludes `.git`, `.tkstack`, `node_modules`, and
 `__pycache__`, and the selected output itself. A package with
-`scripts/contract.json` snapshots the whole package, so keep generated files
-out of that tree. Other workflows snapshot the entrypoint directory and
+`scripts/contract.json` snapshots the whole package unless it has opted into
+the v3 runtime manifest, so keep generated files out of that tree. Other workflows snapshot the entrypoint directory and
 `commands/`; include imported code outside those directories explicitly.
 Compile records those `--include` paths. Inventory limits apply to the files
 that remain after nested skill packages are omitted: 512 files and 16 MiB of

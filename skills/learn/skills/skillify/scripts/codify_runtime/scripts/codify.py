@@ -35,6 +35,8 @@ _command_spec.loader.exec_module(command_schema)
 VERSION = "0.1.0"
 FORMAT = "tkstack.codify/v2"
 LEGACY_FORMAT = "tkstack.codify/v1"
+SCOPED_FORMAT = "tkstack.codify/v3"
+RUNTIME_MANIFEST = "scripts/lock-runtime.json"
 LIMIT = 16 * 1024 * 1024
 SKIP = {".git", ".tkstack", "node_modules", "__pycache__"}
 
@@ -125,6 +127,8 @@ def snapshot(root, paths, output, exclude_prefixes=()):
     selected = {}
     exclude_prefixes = tuple(exclude_prefixes)
     entry_parent = paths[0].absolute() if paths else None
+    if entry_parent is not None and entry_parent.is_file():
+        entry_parent = entry_parent.parent
     for supplied in paths:
         supplied = supplied.absolute()
         if not supplied.is_relative_to(root):
@@ -226,7 +230,7 @@ def decode_files(lock):
                 or not isinstance(item['base64'], str) or type(item['mode']) is not int or not 0 <= item['mode'] <= 0o777):
             raise ValueError("Invalid artifact file record")
         encoding = item.get('encoding')
-        if 'encoding' in item and (encoding != 'zlib' or lock['format'] != FORMAT):
+        if 'encoding' in item and (encoding != 'zlib' or lock['format'] not in (FORMAT, SCOPED_FORMAT)):
             raise ValueError("Invalid artifact encoding")
         encoded_size += len(item['base64'])
         if encoded_size > LIMIT:
@@ -263,13 +267,16 @@ def validate_includes(includes):
 
 def validate_lock(lock):
     fields = {'format', 'compiler', 'root', 'source', 'cases', 'entrypoint', 'runtime', 'inference', 'files', 'verification', 'artifact_sha256'}
-    if not isinstance(lock, dict) or not fields <= set(lock) <= fields | {'includes'} or lock['format'] not in (FORMAT, LEGACY_FORMAT) or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
+    if not isinstance(lock, dict) or not fields <= set(lock) <= fields | {'includes', 'runtime_manifest'} or lock['format'] not in (FORMAT, LEGACY_FORMAT, SCOPED_FORMAT) or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
         raise ValueError("Unsupported codify lock format/compiler")
     unsigned = {key: value for key, value in lock.items() if key != 'artifact_sha256'}
     if digest(canonical(unsigned)) != lock['artifact_sha256']:
         raise ValueError("Artifact digest mismatch")
     if 'includes' in lock:
         validate_includes(lock['includes'])
+    if ((lock['format'] == SCOPED_FORMAT and (lock.get('runtime_manifest') != RUNTIME_MANIFEST or 'includes' not in lock))
+            or (lock['format'] != SCOPED_FORMAT and 'runtime_manifest' in lock)):
+        raise ValueError('Invalid runtime manifest declaration')
     if not isinstance(lock['root'], str) or Path(lock['root']).is_absolute():
         raise ValueError("Root must be relative to the lock file")
     for kind in ('source', 'cases'):
@@ -287,6 +294,11 @@ def validate_lock(lock):
     if bool(profiles) != (inference['mode'] == 'explicit'):
         raise ValueError("Explicit inference requires named profiles")
     decoded = decode_files(lock)
+    if lock['format'] == SCOPED_FORMAT:
+        if RUNTIME_MANIFEST not in decoded:
+            raise ValueError('Missing locked runtime manifest')
+        if not set(parse_runtime_manifest(decoded[RUNTIME_MANIFEST])) <= set(decoded):
+            raise ValueError('Runtime manifest names missing artifact files')
     if lock['entrypoint'] not in decoded or lock['runtime'] not in ('python', 'node'):
         raise ValueError("Missing supported entrypoint")
     verification = lock['verification']
@@ -319,23 +331,43 @@ def included_path(root, name):
     return root if name == '.' else root / name
 
 
+def parse_runtime_manifest(data):
+    manifest = parse_json(data)
+    if (not isinstance(manifest, dict) or set(manifest) != {'version', 'files'}
+            or type(manifest['version']) is not int or manifest['version'] != 1):
+        raise ValueError('Invalid runtime manifest')
+    files = manifest['files']
+    if (not isinstance(files, list) or not files or len(files) > 512
+            or any(not isinstance(name, str) for name in files) or files != sorted(set(files))):
+        raise ValueError('Runtime manifest files must be sorted and unique')
+    for name in files:
+        relative_file(name)
+        if name == RUNTIME_MANIFEST or name.endswith('/workflow.lock.json'):
+            raise ValueError('Runtime manifest cannot list itself or a lock')
+    return files
+
+
+def runtime_manifest_paths(root):
+    path = regular(root / RUNTIME_MANIFEST, root)
+    return [path, *(regular(root / name, root) for name in parse_runtime_manifest(read_bytes(path)))]
+
+
 def expected_inventory(root, lock, output):
     """Recompute the snapshot compile froze, omitting nested skill packages.
 
-    Codify always walks the entrypoint directory and `commands/` when that
-    directory exists. Skillify also walks the package root when
-    `scripts/contract.json` exists. Locks that record `includes` also walk
-    those caller-supplied paths. A file in that inventory that the lock
-    does not name was added after compilation. Learn's subskills are nested
-    packages, so they stay out of the parent inventory and its file-count
-    and encoded-size limits. Locks compiled before `includes` was recorded
-    omit that field; content changes to files they name are still compared.
+    Legacy locks walk the entrypoint directory, commands, and contract package.
+    Scoped locks walk only their entrypoint, commands, explicit runtime manifest,
+    and caller-supplied includes. Any new file under a selected directory is stale.
+    Nested skill packages remain on their own lock.
     """
-    paths = [root / PurePosixPath(lock['entrypoint']).parent]
+    scoped = lock['format'] == SCOPED_FORMAT
+    paths = [root / lock['entrypoint'] if scoped else root / PurePosixPath(lock['entrypoint']).parent]
     commands = root / 'commands'
     if commands.is_dir():
         paths.append(commands)
-    if (root / 'scripts' / 'contract.json').is_file():
+    if scoped:
+        paths.extend(runtime_manifest_paths(root))
+    elif (root / 'scripts' / 'contract.json').is_file():
         paths.append(root)
     for name in lock.get('includes', ()):
         paths.append(included_path(root, name))
@@ -500,10 +532,13 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
         raise ValueError("Separate model or harness inference is not supported; use the invoking agent")
     root = (root or source.parent).resolve(strict=True)
     recorded_includes = sorted({include_name(root, path) for path in includes})
+    scoped = (root / RUNTIME_MANIFEST).exists()
+    if scoped:
+        includes = [*includes, *runtime_manifest_paths(root)]
     if (root / 'commands').exists():
         command_schema.catalog(root)
         includes = [*includes, root / 'commands']
-    if (root / 'scripts' / 'contract.json').is_file():
+    if not scoped and (root / 'scripts' / 'contract.json').is_file():
         includes = [*includes, root]
     source, entrypoint, cases = [regular(path.absolute(), root) for path in (source, entrypoint, cases)]
     output = (output or source.with_suffix('.lock.json')).absolute()
@@ -522,15 +557,17 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     profile_names = sorted(set(profiles))
     if any(not isinstance(name, str) or not name for name in profile_names):
         raise ValueError("Inference profiles must be nonempty names")
-    lock = {'format': FORMAT, 'compiler': {'name': 'codify', 'version': VERSION},
+    lock = {'format': SCOPED_FORMAT if scoped else FORMAT, 'compiler': {'name': 'codify', 'version': VERSION},
             'root': Path(os.path.relpath(root, output.parent)).as_posix(),
             'source': {'path': source.relative_to(root).as_posix(), 'sha256': digest(source_data)},
             'cases': {'path': cases.relative_to(root).as_posix(), 'sha256': digest(case_data)},
             'entrypoint': entrypoint.relative_to(root).as_posix(), 'runtime': 'python' if entrypoint.suffix == '.py' else 'node',
             'includes': recorded_includes,
             'inference': {'mode': 'explicit' if profile_names else 'none', 'profiles': profile_names},
-            'files': pack_files(snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))),
+            'files': pack_files(snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))),
             'verification': {'status': 'passed', 'case_ids': [case['id'] for case in contract], 'repeat_successes': 1 if profile_names else 2}}
+    if scoped:
+        lock['runtime_manifest'] = RUNTIME_MANIFEST
     if lock['entrypoint'] not in lock['files']:
         raise ValueError("Entrypoint was excluded from the artifact")
     lock['artifact_sha256'] = digest(canonical(lock))
@@ -565,7 +602,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
                 failures.append(str(error))
         if failures:
             raise ValueError('; '.join(failures))
-    current = snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
+    current = snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
     if pack_files(current) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
         raise ValueError("Build inputs changed during verification")
     lock_id = digest(str(output).encode())[:16]
@@ -573,7 +610,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     writer.mkdir()
     temporary = None
     try:
-        if pack_files(snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+        if pack_files(snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
             raise ValueError("Build inputs changed before publication")
         if (output.read_bytes() if output.exists() else None) != before:
             raise ValueError("Lock artifact changed during compilation")

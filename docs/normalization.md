@@ -161,12 +161,12 @@ pinned vendor bytes are excluded from
 normalization. A real commit/clone regression verifies cached artifact portability.
 Existing source/case/code drift still requires explicit recompilation.
 Learn, Codify, and Instructify workflow locks embed their reference docs.
-Recompile a lock after editing one of those references. Learn's lock now
-includes `skills/learn/scripts/evolve.py`, SDLC's includes
-`skills/sdlc/scripts/routing_inventory.py`, and Skillify's includes
+Recompile a lock after editing one of those references. Learn's lock includes
+`skills/learn/scripts/evolve.py`, and Skillify's includes
 `skills/learn/skills/skillify/scripts/sync_codify.py`. Codify compile omits
-nested skill packages, and those four locks were recompiled with that
-snapshot. Install links `.agents/steering` to destination-local state and adds
+nested skill packages. SDLC and hill-climb instead use scoped v3 runtime
+inventories; their agent-facing guides and maintenance-only tools remain in the
+source package but are not embedded in the executable lock. Install links `.agents/steering` to destination-local state and adds
 hashed owned startup sections to external target instruction files.
 
 Self-project installation retains portable repository-owned instruction pointers
