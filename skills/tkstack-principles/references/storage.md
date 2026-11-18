@@ -31,9 +31,16 @@ default. Authored code, skills, workflows, lint/hook definitions, instructions,
 and published documentation keep their requested/native source locations;
 choose their destination scope explicitly during promotion.
 
+`.tkstack` is owned state, not general-purpose agent scratch. Only TKstack-owned
+helpers may create or update its managed namespaces. Agents must put ad hoc
+checkpoints, progress notes, handoffs, copied work, and other arbitrary scratch
+in an OS temporary directory outside every source checkout. If such material
+becomes a requested durable artifact, review it and promote it to its canonical
+source location rather than retaining the temporary copy.
+
 | Content | Location beneath the selected root |
 | --- | --- |
-| Temporary notes, working copies, observations, transcripts, handoffs | `sessions/<session>/` (optionally `<skill>/...` below that) |
+| TKstack-managed temporary notes, observations, transcripts, and session handoffs | `sessions/<session>/` (optionally `<skill>/...` below that) |
 | Session-specific evidence, workload, plans, measurements | `sessions/<session>/evidence/`, `sdlc/`, `hill-climb/`, etc. |
 | Durable correction ledger, scoped rules, anti-slop criteria/views | `steering/` |
 | Saved session reviews, abstract findings, promotion records | `learnings/reviews/<content-hash>/` |

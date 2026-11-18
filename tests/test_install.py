@@ -709,6 +709,12 @@ elif action == 'find':
         invoke('--check')
         self.assertEqual(json.loads((target / '.tkstack/install.json').read_text())['profile'], 'catalog')
         self.assertTrue((target / '.cursor/skills/architect/SKILL.md').is_file())
+        instructions = (target / 'AGENTS.md').read_text()
+        self.assertIn('Only TKstack-owned helpers may write managed state', instructions)
+        self.assertIn('outside every source checkout', instructions)
+        self.assertNotIn('store workspace state under', instructions)
+        excludes = subprocess.check_output(['git', '-C', str(target), 'check-ignore', '-v', '.tkstack/.gitignore'], text=True)
+        self.assertIn('/.tkstack/', excludes)
         self.assertEqual((target / '.agents/steering').resolve(), target / '.tkstack/steering')
         self.assertEqual((target / '.agents/skills/constrain').resolve(), ROOT / 'skills/constrain')
         result = subprocess.run([str(target / '.tkstack/tkstack'), 'skills', 'constrain', '--', 'native', 'check', '--repo', '.'], cwd=target,
@@ -721,7 +727,7 @@ elif action == 'find':
         self.assertEqual({p.relative_to(target): os.readlink(p) for p in target.rglob('*') if p.is_symlink()}, inventory)
         self.assertIn(Path('.cursor/rules/tkstack-steering.mdc'), inventory)
         untracked = subprocess.check_output(['git', '-C', str(target), 'ls-files', '--others', '--exclude-standard'], text=True)
-        self.assertEqual(set(untracked.splitlines()), {'AGENTS.md', 'CLAUDE.md', '.tkstack/.gitignore'})
+        self.assertEqual(set(untracked.splitlines()), {'AGENTS.md', 'CLAUDE.md'})
         invoke('--adopt', '--constraint-hook')
         policy = target / '.constrain/config.json'
         subprocess.run(['git', '-C', str(target), 'add', '.constrain'], check=True)

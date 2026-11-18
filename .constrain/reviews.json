@@ -313,9 +313,9 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "08418f63c70f5c3ebf971f58deb17c0b65f4ad5bd01649590959f7cf748fb8b0",
-    "risk": "Stale upstreams, incompatible Python, failed updates, missing cache generations, wrong workspace selection or destructive reapply can leave consumers misconfigured or overwrite their files.",
-    "oracle": "Exercise current source and alias selection with a local Git remote, interpreter constraints, update rollback and concurrent edits, missing-generation uninstall, and four native Landmines rule groups. Compare owned links, Pstack caller aliases, native Codex discovery, Git gates and Serena argv/cwd. Rollback and interpreter-constraint mutants are detected.",
+    "sha256": "162c6547f22e8eedcbf6e9dcf60f5c0bdaf9e89964ce12d1ff33a216ab6fe63a",
+    "risk": "Stale sources, incompatible Python, failed updates, missing generations, wrong workspaces or destructive reapply can misconfigure consumers or overwrite files.",
+    "oracle": "Exercise source and alias selection, interpreter constraints, update rollback and concurrency, missing-generation uninstall, Landmines rules, owned links, Codex discovery, Git gates and Serena argv/cwd. Assert instructions reserve `.tkstack` for helper state, send agent scratch outside checkouts and exclude the whole `.tkstack/` tree. Mutants cover rollback, interpreters and storage policy.",
     "kinds": [
       "contract",
       "simulation",
