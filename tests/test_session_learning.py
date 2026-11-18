@@ -104,7 +104,7 @@ class SessionLearningTests(unittest.TestCase):
         snapshot = learning.review()
         mechanisms = [{'kind': kind, 'target': 'canonical/' + kind} for kind in learning.ROUTES]
         plan = learning.plan(snapshot, self.decision(snapshot, mechanisms))
-        self.assertEqual({action['skill'] for action in plan['actions']}, {'learn', 'instructify', 'skillify', 'codify', 'flowify', 'lintify', 'hookify', 'reusify', 'testify'})
+        self.assertEqual({action['skill'] for action in plan['actions']}, {'learn', 'instructify', 'skillify', 'codify', 'flowify', 'lintify', 'hookify', 'reusify', 'testify', 'evalify'})
         self.assertEqual(len(plan['waves']), 1)
 
     def test_unresolved_findings_cannot_schedule_artifact_changes(self):

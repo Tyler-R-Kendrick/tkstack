@@ -3,16 +3,16 @@
   "mcpServers": {
     "playwright": {
       "type": "stdio",
-      "command": "node",
+      "command": "sh",
       "args": [
-        "${PLUGIN_ROOT}/integrations/mcp/node_modules/@playwright/mcp/cli.js"
+        "${PLUGIN_ROOT}/.tkstack/runtime/current/bin/playwright-mcp"
       ]
     },
     "firecrawl": {
       "type": "stdio",
-      "command": "node",
+      "command": "sh",
       "args": [
-        "${PLUGIN_ROOT}/integrations/mcp/node_modules/firecrawl-mcp/dist/index.js"
+        "${PLUGIN_ROOT}/.tkstack/runtime/current/bin/firecrawl-mcp"
       ]
     },
     "vercel": {
@@ -21,8 +21,9 @@
     },
     "graphify": {
       "type": "stdio",
-      "command": "graphify-mcp",
+      "command": "sh",
       "args": [
+        "${PLUGIN_ROOT}/.tkstack/runtime/current/bin/graphify-mcp",
         "${PLUGIN_DATA}/graphify-out/graph.json"
       ]
     }

@@ -1,12 +1,8 @@
-"""Budget-aware coding proposer boundary for frozen Git trees.
+"""Budget-aware deterministic edit proposals for frozen Git trees.
 
-Only ScriptedProvider is supplied as an executable, zero-model provider.
-CommandProvider requires an operator-supplied enforcing broker. The broker is
-trusted to isolate the child, enforce a total token ceiling *before usage*,
-and terminate all its descendants at the deadline. A mere JSON usage report or
-an environment variable passed to an unbounded agent does not enforce a cap.
+Semantic proposal work stays with the invoking agent and its current harness;
+this helper never launches or selects an agent, model, or provider.
 """
-from abc import ABC, abstractmethod
 import base64
 import hashlib
 import json
@@ -124,68 +120,13 @@ class ScriptedProvider:
         return {"usage_tokens": 0, "provider_receipt": {"provider": "scripted", "usage_tokens": 0}}
 
 
-class EnforcingBroker(ABC):
-    """Trusted integration seam for real agents.
-
-    An implementation must independently cap all model input/output/cache tokens
-    including retries and descendants, confine writes, execute fixed argv without
-    a shell, and kill descendant processes at timeout. It returns an authoritative
-    usage receipt for this invocation. No such broker ships with this module.
-    """
-
-    @abstractmethod
-    def execute(self, *, argv, cwd, prompt, max_tokens, timeout):
-        raise NotImplementedError
-
-
-class CommandProvider:
-    """A pinned command executable run solely through a trusted broker.
-
-    ``allowlist`` maps absolute executable paths to SHA-256 hashes, established
-    outside candidate-controlled config. Arguments are fixed at registration.
-    The broker, not this class, must enforce limits and sandbox policy.
-    """
-
-    def __init__(self, argv, allowlist, *, broker):
-        if (not isinstance(argv, (list, tuple)) or not argv or
-                any(not isinstance(arg, str) or "\x00" in arg for arg in argv)):
-            raise ValueError("provider argv must be a nonempty argument array")
-        if not isinstance(allowlist, dict):
-            raise ValueError("provider command allowlist must be a mapping")
-        self.argv = tuple(argv)
-        self.allowlist = dict(allowlist)
-        self.broker = broker
-
-    def validate(self, max_tokens):
-        if not isinstance(self.broker, EnforcingBroker):
-            raise ValueError("a trusted enforcing broker is required for command providers")
-        path = Path(self.argv[0])
-        if not path.is_absolute() or str(path.resolve()) != str(path):
-            raise ValueError("provider executable must be an absolute canonical path")
-        expected = self.allowlist.get(str(path))
-        if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
-            raise ValueError("provider executable is not on the pinned allowlist")
-        try:
-            actual = hashlib.sha256(path.read_bytes()).hexdigest()
-        except OSError as exc:
-            raise ValueError("provider executable cannot be read") from exc
-        if actual != expected:
-            raise ValueError("provider executable differs from the pinned allowlist")
-
-    def execute(self, *, root, prompt, max_tokens, timeout):
-        # Recheck immediately before handing fixed argv to the trusted broker.
-        self.validate(max_tokens)
-        return self.broker.execute(argv=self.argv, cwd=root, prompt=prompt,
-                                   max_tokens=max_tokens, timeout=timeout)
-
-
 class ProposalRunner:
-    """Run registered providers in independent snapshots under one local limit.
+    """Run deterministic edits in independent snapshots under one local limit.
 
     ``max_concurrency`` bounds callers sharing this runner instance. A controller
     running multiple processes must additionally enforce a shared worker limit.
     The temporary tree prevents ordinary cross-candidate edits; it is not an OS
-    sandbox. External brokers must supply the actual isolation boundary.
+    sandbox. The invoking agent supplies semantic decisions.
     """
 
     def __init__(self, ledger, providers, *, max_concurrency=1):
@@ -215,7 +156,7 @@ class ProposalRunner:
         if not isinstance(provider, str) or provider not in self.providers:
             raise ValueError("unknown provider")
         adapter = self.providers[provider]
-        if type(adapter) not in (ScriptedProvider, CommandProvider):
+        if type(adapter) is not ScriptedProvider:
             raise ValueError("provider type is not registered")
         deadline = time.monotonic() + timeout
         adapter.validate(max_tokens)

@@ -11,18 +11,18 @@ from agent_plugins import json_object
 
 
 EXPECTED_SERVERS = {
-    "playwright": {"type": "stdio", "command": "node",
-                   "args": ["${PLUGIN_ROOT}/integrations/mcp/node_modules/@playwright/mcp/cli.js"]},
-    "firecrawl": {"type": "stdio", "command": "node",
-                  "args": ["${PLUGIN_ROOT}/integrations/mcp/node_modules/firecrawl-mcp/dist/index.js"]},
+    "playwright": {"type": "stdio", "command": "sh",
+                   "args": ["${PLUGIN_ROOT}/.tkstack/runtime/current/bin/playwright-mcp"]},
+    "firecrawl": {"type": "stdio", "command": "sh",
+                  "args": ["${PLUGIN_ROOT}/.tkstack/runtime/current/bin/firecrawl-mcp"]},
     "vercel": {
         "type": "streamable-http",
         "url": "https://mcp.vercel.com",
     },
     "graphify": {
         "type": "stdio",
-        "command": "graphify-mcp",
-        "args": ["${PLUGIN_DATA}/graphify-out/graph.json"],
+        "command": "sh",
+        "args": ["${PLUGIN_ROOT}/.tkstack/runtime/current/bin/graphify-mcp", "${PLUGIN_DATA}/graphify-out/graph.json"],
     },
 }
 

@@ -7,19 +7,11 @@
 # The whole body is main(), called on the last line. A truncated download
 # therefore defines functions and stops, instead of running a prefix.
 #
-# uv pin rotation: change UV_VERSION, UV_INSTALLER_URL, UV_INSTALLER_SHA256,
-# and PYTHON_VERSION together. uv 0.12.23 can install CPython 3.12.15.
-# It does not ship 3.12.16. The installer sha256 is for that version's
-# install.sh (astral.sh and the GitHub release asset match).
-
-UV_VERSION=0.12.23
-UV_INSTALLER_URL="https://astral.sh/uv/${UV_VERSION}/install.sh"
-UV_INSTALLER_SHA256=b8e6c43099ee9f9a550984d3ad56948457c689e7a99c090b35377234ac241491
-PYTHON_VERSION=3.12.15
+# Resolve the current stable Python 3 when bootstrapping a missing interpreter.
+PYTHON_VERSION=3
 
 _archive=""
 _extract=""
-_uv_installer=""
 
 cleanup_downloads() {
   if [[ -n "${_archive}" ]]; then
@@ -29,10 +21,6 @@ cleanup_downloads() {
   if [[ -n "${_extract}" ]]; then
     rm -rf -- "$_extract"
     _extract=""
-  fi
-  if [[ -n "${_uv_installer}" ]]; then
-    rm -f -- "$_uv_installer"
-    _uv_installer=""
   fi
 }
 
@@ -471,7 +459,7 @@ file_sha256() {
 }
 
 ensure_uv() {
-  local existing bindir installer actual
+  local bindir platform arch target asset url temporary archive checksum expected actual binary
   if command -v uv >/dev/null 2>&1; then
     command -v uv
     return 0
@@ -480,30 +468,49 @@ ensure_uv() {
     printf '%s\n' 'tkstack needs curl to install uv when Python 3.11+ is missing.' >&2
     exit 1
   fi
-  # Ignore a caller-supplied UV_INSTALL_DIR. Install into this home and exec
-  # that absolute path. Do not prepend PATH.
   bindir="${HOME}/.local/bin"
   mkdir -p -- "$bindir"
-  installer="$(mktemp)"
-  _uv_installer="$installer"
-  if ! curl -fsSL --proto '=https' --tlsv1.2 --retry 0 -o "$installer" -- "$UV_INSTALLER_URL"; then
-    printf '%s\n' 'tkstack: downloading the uv installer failed.' >&2
-    exit 1
+  if [[ -x "$bindir/uv" ]]; then
+    printf '%s\n' "$bindir/uv"
+    return 0
   fi
-  actual="$(file_sha256 "$installer")"
-  if [[ "$actual" != "$UV_INSTALLER_SHA256" ]]; then
-    printf '%s\n' 'tkstack: the uv installer sha256 does not match the pin.' >&2
-    exit 1
+  if [[ -e "$bindir/uv" || -L "$bindir/uv" ]]; then
+    printf '%s\n' "tkstack: refusing to replace $bindir/uv." >&2
+    return 1
   fi
-  # The installer's stdout must not mix with the path this function prints.
-  if ! UV_INSTALL_DIR="$bindir" UV_NO_MODIFY_PATH=1 sh "$installer" >&2; then
-    printf '%s\n' 'tkstack: the uv installer failed.' >&2
-    exit 1
+  platform="$(uname -s)"
+  arch="$(uname -m)"
+  case "$arch" in x86_64|amd64) arch=x86_64 ;; aarch64|arm64) arch=aarch64 ;; *) printf '%s\n' 'tkstack: unsupported uv architecture.' >&2; return 1 ;; esac
+  case "$platform" in Linux) target="${arch}-unknown-linux-gnu" ;; Darwin) target="${arch}-apple-darwin" ;; *) printf '%s\n' 'tkstack: unsupported uv platform.' >&2; return 1 ;; esac
+  asset="uv-${target}.tar.gz"
+  url="https://github.com/astral-sh/uv/releases/latest/download/$asset"
+  temporary="$(mktemp -d)"
+  archive="$temporary/$asset"
+  checksum="$temporary/checksum"
+  if ! curl -fsSL --proto '=https' --tlsv1.2 --retry 0 -o "$archive" -- "$url" ||
+     ! curl -fsSL --proto '=https' --tlsv1.2 --retry 0 -o "$checksum" -- "$url.sha256"; then
+    rm -rf -- "$temporary"
+    printf '%s\n' 'tkstack: downloading the current uv release failed.' >&2
+    return 1
   fi
-  rm -f -- "$installer"
-  _uv_installer=""
+  expected="$(awk 'NR==1 {print $1}' "$checksum")"
+  actual="$(file_sha256 "$archive")"
+  if [[ ! "$expected" =~ ^[a-f0-9]{64}$ || "$actual" != "$expected" ]]; then
+    rm -rf -- "$temporary"
+    printf '%s\n' 'tkstack: the uv release sha256 does not match.' >&2
+    return 1
+  fi
+  binary="uv-${target}/uv"
+  if ! tar -xzf "$archive" -C "$temporary" -- "$binary" || [[ ! -f "$temporary/$binary" || -L "$temporary/$binary" ]]; then
+    rm -rf -- "$temporary"
+    printf '%s\n' 'tkstack: the uv release has no regular executable.' >&2
+    return 1
+  fi
+  cp -- "$temporary/$binary" "$bindir/uv"
+  chmod 755 "$bindir/uv"
+  rm -rf -- "$temporary"
   if [[ ! -x "$bindir/uv" ]]; then
-    printf '%s\n' 'tkstack: the uv installer did not install uv.' >&2
+    printf '%s\n' 'tkstack: could not install uv.' >&2
     exit 1
   fi
   printf '%s\n' "$bindir/uv"

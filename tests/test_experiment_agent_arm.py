@@ -1,17 +1,17 @@
 """Behavior tests for applying a budgeted proposal to a private Git arm."""
 from pathlib import Path
-import hashlib
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "skills/hill-climb/scripts"))
 from experiment_agent_arm import propose_to_arm
 from experiment_git import GitExperiment
 from experiment_ledger import Ledger
-from experiment_proposer import ProposalRunner, ScriptedProvider, CommandProvider, EnforcingBroker
+from experiment_proposer import ProposalRunner, ScriptedProvider
 
 
 def git(repo, *args):
@@ -88,36 +88,25 @@ class AgentArmTests(unittest.TestCase):
         self.assertEqual(result["status"], "inconclusive")
         self.assertEqual(self.git.resolve("trial", "candidate")["commit"], self.base)
 
-    def test_broker_gets_export_without_common_git_and_freeze_remains_coordinator_owned(self):
-        class Broker(EnforcingBroker):
-            def execute(self, *, cwd, **kwargs):
-                if (cwd / ".git").exists():
-                    raise AssertionError("agent must not get a Git metadata mount")
-                (cwd / "app.txt").write_text("agent edit")
-                return {"usage_tokens": 0, "provider_receipt": {"fixture": True}}
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        command = CommandProvider([str(executable)], {str(executable): digest}, broker=Broker())
-        runner = ProposalRunner(self.ledger, {"registered": command})
-        result = self.execute({}, runner=runner, provider="registered")
+    def test_export_has_no_common_git_and_freeze_remains_coordinator_owned(self):
+        def execute(*, root, **kwargs):
+            if (root / ".git").exists():
+                raise AssertionError("proposal must not get a Git metadata mount")
+            (root / "app.txt").write_text("scripted edit")
+            return {"usage_tokens": 0, "provider_receipt": {"fixture": True}}
+        with patch.object(ScriptedProvider, 'execute', side_effect=execute):
+            result = self.execute({})
         self.assertEqual(result["status"], "frozen")
-        self.assertEqual(git(self.arm, "show", "HEAD:app.txt"), "agent edit")
+        self.assertEqual(git(self.arm, "show", "HEAD:app.txt"), "scripted edit")
 
     def test_concurrent_arm_mutation_detected_and_preserved_before_apply(self):
-        arm = self.arm
-        class Broker(EnforcingBroker):
-            def execute(self, *, cwd, **kwargs):
-                (cwd / "app.txt").write_text("proposal")
-                (arm / "app.txt").write_text("concurrent user work")
-                return {"usage_tokens": 0, "provider_receipt": {"fixture": True}}
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        command = CommandProvider([str(executable)], {str(executable): digest}, broker=Broker())
-        runner = ProposalRunner(self.ledger, {"registered": command})
-        with self.assertRaisesRegex(ValueError, "clean"):
-            self.execute({}, runner=runner, provider="registered")
+        def execute(*, root, **kwargs):
+            (root / "app.txt").write_text("proposal")
+            (self.arm / "app.txt").write_text("concurrent user work")
+            return {"usage_tokens": 0, "provider_receipt": {"fixture": True}}
+        with patch.object(ScriptedProvider, 'execute', side_effect=execute):
+            with self.assertRaisesRegex(ValueError, "clean"):
+                self.execute({})
         self.assertEqual((self.arm / "app.txt").read_text(), "concurrent user work")
         self.assertTrue((self.git.root / "proposals/proposal1.json").is_file())
         self.assertEqual(self.git.resolve("trial", "candidate")["commit"], self.base)

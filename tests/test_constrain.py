@@ -6,10 +6,12 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 ENGINE = ROOT / 'skills/constrain/scripts/constrain.py'
+MUTATE = ROOT / 'skills/constrain/scripts/mutate.py'
 GOOD = '''import unittest
 class Contract(unittest.TestCase):
     def test_result(self):
@@ -81,7 +83,7 @@ class ConstrainTests(unittest.TestCase):
         self.assertEqual(self.cli(expected=1)['errors'][0]['rule'], 'tests.stale-exception')
 
     def test_duplicate_renamed_tests_and_budget_growth_block_without_automatic_baseline(self):
-        self.suite.write_text(GOOD + '\n' + GOOD.replace('Contract', 'SecondContract').replace('test_result', 'test_other'))
+        self.suite.write_text(GOOD + "\n    def test_other(self):\n        actual = int('42')\n        self.assertEqual(actual, 42)\n")
         self.review()
         self.policy['tests']['max_cases'] = 1
         self.write_policy()
@@ -91,6 +93,21 @@ class ConstrainTests(unittest.TestCase):
         self.policy['layout']['budgets'][0]['max_files'] = 0
         self.write_policy()
         self.assertIn('layout.budget', {e['rule'] for e in self.cli(expected=1)['errors']})
+
+    def test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates(self):
+        self.suite.write_text('''import unittest
+def another_case(function): return function
+class First(unittest.TestCase):
+    def setUp(self): self.value, self.expected = 'primary', 'primary'
+    def test_result(self): self.assertEqual(self.value, self.expected)
+    @another_case
+    def test_decorated_case(self): self.assertEqual(self.value, self.expected)
+class Second(unittest.TestCase):
+    def setUp(self): self.value, self.expected = 'replica', 'replica'
+    def test_result(self): self.assertEqual(self.value, self.expected)
+''')
+        self.review()
+        self.assertEqual(self.cli()['status'], 'pass')
 
     def test_staged_policy_reviews_and_tests_cannot_be_hidden_by_unstaged_repairs(self):
         self.git('add', '.')
@@ -232,6 +249,147 @@ class ConstrainTests(unittest.TestCase):
         self.assertEqual(rules, {'documents.duplicate-bytes', 'boundaries.forbidden-import', 'boundaries.forbidden-call'})
         (code / 'checker.py').unlink()
         self.assertIn('boundaries.empty-scope', {item['rule'] for item in self.cli(expected=1)['errors']})
+
+
+@unittest.skipUnless(os.name == 'posix' and hasattr(os, 'waitid') and hasattr(os, 'WNOWAIT'), 'POSIX process supervisor')
+class MutationExperimentTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.repo = self.root / 'repo with spaces'
+        self.repo.mkdir()
+        for args in [('init', '-q'), ('config', 'user.name', 'Fixture'), ('config', 'user.email', 'fixture@example.invalid')]:
+            subprocess.run(['git', '-C', str(self.repo), *args], check=True, timeout=10)
+        (self.repo / 'app.py').write_text('def increment(value):\n    return value + 1\n')
+        (self.repo / 'test_app.py').write_text('''import subprocess, unittest
+from app import increment
+class Contract(unittest.TestCase):
+    def test_exact(self): self.assertEqual(increment(3), 4)
+    def test_positive(self):
+        self.assertGreater(increment(3), 0)
+        git = subprocess.run(['git', 'rev-parse', '--show-toplevel'], capture_output=True, timeout=3)
+        self.assertNotEqual(git.returncode, 0)
+''')
+        subprocess.run(['git', '-C', str(self.repo), 'add', '.'], check=True, timeout=10)
+        subprocess.run(['git', '-C', str(self.repo), 'commit', '-qm', 'fixture'], check=True, timeout=10)
+        self.engine = self.root / 'fake-cosmic-ray'
+        hanging = ('import subprocess,sys,time,pathlib; '
+                   f'pathlib.Path({str(self.root / "child.pid")!r}).write_text(str('
+                   'subprocess.Popen([sys.executable,"-c","import time; time.sleep(30)"]).pid)); '
+                   'time.sleep(30); return value + 1')
+        orphan = hanging.replace('time.sleep(30); return', 'return')
+        self.engine.write_text(f'''#!{sys.executable}
+import pathlib, sys, time
+if sys.argv[1:] == ['--version']:
+    print('cosmic-ray, version 8.9.0')
+else:
+    path = pathlib.Path(sys.argv[2]); occurrence = int(sys.argv[4])
+    source = path.read_text()
+    replacement = {{0: 'return value - 1', 1: 'return (', 2: 'raise RuntimeError("broken mutant")',
+                    3: {hanging!r}, 4: {orphan!r}}}[occurrence]
+    path.write_text(source.replace('return value + 1', replacement))
+''')
+        self.engine.chmod(0o755)
+        self.plan = self.root / 'plan.json'
+        self.output = self.root / 'receipt.json'
+
+    def run_mutations(self, tests, occurrences, timeout=10, source_sha256=None, operator='core/Fixture', version=1, total_timeout=60):
+        plan = {'version': version, 'tests': tests, 'mutants': [
+            {'id': str(i), 'module': 'app.py', 'operator': operator, 'occurrence': i}
+            for i in occurrences]}
+        if source_sha256 is not None:
+            for mutant in plan['mutants']:
+                mutant['source_sha256'] = source_sha256
+        self.plan.write_text(json.dumps(plan))
+        return subprocess.run([sys.executable, str(MUTATE), '--repo', str(self.repo), '--plan', str(self.plan),
+            '--engine', str(self.engine), '--output', str(self.output), '--test-timeout', str(timeout),
+            '--total-timeout', str(total_timeout)], capture_output=True, text=True, timeout=75,
+            env={**os.environ, 'GIT_DIR': str(self.root / 'foreign/.git'),
+                 'GIT_WORK_TREE': str(self.root / 'foreign')})
+
+    def test_separates_assertion_failures_errors_invalid_mutants_and_survivors(self):
+        result = self.run_mutations(['test_app.Contract.test_exact', 'test_app.Contract.test_positive'], [0, 1, 2])
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        report = json.loads(self.output.read_text())
+        self.assertEqual([row['status'] for row in report['baseline']], ['passed'] * 4)
+        self.assertEqual([row['status'] for row in report['mutants'][0]['tests']], ['assertion_failure', 'passed'])
+        self.assertEqual(report['mutants'][1]['status'], 'invalid_mutation')
+        self.assertEqual([row['status'] for row in report['mutants'][2]['tests']], ['error', 'error'])
+        self.assertEqual((self.repo / 'app.py').read_text(), 'def increment(value):\n    return value + 1\n')
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_deadline_is_not_a_kill_and_existing_receipt_is_never_overwritten(self):
+        result = self.run_mutations(['test_app.Contract.test_exact'], [3], timeout=5)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report['mutants'][0]['tests'][0]['status'], 'timeout')
+        child = int((self.root / 'child.pid').read_text())
+        stat = Path(f'/proc/{child}/stat')
+        alive = stat.exists() and stat.read_text().split(') ', 1)[1].split()[0] != 'Z'
+        self.assertFalse(alive, 'Deadline left a test descendant running')
+        previous = self.output.read_bytes()
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0])
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.output.read_bytes(), previous)
+        self.output = self.root / 'successful-receipt.json'
+        result = self.run_mutations(['test_app.Contract.test_exact'], [4])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(self.output.read_text())['mutants'][0]['tests'][0]['status'], 'passed')
+        child = int((self.root / 'child.pid').read_text())
+        stat = Path(f'/proc/{child}/stat')
+        alive = stat.exists() and stat.read_text().split(') ', 1)[1].split()[0] != 'Z'
+        self.assertFalse(alive, 'A successful test left a child running')
+
+    def test_failed_baseline_stops_before_any_mutant_is_applied(self):
+        path = self.repo / 'test_app.py'
+        path.write_text(path.read_text().replace('increment(3), 4', 'increment(3), 99'))
+        subprocess.run(['git', '-C', str(self.repo), 'commit', '-qam', 'bad baseline'], check=True, timeout=10)
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0])
+        self.assertNotEqual(result.returncode, 0)
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report['status'], 'baseline_invalid')
+        self.assertEqual(report['mutants'], [])
+        self.assertTrue(all(row['status'] == 'assertion_failure' for row in report['baseline']))
+
+    def test_total_deadline_includes_the_engine_version_check(self):
+        source = self.engine.read_text().replace("print('cosmic-ray, version 8.9.0')",
+                                                 "time.sleep(5); print('cosmic-ray, version 8.9.0')")
+        self.engine.write_text(source)
+        started = time.monotonic()
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0], total_timeout=1)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('deadline', result.stderr)
+        self.assertLess(time.monotonic() - started, 15)
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report['status'], 'setup_timeout')
+        self.assertFalse(report['engine_version_verified'])
+        self.assertGreaterEqual(report['elapsed_ms'], 500)
+        self.assertEqual((report['baseline'], report['mutants']), ([], []))
+
+    def test_invalid_plan_or_changed_source_stops_before_a_mutation_is_applied(self):
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0], version=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(self.output.exists())
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0], source_sha256='0' * 64)
+        self.assertNotEqual(result.returncode, 0)
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report['status'], 'error')
+        self.assertIn('source no longer matches', report['error'])
+        self.assertNotIn('apply', report['mutants'][0])
+
+    @unittest.skipUnless(os.environ.get('TKSTACK_COSMIC_RAY_BIN'), 'install the locked Cosmic Ray tool')
+    def test_real_engine_mutates_a_snapshot_and_attributes_the_distinct_failure(self):
+        self.engine = Path(os.environ['TKSTACK_COSMIC_RAY_BIN'])
+        digest = hashlib.sha256((self.repo / 'app.py').read_bytes()).hexdigest()
+        result = self.run_mutations(['test_app.Contract.test_exact', 'test_app.Contract.test_positive'],
+                                    [0], timeout=10, source_sha256=digest,
+                                    operator='core/ReplaceBinaryOperator_Add_Sub')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        report = json.loads(self.output.read_text())
+        self.assertIn('return value - 1', report['mutants'][0]['diff'])
+        self.assertEqual([row['status'] for row in report['mutants'][0]['tests']], ['assertion_failure', 'passed'])
+        self.assertEqual((self.repo / 'app.py').read_text(), 'def increment(value):\n    return value + 1\n')
 
 
 if __name__ == '__main__':

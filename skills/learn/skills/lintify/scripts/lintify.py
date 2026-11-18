@@ -15,8 +15,6 @@ FILES = {
                "fixtures/good.js", "fixtures/bad.js", "README.md"),
     "lintbook": ("lintbook.toml", ".lintbook/rules/no-dbg.md", ".lintbook/gen/no-dbg.df",
                  "fixtures/good.rs", "fixtures/bad.rs", "README.md"),
-    "gptlint": ("package.json", "package-lock.json", "gptlint.config.mjs", ".gptlint/comment-implementation-agreement.md",
-                "fixtures/good.js", "fixtures/bad.js", "README.md"),
 }
 
 

@@ -14,7 +14,7 @@ companion skills Pstack references.
 
 | Source | Pinned revision | Skills | Snapshot files |
 | --- | --- | ---: | ---: |
-| Pstack 0.9.0 | `74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12` | 34 | 85 |
+| Pstack 0.15.43 | `93b916d4a1e806507e22f4716b352fa91f2b227e` | 58 | 551 |
 | Cursor Team Kit 1.2.0 | `74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12` | 18 | 29 |
 | Tstack | `1085050f3baed1ac724caa4a8166145fb2ac88af` | 9 | 16 |
 | Matt Pocock 1.3.2 | `a496f5513d4a4cf889bc48e189e579f4b0bdf6aa` | 38 | 176 |
@@ -52,13 +52,19 @@ ub-mode is Robert C. Martin's reduced make-it-work, make-it-right, then practice
 skill, and its three-file snapshot is already the whole repository. Its
 `SKILL.md` is at the repository root, so `paths.skills` is `.`. The companion
 crapper, dryer, and mutator repositories are not vendored. Both install only
-into shared `.agents/skills`. The current pin is 19 sources and 1094 files.
+into shared `.agents/skills`. The current pin is 19 sources and 1560 files.
 
 ## Findings and decisions
 
 ### Pstack and Cursor Team Kit
 
-Pstack provides 14 workflow/reference skills and 20 engineering principles.
+The 0.15.43 snapshot is pinned byte-for-byte, including its executable modes.
+The compatibility checks cover the installer, aliases, routing, and the
+statechart smoke test. The upstream skills remain instructions, and their
+Cursor-specific delegation, model routing, automations, and tools still depend
+on the active host. See [Pstack in Codex](bootstrap.md#pstack-in-codex).
+
+Pstack provides 34 workflow/reference skills and 24 engineering principles.
 Its most useful default is `poteto-mode`; `architect`, `how`, `why`, and
 `interrogate` supply the deeper design and investigation paths. These are a
 strong fit for the requested Pstack-focused baseline.

@@ -27,6 +27,11 @@ Tool: `.tkstack/tkstack skills instructify -- <command>`. Omit the command for d
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
 <!-- tkstack:execution:end -->
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Deterministic local tools may support the current agent's work.
+
+
 
 Create or update stable scoped context with one canonical owner. Procedures,
 tool enforcement, and correction history belong in their respective layers.
@@ -53,3 +58,8 @@ of incidental authoring, and distinguish generated files from actual host loadin
 See [source adaptations](references/distilled-sources.md).
 
 For session/repository/workspace records, read [local state storage](references/storage.md).
+
+When creating or running workflows, use finite default deadlines for supported
+operations and an outer bound; retain elapsed time and timeout outcomes. Test
+timeout recovery where meaningful. A deadline is not a performance SLO, and an
+unsupported host timeout or uncertain remote effect must remain explicit.

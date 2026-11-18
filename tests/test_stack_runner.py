@@ -59,8 +59,34 @@ class StackRunnerTests(unittest.TestCase):
             self.assertEqual(json.loads(self.invoke(kind, 'labels', '--', 'normalize', '-l', '[" b ","a"]').stdout), {'labels': ['a', 'b']})
         call = {'type': 'function_call', 'name': 'normalize_labels', 'arguments': '{"labels":["b","a"]}'}
         self.assertEqual(json.loads(self.invoke('skills', 'labels', '--call', '-', payload=call).stdout), {'labels': ['a', 'b']})
+        self.invoke('skills', 'labels', '--', 'normalize', '-l', '["private-payload-example"]')
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        entries = [json.loads(line) for line in trace.read_text().splitlines()]
+        self.assertTrue(any(row['status'] == 'pass' and row['timeout_seconds'] == 30 and row['elapsed_ms'] >= 0 for row in entries))
+        self.assertTrue(all(row['environment']['python'] and row['environment']['platform'] for row in entries))
+        self.assertNotIn('private-payload-example', trace.read_text())
+        runner.timing.invoke(lambda *args, **kwargs: (0, '', ''), {'artifact_sha256': 'fixture'},
+            {'operation': 'private-operation-example'}, self.workspace, 30, None, None, {},
+            self.scopes['workspace'], 'skills', 'fixture')
+        self.assertNotIn('private-operation-example', trace.read_text())
         tools = json.loads(self.invoke('tools', 'skills', 'labels', '--format', 'chat').stdout)
         self.assertIn('normalize_labels', [item['function']['name'] for item in tools])
+
+    def test_runner_records_a_real_deadline_without_recording_payload(self):
+        skill = self.fixture()
+        workflow = skill / 'scripts/workflow.py'
+        text = workflow.read_text().replace('def execute(payload):',
+            'def execute(payload):\n    if payload.get("labels") == ["slow-private"]:\n        import time\n        time.sleep(10)')
+        workflow.write_text(text)
+        runner.codify.compile_workflow(skill / 'PROMPT.md', skill / 'scripts/run.py',
+            skill / 'cases.json', skill / 'scripts/workflow.lock.json', root=skill, project=self.workspace)
+        result = self.invoke('skills', 'labels', '--timeout', '1', '--', 'normalize', '-l', '["slow-private"]', expected=1)
+        self.assertIn('deadline', result.stderr)
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        record = json.loads(trace.read_text().splitlines()[-1])
+        self.assertEqual((record['status'], record['timeout_seconds']), ('deadline_or_interrupt', 1))
+        self.assertGreaterEqual(record['elapsed_ms'], 500)
+        self.assertNotIn('slow-private', trace.read_text())
 
     def test_direct_lock_reuses_verified_runner_and_rejects_mixed_interfaces(self):
         skill = self.fixture()
@@ -69,6 +95,24 @@ class StackRunnerTests(unittest.TestCase):
         self.invoke('workflows', lock, '--', 'normalize', expected=1)
         self.invoke('skills', skill, '--input', '-', payload={'labels': []}, expected=1)
         self.invoke('skills', skill, '--call', '-', '--', 'normalize', payload={}, expected=1)
+
+    def test_direct_workflow_payload_cannot_hide_timing(self):
+        skill = self.fixture()
+        workflow = skill / 'scripts/workflow.py'
+        workflow.write_text(workflow.read_text().replace('set(payload) != {"labels"}',
+            'set(payload) - {"labels", "operation"} or "labels" not in payload'))
+        lock = skill / 'scripts/workflow.lock.json'
+        runner.codify.compile_workflow(skill / 'PROMPT.md', skill / 'scripts/run.py',
+            skill / 'cases.json', lock, root=skill, project=self.workspace)
+        trace = self.scopes['workspace'] / 'runs/timing/operations.jsonl'
+        for operation in ('model', 'verify', 'native_plan'):
+            with self.subTest(operation=operation):
+                result = self.invoke('workflows', lock, '--input', '-', payload={'labels': ['a'], 'operation': operation})
+                self.assertEqual(json.loads(result.stdout), {'labels': ['a']})
+        contents = trace.read_text() if trace.exists() else ''
+        entries = [json.loads(line) for line in contents.splitlines()]
+        self.assertEqual([entry['status'] for entry in entries], ['pass'] * 3)
+        self.assertNotIn('native_plan', contents)
 
     def test_help_list_tools_check_and_setup_preview_preserve_all_state_bytes(self):
         self.fixture()
@@ -105,9 +149,9 @@ class StackRunnerTests(unittest.TestCase):
 
     def test_pure_workflow_ignores_ambient_profiles_and_node_cache_but_rejects_explicit_config(self):
         self.fixture()
-        self.registry('workspace', {'config': 'does-not-exist.json', 'dependencies': 'absent-node-modules'})
+        self.registry('workspace', {'dependencies': 'absent-node-modules'})
         self.assertEqual(json.loads(self.invoke('skills', 'labels', '--', 'normalize', '-l', '["a"]').stdout), {'labels': ['a']})
-        self.invoke('skills', 'labels', '--config', self.workspace / 'absent.json', '--', 'normalize', '-l', '[]', expected=1)
+        self.invoke('skills', 'labels', '--config', self.workspace / 'absent.json', '--', 'normalize', '-l', '[]', expected=2)
 
     def test_invalid_registry_and_oversized_stdin_fail_without_workspace_initialization(self):
         self.registry('workspace', {'version': True})
@@ -129,69 +173,12 @@ class StackRunnerTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout), {'labels': ['a']})
         self.assertFalse((other / '.tkstack').exists())
 
-    def test_config_selection_projects_declared_profiles_without_mutating_source(self):
-        profiles = {'version': 1, 'providers': {'api': {'kind': 'openai', 'apiKeyEnv': 'KEY'}, 'unused': {'kind': 'gateway', 'apiKeyEnv': 'OTHER'}},
-            'profiles': {'selected': {'kind': 'language', 'provider': 'api', 'api': 'responses', 'model': 'chosen'}, 'unused': {'kind': 'language', 'provider': 'unused', 'api': 'gateway', 'model': 'other'}}}
-        path = self.scopes['user'] / 'profiles.json'
-        path.parent.mkdir(parents=True)
-        path.write_text(json.dumps(profiles))
-        before = path.read_bytes()
-        lock = {'inference': {'mode': 'explicit', 'profiles': ['selected']}}
-        actual = runner.configuration(lock, None, self.scopes, {}, self.environment)
-        self.assertEqual(list(actual['profiles']), ['selected'])
-        self.assertEqual(list(actual['providers']), ['api'])
-        self.assertEqual(actual['profiles']['selected']['model'], 'chosen')
-        self.assertEqual(path.read_bytes(), before)
-        local = self.scopes['workspace'] / 'profiles.json'
-        local.parent.mkdir(parents=True, exist_ok=True)
-        profiles['profiles']['selected']['model'] = 'workspace-model'
-        local.write_text(json.dumps(profiles))
-        actual = runner.configuration(lock, None, self.scopes, {'config': path, 'config_scope': 'user'}, self.environment)
-        self.assertEqual(actual['profiles']['selected']['model'], 'workspace-model')
-        with self.assertRaisesRegex(ValueError, 'missing declared profiles'):
-            runner.configuration({'inference': {'mode': 'explicit', 'profiles': ['missing']}}, path, self.scopes, {}, self.environment)
-
-    @unittest.skipUnless(os.environ.get('TKSTACK_AI_SDK_DEPENDENCIES'), 'Native SDK dependencies optional')
-    def test_native_sdk_honors_selected_provider_model_and_workspace_without_model_calls(self):
-        dependencies = Path(os.environ['TKSTACK_AI_SDK_DEPENDENCIES'])
-        package = self.workspace / 'workflows/profile-contract'
-        source = self.workspace / 'profile-prompt.md'
-        source.write_text('Report configured profile metadata and normalize labels; perform no model calls.')
-        runner.codify.scaffold(source, package, 'ai-sdk')
-        (package / 'scripts/workflow.ts').write_text('''import { z } from 'zod';
-import { readFile } from 'node:fs/promises';
-export const inputSchema = z.object({labels: z.array(z.string())}).strict();
-export const outputSchema = z.object({labels: z.array(z.string()), model: z.string(), provider: z.string(), profiles: z.array(z.string()), workspace: z.string()}).strict();
-export type Inference = unknown;
-export async function execute(input: z.infer<typeof inputSchema>, _inference: Inference) {
-  const config = JSON.parse(await readFile(process.argv[process.argv.indexOf('--config') + 1], 'utf8'));
-  const profile = config.profiles.rewrite;
-  return {labels: [...new Set(input.labels)].sort(), model: profile.model, provider: config.providers[profile.provider].kind, profiles: Object.keys(config.profiles), workspace: process.env.TKSTACK_WORKSPACE_DIR!};
-}
-''')
-        (package / 'commands/run.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
-        config = {'version': 1, 'providers': {'api': {'kind': 'openai', 'apiKeyEnv': 'NOT_CALLED_KEY'}},
-            'profiles': {'rewrite': {'kind': 'language', 'provider': 'api', 'api': 'responses', 'model': 'baseline-model'}}}
-        compile_config = self.workspace / 'compile-profiles.json'
-        compile_config.write_text(json.dumps(config))
-        output = {'labels': ['a', 'b'], 'model': 'baseline-model', 'provider': 'openai', 'profiles': ['rewrite'], 'workspace': str(self.scopes['workspace'])}
-        (package / 'cases.json').write_text(json.dumps({'version': 1, 'cases': [
-            {'id': 'positive', 'input': {'labels': ['b', 'a']}, 'exit': 0, 'output': output},
-            {'id': 'negative', 'input': {'labels': [1]}, 'exit': 1}]}))
-        runner.codify.compile_workflow(package / 'PROMPT.md', package / 'scripts/run.ts', package / 'cases.json',
-            package / 'scripts/workflow.lock.json', root=package, profiles=['rewrite'], dependencies=dependencies,
-            config=compile_config, project=self.workspace)
-        config['providers']['api']['kind'] = 'gateway'
-        config['providers']['unused'] = {'kind': 'openai', 'apiKeyEnv': 'ALSO_NOT_CALLED'}
-        config['profiles']['rewrite'].update({'model': 'workspace-model', 'api': 'gateway'})
-        config['profiles']['unrelated'] = {'kind': 'language', 'provider': 'unused', 'api': 'responses', 'model': 'unused-model'}
-        (self.scopes['workspace'] / 'profiles.json').write_text(json.dumps(config))
-        self.registry('workspace', {'dependencies': str(dependencies)})
-        actual = json.loads(self.invoke('workflows', 'profile-contract', '--', 'normalize', '-l', '["b","a"]').stdout)
-        self.assertEqual(actual, {**output, 'model': 'workspace-model', 'provider': 'gateway'})
-        config['profiles']['rewrite']['api'] = 'chat'  # The native schema rejects this gateway mismatch.
-        (self.scopes['workspace'] / 'profiles.json').write_text(json.dumps(config))
-        self.invoke('workflows', 'profile-contract', '--', 'normalize', '-l', '[]', expected=1)
+    def test_separate_model_profiles_are_rejected_before_execution(self):
+        lock = {'inference': {'mode': 'explicit', 'profiles': ['other']}}
+        with self.assertRaisesRegex(ValueError, 'invoking agent'):
+            runner.configuration(lock, None, self.scopes, {}, self.environment)
+        self.assertIsNone(runner.configuration({'inference': {'mode': 'none', 'profiles': []}},
+                                                None, self.scopes, {}, self.environment))
 
 
 if __name__ == '__main__':

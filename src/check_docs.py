@@ -73,7 +73,7 @@ def area_snapshot(snapshot, area):
     return {'inputs': fingerprints(snapshot, names), 'docs': fingerprints(snapshot, sorted(area['docs']))}
 
 
-def _pin(text, name):
+def _setting(text, name):
     match = re.search(rf'(?m)^{name}=(\S+)', text)
     if not match:
         raise ValueError('install.sh is missing ' + name)
@@ -81,15 +81,14 @@ def _pin(text, name):
 
 
 def profile_block(snapshot):
-    """README block generated from the install.sh pins. There is one install, not profiles."""
+    """README block generated from the bootstrap's Python selection."""
     text = snapshot.read('install.sh').decode()
     rows = [
         START,
-        'The host needs Bash and curl. Missing Python **' + _pin(text, 'PYTHON_VERSION')
-        + '** is installed with uv **' + _pin(text, 'UV_VERSION')
-        + '** after sha256 `' + _pin(text, 'UV_INSTALLER_SHA256') + '` is checked.',
+        'The host needs Bash, Git, and curl. Dotfiles setup provisions current Node.js. Missing Python 3.11+ is installed as the current stable Python **'
+        + _setting(text, 'PYTHON_VERSION') + '** using the current uv release and its published SHA-256.',
         'Archive bootstrap requires an independently supplied SHA-256 digest.',
-        'The personal profile selects four skills for Codex, Claude Code, and Cursor. Use `--profile catalog` for full placement.',
+        'The default catalog installs applicable skills and tools for Codex, Claude Code, and Cursor. Explicit profiles narrow skill selection.',
         END,
     ]
     return '\n'.join(rows)
@@ -115,7 +114,7 @@ def structural_errors(snapshot):
     if readme.count(START) != 1 or readme.count(END) != 1:
         errors.append('README is missing its generated profile block; run check_docs.py render')
     elif readme[readme.index(START):readme.index(END) + len(END)] != profile_block(snapshot):
-        errors.append('README install pins are stale; run check_docs.py render')
+        errors.append('README install settings are stale; run check_docs.py render')
     markdown = sorted(name for name in snapshot.files if name in ('README.md', 'GLOSSARY.md') or name.startswith('docs/') and name.endswith('.md'))
     for name in markdown:
         content = prose(snapshot.read(name).decode())

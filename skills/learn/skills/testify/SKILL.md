@@ -10,6 +10,11 @@ metadata:
 
 # Testify
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Deterministic local tools may support the current agent's work.
+
+
 For `/learn testify`, first read [test selection](references/selection.md). Identify
 an actual fault and independent observable oracle; inspect existing tests and
 production boundaries. Apply parse-don't-validate at input boundaries and use
@@ -39,3 +44,8 @@ The shared runner is `.tkstack/tkstack skills learn -- testify <command>`.
 A recorded review is not an independently authenticated assessment or proof
 that a test is sensitive to faults. Use Constrain for the repository policy;
 use Lintify for a static artifact rule and Hookify for a precise tool-event gate.
+
+When creating or running workflows, use finite default deadlines for supported
+operations and an outer bound; retain elapsed time and timeout outcomes. Test
+timeout recovery where meaningful. A deadline is not a performance SLO, and an
+unsupported host timeout or uncertain remote effect must remain explicit.

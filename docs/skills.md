@@ -1,6 +1,11 @@
 # Installed skill inventory
 
-This is the full catalog. Select it with `--profile catalog`; new personal installations use four skills. See [bootstrap](bootstrap.md).
+The catalog is the default dotfiles profile. The tables describe the bundled
+reference snapshots; a current upstream may add or remove skills. See
+[bootstrap](bootstrap.md).
+
+Landmines is an Oxlint plugin rather than a skill. Its installed runtime
+and project invocation are in [integration readiness](integrations.md#landmines).
 
 All 19 repository packages share reserved help/version, explicit contract models,
 retained-report verification, native helper bindings where applicable, and
@@ -156,22 +161,38 @@ capabilities depend on the actual host. See [setup and dials](lever.md).
 | health | [`run-health-review`](../vendor/lever/skills/run-health-review/SKILL.md) |
 | steer | [`steer-once`](../vendor/lever/skills/steer-once/SKILL.md) |
 
-## Pstack (34)
+## Pstack (58)
 
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
 | [`architect`](../vendor/pstack/skills/architect/SKILL.md) | main | User only |
 | [`arena`](../vendor/pstack/skills/arena/SKILL.md) | main | User only |
 | [`automate-me`](../vendor/pstack/skills/automate-me/SKILL.md) | main | User only |
+| [`benchmark-checklist`](../vendor/pstack/skills/benchmark-checklist/SKILL.md) | main | User only |
+| [`blast-radius`](../vendor/pstack/skills/blast-radius/SKILL.md) | main | User only |
+| [`bro`](../vendor/pstack/skills/bro/SKILL.md) | main | User only |
+| [`correct`](../vendor/pstack/skills/correct/SKILL.md) | main | User only |
+| [`create-formal-verification-skill`](../vendor/pstack/skills/create-formal-verification-skill/SKILL.md) | main | User only |
+| [`create-verification-skill`](../vendor/pstack/skills/create-verification-skill/SKILL.md) | main | User only |
 | [`figure-it-out`](../vendor/pstack/skills/figure-it-out/SKILL.md) | main | User only |
-| [`how`](../vendor/pstack/skills/how/SKILL.md) | main | User or model |
+| [`how`](../vendor/pstack/skills/how/SKILL.md) | main | User only |
+| [`in-your-own-words`](../vendor/pstack/skills/in-your-own-words/SKILL.md) | main | User only |
 | [`interrogate`](../vendor/pstack/skills/interrogate/SKILL.md) | main | User only |
+| [`ketchup`](../vendor/pstack/skills/ketchup/SKILL.md) | main | User only |
+| [`ketchup-video`](../vendor/pstack/skills/ketchup-video/SKILL.md) | main | User only |
+| [`maintain-formal-verification-skill`](../vendor/pstack/skills/maintain-formal-verification-skill/SKILL.md) | main | User only |
+| [`maintain-verification-skill`](../vendor/pstack/skills/maintain-verification-skill/SKILL.md) | main | User only |
+| [`make-bot-ui`](../vendor/pstack/skills/make-bot-ui/SKILL.md) | main | User only |
+| [`no-comments`](../vendor/pstack/skills/no-comments/SKILL.md) | main | User only |
+| [`poteto-help`](../vendor/pstack/skills/poteto-help/SKILL.md) | main | User only |
 | [`poteto-mode`](../vendor/pstack/skills/poteto-mode/SKILL.md) | main | User only |
+| [`principle-attack-the-premise`](../vendor/pstack/skills/principle-attack-the-premise/SKILL.md) | main | User only |
 | [`principle-boundary-discipline`](../vendor/pstack/skills/principle-boundary-discipline/SKILL.md) | main | User only |
 | [`principle-build-the-lever`](../vendor/pstack/skills/principle-build-the-lever/SKILL.md) | main | User only |
 | [`principle-encode-lessons-in-structure`](../vendor/pstack/skills/principle-encode-lessons-in-structure/SKILL.md) | main | User only |
 | [`principle-exhaust-the-design-space`](../vendor/pstack/skills/principle-exhaust-the-design-space/SKILL.md) | main | User only |
 | [`principle-experience-first`](../vendor/pstack/skills/principle-experience-first/SKILL.md) | main | User only |
+| [`principle-explain-the-number`](../vendor/pstack/skills/principle-explain-the-number/SKILL.md) | main | User only |
 | [`principle-fix-root-causes`](../vendor/pstack/skills/principle-fix-root-causes/SKILL.md) | main | User only |
 | [`principle-foundational-thinking`](../vendor/pstack/skills/principle-foundational-thinking/SKILL.md) | main | User only |
 | [`principle-guard-the-context-window`](../vendor/pstack/skills/principle-guard-the-context-window/SKILL.md) | main | User only |
@@ -179,6 +200,7 @@ capabilities depend on the actual host. See [setup and dials](lever.md).
 | [`principle-make-operations-idempotent`](../vendor/pstack/skills/principle-make-operations-idempotent/SKILL.md) | main | User only |
 | [`principle-migrate-callers-then-delete-legacy-apis`](../vendor/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md) | main | User only |
 | [`principle-minimize-reader-load`](../vendor/pstack/skills/principle-minimize-reader-load/SKILL.md) | main | User only |
+| [`principle-model-the-domain`](../vendor/pstack/skills/principle-model-the-domain/SKILL.md) | main | User only |
 | [`principle-never-block-on-the-human`](../vendor/pstack/skills/principle-never-block-on-the-human/SKILL.md) | main | User only |
 | [`principle-outcome-oriented-execution`](../vendor/pstack/skills/principle-outcome-oriented-execution/SKILL.md) | main | User only |
 | [`principle-prove-it-works`](../vendor/pstack/skills/principle-prove-it-works/SKILL.md) | main | User only |
@@ -186,14 +208,21 @@ capabilities depend on the actual host. See [setup and dials](lever.md).
 | [`principle-separate-before-serializing-shared-state`](../vendor/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md) | main | User only |
 | [`principle-sequence-verifiable-units`](../vendor/pstack/skills/principle-sequence-verifiable-units/SKILL.md) | main | User only |
 | [`principle-subtract-before-you-add`](../vendor/pstack/skills/principle-subtract-before-you-add/SKILL.md) | main | User only |
+| [`principle-test-behavior-not-implementation`](../vendor/pstack/skills/principle-test-behavior-not-implementation/SKILL.md) | main | User only |
 | [`principle-type-system-discipline`](../vendor/pstack/skills/principle-type-system-discipline/SKILL.md) | main | User only |
+| [`recall`](../vendor/pstack/skills/recall/SKILL.md) | main | User only |
 | [`reflect`](../vendor/pstack/skills/reflect/SKILL.md) | main | User only |
 | [`setup-pstack`](../vendor/pstack/skills/setup-pstack/SKILL.md) | main | User or model |
+| [`sharpen`](../vendor/pstack/skills/sharpen/SKILL.md) | main | User only |
 | [`show-me-your-work`](../vendor/pstack/skills/show-me-your-work/SKILL.md) | main | User only |
+| [`statechart`](../vendor/pstack/skills/statechart/SKILL.md) | main | User only |
+| [`swarm`](../vendor/pstack/skills/swarm/SKILL.md) | main | User only |
 | [`tdd`](../vendor/pstack/skills/tdd/SKILL.md) | main | User only |
-| [`typescript-best-practices`](../vendor/pstack/skills/typescript-best-practices/SKILL.md) | main | User or model |
-| [`pstack-unslop`](../vendor/pstack/skills/unslop/SKILL.md) | main | User or model |
-| [`why`](../vendor/pstack/skills/why/SKILL.md) | main | User or model |
+| [`pstack-teach`](../vendor/pstack/skills/teach/SKILL.md) | main | User only |
+| [`technical-writing`](../vendor/pstack/skills/technical-writing/SKILL.md) | main | User only |
+| [`typescript-best-practices`](../vendor/pstack/skills/typescript-best-practices/SKILL.md) | main | User only |
+| [`pstack-unslop`](../vendor/pstack/skills/unslop/SKILL.md) | main | User only |
+| [`why`](../vendor/pstack/skills/why/SKILL.md) | main | User only |
 
 ## Cursor Team Kit (18)
 
@@ -367,10 +396,17 @@ replace Pstack's `tdd` name.
 
 `constrain` owns test-value selection, verification-category review, repository
 sparsity and deployment artifact budgets. See [its index](../skills/constrain/SKILL.md)
-for the CLI and category references. Its [verification selection policy](../skills/constrain/references/selection.md)
+for the CLI and category references. The [verification selection policy](../skills/constrain/references/selection.md)
 covers evals, bounded state models, proofs, and the runtime boundaries each
 method leaves open. Each adopted workspace owns its policy in
-`.constrain/`. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
+`.constrain/`. Its duplicate-body gate compares tests within the same fixture
+context and decorators; matching assertions across different contexts still
+need semantic review. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
+For Python/unittest projects, Constrain can also run a selected, bounded
+Cosmic Ray mutation matrix; [test-value review](../skills/constrain/references/tests.md)
+explains installation, isolation, outcome classification and review limits.
 
 `testify` ships inside Learn and creates distinct, fault-sensitive behavioral
-tests. Use `/learn testify`; it is not separately installed.
+tests. Use `/learn testify`; it is not separately installed. `evalify` ships
+inside Learn for judgments made by the invoking agent and offline Promptfoo
+assertion scoring; use `/learn evalify`.

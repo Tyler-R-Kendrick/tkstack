@@ -5,7 +5,7 @@
       "tests/test_*.py"
     ],
     "exclude": [],
-    "max_cases": 630,
+    "max_cases": 632,
     "max_bytes": 710000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
@@ -81,11 +81,6 @@
       },
       {
         "rule": "tests.constant-oracle",
-        "path": "tests/test_experiment_proposer.py:ProposerTests.test_mismatched_allowlist_is_rejected_before_reservation",
-        "reason": "The constant self.fail is an unreachable fake-broker sentinel; the test asserts rejection and an empty ledger."
-      },
-      {
-        "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_scope_rejection_and_untrusted_provider_do_not_edit_arm",
         "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
       },
@@ -127,7 +122,7 @@
         "max_files": 54,
         "max_bytes": 715000,
         "max_depth": 2,
-        "reason": "The host lifecycle, calibration and process-cancellation regressions cover distinct admission, crash and child-ownership boundaries without adding test files."
+        "reason": "Allow distinct reviewed regressions for timing coverage, concurrent dispatch, contextual duplicates, statistical decisions and evolution wiring."
       },
       {
         "id": "documentation",
@@ -136,9 +131,9 @@
         ],
         "exclude": [],
         "max_files": 51,
-        "max_bytes": 545000,
+        "max_bytes": 550000,
         "max_depth": 3,
-        "reason": "Keep one canonical feature document; allow reviewed ledger growth for the added Testify package, safety checks, type-first guidance and their existing owner pages."
+        "reason": "Retain canonical user guidance and review ledger for bounded execution and the measured testing improvements."
       },
       {
         "id": "shared-code",
@@ -161,7 +156,7 @@
         "max_files": 2,
         "max_bytes": 44000,
         "max_depth": 2,
-        "reason": "Per-suite behavioral reviews and exact helper-oracle exceptions describe the added host and process-supervision regressions."
+        "reason": "Keep one policy and per-suite review inventory, including the reviewed Evalify deadline and framework adapter tests."
       },
       {
         "id": "owned-tree",
@@ -171,10 +166,10 @@
         "exclude": [
           "vendor/**"
         ],
-        "max_files": 880,
-        "max_bytes": 9500000,
+        "max_files": 900,
+        "max_bytes": 10300000,
         "max_depth": 9,
-        "reason": "The shared command-runtime fix must be synchronized into each installed skill and its compiled snapshot, alongside focused process and proof regressions."
+        "reason": "Allow Evalify and its locked dependencies, plus the expanded Pstack catalog's routing inventory and compiled SDLC artifact."
       }
     ]
   },

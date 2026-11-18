@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "read-model",
+      "input": {
+        "operation": "model"
+      },
+      "exit": 0,
+      "output": {
+        "version": 1,
+        "name": "evalify",
+        "purpose": "Calibrate judgments already made by the invoking agent using deterministic framework assertions.",
+        "criteria": [
+          {
+            "id": "task",
+            "description": "Define the actual workload and observable success, including deterministic gates."
+          },
+          {
+            "id": "judge",
+            "description": "Calibrate any model judge against independently labeled examples and record limitations."
+          },
+          {
+            "id": "measurement",
+            "description": "Retain matched runs, elapsed time, costs, failures and confirmation evidence."
+          }
+        ],
+        "facts_schema": {
+          "type": "object",
+          "properties": {
+            "actual_work_observed": {
+              "type": "boolean",
+              "const": true
+            },
+            "judge_calibrated": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "actual_work_observed",
+            "judge_calibrated"
+          ],
+          "additionalProperties": false
+        },
+        "limits": [
+          "Recorded source identity and per-case timings cannot authenticate the invoking host or judge calibration.",
+          "The helper performs no inference, model selection, provider selection, or agent-harness launch.",
+          "Detached subprocesses and remote effects are outside the local deadline."
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown",
+      "input": {
+        "operation": "unknown"
+      },
+      "exit": 1
+    },
+    {
+      "id": "reject-extra-model-field",
+      "input": {
+        "operation": "model",
+        "extra": true
+      },
+      "exit": 1
+    }
+  ]
+}

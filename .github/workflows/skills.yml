@@ -24,6 +24,10 @@ jobs:
         run: |
           python -m venv .tkstack/runtime/command-schema
           .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
+      - name: Install locked mutation tool
+        run: |
+          timeout 30s python -m venv .tkstack/runtime/mutation
+          timeout 180s .tkstack/runtime/mutation/bin/python -m pip install --require-hashes -r skills/constrain/requirements/requirements.lock
       - name: Install checksum-pinned Lean 4.19.0
         run: |
           curl -fSL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst" https://github.com/leanprover/lean4/releases/download/v4.19.0/lean-4.19.0-linux.tar.zst
@@ -37,12 +41,14 @@ jobs:
         run: python -B src/check_docs.py check
       - name: Enforce test value and repository sparsity
         run: .tkstack/runtime/command-schema/bin/python -B skills/constrain/scripts/constrain.py check --repo . --strict-dependencies
-      - name: Provision locked native discovery client
+      - name: Provision native discovery client and current tool runtimes
         run: |
-          npm ci --prefix integrations/mcp --ignore-scripts --no-audit --no-fund
-          integrations/mcp/node_modules/.bin/codex --version
-          echo "$PWD/integrations/mcp/node_modules/.bin" >> "$GITHUB_PATH"
+          python -c 'import importlib.util; from pathlib import Path; root=Path.cwd(); spec=importlib.util.spec_from_file_location("latest", root / "integrations/latest.py"); module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module); generation=module.prepare_runtime(root); module.publish(root / ".tkstack/runtime/current", generation)'
+          .tkstack/runtime/current/bin/codex --version
+          echo "$PWD/.tkstack/runtime/current/bin" >> "$GITHUB_PATH"
       - name: Run the full offline regression suite
         env:
           REPO_QUALITY_GATE: "1"
+          TKSTACK_COSMIC_RAY_BIN: ${{ github.workspace }}/.tkstack/runtime/mutation/bin/cosmic-ray
+          TKSTACK_OFFLINE: "1"
         run: .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -v

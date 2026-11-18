@@ -3,8 +3,7 @@ schema: tkstack.command/v1
 tool:
   type: function
   name: lintify_native_scaffold
-  description: Create the existing native ESLint/Lintbook/GPTLint example package;
-    installation never activates it.
+  description: Create the existing deterministic ESLint or Lintbook example package.
   strict: true
   parameters:
     type: object
@@ -18,7 +17,6 @@ tool:
         enum:
         - eslint
         - lintbook
-        - gptlint
       target:
         type: string
         minLength: 1
@@ -44,6 +42,6 @@ run:
 
 # Native scaffold
 
-Create the existing native ESLint/Lintbook/GPTLint example package; installation never activates it.
+Create the existing deterministic ESLint or Lintbook example package.
 
 [Execution contract](../references/execution.md) describes effects, paths, evidence, and limitations. Frontmatter defines the exact typed signature.

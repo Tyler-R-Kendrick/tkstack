@@ -2,7 +2,7 @@
 name: lintify
 description: Create, adapt, or configure a rule for a real CLI linter from an explicit standard or correction. Use for /lintify, turn this into a lint rule, enforce this with a linter, or author a Markdown prompt rule. Reuse native checks first, compile Markdown intent into deterministic rules when possible, and use semantic model-based linting only for residual judgment.
 license: MIT
-compatibility: "Harness independent. Python 3.11+ for the optional example scaffolder. Native validation requires the selected CLI/runtime; semantic linting additionally requires its authorized model access and budget. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
+compatibility: "Harness independent. Python 3.11+ for the optional example scaffolder. Native validation requires the selected CLI/runtime; semantic review stays with the invoking agent. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
   version: "0.2.0"
@@ -25,6 +25,11 @@ Tool: `.tkstack/tkstack skills lintify -- <command>`. Omit the command for deter
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
 <!-- tkstack:execution:end -->
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Deterministic local tools may support the current agent's work.
+
+
 
 Turn the stated standard into a versioned lint rule, native CLI configuration,
 meaningful fixtures, and a reproducible command. A rule may be executable code,
@@ -40,8 +45,8 @@ a declarative query, Markdown compiled into a query, or a semantic prompt.
 1. Identify the invariant, applicable files, real exceptions, severity, and
    observable violation from the request and current repository standards.
 2. Reuse an installed linter/rule or configure it before writing a plugin.
-   Prefer deterministic code/AST/query checks; use a constrained decision
-   service next and an LLM only for genuinely unresolved semantic judgment.
+   Prefer deterministic code/AST/query checks; use the invoking agent for
+   genuinely unresolved semantic judgment.
 3. Author the smallest native rule and config. Preserve existing rules and
    ignores. Keep per-file evaluation independent and concurrency bounded.
 4. Run actual bad, good, transfer, and exception fixtures through the real CLI.
@@ -49,13 +54,18 @@ a declarative query, Markdown compiled into a query, or a semantic prompt.
 5. Integrate only the requested command/CI boundary, then report what it proves.
 
 Markdown is a valid rule source. Lintbook can compile it to deterministic Datafox;
-GPTLint can evaluate it with a model. A Markdown file alone is not enforcement,
-and model-based linting is probabilistic even when its CLI gates on an exit code.
+Do not launch a separate model-backed linter. A Markdown file alone is
+not enforcement, and semantic judgments remain probabilistic.
 
 For a working example package, use `scripts/lintify.py scaffold --backend
-eslint|lintbook|gptlint --target <absent-directory>`. Examples require adaptation
+eslint|lintbook --target <absent-directory>`. Examples require adaptation
 to the actual rule and are never activated by installation. A tool-event guard
 belongs in `hookify`; reusable procedures in `skillify`; policy context in
 `instructify`. Those siblings are optional. See [sources](references/sources.md).
 
 For session/repository/workspace records, read [local state storage](references/storage.md).
+
+When creating or running workflows, use finite default deadlines for supported
+operations and an outer bound; retain elapsed time and timeout outcomes. Test
+timeout recovery where meaningful. A deadline is not a performance SLO, and an
+unsupported host timeout or uncertain remote effect must remain explicit.

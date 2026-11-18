@@ -14,4 +14,6 @@
 
 The personal, development and design profiles select named skills. The catalog profile enables the full source placement, vendored agents and Cursor rules. TKStack's Cursor steering rule accompanies each Cursor installation. Learn uses a generated host-facing index with a pointer to its canonical package; its authoring subcommands run through the mounted Learn interface. Codex user instructions honor CODEX_HOME; project and isolated home targets use their own paths.
 
+Pstack alias and host compatibility details are in [bootstrap](bootstrap.md#pstack-in-codex).
+
 The installer checks link destinations and owned startup sections. Native Codex discovery is exercised in the release suite. Other hosts need their own reload/trust and activation checks. See [bootstrap](bootstrap.md) for personal versus team configuration, and [integrations](integrations.md) for MCP and hook readiness.

@@ -3,12 +3,27 @@
 import argparse
 from dataclasses import dataclass
 import json
+import locale
 import os
 from pathlib import Path, PurePosixPath
 import re
+import signal
 import subprocess
 import sys
+import tempfile
+import threading
+import time
 sys.dont_write_bytecode = True
+from package_runtime import can_wait_unreaped, reap_owned, wait_unreaped
+
+RUN_TIMEOUT = 120
+OUTPUT_LIMIT = 1024 * 1024
+
+
+class RunInterrupted(Exception):
+    def __init__(self, signum):
+        self.signum = signum
+        super().__init__(f'Test run interrupted by signal {signum}')
 
 
 @dataclass(frozen=True)
@@ -67,15 +82,17 @@ def parse(path, root):
     if len(raw) > 256 * 1024:
         raise ValueError('Test specification exceeds 256 KiB')
     data = json.loads(raw, object_pairs_hook=pairs, parse_constant=lambda _: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
-    if not isinstance(data, dict) or set(data) != {'version', 'entrypoint', 'risk', 'distinction', 'timeout', 'cases'} or type(data['version']) is not int or data['version'] != 1:
-        raise ValueError('Specification requires version 1, entrypoint, risk, distinction, timeout, and cases')
+    required = {'version', 'entrypoint', 'risk', 'distinction', 'cases'}
+    if not isinstance(data, dict) or not required <= set(data) or set(data) - (required | {'timeout'}) or type(data['version']) is not int or data['version'] != 1:
+        raise ValueError('Specification requires version 1, entrypoint, risk, distinction, cases, and an optional timeout')
     entry = relative(data['entrypoint'])
     if entry.suffix != '.py':
         raise ValueError('This backend tests Python CLI entrypoints only')
     contained(root, str(entry), True)
     if any(not isinstance(data[k], str) or len(data[k].strip()) < 20 for k in ('risk', 'distinction')):
         raise ValueError('Explain the concrete regression risk and distinct coverage')
-    if type(data['timeout']) is not int or not 1 <= data['timeout'] <= 60:
+    timeout = data.get('timeout', 30)
+    if type(timeout) is not int or not 1 <= timeout <= 60:
         raise ValueError('Case timeout must be 1..60 seconds')
     if not isinstance(data['cases'], list) or not 1 <= len(data['cases']) <= 32:
         raise ValueError('Supply 1..32 concrete contract cases')
@@ -103,7 +120,7 @@ def parse(path, root):
             raise ValueError('Duplicate contract case: ' + name)
         signatures.add(signature)
         cases.append(Case(name, *signature))
-    return Spec(str(entry), data['risk'].strip(), data['distinction'].strip(), data['timeout'], tuple(cases))
+    return Spec(str(entry), data['risk'].strip(), data['distinction'].strip(), timeout, tuple(cases))
 
 
 def render(spec, target):
@@ -120,10 +137,14 @@ def render(spec, target):
     # repr produces inert Python literals; test input is passed as argv, never shell text.
     return f'''"""Behavioral CLI contract generated from reviewed case evidence."""
 import json
+import locale
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[{len(target.parts) - 1}]
@@ -133,13 +154,66 @@ DISTINCTION = {spec.distinction!r}
 CASES = {rows!r}
 
 
+def run_case(args, cwd, timeout):
+    # Direct POSIX runs own a process group so a timed-out CLI cannot leave
+    # ordinary descendants behind. The compiled runner owns its outer group.
+    own_group = os.name == 'posix' and os.environ.get('TKSTACK_CODIFY_EXECUTION') != '1'
+    if own_group and (signal.getsignal(signal.SIGCHLD) != signal.SIG_DFL or
+            not hasattr(signal, 'pthread_sigmask') or
+            not all(hasattr(os, name) for name in ('waitid', 'P_PID', 'WEXITED', 'WNOHANG', 'WNOWAIT'))):
+        raise ValueError('Cases require non-reaping POSIX process supervision')
+    with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+        process = subprocess.Popen(args, cwd=cwd, stdout=out, stderr=err,
+                                   start_new_session=own_group)
+        try:
+            if own_group:
+                deadline = time.monotonic() + timeout
+                while True:
+                    try:
+                        if os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT):
+                            break
+                    except ChildProcessError as error:
+                        process.returncode = 255
+                        raise ValueError('Case process ownership was lost') from error
+                    if time.monotonic() >= deadline:
+                        raise subprocess.TimeoutExpired(process.args, timeout)
+                    time.sleep(.01)
+            else:
+                process.wait(timeout=timeout)
+        finally:
+            if own_group and process.returncode is None:
+                mask = signal.pthread_sigmask(signal.SIG_BLOCK, {{signal.SIGINT, signal.SIGTERM, signal.SIGCHLD}})
+                try:
+                    try:
+                        os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+                    except ChildProcessError as error:
+                        process.returncode = 255
+                        raise ValueError('Case process ownership was lost') from error
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    process.wait()
+                finally:
+                    signal.pthread_sigmask(signal.SIG_SETMASK, mask)
+            elif process.returncode is None:
+                process.kill()
+                process.wait(timeout=2)
+        out.seek(0)
+        err.seek(0)
+        stdout, stderr = out.read(1048577), err.read(1048577)
+        if len(stdout) > 1048576 or len(stderr) > 1048576:
+            raise ValueError('Case output exceeds 1 MiB per stream')
+        encoding = locale.getpreferredencoding(False)
+        return subprocess.CompletedProcess(args, process.returncode, stdout.decode(encoding), stderr.decode(encoding))
+
+
 class CliContractTests(unittest.TestCase):
     def test_contract_cases(self):
         for case in CASES:
             with self.subTest(case=case['name']), tempfile.TemporaryDirectory(prefix='testify-') as temp:
                 args = [arg.replace('{{root}}', str(ROOT)).replace('{{tmp}}', temp) for arg in case['args']]
-                result = subprocess.run([sys.executable, str(ENTRYPOINT), *args], cwd=temp,
-                                        capture_output=True, text=True, timeout={spec.timeout})
+                result = run_case([sys.executable, str(ENTRYPOINT), *args], cwd=temp, timeout={spec.timeout})
                 self.assertEqual(result.returncode, case['exit'], result.stderr)
                 if 'stdout_text' in case:
                     self.assertEqual(result.stdout, case['stdout_text'])
@@ -152,6 +226,56 @@ class CliContractTests(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 '''
+
+
+def run_test(path, root):
+    own_group = os.name == 'posix' and os.environ.get('TKSTACK_CODIFY_EXECUTION') != '1'
+    if own_group and (not can_wait_unreaped() or threading.current_thread() is not threading.main_thread()):
+        raise ValueError('Test execution requires non-reaping POSIX process supervision')
+    env = {**os.environ, 'TKSTACK_CODIFY_EXECUTION': '1'}
+    with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+        command = [sys.executable, '-B', str(path)]
+        process, pending = None, None
+        def interrupt(signum, _frame):
+            nonlocal pending
+            if process is None:
+                pending = signum
+            else:
+                raise RunInterrupted(signum)
+        previous = {sig: signal.signal(sig, interrupt) for sig in (signal.SIGTERM, signal.SIGINT)} if own_group else {}
+        try:
+            try:
+                if pending is not None:
+                    raise RunInterrupted(pending)
+                process = subprocess.Popen(command, cwd=root, env=env, stdout=out, stderr=err,
+                                           start_new_session=own_group)
+                if pending is not None:
+                    raise RunInterrupted(pending)
+                if own_group:
+                    wait_unreaped(process, RUN_TIMEOUT)
+                else:
+                    process.wait(timeout=RUN_TIMEOUT)
+            except RunInterrupted:
+                for sig in previous:
+                    signal.signal(sig, signal.SIG_IGN)
+                raise
+            finally:
+                if process is not None and own_group and process.returncode is None:
+                    reap_owned(process, kill_group=True)
+                elif process is not None and process.returncode is None:
+                    process.kill()
+                    process.wait(timeout=2)
+        finally:
+            for sig, handler in previous.items():
+                signal.signal(sig, handler)
+        out.seek(0)
+        err.seek(0)
+        stdout, stderr = out.read(OUTPUT_LIMIT + 1), err.read(OUTPUT_LIMIT + 1)
+        if len(stdout) > OUTPUT_LIMIT or len(stderr) > OUTPUT_LIMIT:
+            raise ValueError('Test output exceeds 1 MiB per stream')
+        encoding = locale.getpreferredencoding(False)
+        return subprocess.CompletedProcess(command, process.returncode,
+                                           stdout.decode(encoding), stderr.decode(encoding))
 
 
 def main(argv=None):
@@ -170,9 +294,23 @@ def main(argv=None):
         if args.command == 'run':
             if args.spec is not None:
                 raise ValueError('Run accepts no specification')
-            run = subprocess.run([sys.executable, '-B', str(path)], cwd=root, capture_output=True, text=True, timeout=120)
+            started = time.monotonic()
+            try:
+                run = run_test(path, root)
+            except subprocess.TimeoutExpired as error:
+                print(json.dumps({'status': 'timeout', 'returncode': None, 'stdout': '', 'stderr': str(error),
+                                  'elapsed_ms': round((time.monotonic() - started) * 1000, 3),
+                                  'timeout_seconds': RUN_TIMEOUT}))
+                return 124
+            except RunInterrupted as error:
+                print(json.dumps({'status': 'interrupted', 'returncode': None, 'stdout': '', 'stderr': str(error),
+                                  'elapsed_ms': round((time.monotonic() - started) * 1000, 3),
+                                  'timeout_seconds': RUN_TIMEOUT, 'signal': error.signum}))
+                return 128 + error.signum
             print(json.dumps({'status': 'pass' if run.returncode == 0 else 'fail', 'returncode': run.returncode,
-                              'stdout': run.stdout, 'stderr': run.stderr}))
+                              'stdout': run.stdout, 'stderr': run.stderr,
+                              'elapsed_ms': round((time.monotonic() - started) * 1000, 3),
+                              'timeout_seconds': RUN_TIMEOUT}))
             return 0 if run.returncode == 0 else 1
         if args.spec is None:
             raise ValueError('Plan/create require --spec')

@@ -6,7 +6,8 @@
   },
   "aliases": {
     "pstack": {
-      "unslop": "pstack-unslop"
+      "unslop": "pstack-unslop",
+      "teach": "pstack-teach"
     },
     "matt-pocock": {
       "tdd": "matt-tdd"
@@ -16,6 +17,7 @@
     }
   },
   "rewrite_callers": {"pstack": false},
+  "caller_aliases": {"pstack": {"poteto-help": {"teach": "pstack-teach"}}},
   "delegates": {
     "t3code": ["claude", "codex", "cursor", "copilot", "grok"]
   },

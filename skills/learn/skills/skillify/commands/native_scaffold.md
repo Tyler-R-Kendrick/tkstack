@@ -26,7 +26,6 @@ tool:
         type: string
         enum:
         - python
-        - ai-sdk
     required:
     - operation
     - name

@@ -1,7 +1,7 @@
 {
   "format": "skillopt_sleep.tasks.v1",
   "reviewed": true,
-  "provenance": "author-created test selection decision scenarios",
+  "provenance": "author-created decision regression scenarios",
   "tasks": [
     {
       "id": "constrain-train",
@@ -56,6 +56,120 @@
             "op": "regex",
             "arg": "\\A\\s*A\\s*\\Z",
             "description": "Choose verification appropriate to the concrete risk."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-train-overlap",
+      "project": "tkstack",
+      "intent": "Two unit tests catch the same seeded failure. A third test exercises a distinct external boundary, and untried failures remain. A) Delete all three. B) Investigate overlap and compare the retained suite before removing a candidate; keep the distinct boundary. C) Keep every test to maximize the count. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Compare the marginal evidence without discarding an independent boundary."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-train-mutants",
+      "project": "tkstack",
+      "intent": "A mutation run reports survivors, including equivalent changes and incidental log wording. A) Classify survivors and address useful behavior gaps. B) Add brittle assertions until every mutant is killed. C) Treat survivors as proof that no tests have value. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "train",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Treat mutation evidence as a sampled signal, not an unconditional target."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-val-pyramid",
+      "project": "tkstack",
+      "intent": "A fast unit test checks a calculation, while a slower contract test detects a provider timeout the unit test does not reach. A) Delete the contract test because the pyramid favors units. B) Delete the unit test because contracts are broader. C) Keep both distinct risks and look elsewhere for proven overlap. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*C\\s*\\Z",
+            "description": "Preserve distinct boundary risks without forcing a pyramid ratio."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-val-absence",
+      "project": "tkstack",
+      "intent": "A test checks that a removed public endpoint rejects unauthorized requests, as required by a current security contract. A) Keep or replace the check as evidence for that contract. B) Delete it because it asserts the absence of old behavior. C) Replace it with a test of an unrelated internal function. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "val",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Distinguish a supported negative contract from an obsolete implementation fact."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-test-shared-kills",
+      "project": "tkstack",
+      "intent": "Each of two tests kills the same sampled mutants, so neither has a unique kill. A) Delete both simultaneously. B) Inspect their contracts and compare retained fault detection after removing one candidate. C) Delete whichever test has lower line coverage without further checks. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*B\\s*\\Z",
+            "description": "Shared mutant kills do not establish that both tests can be removed."
+          }
+        ]
+      }
+    },
+    {
+      "id": "constrain-test-agent-outcome",
+      "project": "tkstack",
+      "intent": "A tool-using agent says it saved a payment, but the evaluation has not inspected persisted state. A) Check the final state and required authorization and side effects. B) Grade only the convincing response. C) Require the exact tool-call sequence chosen by the test author. Return only A, B, or C.",
+      "system": "Read-only decision exercise. Return one action identifier.",
+      "reference_kind": "rule",
+      "split": "test",
+      "origin": "authored",
+      "judge": {
+        "kind": "rule",
+        "checks": [
+          {
+            "op": "regex",
+            "arg": "\\A\\s*A\\s*\\Z",
+            "description": "Grade observable agent outcomes and necessary invariants."
           }
         ]
       }

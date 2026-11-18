@@ -18,8 +18,8 @@ python3 src/check_docs.py check
 The policy in `docs/docs-policy.json` maps source paths to documentation owners.
 The error identifies affected areas and pages. Compare the source change to
 those pages, update actual instructions/examples, and verify relevant commands.
-`render` updates only the README's install-pin block from `PYTHON_VERSION`,
-`UV_VERSION`, and `UV_INSTALLER_SHA256` in `install.sh`. It preserves all other prose.
+`render` updates only the README's install block from `PYTHON_VERSION` in
+`install.sh`. It preserves all other prose.
 
 `refresh` records the reviewed source/doc contents and executable modes in
 `docs/docs-freshness.json`. It requires an actual reason and does not update
@@ -84,24 +84,11 @@ interpreter. Some tests rebuild ignored aliases or native views.
 `python3 scripts/install.py --target .` restores the normal source installation
 before `python3 src/check_skills.py`.
 Those generated views are not documentation inputs or versioned source. The
-README Develop section has copy-paste commands for
-`python3 -m unittest discover -s tests`,
-`REPO_QUALITY_GATE=1 python3 -m unittest tests.test_repo_quality`,
-`RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v`,
-and `python3 src/check_docs.py check`. Develop also names `evals/README.md`,
-`evals/repo-quality/`, and the promptfoo command that judge test runs,
-`npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
-The README repository layout table lists every tracked top-level directory
-and the notable subtrees, including `vendor/ponytail/`, `.cursor/rules/`,
-and `docs/harnesses.md`. The maintain section includes the dry-run
-preview, routing inventory check, docs check, tests, and that restore sequence.
-`tests/test_repo_quality.py` always checks the repo-quality harness shape,
-including that the encoded snapshot stays under 100 KiB so the promptfoo grader
-argument fits the operating-system limit. Ceiling assertions run only with
-`REPO_QUALITY_GATE=1`, and the promptfoo judge only with `RUN_JUDGE=1`, so a
-checkout below those ceilings still passes the default unittest discover. The opt-in judge test pins promptfoo 0.125.1 and
-requires each metric score to be 1.0. The harness is Unix-only. Commands are
-in the README Develop section and [Repository quality](../evals/README.md).
+README Develop section has copy-paste commands for the unittest suite,
+the opt-in deterministic repository-quality ceilings and the documentation
+check. The source installer restores generated views before the skill gate.
+Repository-quality rubric anchors can be reviewed by the invoking agent; there
+is no separate model-judge launcher. See [Repository quality](../evals/README.md).
 
 Test changes also pass the [constrain engine](../skills/constrain/SKILL.md). Its
 review inventory names suite risks, behavioral oracles, verification kinds and

@@ -8,7 +8,7 @@ another orchestration language. It freezes:
 - Root locator relative to the lock location, so relocating the complete tree works.
 - A native Python/Node entrypoint and sorted code/resource inventory, each with
   SHA-256, file mode, and base64-encoded exact bytes.
-- Declared inference mode/profile names and passed case IDs/repetition count.
+- A no-inference declaration and passed case IDs/repetition count.
 - Caller-supplied `--include` paths, sorted and unique, relative to the build
   root (`.` is the root). Locks compiled before this field omit `includes`.
 
@@ -72,7 +72,7 @@ but a malicious party can author a new lock and digest. Review code and use
 normal repository trust controls. Compiling/running executes trusted code with
 normal process authority, not a sandbox. Input/output/deadline bounds do not
 constrain every descendant's resource or network behavior. `mode: none` records
-the reviewed inference contract; a SHA or passing cases cannot prove arbitrary
+the reviewed host boundary; a SHA or passing cases cannot prove arbitrary
 code never calls a model. Measure actual executions where that matters.
 
 ## Bounded nested execution

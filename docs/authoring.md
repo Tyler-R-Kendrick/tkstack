@@ -4,15 +4,21 @@ The canonical packages are [`codify`](../skills/learn/skills/codify/SKILL.md),
 [`skillify`](../skills/learn/skills/skillify/SKILL.md),
 [`reusify`](../skills/learn/skills/reusify/SKILL.md), [`lintify`](../skills/learn/skills/lintify/SKILL.md),
 [`testify`](../skills/learn/skills/testify/SKILL.md),
+[`evalify`](../skills/learn/skills/evalify/SKILL.md),
 [`hookify`](../skills/learn/skills/hookify/SKILL.md), and
 [`instructify`](../skills/learn/skills/instructify/SKILL.md), and
 [`flowify`](../skills/learn/skills/flowify/SKILL.md). All install in Codex, Claude Code, and
-Cursor and are separate root marketplace entries. They follow the personal
+Cursor through Learn rather than as separate root marketplace entries. They follow the personal
 deterministic-first and concurrency principles.
+
+When forming or revising a Learn subskill, include finite default deadlines,
+elapsed-time evidence, timeout and recovery behavior for its supported work.
+Keep deadline ceilings separate from workload-based performance benchmarks;
+report when an MCP host or remote provider cannot enforce cancellation.
 
 Use `/codify <prompt-or-markdown>` to lower a procedure once into native code
 and freeze a verified executable lock. It owns the shared workflow templates,
-compiler/runner, and optional inference runtime extracted from Skillify.
+and compiler/runner extracted from Skillify.
 Skillify consumes its generated standalone release for skill packaging. Future
 runs execute the frozen artifact and fail on stale inputs; they do not silently
 rebuild or interpret prose. See [Codify](codify.md).
@@ -34,22 +40,20 @@ Run the tool rather than reconstructing its algorithm through inference.
 python3 skills/learn/skills/skillify/scripts/skillify.py scaffold \
   --target /repo/skills/inspect-contracts --name inspect-contracts \
   --description 'Inspect consumer/provider contracts when asked about compatibility.'
-python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk --dry-run
+python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing --dry-run
 python3 skills/learn/skills/skillify/scripts/skillify.py check /repo/skills/inspect-contracts --require-tool
 ```
 
 The scaffold creates that index, four linked topic/tool pages, a script-backed
 workflow/CLI starter, and a license. `convert` safely seeds an existing owned
 skill migration. Complete its actual algorithm and verification before delivery.
-The optional `--backend ai-sdk` supplies TypeScript, a native tool export, and
-locked Vercel AI SDK profiles for model providers, Decisions, and harnesses.
 See [conversion, configuration, and evidence](skillify.md).
 `check` reads metadata, resources, local inline links and Python syntax in a
 restricted portable profile. It neither executes scripts nor proves behavioral
 or trigger quality. See [the exact profile](../skills/learn/skills/skillify/references/validation.md).
 Use real behavior tests for observable helper contracts and actual artifact
-review for semantic quality. Existing `learn improve` and SkillOpt processes
-remain in place for evidence-backed automatic revision/adoption.
+review for semantic quality. Semantic review remains with the invoking agent; case preparation does not
+launch another model or harness.
 
 ## Reusify
 
@@ -82,7 +86,7 @@ incremental generation, shared-code boundaries, migration, and proof. See
 Use `/lintify <standard>` or `$lintify` to produce a native CLI rule/config,
 scoped diagnostics, meaningful fixtures, and a verified invocation. Reuse the
 project's linter and existing rules first. Markdown can describe deterministic
-compiled checks with lintbook or semantic model-evaluated checks with GPTLint.
+compiled checks with lintbook. The invoking agent handles residual semantic review.
 The latter remains probabilistic and needs actual evaluation before a reliable
 gate can be claimed.
 
@@ -91,8 +95,8 @@ python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend eslint --target /tmp/my-lint-example
 ```
 
-The helper also supplies lintbook and GPTLint examples. It creates only a new
-isolated package and activates no rule. Native ESLint behavior and GPTLint
+The helper also supplies a lintbook example. It creates only a new
+isolated package and activates no rule. Native ESLint behavior and
 parsing/discovery have direct evidence; semantic evaluation and native lintbook
 compilation remain unverified. See [the guide](lintify.md) for commands,
 runtime requirements, source versions, and exact evidence boundaries.
@@ -219,8 +223,22 @@ their own real evidence; the native Claude CLI is not available in this workspac
 
 Use `/learn testify` to create and fault-check a distinct behavioral test.
 Its Python CLI backend plans, creates and runs explicitly specified contract
-cases without overwriting an existing suite; other methods use native tools.
+cases without overwriting an existing suite. Each generated case defaults to
+a 30-second deadline unless the specification selects 1–60 seconds; other
+methods use native tools and their supported deadlines. Direct POSIX runs
+clean up the case's ordinary subprocess group before reaping its leader. The
+direct `run` command also bounds and cleans its overall test process, reporting
+elapsed time and interruption or timeout; detached and remote work still
+require separate supervision. Generated cases reject captured streams over 1 MiB.
 Prefer static types and boundary parsing when they make invalid states
 impossible, `lintify` for recurring static predicates, `hookify` for tool events,
 and `skillify`/`codify` for reusable procedures and executable workflow locks.
 See the [test selection procedure](../skills/learn/skills/testify/references/selection.md).
+
+## Evalify
+
+Use `/learn evalify` for structured judgments made by the invoking agent.
+A pinned Promptfoo library scores retained judgments against reviewed labels
+offline; no second model, provider or agent harness is selected. The receipt
+times offline processing, records interruption after cleanup, and does not
+authenticate the source of the judgment.

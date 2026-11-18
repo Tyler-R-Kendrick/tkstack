@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""Run pinned SkillOpt-Sleep on an owned skill with isolated state and strict gates."""
+"""Prepare authored evolution cases for the invoking agent without launching a model."""
 
 import argparse
 from contextlib import contextmanager
 import hashlib
-from contextlib import redirect_stdout
-from io import StringIO
 import json
-import os
 from pathlib import Path
 import sys
 from types import SimpleNamespace
@@ -17,11 +14,16 @@ sys.path.insert(0, str(ROOT / "src"))
 from tkstack_state import ensure_state
 from skill_roots import owned
 
-sys.path.insert(0, str(ROOT / "vendor/skillopt"))
+generation = ROOT / ".tkstack/cache/upstreams/current"
+if generation.is_dir():
+    generation = generation.resolve()
+    engine = generation / "sources/skillopt"
+    engine_revision = json.loads((generation / "sources.json").read_text())["skillopt"]["revision"]
+else:
+    engine = ROOT / "vendor/skillopt"
+    engine_revision = json.loads((ROOT / "sources.lock.json").read_text())["sources"]["skillopt"]["revision"]
+sys.path.insert(0, str(engine))
 
-from skillopt_sleep.__main__ import _run_handoff, _print_run_report
-from skillopt_sleep.config import DEFAULTS, SleepConfig
-from skillopt_sleep.cycle import run_sleep_cycle
 from skillopt_sleep.tasks_file import load_tasks_file
 
 
@@ -53,7 +55,7 @@ def run_lock(directory):
         lock.rmdir()
 
 
-def prepare(skill, run_dir, backend):
+def prepare(skill, run_dir):
     ensure_state(run_dir)
     packages = owned(ROOT)
     if not isinstance(skill, str) or skill not in packages:
@@ -78,20 +80,12 @@ def prepare(skill, run_dir, backend):
                 or checks[0].get("op") != "regex"
                 or checks[0].get("arg") not in (r"\A\s*A\s*\Z", r"\A\s*B\s*\Z", r"\A\s*C\s*\Z")):
             raise ValueError("Decision regressions require a strict anchored action grader")
-    cfg = SleepConfig({**DEFAULTS, "backend": backend, "invoked_project": str(run_dir),
-                       "state_dir": str(run_dir / "state"), "target_skill_path": str(target),
-                       "managed_skill_name": skill, "target_task_filter": False,
-                       "gate_mode": "on", "gate_metric": "hard", "gate_no_regression": True,
-                       "evolve_memory": False, "evolve_skill": True, "auto_adopt": False,
-                       "edit_budget": 1, "max_tasks_per_night": len(tasks),
-                       "max_tokens_per_night": 120000, "preferences": PREFERENCES,
-                       "progress": False, "replay_mode": "fresh-context-decision",
-                       "recall_k": 0, "dream_factor": 0,
-                       "multi_skill_fanout": False})
-    lock = json.loads((ROOT / "sources.lock.json").read_text())["sources"]["skillopt"]
-    frozen = {"version": 1, "skill": skill, "target": str(target),
+    cfg = SimpleNamespace(evolve_memory=False, auto_adopt=False,
+                          gate_no_regression=True, gate_mode="on", edit_budget=1,
+                          managed_skill_path=lambda: str(target))
+    frozen = {"version": 2, "skill": skill, "target": str(target),
               "skill_sha256": identity(target), "tasks_sha256": identity(source),
-              "engine_revision": lock["revision"], "backend": backend,
+              "engine_revision": engine_revision, "mode": "invoking-agent",
               "preferences": PREFERENCES}
     pinned = run_dir / "inputs.json"
     if pinned.exists() and json.loads(pinned.read_text()) != frozen:
@@ -103,39 +97,18 @@ def prepare(skill, run_dir, backend):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("skill", choices=sorted(owned(ROOT)))
-    parser.add_argument("--backend", choices=["handoff", "mock", "codex"], default="handoff")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--run-dir", type=Path)
     args = parser.parse_args()
-    suffix = "-mock-smoke" if args.backend == "mock" else ""
-    directory = (args.run_dir or ROOT / ".tkstack/evolution" / (args.skill + suffix)).resolve()
+    directory = (args.run_dir or ROOT / ".tkstack/evolution" / args.skill).resolve()
     try:
         with run_lock(directory):
-            cfg, tasks, meta = prepare(args.skill, directory, args.backend)
-            result_path = directory / "result.json"
-            if result_path.exists() and not args.dry_run:
-                print(result_path.read_text(), end="")
-                return 0
-            native_args = SimpleNamespace(json=True)
-            if args.backend == "handoff":
-                key = "SKILLOPT_SLEEP_HANDOFF_DIR"
-                previous = os.environ.get(key)
-                try:
-                    os.environ[key] = str(directory / "handoff")
-                    output = StringIO()
-                    with redirect_stdout(output):
-                        status = _run_handoff(cfg, native_args, seed_tasks=tasks, task_meta=meta, dry=args.dry_run)
-                    if status == 0 and not args.dry_run:
-                        result_path.write_text(output.getvalue())
-                    print(output.getvalue(), end="")
-                    return status
-                finally:
-                    if previous is None:
-                        os.environ.pop(key, None)
-                    else:
-                        os.environ[key] = previous
-            outcome = run_sleep_cycle(cfg, seed_tasks=tasks, dry_run=args.dry_run)
-            _print_run_report(outcome, native_args, meta)
+            cfg, tasks, _ = prepare(args.skill, directory)
+            print(json.dumps({"status": "ready-for-invoking-agent", "skill": args.skill,
+                              "cases": len(tasks), "run_dir": str(directory),
+                              "automatic_model_calls": False,
+                              "limits": "The current agent must perform evaluation; same-context cases are not blind."},
+                             indent=2))
             return 0
     except (OSError, ValueError) as error:
         print(f"evolve: {error}", file=sys.stderr)
