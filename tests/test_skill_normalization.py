@@ -225,6 +225,7 @@ class SkillNormalizationTests(unittest.TestCase):
             {'id': 'double', 'input': {'value': 3}, 'output': {'value': 6}, 'exit': 0},
             {'id': 'transfer', 'input': {'value': -2}, 'output': {'value': -4}, 'exit': 0},
             {'id': 'missing-value', 'input': {}, 'exit': 1}]}))
+        (scripts / 'lock-runtime.json').write_text(json.dumps({'version': 1, 'files': []}))
         output = scripts / 'compiled.lock.json'
         result = self.call('codify', ['native', 'compile'], ['--source', str(prompt), '--entrypoint', str(entry), '--cases', str(cases), '--root', str(package), '--output', str(output)])
         self.assertEqual(result['status'], 'compiled')

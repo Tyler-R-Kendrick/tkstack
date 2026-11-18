@@ -30,9 +30,9 @@
     "overlap": "Acquisition is distinct from target link setup; prerequisite/tarball variants stay in test_install."
   },
   "tests/test_codify.py": {
-    "sha256": "f0cdae343791f4e0044fdb4525806a35041902db524b4e3899201391a6d82348",
+    "sha256": "c01b0c66971046d6b58b414a0d6248827d8295adcd32f5f4b8a2c14845af43de",
     "risk": "Frozen executable publication could accept stale, escaping or corrupt inputs, or publish half an artifact.",
-    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Package-root inventory must be frozen on compile and reject changed reference bytes. Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group. Compressed locks must preserve runnable bytes, read legacy snapshots, and reject malformed, trailing, and oversized streams. Scoped runtime inventories must omit unrelated guidance while rejecting drift, missing runtime dependencies and unsafe manifest paths.",
+    "oracle": "Compile and run real programs; check legacy reads, scoped inventories, missing dependencies, stale inputs, malformed compression, escaping paths, process ownership and atomic publication.",
     "kinds": [
       "contract",
       "functional",
@@ -442,9 +442,9 @@
     "overlap": "Checks that Testify and Evalify ship as self-contained mounted Learn authoring subskills."
   },
   "tests/test_skill_normalization.py": {
-    "sha256": "98693a0927df435ba096569056be9c47b5b8dbacd7fae183e73a5650d3233a09",
+    "sha256": "bd4038c38683be6c864b85b14cf931794715863d8c05a8ef43d5e01822f76b1c",
     "risk": "Shared typed skill transport could ignore native failures, change scope or omit resources after commit/clone.",
-    "oracle": "Execute every owned compiled model/report boundary and representative real native helpers; exclude declared guidance-only packages, and test tampered evidence, raw args, process cleanup and standalone clone behavior.",
+    "oracle": "Exercise compiled skill contracts and native helpers with declared runtime inputs; reject tampering, invalid arguments and contradictory claims; verify process cleanup and clone portability.",
     "kinds": [
       "contract",
       "functional",

@@ -37,10 +37,12 @@ a parent package does not freeze those child skills. A lock with no `includes` f
 compiled before those paths were recorded. For that lock, `check` rebuilds
 the entrypoint directory, `commands/`, and the contract package root, and
 still compares every file the lock names. Recompile explicitly after adding
-a source file. A package can opt into a v3 runtime inventory with
+a source file. Every new build uses a v3 runtime inventory in
 `scripts/lock-runtime.json`; it must list every needed runtime file. The lock
 also retains command definitions and hashes of its source and cases. Unlisted
-files no longer cause staleness. See the [artifact contract](../skills/learn/skills/codify/references/artifact.md).
+files no longer cause staleness, and directory-wide `--include` is rejected.
+Scaffolds start the manifest; maintainers must review dynamic dependencies.
+See the [artifact contract](../skills/learn/skills/codify/references/artifact.md).
 
 Compilation requires positive and rejection cases; deterministic successes run
 twice. Verification uses bounded parallel workers with isolated working copies.

@@ -45,6 +45,7 @@ class CodifyTests(unittest.TestCase):
             {'id': 'empty', 'input': {'labels': []}, 'exit': 0, 'output': {'labels': []}},
             {'id': 'reject', 'input': {'labels': [1]}, 'exit': 1}]}))
         self.output = self.scripts / 'workflow.lock.json'
+        (self.scripts / 'lock-runtime.json').write_text(json.dumps({'version': 1, 'files': ['scripts/json_contract.py', 'scripts/workflow.py']}))
 
     def compile(self, **kwargs):
         return codify.compile_workflow(self.source, self.entry, self.cases, self.output, self.root, project=self.root, **kwargs)
@@ -70,10 +71,11 @@ class CodifyTests(unittest.TestCase):
 
     def test_contract_package_compiles_its_default_inventory_and_rejects_drift(self):
         (self.scripts / 'contract.json').write_text('{}')
+        (self.scripts / 'lock-runtime.json').write_text(json.dumps({'version': 1, 'files': ['scripts/contract.json', 'scripts/json_contract.py', 'scripts/workflow.py']}))
         reference = self.root / 'references/guide.md'
         reference.parent.mkdir()
         reference.write_text('Stable behavioral contract.')
-        self.compile()
+        self.compile(includes=[reference])
         artifact = codify.check(self.output)
         self.assertIn('references/guide.md', artifact['files'])
         reference.write_text('Changed behavioral contract.')
@@ -83,7 +85,7 @@ class CodifyTests(unittest.TestCase):
     def test_explicit_runtime_inventory_limits_snapshot_and_detects_missing_dependencies(self):
         (self.scripts / 'contract.json').write_text('{}')
         manifest = self.scripts / 'lock-runtime.json'
-        dependencies = ['scripts/json_contract.py', 'scripts/workflow.py']
+        dependencies = ['scripts/contract.json', 'scripts/json_contract.py', 'scripts/workflow.py']
         manifest.write_text(json.dumps({'version': 1, 'files': dependencies}))
         guide = self.root / 'references/guide.md'
         guide.parent.mkdir()
@@ -106,11 +108,11 @@ class CodifyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Stale'):
             codify.check(self.output)
         workflow.write_bytes(original)
-        manifest.write_text(json.dumps({'version': 1, 'files': ['scripts/json_contract.py']}))
+        manifest.write_text(json.dumps({'version': 1, 'files': ['scripts/contract.json', 'scripts/json_contract.py']}))
         with self.assertRaisesRegex(ValueError, 'Stale'):
             codify.check(self.output)
         before = self.output.read_bytes()
-        with self.assertRaisesRegex(ValueError, 'exit'):
+        with self.assertRaisesRegex(ValueError, 'missing local import'):
             self.compile()
         self.assertEqual(self.output.read_bytes(), before)
         manifest.write_text(json.dumps({'version': 1, 'files': ['../escape']}))
@@ -136,12 +138,12 @@ class CodifyTests(unittest.TestCase):
         template = self.root / 'templates/python/workflow.py'
         template.parent.mkdir(parents=True)
         template.write_text("raise NotImplementedError('WORKFLOW_NOT_IMPLEMENTED')")
-        result = self.compile(includes=[self.root / 'templates'])
+        result = self.compile(includes=[template])
         self.assertEqual(result['status'], 'compiled')
         self.assertIn('templates/python/workflow.py', codify.check(self.output)['files'])
         (self.scripts / 'workflow.py').write_bytes(template.read_bytes())
         with self.assertRaisesRegex(ValueError, 'Implement'):
-            self.compile(includes=[self.root / 'templates'])
+            self.compile(includes=[template])
 
     def test_stale_prompt_code_and_cases_fail_before_state_or_execution(self):
         self.compile()
@@ -192,9 +194,11 @@ class CodifyTests(unittest.TestCase):
     def test_compressed_snapshots_preserve_execution_legacy_compatibility_and_limits(self):
         resource = self.scripts / 'repeated.txt'
         resource.write_bytes(b'representative frozen data\n' * 2000)
+        manifest = self.scripts / 'lock-runtime.json'
+        manifest.write_text(json.dumps({'version': 1, 'files': ['scripts/json_contract.py', 'scripts/repeated.txt', 'scripts/workflow.py']}))
         self.compile()
         lock = codify.check(self.output)
-        self.assertEqual(lock['format'], 'tkstack.codify/v2')
+        self.assertEqual(lock['format'], 'tkstack.codify/v3')
         self.assertEqual(lock['files']['scripts/repeated.txt']['encoding'], 'zlib')
         self.assertEqual(codify.decode_files(lock)['scripts/repeated.txt'], resource.read_bytes())
         run = self.cli('run', self.output, '--input', '-', payload={'labels': [' b ', 'a']})
@@ -202,6 +206,7 @@ class CodifyTests(unittest.TestCase):
         self.assertEqual(json.loads(run.stdout), {'labels': ['a', 'b']})
         legacy = json.loads(self.output.read_text())
         legacy['format'] = 'tkstack.codify/v1'
+        legacy.pop('runtime_manifest')
         for item in legacy['files'].values():
             if item.pop('encoding', None) == 'zlib':
                 item['base64'] = base64.b64encode(zlib.decompress(base64.b64decode(item['base64']))).decode()
@@ -218,7 +223,7 @@ class CodifyTests(unittest.TestCase):
     def test_external_and_symlinked_inputs_are_rejected_before_execution(self):
         (self.scripts / 'foreign.py').symlink_to(self.source)
         with self.assertRaisesRegex(ValueError, 'Symlinked'):
-            self.compile()
+            self.compile(includes=[self.scripts / 'foreign.py'])
         self.assertFalse(self.output.exists())
         self.assertFalse((self.root / '.tkstack').exists())
 
@@ -231,7 +236,7 @@ class CodifyTests(unittest.TestCase):
         with ThreadPoolExecutor(max_workers=2) as pool:
             results = list(pool.map(build, range(2)))
         self.assertIn('compiled', results)
-        self.assertEqual(codify.check(self.output)['format'], codify.FORMAT)
+        self.assertEqual(codify.check(self.output)['format'], codify.SCOPED_FORMAT)
         self.assertEqual(list((self.root / '.tkstack/locks/codify').iterdir()), [])
 
     def test_input_drift_during_verification_does_not_publish(self):
@@ -317,92 +322,94 @@ class CodifyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Stale workflow input'):
             codify.check(self.output)
 
-    def test_check_rejects_a_file_added_inside_the_snapshotted_inventory(self):
+    def test_new_locks_reject_missing_manifest_and_directory_includes(self):
+        manifest = self.scripts / 'lock-runtime.json'
+        saved = manifest.read_bytes()
+        manifest.unlink()
+        with self.assertRaisesRegex(ValueError, 'lock-runtime.json'):
+            self.compile()
+        self.assertFalse(self.output.exists())
+        manifest.write_bytes(saved)
+        for directory in (self.root, self.scripts):
+            with self.subTest(directory=directory), self.assertRaises(ValueError):
+                self.compile(includes=[directory])
+        self.assertFalse(self.output.exists())
         self.compile()
         extra = self.scripts / 'notes.md'
-        extra.write_text('added after compile\n')
+        extra.write_text('not a runtime input')
+        codify.check(self.output)
+        workflow = self.scripts / 'workflow.py'
+        workflow.write_bytes(workflow.read_bytes() + b'\n')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            codify.check(self.output)
+
+    def test_existing_v1_lock_checks_drift_and_ignores_nested_packages(self):
+        legacy = self.root / 'legacy-write'
+        shutil.copytree(ROOT / 'skills/write', legacy)
+        lock = legacy / 'scripts/workflow.lock.json'
+        self.assertEqual(codify.check(lock)['format'], 'tkstack.codify/v1')
+        nested = legacy / 'skills/child'
+        nested.mkdir(parents=True)
+        (nested / 'SKILL.md').write_text('---\nname: child\n---\n')
+        for index in range(520):
+            (nested / f'{index}.txt').write_text('x')
+        codify.check(lock)
+        extra = legacy / 'references/new-file.md'
+        extra.write_text('unexpected')
         with self.assertRaisesRegex(ValueError, 'Stale workflow inventory'):
-            codify.check(self.output)
+            codify.check(lock)
         extra.unlink()
-        outside = self.root / 'notes.md'
-        outside.write_text('not in the entrypoint directory\n')
-        codify.check(self.output)
+        source = legacy / 'scripts/run.py'
+        source.write_bytes(source.read_bytes() + b'\n')
+        with self.assertRaisesRegex(ValueError, 'Stale workflow input'):
+            codify.check(lock)
 
-    def test_contract_package_inventory_includes_new_files_but_not_nested_skills(self):
-        (self.scripts / 'contract.json').write_text('{}\n')
-        self.compile(includes=[self.root])
-        added = self.root / 'references'
-        added.mkdir()
-        (added / 'routing.json').write_text('{}\n')
-        with self.assertRaisesRegex(ValueError, 'references/routing.json'):
-            codify.check(self.output)
-        (added / 'routing.json').unlink()
-        nested = self.root / 'skills' / 'child' / 'scripts'
-        nested.mkdir(parents=True)
-        (nested.parent / 'SKILL.md').write_text('---\nname: child\n---\n\nChild package.\n')
-        (nested / 'helper.py').write_text('def execute(payload):\n    return payload\n')
-        codify.check(self.output)
-
-    def test_nested_package_files_do_not_consume_the_parent_inventory_limit(self):
-        (self.scripts / 'contract.json').write_text('{}\n')
-        self.compile(includes=[self.root])
-        nested = self.root / 'skills' / 'child'
-        nested.mkdir(parents=True)
-        (nested / 'SKILL.md').write_text('---\nname: child\n---\n\nChild.\n')
-        for index in range(520):
-            (nested / f'probe-{index}.txt').write_text('x')
-        codify.check(self.output)
-        added = self.root / 'references'
-        added.mkdir()
-        (added / 'routing.json').write_text('{}\n')
-        with self.assertRaisesRegex(ValueError, 'references/routing.json'):
+    def test_missing_local_import_and_native_entrypoint_fail_before_publication(self):
+        helper = self.scripts / 'needed_helper.py'
+        helper.write_text('VALUE = 1\n')
+        workflow = self.scripts / 'workflow.py'
+        workflow.write_text('import needed_helper\n' + workflow.read_text())
+        with self.assertRaisesRegex(ValueError, 'missing local import'):
+            self.compile()
+        self.assertFalse(self.output.exists())
+        self.compile(includes=[helper])
+        before = self.output.read_bytes()
+        contract = self.scripts / 'contract.json'
+        contract.write_text(json.dumps({'native': {'optional': {'entrypoint': 'scripts/native_tool.py'}}}))
+        native = self.scripts / 'native_tool.py'
+        native.write_text('print(1)\n')
+        manifest = self.scripts / 'lock-runtime.json'
+        manifest.write_text(json.dumps({'version': 1, 'files': ['scripts/contract.json', 'scripts/json_contract.py', 'scripts/workflow.py']}))
+        with self.assertRaisesRegex(ValueError, 'missing native entrypoint'):
+            self.compile(includes=[helper])
+        self.assertEqual(self.output.read_bytes(), before)
+        contract.write_text(json.dumps({'native': {'optional': {'entrypoint': 'scripts/native_tool.py'}}, 'delegate': None}))
+        self.compile(includes=[helper, native])
+        native.write_text('print(2)\n')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
             codify.check(self.output)
 
-    def test_filtered_parent_inventory_still_rejects_more_than_512_files(self):
-        (self.scripts / 'contract.json').write_text('{}\n')
-        self.compile(includes=[self.root])
-        overflow = self.root / 'references'
-        overflow.mkdir()
-        for index in range(520):
-            (overflow / f'file-{index}.txt').write_text('x')
-        with self.assertRaisesRegex(ValueError, 'Expected 1..512 files'):
-            codify.check(self.output)
-
-    def test_recorded_includes_are_rebuilt_and_legacy_locks_keep_named_file_checks(self):
-        refs = self.root / 'refs'
-        refs.mkdir()
-        (refs / 'a.md').write_text('a\n')
-        other = self.root / 'other'
-        other.mkdir()
-        (other / 'c.md').write_text('c\n')
-        self.compile(includes=[other, refs])
-        lock = json.loads(self.output.read_text())
-        self.assertEqual(lock['includes'], ['other', 'refs'])
-        (refs / 'b.md').write_text('b\n')
-        with self.assertRaisesRegex(ValueError, 'refs/b.md'):
-            codify.check(self.output)
-        (refs / 'b.md').unlink()
-        legacy = {key: value for key, value in lock.items() if key != 'includes'}
-        legacy['artifact_sha256'] = codify.digest(codify.canonical({key: value for key, value in legacy.items() if key != 'artifact_sha256'}))
-        self.output.write_bytes(codify.canonical(legacy) + b'\n')
-        (refs / 'b.md').write_text('b\n')
-        codify.check(self.output)
-        (refs / 'a.md').write_text('changed\n')
-        with self.assertRaisesRegex(ValueError, 'Stale workflow input refs/a.md'):
-            codify.check(self.output)
-
-    def test_include_of_the_build_root_is_recorded_and_rebuilt(self):
-        self.compile(includes=[self.root])
-        self.assertEqual(json.loads(self.output.read_text())['includes'], ['.'])
-        (self.root / 'extra.md').write_text('extra\n')
-        with self.assertRaisesRegex(ValueError, 'extra.md'):
-            codify.check(self.output)
+    def test_new_scaffold_compiles_only_its_runtime_inputs(self):
+        target = self.root / 'small-workflow'
+        codify.scaffold(self.source, target)
+        (target / 'scripts/workflow.py').write_bytes((self.scripts / 'workflow.py').read_bytes())
+        (target / 'commands/unused.dat').write_bytes(b'unrelated' * 500)
+        shutil.copy2(self.cases, target / 'cases.json')
+        output = target / 'scripts/workflow.lock.json'
+        codify.compile_workflow(target / 'PROMPT.md', target / 'scripts/run.py', target / 'cases.json', output, target, project=self.root)
+        lock = codify.check(output)
+        self.assertEqual(lock['format'], codify.SCOPED_FORMAT)
+        self.assertNotIn('scripts/codify.py', lock['files'])
+        self.assertNotIn('references/tool.md', lock['files'])
+        self.assertNotIn('commands/unused.dat', lock['files'])
+        self.assertLess(output.stat().st_size, (target / 'scripts/codify.py').stat().st_size)
+        self.assertEqual(json.loads(self.cli('run', output, '--input', '-', payload={'labels': [' b ', 'a']}).stdout), {'labels': ['a', 'b']})
 
     def test_relocating_source_tree_preserves_freshness_and_executable_file_modes(self):
         helper = self.scripts / 'native-helper'
         helper.write_text('#!/bin/sh\nprintf native-helper')
         helper.chmod(0o755)
-        self.compile()
+        self.compile(includes=[helper])
         lock = codify.check(self.output)
         self.assertEqual(lock['files']['scripts/native-helper']['mode'], 0o755)
         destination = self.root.parent / (self.root.name + '-relocated')

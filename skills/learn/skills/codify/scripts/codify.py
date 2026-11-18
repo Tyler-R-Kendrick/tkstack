@@ -195,6 +195,51 @@ def pack_files(files):
     return packed
 
 
+def check_runtime_dependencies(root, files):
+    """Fail closed on known local imports and declared native entrypoints."""
+    names = set(files)
+    contract = root / 'scripts/contract.json'
+    if contract.is_file():
+        contract_name = 'scripts/contract.json'
+        if contract_name not in names:
+            raise ValueError('Runtime inventory must include scripts/contract.json')
+        model = parse_json(read_bytes(regular(contract, root)))
+        if isinstance(model, dict):
+            native = model.get('native', {})
+            if not isinstance(native, dict):
+                raise ValueError('Invalid native bindings in runtime contract')
+            if any(not isinstance(item, dict) for item in native.values()):
+                raise ValueError('Invalid native binding in runtime contract')
+            targets = [item.get('entrypoint') for item in native.values()]
+            if model.get('delegate') is not None:
+                targets.append(model['delegate'])
+            for target in targets:
+                if not isinstance(target, str) or target not in names:
+                    raise ValueError(f'Runtime inventory is missing native entrypoint: {target}')
+    for name in sorted(names):
+        path = root / name
+        if path.suffix != '.py':
+            continue
+        tree = ast.parse(read_bytes(regular(path, root)).decode('utf-8'), filename=name)
+        for node in ast.walk(tree):
+            base = path.parent
+            if isinstance(node, ast.Import):
+                modules = [item.name.split('.')[0] for item in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                for _ in range(max(0, node.level - 1)):
+                    base = base.parent
+                if not base.is_relative_to(root):
+                    continue
+                modules = ([node.module.split('.')[0]] if node.module else
+                           [item.name.split('.')[0] for item in node.names] if node.level else [])
+            else:
+                continue
+            for module in modules:
+                candidate = base / (module + '.py')
+                if candidate.is_file() and candidate.relative_to(root).as_posix() not in names:
+                    raise ValueError(f'Runtime inventory is missing local import: {candidate.relative_to(root).as_posix()}')
+
+
 def cases_from(data):
     value = parse_json(data)
     if not isinstance(value, dict) or set(value) != {'version', 'cases'} or type(value['version']) is not int or value['version'] != 1:
@@ -337,7 +382,7 @@ def parse_runtime_manifest(data):
             or type(manifest['version']) is not int or manifest['version'] != 1):
         raise ValueError('Invalid runtime manifest')
     files = manifest['files']
-    if (not isinstance(files, list) or not files or len(files) > 512
+    if (not isinstance(files, list) or len(files) > 512
             or any(not isinstance(name, str) for name in files) or files != sorted(set(files))):
         raise ValueError('Runtime manifest files must be sorted and unique')
     for name in files:
@@ -352,6 +397,11 @@ def runtime_manifest_paths(root):
     return [path, *(regular(root / name, root) for name in parse_runtime_manifest(read_bytes(path)))]
 
 
+def command_definition_paths(root):
+    """Freeze only the Markdown definitions used by command dispatch."""
+    return [root / item['file'] for item in command_schema.catalog(root) if item.get('file')]
+
+
 def expected_inventory(root, lock, output):
     """Recompute the snapshot compile froze, omitting nested skill packages.
 
@@ -364,13 +414,13 @@ def expected_inventory(root, lock, output):
     paths = [root / lock['entrypoint'] if scoped else root / PurePosixPath(lock['entrypoint']).parent]
     commands = root / 'commands'
     if commands.is_dir():
-        paths.append(commands)
+        paths.extend(command_definition_paths(root) if scoped else [commands])
     if scoped:
         paths.extend(runtime_manifest_paths(root))
     elif (root / 'scripts' / 'contract.json').is_file():
         paths.append(root)
     for name in lock.get('includes', ()):
-        paths.append(included_path(root, name))
+        paths.append(regular(root / relative_file(name), root) if scoped else included_path(root, name))
     return snapshot(root, paths, output, exclude_prefixes=nested_skill_prefixes(root))
 
 
@@ -532,14 +582,12 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
         raise ValueError("Separate model or harness inference is not supported; use the invoking agent")
     root = (root or source.parent).resolve(strict=True)
     recorded_includes = sorted({include_name(root, path) for path in includes})
-    scoped = (root / RUNTIME_MANIFEST).exists()
-    if scoped:
-        includes = [*includes, *runtime_manifest_paths(root)]
+    if not (root / RUNTIME_MANIFEST).is_file():
+        raise ValueError('A scripts/lock-runtime.json file is required; declare each runtime dependency')
+    includes = [*(regular(root / relative_file(name), root) for name in recorded_includes),
+                *runtime_manifest_paths(root)]
     if (root / 'commands').exists():
-        command_schema.catalog(root)
-        includes = [*includes, root / 'commands']
-    if not scoped and (root / 'scripts' / 'contract.json').is_file():
-        includes = [*includes, root]
+        includes = [*includes, *command_definition_paths(root)]
     source, entrypoint, cases = [regular(path.absolute(), root) for path in (source, entrypoint, cases)]
     output = (output or source.with_suffix('.lock.json')).absolute()
     if not output.is_relative_to(root) or output.is_symlink() or output in (source, entrypoint, cases):
@@ -557,17 +605,18 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     profile_names = sorted(set(profiles))
     if any(not isinstance(name, str) or not name for name in profile_names):
         raise ValueError("Inference profiles must be nonempty names")
-    lock = {'format': SCOPED_FORMAT if scoped else FORMAT, 'compiler': {'name': 'codify', 'version': VERSION},
+    files = snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
+    check_runtime_dependencies(root, files)
+    lock = {'format': SCOPED_FORMAT, 'compiler': {'name': 'codify', 'version': VERSION},
             'root': Path(os.path.relpath(root, output.parent)).as_posix(),
             'source': {'path': source.relative_to(root).as_posix(), 'sha256': digest(source_data)},
             'cases': {'path': cases.relative_to(root).as_posix(), 'sha256': digest(case_data)},
             'entrypoint': entrypoint.relative_to(root).as_posix(), 'runtime': 'python' if entrypoint.suffix == '.py' else 'node',
             'includes': recorded_includes,
             'inference': {'mode': 'explicit' if profile_names else 'none', 'profiles': profile_names},
-            'files': pack_files(snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))),
+            'files': pack_files(files),
             'verification': {'status': 'passed', 'case_ids': [case['id'] for case in contract], 'repeat_successes': 1 if profile_names else 2}}
-    if scoped:
-        lock['runtime_manifest'] = RUNTIME_MANIFEST
+    lock['runtime_manifest'] = RUNTIME_MANIFEST
     if lock['entrypoint'] not in lock['files']:
         raise ValueError("Entrypoint was excluded from the artifact")
     lock['artifact_sha256'] = digest(canonical(lock))
@@ -602,7 +651,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
                 failures.append(str(error))
         if failures:
             raise ValueError('; '.join(failures))
-    current = snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
+    current = snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
     if pack_files(current) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
         raise ValueError("Build inputs changed during verification")
     lock_id = digest(str(output).encode())[:16]
@@ -610,7 +659,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     writer.mkdir()
     temporary = None
     try:
-        if pack_files(snapshot(root, [entrypoint if scoped else entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+        if pack_files(snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
             raise ValueError("Build inputs changed before publication")
         if (output.read_bytes() if output.exists() else None) != before:
             raise ValueError("Lock artifact changed during compilation")

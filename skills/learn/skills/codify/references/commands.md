@@ -24,7 +24,7 @@ For the complete bundled example, set source/root/entrypoint/cases/output to
 | `compile source --entrypoint file --cases file` | Verify and freeze an implemented workflow. Source may be any UTF-8 prompt/Markdown/provenance file. Entrypoint must accept `--input <json-file>` and print one JSON value on success. |
 | `--root directory` | Build containment root; default source parent. All source, cases, includes, entrypoint, and output belong within it. |
 | `--output file` | Default source basename with `.lock.json`; for skills use `scripts/workflow.lock.json`. Parent must already exist. |
-| `--include path` (repeatable) | Additional code/resources to freeze, within root. The entrypoint's entire directory is included by default. Compile records each path in the lock `includes` list, sorted and unique; `.` means the build root. `check` rebuilds every recorded path. Paths are relative to the invocation directory. Symlinked build inputs are rejected. |
+| `--include file` (repeatable) | Additional individual files to freeze, within root. The required `scripts/lock-runtime.json` declares runtime dependencies; entrypoint and command definitions are included automatically. Directories, the root and symlinks are rejected. Paths are relative to the invocation directory. |
 | `--jobs 1..16` | Contract workers; default 4. Stable input order, private runtime directories, all workers joined. |
 | `compile --dry-run` | Pure file/hash plan; no workflow execution, publication, state, or verification claim. |
 | `check artifact` | Read-only schema/hash/provenance/current-input check. Does not execute code, fetch dependencies, create state, or assert fresh semantic correctness. |

@@ -8,11 +8,11 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "7838cc0f8a23deb3912924dc05dfe1a36aed6233"
+          "oid": "faff91a989383116697c2f5c08bf32a04a9d62af"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -80,13 +80,17 @@
           "mode": "100644",
           "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
         },
+        "skills/learn/skills/codify/examples/normalize-labels/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "fb09c31decd4093c690fe126a169e9b7d8613182"
+        },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/run.py": {
           "mode": "100644",
           "oid": "79f594de046d12c8fd336dde645ad9516b3171db"
         },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ae5bb00e93fbfd1791a519cfdfa70db4e4bce062"
+          "oid": "dde4eb86bc0778ebed5ed320aa2f680a168af00e"
         },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/workflow.py": {
           "mode": "100644",
@@ -94,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "f7314fa09cafc0c7a9d01c6111674d548f82e238"
+          "oid": "dac559f639c4bd183fe9a548ec575cc425b4d542"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -102,7 +106,7 @@
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
-          "oid": "24bdac18384554f25a398b686cb25441b53846ae"
+          "oid": "280ad141c439a3692c68507a04de459e8e31231d"
         },
         "skills/learn/skills/codify/references/compilation.md": {
           "mode": "100644",
@@ -138,7 +142,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "82d8992e02007bff0fa8186eecdef9ab03045aec"
+          "oid": "a0c0b2d2ab73ea23329f955c9e2eba00b91e3bf3"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -159,6 +163,10 @@
         "skills/learn/skills/codify/scripts/json_contract.py": {
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
+        },
+        "skills/learn/skills/codify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "48bcbe7238562e98ce747a2d2b57c6d24c3a9eda"
         },
         "skills/learn/skills/codify/scripts/normalization.json": {
           "mode": "100644",
@@ -182,11 +190,11 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "05ab5a49a3e1582ec7e3200f6f9e05d5655cce35"
+          "oid": "4939792a107b4e38dd7eb6e067c24e26f7ef1335"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
+          "oid": "93033fc516b3836dc64be1e4ccbc8f88d5937166"
         },
         "skills/learn/skills/codify/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -258,7 +266,7 @@
         },
         "skills/learn/skills/skillify/references/commands.md": {
           "mode": "100644",
-          "oid": "2758f321defec47209aa05ec6c86d915693c1b0f"
+          "oid": "79f8ba69fb5f52c63962417f23dee3c6f773cb57"
         },
         "skills/learn/skills/skillify/references/distilled-sources.md": {
           "mode": "100644",
@@ -318,7 +326,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "82d8992e02007bff0fa8186eecdef9ab03045aec"
+          "oid": "a0c0b2d2ab73ea23329f955c9e2eba00b91e3bf3"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -346,7 +354,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
+          "oid": "93033fc516b3836dc64be1e4ccbc8f88d5937166"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -380,6 +388,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/learn/skills/skillify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "3a1e96b495c666520b89283cea13db5dbd372913"
+        },
         "skills/learn/skills/skillify/scripts/normalization.json": {
           "mode": "100644",
           "oid": "06dbbd0c86d6ddca92b9650a8cd1d503f7b3d79a"
@@ -398,7 +410,7 @@
         },
         "skills/learn/skills/skillify/scripts/skillify.py": {
           "mode": "100644",
-          "oid": "5f37dedd4efaa658e2609f104d4ca9c91e6b05dc"
+          "oid": "820c981a4956adff4f70a70134d7cea7a43fb48b"
         },
         "skills/learn/skills/skillify/scripts/sync_codify.py": {
           "mode": "100644",
@@ -414,7 +426,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "99df7dfcbef77b7d03305a7d725312706059ae6a"
+          "oid": "934554d591912a848f7298b67fd91d16178aa2c4"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -433,8 +445,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds"
+      "no_doc_impact": true,
+      "reason": "Reviewed optional null delegate support and named Skillify maintenance command; existing usage documentation remains accurate"
     },
     "catalog": {
       "docs": {
@@ -456,7 +468,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/skills.md": {
           "mode": "100644",
@@ -467,7 +479,7 @@
           "oid": "9411acdc5aa81d526e88e52f44f42caaee0c9d67"
         }
       },
-      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
+      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
@@ -535,7 +547,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "efaaaedec43c73423777c8b73a92672f34a6d8a5"
+          "oid": "4a1eca973aa8e7b6a6e24626381ef8c2deb0c80d"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -572,7 +584,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "12f1d4e3b3f2f0c7eea87ea9ee8e75e701eec72f"
+          "oid": "dd9c3ae8fb23650341c89cbbbe2ab146f07e785b"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -736,7 +748,7 @@
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "98ab56ef2ebf7a38cd84bbc549b75a52a10c8a2c"
+          "oid": "62df97ea71e26e0a7aadca4661f547ee570f46d4"
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
@@ -760,7 +772,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed new runtime-inventory execution and stale-input tests; documentation process is unchanged"
+      "reason": "Reviewed optional delegate compatibility and inventory rejection tests; documentation process unchanged"
     },
     "execution": {
       "docs": {
@@ -770,14 +782,14 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "f37747bd3c5a757eed1106afb9c07ed40eb6a2ff"
         }
       },
-      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
+      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -811,10 +823,10 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         }
       },
-      "docs_refresh_reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds",
+      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -908,7 +920,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3a57d0b7cde2cca1b2fb37f2e82baeb9a067d14a"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -1964,6 +1976,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/learn/skills/flowify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "ad24a483cfa1a3eb65dbd55d60084cb8598fc912"
+        },
         "skills/learn/skills/flowify/scripts/normalization.json": {
           "mode": "100644",
           "oid": "5df0dd3c072766456d87e73726af364d851c5d81"
@@ -1986,7 +2002,7 @@
         },
         "skills/learn/skills/flowify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "680eff6e687f5f391ebe0e43a35e33b5c0a6ede8"
+          "oid": "beeac6e5a2a831c261dc7e6663eccc896193f2cb"
         },
         "skills/learn/skills/flowify/templates/maf/README.md.tmpl": {
           "mode": "100644",
@@ -3138,7 +3154,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed explicit runtime inventories, source and command freshness, and scoped-lock rebuilds"
+      "reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows"
     }
   },
   "object_format": "sha1",
