@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -12,7 +12,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
+          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -434,13 +434,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
+      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -456,11 +456,11 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
+          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "cf35abad68b21fc8a98170063c1107cf8f8bd312"
+          "oid": "150040b3d7842aba7aec8f78ab020ffda1adc55c"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -518,13 +518,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
+      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/documentation.md": {
           "mode": "100644",
@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "0fa5be4bce3980118f26df90fe28c0202a7c7d4d"
+          "oid": "79280338098130d599b2e0dc5d893e4ed7e00485"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -567,7 +567,7 @@
         },
         "tests/test_authoring.py": {
           "mode": "100644",
-          "oid": "e5fa5c8a6114f6bd1f24d44b95049fc13bcbcbf8"
+          "oid": "80c3c8e291b0227dded3f56e99e3dc5fb3bd4044"
         },
         "tests/test_bootstrap.py": {
           "mode": "100644",
@@ -583,7 +583,7 @@
         },
         "tests/test_constrain.py": {
           "mode": "100644",
-          "oid": "928119dbb8abb56a9e54f3bf946fcc7204bff126"
+          "oid": "ca802f114f4bb8045cbd83c241fc7ff3037885f9"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -591,7 +591,7 @@
         },
         "tests/test_evalify.py": {
           "mode": "100644",
-          "oid": "2ab2e7c8ab7ca7c332f5dc62bccc2e3e454709f7"
+          "oid": "aa59bfc9a3f676f5b5a14309df68028ed636cee8"
         },
         "tests/test_experiment_agent_arm.py": {
           "mode": "100644",
@@ -731,7 +731,7 @@
         },
         "tests/test_skill_evolution.py": {
           "mode": "100644",
-          "oid": "4fac2bf6b0e6d1c853bbe20d26f178eb44484deb"
+          "oid": "1cb1e1026000a2ff932fda54667fb50dad046b35"
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
@@ -759,17 +759,17 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed distinct false-positive and false-negative calibration cases."
+      "reason": "Reviewed the compiled Learn dispatch checks and updated suite digests; documentation ownership and policy behavior are unchanged."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
+          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
         },
         "docs/runner.md": {
           "mode": "100644",
@@ -787,13 +787,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
+      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -809,7 +809,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
+          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
         }
       },
       "inputs": {
@@ -823,7 +823,7 @@
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
-          "oid": "386c1911b6426762d3afc81a98704b6665a98214"
+          "oid": "abc2c70d36fb98e44359138821d29d0b80d4b72b"
         },
         "install.sh": {
           "mode": "100755",
@@ -863,13 +863,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
+      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "8352f83725d8bef4d9222df133f869e5a06a013a"
+          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
@@ -877,7 +877,7 @@
         },
         "docs/authoring.md": {
           "mode": "100644",
-          "oid": "ae8166b49d7c227431d3eeff5b5a84a528bfe182"
+          "oid": "67a242e237293f493492b51a01bbc6593ac39963"
         },
         "docs/flowify.md": {
           "mode": "100644",
@@ -897,7 +897,7 @@
         },
         "docs/learning.md": {
           "mode": "100644",
-          "oid": "a71e598906fa3376d0a7699295479fc0c7a5df60"
+          "oid": "e2251f50594ce7d14a6db165c50de7964c1ca0bd"
         },
         "docs/lintify.md": {
           "mode": "100644",
@@ -905,7 +905,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
+          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -929,7 +929,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "cf35abad68b21fc8a98170063c1107cf8f8bd312"
+          "oid": "150040b3d7842aba7aec8f78ab020ffda1adc55c"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -947,7 +947,7 @@
       "inputs": {
         "evals/README.md": {
           "mode": "100644",
-          "oid": "a196e19fd869a071632b74bde7a6ff8fbe232713"
+          "oid": "8c640ced409c5c7f0c5fcb1abab3193ae5bece29"
         },
         "evals/codify/tasks.json": {
           "mode": "100644",
@@ -1053,6 +1053,22 @@
           "mode": "100644",
           "oid": "a5aa31d8718ccdda8827bc656533970cae828c9e"
         },
+        "evals/results/2026-11-17-host-bound-hill-climb.json": {
+          "mode": "100644",
+          "oid": "7400291ab77e2ded5fc12d3299c6f63e0851fbe2"
+        },
+        "evals/results/2026-11-17-host-bound-hill-climb.md": {
+          "mode": "100644",
+          "oid": "737561b3e55ddf22d9dd11d8947efcd43ddb7a2e"
+        },
+        "evals/results/2026-11-18-mutation-test-value.json": {
+          "mode": "100644",
+          "oid": "f69a17527f9ada9ff131a6908e22c094e68fd9c7"
+        },
+        "evals/results/2026-11-18-mutation-test-value.md": {
+          "mode": "100644",
+          "oid": "3efc05db6cfccb15ad6725dddfcc8f1e244d46cc"
+        },
         "evals/reusify/tasks.json": {
           "mode": "100644",
           "oid": "faa69d96dc0cd5a3c9d175cb579d588e14e56879"
@@ -1095,7 +1111,7 @@
         },
         "skills/constrain/SKILL.md": {
           "mode": "100644",
-          "oid": "f78de6805ade288f8d4b658c44862268752f8b6b"
+          "oid": "971299d9a364e5410fa3cbf93286fc27eb447d40"
         },
         "skills/constrain/commands/help.md": {
           "mode": "100644",
@@ -1112,6 +1128,10 @@
         "skills/constrain/commands/native_check.md": {
           "mode": "100644",
           "oid": "0163fef6e6479e5ef74472121db62a5932b336af"
+        },
+        "skills/constrain/commands/native_mutate.md": {
+          "mode": "100644",
+          "oid": "9c18ef2e3c8a037185e5e9844695c3e53ea00734"
         },
         "skills/constrain/commands/verify.md": {
           "mode": "100644",
@@ -1147,7 +1167,7 @@
         },
         "skills/constrain/references/execution.md": {
           "mode": "100644",
-          "oid": "401d401e9df83bb624ec24569ddbb4e6d7f0a21a"
+          "oid": "6d071f27692195f60c301b6d6dd24fc447a3c2ea"
         },
         "skills/constrain/references/selection.md": {
           "mode": "100644",
@@ -1163,7 +1183,15 @@
         },
         "skills/constrain/references/tests.md": {
           "mode": "100644",
-          "oid": "b348b5264de074adf592a6030cd071302f0f15ba"
+          "oid": "a538feb3ccfb2ae349d1d8a60ae69a2ba6ffce67"
+        },
+        "skills/constrain/requirements/requirements.in": {
+          "mode": "100644",
+          "oid": "4e35ec25ce21fda89c66d4815dc7e73009499874"
+        },
+        "skills/constrain/requirements/requirements.lock": {
+          "mode": "100644",
+          "oid": "c768e4ab9df1fb4f7d7b5296ab40d720d6f7b2f4"
         },
         "skills/constrain/scripts/boundaries.py": {
           "mode": "100644",
@@ -1175,7 +1203,7 @@
         },
         "skills/constrain/scripts/contract.json": {
           "mode": "100644",
-          "oid": "c478d6b4101e50e1dbbd3cfdba277ffa81a0fb6d"
+          "oid": "14440ba864fb6a70b89e0017fdee379d6eb4581e"
         },
         "skills/constrain/scripts/dependencies.py": {
           "mode": "100644",
@@ -1189,9 +1217,13 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/constrain/scripts/mutate.py": {
+          "mode": "100644",
+          "oid": "aca3ed62a4b5b2ced60f4b2518db270a3914ef90"
+        },
         "skills/constrain/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "4c09186af8eb06c77aacd0da999749f8f5972656"
+          "oid": "b3f73ee89f7cd9c84c9ca53e6593d52d85da0c28"
         },
         "skills/constrain/scripts/package_runtime.py": {
           "mode": "100644",
@@ -1207,11 +1239,11 @@
         },
         "skills/constrain/scripts/workflow.cases.json": {
           "mode": "100644",
-          "oid": "52ec6528ebb83897c75c01f4e7ecd2d0ff253f54"
+          "oid": "95f6b696dbaa7528ee41dcd604115d8c7af396d8"
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "1b9610fb82d29da44821aa570736a6b69ed18961"
+          "oid": "108f943e1c05cef3009b5bdcd72998fed92db076"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1787,7 +1819,7 @@
         },
         "skills/learn/skills/evalify/references/evaluation.md": {
           "mode": "100644",
-          "oid": "c358229906c6933d5853b66df8b5664f13674b5b"
+          "oid": "76a0fd63de431c23d971b1b1a243ede484485c2f"
         },
         "skills/learn/skills/evalify/references/execution.md": {
           "mode": "100644",
@@ -1803,7 +1835,7 @@
         },
         "skills/learn/skills/evalify/scripts/calibrate.cjs": {
           "mode": "100644",
-          "oid": "daaf8bc39f6995a69bd245d49f2025e2c4c84d67"
+          "oid": "66b71fa3d5fbd3538bea4bac4bed83af5c1037ad"
         },
         "skills/learn/skills/evalify/scripts/contract.json": {
           "mode": "100644",
@@ -1811,7 +1843,7 @@
         },
         "skills/learn/skills/evalify/scripts/evalify.py": {
           "mode": "100644",
-          "oid": "bee46bf21a05a93aa69fefdda514d08a8f9c5242"
+          "oid": "3f404cec9a912816a5b26bfcf2ea28a8c496b58c"
         },
         "skills/learn/skills/evalify/scripts/json_contract.py": {
           "mode": "100644",
@@ -1839,7 +1871,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "166e41be8bd32b9777419ac8204b65faf01dd804"
+          "oid": "a49f37bc8fa0d3a6f1bb80cfd163a02b4af532fe"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -2531,7 +2563,7 @@
         },
         "skills/learn/skills/testify/references/cli-contracts.md": {
           "mode": "100644",
-          "oid": "9edc523bf6eaa8a2877c1f318919a7c0b63eb2fc"
+          "oid": "dfee6dd8050c57ece7538e5a13fb8fa4da8ad7de"
         },
         "skills/learn/skills/testify/references/execution.md": {
           "mode": "100644",
@@ -2567,7 +2599,7 @@
         },
         "skills/learn/skills/testify/scripts/testify.py": {
           "mode": "100644",
-          "oid": "6552cb9f512f1fb7cfb4082965bae8a452981a19"
+          "oid": "9271590951534fbbd6df14915b99077621d498ff"
         },
         "skills/learn/skills/testify/scripts/tkstack_state.py": {
           "mode": "100644",
@@ -2579,7 +2611,7 @@
         },
         "skills/learn/skills/testify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e1d57b315ee17ba796192f5c9bd94603758078bd"
+          "oid": "69e76d616a8f932de93c0df51800810e7a92c27d"
         },
         "skills/learn/templates/improvement.json": {
           "mode": "100644",
@@ -3082,8 +3114,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed offline calibration confusion counts with updated upstream supervision."
+      "no_doc_impact": true,
+      "reason": "Reviewed direct helper startup and local imports; disabling bytecode writes preserves the already documented execution and interruption behavior."
     }
   },
   "object_format": "sha1",

@@ -46,6 +46,12 @@ runner traces and independently reviewed outcomes; a mock run checks wiring only
 Evalify's authored decisions and local fixture-judge integration similarly do
 not establish a calibrated live judge or a measured skill-quality gain.
 
+## Host-bound testing improvements
+
+The [2026-11-17 measured record](results/2026-11-17-host-bound-hill-climb.md)
+documents repeated local regression scenarios, superseded attempts, and the
+limits of same-conversation model evaluation.
+
 ## Repository quality
 
 `evals/repo-quality/` grades this checkout on Unix. `snapshot.py` prints a

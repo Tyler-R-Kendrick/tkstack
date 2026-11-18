@@ -226,7 +226,9 @@ Its Python CLI backend plans, creates and runs explicitly specified contract
 cases without overwriting an existing suite. Each generated case defaults to
 a 30-second deadline unless the specification selects 1–60 seconds; other
 methods use native tools and their supported deadlines. Direct POSIX runs
-clean up the case's ordinary subprocess group; detached and remote work still
+clean up the case's ordinary subprocess group before reaping its leader. The
+direct `run` command also bounds and cleans its overall test process, reporting
+elapsed time and interruption or timeout; detached and remote work still
 require separate supervision. Generated cases reject captured streams over 1 MiB.
 Prefer static types and boundary parsing when they make invalid states
 impossible, `lintify` for recurring static predicates, `hookify` for tool events,
@@ -238,4 +240,5 @@ See the [test selection procedure](../skills/learn/skills/testify/references/sel
 Use `/learn evalify` for structured judgments made by the invoking agent.
 A pinned Promptfoo library scores retained judgments against reviewed labels
 offline; no second model, provider or agent harness is selected. The receipt
-times offline processing and does not authenticate the source of the judgment.
+times offline processing, records interruption after cleanup, and does not
+authenticate the source of the judgment.

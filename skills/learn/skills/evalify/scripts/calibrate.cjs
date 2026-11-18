@@ -34,6 +34,12 @@ async function main() {
       : (item.reference ? 'false_negative' : 'true_negative');
     confusion[key] += 1;
   }
-  process.stdout.write(JSON.stringify({calibration: {matched, total, confusion}, current: {passed, total: current}}));
+  const durations = input.cases.map(item => item.elapsed_ms).filter(value => value !== null).sort((a, b) => a - b);
+  const middle = Math.floor(durations.length / 2);
+  const median = durations.length === 0 ? null : durations.length % 2
+    ? durations[middle] : durations[middle - 1] / 2 + durations[middle] / 2;
+  const timing = {observed: durations.length, missing: input.cases.length - durations.length,
+    median_ms: median, max_ms: durations.length ? durations[durations.length - 1] : null};
+  process.stdout.write(JSON.stringify({calibration: {matched, total, confusion}, current: {passed, total: current}, timing}));
 }
 main().catch(error => { process.stderr.write(String(error)); process.exitCode = 1; });

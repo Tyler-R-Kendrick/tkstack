@@ -52,13 +52,110 @@ kills does not prove a test is worthless: two tests can detect the same fault,
 and neither is unique until the other is removed. The fault sample is not all
 future defects.
 
-Where tooling exists, use targeted mutation testing to discover survivors and
-coverage to find unexecuted code. Classify equivalent, invalid and unproductive
+Use targeted mutation testing to discover survivors and coverage to find
+unexecuted code. The executable Python/unittest workflow below supplies one
+bounded option; use an appropriate project-native tool for other languages.
+Classify equivalent, invalid and unproductive
 mutants with reasons; do not write brittle tests merely to kill them. Report the
 scope and denominator of any mutation result. Coverage, mutation score, CRAP
 (complexity combined with coverage), test count, and suite bytes are signals,
 not proofs of correctness or interchangeable units of value. A timeout, crash,
 unrun test or failed harness is not automatically a valid mutant kill.
+
+## Run a bounded Python mutation matrix
+
+On POSIX systems with non-reaping `waitid`, Constrain's `native mutate` executes selected mutations with the maintained
+[Cosmic Ray](https://github.com/sixty-north/cosmic-ray) Python mutation tool.
+It does not install a tool or run mutations as part of the read-only `check` or
+`audit` gate. Install the supplied hash-locked `requirements/requirements.lock`
+into a private virtual environment with a bounded installer, for example:
+
+```sh
+python3 -m venv .tkstack/mutation-env
+timeout 180s .tkstack/mutation-env/bin/python -m pip install --require-hashes \
+  -r skills/constrain/requirements/requirements.lock
+```
+
+The lock pins Cosmic Ray 8.9.0 and its runtime distributions. The tool checks
+the reported version, not the authenticity of the executable; trust the local
+installation and review acquisition separately. Some pinned source distributions
+need build tooling: isolated build dependencies and network access during
+installation are outside this runtime lock. The experiment itself never installs
+dependencies or selects a model or agent harness.
+
+Choose a small risk-relevant slice. Cosmic Ray's `init` and `dump` identify
+operator names, occurrence indexes and source positions for a module; these are
+relative to that exact source. For example, put the following configuration in
+an ignored scratch directory, substitute the absolute module path, then run the
+bounded commands. `init` inventories mutations; it does not run the test command.
+
+```toml
+[cosmic-ray]
+module-path = '/absolute/project/path/to/module.py'
+timeout = 10.0
+excluded-modules = []
+test-command = 'python3 -m unittest tests.test_example'
+[cosmic-ray.distributor]
+name = 'local'
+```
+
+```sh
+timeout 30s .tkstack/mutation-env/bin/cosmic-ray init /path/to/config.toml /path/to/session.sqlite
+timeout 30s .tkstack/mutation-env/bin/cosmic-ray dump /path/to/session.sqlite > /path/to/mutants.jsonl
+```
+
+Inspect the positions and pick plausible independent faults, not just a high
+score. Prepare a JSON plan with fully qualified **individual unittest method**
+IDs and selected `core/` operators and occurrence numbers from that inventory.
+For each mutant, include the source file's `source_sha256` to fail closed if
+the indexed module changed; omitting it leaves that compatibility check to the
+reviewer. For example:
+
+```json
+{
+  "version": 1,
+  "tests": ["tests.test_example.ExampleTests.test_behavior"],
+  "mutants": [{"id": "boundary", "module": "src/example.py", "operator": "core/ReplaceComparisonOperator_GtE_Gt", "occurrence": 0, "source_sha256": "replace-with-actual-lowercase-sha256"}]
+}
+```
+
+Commit tracked changes in the selected Git checkout first: experiments export
+exactly `HEAD`, ignore untracked files and fail on tracked dirt. Test and
+mutation paths must exist in that snapshot. Use the project's test dependencies
+with the Python interpreter that invokes the command; ignored local assets are
+not copied into the snapshot. Run with an unused receipt path:
+
+```sh
+.tkstack/tkstack skills constrain -- native mutate \
+  --repo /absolute/project --plan /absolute/plan.json \
+  --engine /absolute/project/.tkstack/mutation-env/bin/cosmic-ray \
+  --output /absolute/project/.tkstack/mutation-receipt.json
+```
+
+For a standalone install, call `python3 <installed-skill>/scripts/mutate.py`
+with the same flags. Two clean baseline repetitions precede any mutants;
+defaults are 15 seconds per test and 300 seconds total, including engine and
+Git setup, configurable within the documented bounds. Once inputs are validated
+and an unused receipt is reserved, a setup deadline is recorded as
+`setup_timeout` with elapsed time and no mutant results. Earlier input or output
+path failures are reported on standard error. The compiled host has its own outer deadline. Each
+case receives a private snapshot under the selected workspace's scoped
+`.tkstack/sessions`; ordinary POSIX child processes are stopped as a group.
+Git discovery in each test is capped before the enclosing checkout. A detached child, blocked filesystem, remote side effect, or
+descendant in another process group is not guaranteed to stop; use an appropriate outer
+supervisor and isolation for untrusted tests. Project tests and the trusted
+local engine can have effects outside the snapshot; this is not an OS sandbox.
+
+The new JSON receipt includes the commit, plan, runner and source hashes, engine version and launcher hash, Python
+version, actual mutant diffs, per-case elapsed time and captured output. A
+`passed` cell is a candidate survivor; `assertion_failure` is a **candidate**
+kill until its actual output and mutated behavior are reviewed. `error`,
+`timeout`, `setup_timeout`, `not_run_or_skipped`, `not_run`, `invalid_mutation`, and
+`engine_timeout` are not kills. A `complete` run means all selected cells were
+attempted, not that all faults were valid or detected. A failed baseline
+prevents mutant execution. Never classify a test as redundant solely from one
+sample, and preserve distinct boundary protections when removal evidence is
+incomplete. Retain the plan, receipt and review rationale together.
 
 Measure end-to-end suite wall time under comparable CI conditions, including
 parallelism and setup, with repeats when noise matters. Record available
@@ -159,7 +256,9 @@ layers exercise checkout.
 
 For an explicitly requested measured optimization, follow the installed
 hill-climb workflow if available. These steps guide a human/agent review; the
-Constrain checker does not execute this loop or infer semantic test value.
+Constrain checker does not execute this loop or infer semantic test value. The
+mutation command measures selected cells; the invoking agent performs the
+portfolio decision and any keep/revert iteration.
 
 ## Agent-written code and agent systems
 
