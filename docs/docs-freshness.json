@@ -482,7 +482,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "9346c019128d21c01f3b91056f54da43ff1d29f1"
+          "oid": "edb9035e5b6984e78879ae0689bd45e681946d98"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -525,8 +525,8 @@
           "oid": "c388ab78669494b9e1a5f96b72131d33b450de6d"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed both scratch and web-performance profile placement and marketplace metadata after integrating current main; updated the skill inventory."
+      "no_doc_impact": true,
+      "reason": "Reviewed the scratch marketplace version update; catalog placement and published inventory are unchanged."
     },
     "documentation": {
       "docs": {
@@ -2653,7 +2653,7 @@
         },
         "skills/scratch/SKILL.md": {
           "mode": "100644",
-          "oid": "96aac4faa2688ddf906214e586eca4dc2e25f5b1"
+          "oid": "83be203dbb79a19518e90805547b023836beed8c"
         },
         "skills/sdlc/LICENSE": {
           "mode": "100644",
@@ -3164,8 +3164,8 @@
           "oid": "eedb5eeac337b0464b53436c21d9ed340743674c"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed scratch storage and hill-climb guidance alongside the current compact packages and updated the skill inventory and state layout."
+      "no_doc_impact": true,
+      "reason": "Reviewed scratch cleanup guidance after adding explicit symlink and direct-child checks; the state-layout guide already describes task-owned cleanup."
     }
   },
   "object_format": "sha1",

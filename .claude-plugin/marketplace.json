@@ -110,7 +110,7 @@
       "name": "scratch",
       "source": "./skills/scratch",
       "description": "Use an ignored, task-owned workspace for drafts, whiteboarding, notes, and exploratory evaluation artifacts. Select when temporary working material needs a place during a task, then preserve requested results and clean up the finished task's own files.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "license": "MIT",
       "strict": false,
       "skills": [

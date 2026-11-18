@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Any agent harness; TKstack's state helper requires Python 3.11+."
 metadata:
   author: Tyler Kendrick
-  version: "0.1.0"
+  version: "0.1.1"
   kind: guidance
 ---
 
@@ -23,11 +23,18 @@ data in scratch.
 Work from the chosen project root. TKstack setup creates `.tkstack/.scratch/`
 and an explicit `/.scratch/` entry in `.tkstack/.gitignore`. If setup has not
 run or the directory is missing, initialize it through the installed state
-helper; this example uses the project principles link:
+helper. For a project installation, use its principles link:
 
 ```sh
-python3 .agents/principles/scripts/tkstack_state.py init --project . --namespace .scratch
-mktemp -d .tkstack/.scratch/work-XXXXXXXX
+python3 .agents/principles/scripts/tkstack_state.py init --project . --namespace .scratch &&
+  mktemp -d .tkstack/.scratch/work-XXXXXXXX
+```
+
+If only the personal installation is present, run this from the project root:
+
+```sh
+python3 ~/.agents/principles/scripts/tkstack_state.py init --project . --namespace .scratch &&
+  mktemp -d .tkstack/.scratch/work-XXXXXXXX
 ```
 
 Use the unique path returned by `mktemp` as this task's owned directory. Do not
@@ -45,10 +52,11 @@ evidence. Promote a requested durable result to its canonical source location
 after review; do not stage the temporary copy. Check the staged changes before
 committing.
 
-When the task is complete and retained results are safe, confirm the exact
-absolute path is this task's child of `.tkstack/.scratch/`, is not a symlink,
-and has no active writers; then remove only that child. Never delete the scratch
-root, another task's files, or an unknown/stale directory automatically. If
-using a shell, pass the verified absolute child path explicitly to `rm -r --`;
-do not use a glob or an unresolved variable. If ownership or retention is
-unclear, leave the directory intact and report it.
+When the task is complete and retained results are safe, confirm `.tkstack/`
+and `.scratch/` are not symlinks and the resolved task directory is a direct
+child of that scratch root, is not itself a symlink, and has no active writers.
+Then remove only that child. Never delete the scratch root, another task's
+files, or an unknown/stale directory automatically. If using a shell, pass the
+verified absolute child path explicitly to `rm -r --`; do not use a glob or an
+unresolved variable.
+If ownership or retention is unclear, leave the directory intact and report it.
