@@ -31,15 +31,17 @@ default. Authored code, skills, workflows, lint/hook definitions, instructions,
 and published documentation keep their requested/native source locations;
 choose their destination scope explicitly during promotion.
 
-`.tkstack` is owned state, not general-purpose agent scratch. Only TKstack-owned
-helpers may create or update its managed namespaces. Agents must put ad hoc
-checkpoints, progress notes, handoffs, copied work, and other arbitrary scratch
-in an OS temporary directory outside every source checkout. If such material
-becomes a requested durable artifact, review it and promote it to its canonical
-source location rather than retaining the temporary copy.
+`.tkstack/.scratch/` is the ignored workspace for task-owned drafts, notes,
+whiteboarding, and exploratory evaluation artifacts. Give each task a unique
+child directory; preserve active or resumable work, and remove only your own
+finished child after retaining requested results. Never stage or commit scratch;
+review and promote durable artifacts to their canonical source locations.
+Other `.tkstack` namespaces remain owned by their respective helpers. Git's
+ignore mechanism is not a confidentiality boundary and can be overridden.
 
 | Content | Location beneath the selected root |
 | --- | --- |
+| Task-owned ad hoc drafts, notes, and exploratory evaluations | `.scratch/<unique-task>/` (ignored; never commit) |
 | TKstack-managed temporary notes, observations, transcripts, and session handoffs | `sessions/<session>/` (optionally `<skill>/...` below that) |
 | Session-specific evidence, workload, plans, measurements | `sessions/<session>/evidence/`, `sdlc/`, `hill-climb/`, etc. |
 | Durable correction ledger, scoped rules, anti-slop criteria/views | `steering/` |
@@ -64,6 +66,7 @@ bundles that same file, unchanged, as `scripts/tkstack_state.py`:
 python3 <skill-directory>/scripts/tkstack_state.py locations --project /repo
 python3 <skill-directory>/scripts/tkstack_state.py path --scope user --namespace steering
 python3 <skill-directory>/scripts/tkstack_state.py init --project /repo --session session-123 --namespace sessions
+python3 <skill-directory>/scripts/tkstack_state.py init --project /repo --namespace .scratch
 python3 <skill-directory>/scripts/tkstack_state.py path --project /repo --session session-123 --namespace evidence
 ```
 

@@ -43,12 +43,18 @@ class StateLayoutTests(unittest.TestCase):
     def test_existing_ignore_rules_survive_and_private_exceptions_cannot_expose_sessions(self):
         root = self.project / ".tkstack"
         root.mkdir()
-        original = "# Existing repository policy\n!notes.json\n!sessions/**\n"
+        original = "# Existing repository policy\n!notes.json\n!sessions/**\n!.scratch/\n!.scratch/**\n"
         (root / ".gitignore").write_text(original)
         state.ensure_state(root / "sessions")
         (root / "sessions/raw.txt").write_text('private fixture')
+        scratch = state.state_path('.scratch', self.project)
+        scratch.mkdir()
+        (scratch / 'draft.txt').write_text('temporary fixture')
         self.assertTrue((root / ".gitignore").read_text().startswith(original))
         self.assertNotIn(".tkstack/sessions/raw.txt", self.visible())
+        self.assertNotIn(".tkstack/.scratch/draft.txt", self.visible())
+        self.assertIn('/.scratch/', (root / '.gitignore').read_text().splitlines())
+        state.ensure_state(scratch)
         (root / ".state-policy.lock").mkdir()
         (root / ".state-policy.lock/pid").write_text('fixture')
         self.assertNotIn(".tkstack/.state-policy.lock/pid", self.visible())
@@ -74,6 +80,9 @@ class StateLayoutTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             state.ensure_state(root / "escape/private")
         self.assertEqual(list(outside.iterdir()), [])
+        (root / '.scratch').symlink_to(root / 'other', target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, 'Scratch root must not be a symlink'):
+            state.ensure_state(root / '.scratch')
 
     def test_path_command_is_read_only_and_explicit_projects_are_exact(self):
         nested = self.project / "nested"

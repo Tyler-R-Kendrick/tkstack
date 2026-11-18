@@ -745,6 +745,10 @@
       "phase": "docs",
       "strengths": "Choose this to stub a course section with problems, solutions, and explainers. teach is the teaching session; this only creates the directories."
     },
+    "scratch": {
+      "phase": "implementation",
+      "strengths": "Choose this to isolate temporary drafts, notes, and exploratory evals and clean up only owned finished work. Use hill-climb for the measurement procedure."
+    },
     "script-exec-blocked": {
       "phase": "debugging",
       "strengths": "Choose this when the sandbox blocks execute_code and python3 -c. It is a narrow workaround, not a general debugging skill. search-miss-binary is the empty-search trap."

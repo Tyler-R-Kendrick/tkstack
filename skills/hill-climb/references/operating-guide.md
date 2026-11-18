@@ -30,10 +30,12 @@ plateau review after three rejected attempts, and no new paid calls without an
 established budget. Do not silently start an unbounded overnight optimizer.
 
 Use [the plan template](../templates/plan.json) as a starting contract. Placeholder
-hashes are intentionally not executable evidence. Record a resumable run under
-an ignored project directory such as `.tkstack/hill-climb/<run>/`; avoid home
-configuration and plugin caches. Put a concise plan and summary in the task
-artifacts when they need review.
+hashes are intentionally not executable evidence. Record disposable plans,
+local evaluation results and notes in a unique ignored `.tkstack/.scratch/<task>/`
+directory; preserve resumable evidence until review. The native Git experiment
+controller requires its private root outside source checkouts. Avoid home
+configuration and plugin caches. Promote a concise plan and summary to task
+artifacts when they need durable review.
 
 ## 2. Prove and freeze the measurement
 

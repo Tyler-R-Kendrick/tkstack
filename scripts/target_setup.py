@@ -43,8 +43,8 @@ def instruction_changes(root, target, harnesses, scope="project", remove=False, 
     helper = instructify(root)
     content = (
         'Read `.agents/principles/SKILL.md` and applicable references before designing changes.\n'
-        'Use the installed learn skill for corrections. Only TKstack-owned helpers may write managed state under this workspace’s ignored `.tkstack/`. '
-        'Keep agent-authored checkpoints, progress notes, handoffs, and arbitrary scratch in an OS temporary directory outside every source checkout.\n'
+        'Use the installed learn skill for corrections and the scratch skill for drafts, notes, and exploratory evaluations in a task-owned `.tkstack/.scratch/` directory. '
+        'Never commit scratch; promote requested durable artifacts and clean up only your own finished task directory.\n'
         'When changing tests or repository structure, read the installed constrain skill. '
         'If `.constrain/config.json` exists, run `.tkstack/tkstack skills constrain -- native check --repo .` before completion.\n'
         'Invoke compiled skills with `.tkstack/tkstack skills <name> -- <command>` from the working workspace.\n'
@@ -59,8 +59,8 @@ def instruction_changes(root, target, harnesses, scope="project", remove=False, 
                      f"Read matching learned rules in <{target / '.agents/steering/rules.md'}>.\n"
                      f"From the active project invoke `{shlex.quote(str(target / '.tkstack/tkstack'))} skills <name> -- <command>`. "
                      f"Bundled tool commands are in `{target / '.tkstack/bin'}`. "
-                     "Only TKstack-owned helpers may write managed state in the active project's ignored .tkstack directory. "
-                     "Keep agent-authored checkpoints, progress notes, handoffs, and arbitrary scratch in an OS temporary directory outside every source checkout.\n")
+                     "Use the scratch skill for task-owned drafts, notes and exploratory evaluations in the active project's ignored .tkstack/.scratch directory. "
+                     "Never commit scratch; promote requested durable artifacts and clean up only your own finished task directory.\n")
         if "codex" in harnesses or "codex" in previous:
             paths[codex_directory(target, scope) / "AGENTS.md"] = home_body if "codex" in harnesses else None
         if "claude" in harnesses or "claude" in previous:

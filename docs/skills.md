@@ -8,7 +8,7 @@ Landmines is an Oxlint plugin rather than a skill. Its installed runtime
 and project invocation are in [integration readiness](integrations.md#landmines).
 
 Executable repository packages provide typed contracts and reviewed compiled
-artifacts. `web-performance` is a guidance-only skill using external tools.
+artifacts. `scratch` and `web-performance` are guidance-only skills.
 [Normalization coverage](normalization.md) describes what runs mechanically
 and what still requires actual semantic/provider work.
 
@@ -45,7 +45,7 @@ Kowalski's UI prototype is `emil-prototype`; Matt's engineering prototype keeps
 calls. Upstream bytes stay unchanged. Phase routing for every installed skill
 is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 
-## Skills under development (9)
+## Skills under development (10)
 
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
@@ -53,6 +53,7 @@ is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 | [`hill-climb`](../skills/hill-climb/SKILL.md) | personal | User or SDLC subworkflow |
 | [`investigate`](../skills/investigate/SKILL.md) | personal | User or model |
 | [`learn`](../skills/learn/SKILL.md) | personal | User or model |
+| [`scratch`](../skills/scratch/SKILL.md) | personal | User or model |
 | [`sdlc`](../skills/sdlc/SKILL.md) | personal | User only |
 | [`tkstack-principles`](../skills/tkstack-principles/SKILL.md) | personal | User or model; native startup pointer |
 | [`unslop`](../skills/unslop/SKILL.md) | personal | User or model |

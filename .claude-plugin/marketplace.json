@@ -107,6 +107,17 @@
       ]
     },
     {
+      "name": "scratch",
+      "source": "./skills/scratch",
+      "description": "Use an ignored, task-owned workspace for drafts, whiteboarding, notes, and exploratory evaluation artifacts. Select when temporary working material needs a place during a task, then preserve requested results and clean up the finished task's own files.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    },
+    {
       "name": "sdlc",
       "source": "./skills/sdlc",
       "description": "Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Invoke only when the user explicitly asks for /sdlc or one of those modes. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.",

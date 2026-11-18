@@ -4,6 +4,7 @@
 !reuse/
 !reuse/catalog.json
 # tkstack:private-state:start
+/.scratch/
 /bin/
 /bootstrap/
 /build/

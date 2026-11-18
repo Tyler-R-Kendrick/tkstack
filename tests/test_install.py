@@ -710,9 +710,23 @@ elif action == 'find':
         self.assertEqual(json.loads((target / '.tkstack/install.json').read_text())['profile'], 'catalog')
         self.assertTrue((target / '.cursor/skills/architect/SKILL.md').is_file())
         instructions = (target / 'AGENTS.md').read_text()
-        self.assertIn('Only TKstack-owned helpers may write managed state', instructions)
-        self.assertIn('outside every source checkout', instructions)
-        self.assertNotIn('store workspace state under', instructions)
+        self.assertIn('scratch skill', instructions)
+        self.assertIn('Never commit scratch', instructions)
+        self.assertTrue((target / '.tkstack/.scratch').is_dir())
+        self.assertIn('/.scratch/', (target / '.tkstack/.gitignore').read_text().splitlines())
+        self.assertTrue((target / '.agents/skills/scratch/SKILL.md').is_file())
+        scratch = target / '.tkstack/.scratch'
+        scratch.rmdir()
+        self.assertIn('Scratch directory needs setup', invoke('--check', expected=1).stderr)
+        invoke()
+        ignore_policy = target / '.tkstack/.gitignore'
+        ignore_policy.write_text(ignore_policy.read_text().replace('/.scratch/\n', ''))
+        self.assertIn('State ignore policy needs setup', invoke('--check', expected=1).stderr)
+        invoke()
+        self.assertIn('/.scratch/', ignore_policy.read_text().splitlines())
+        task = scratch / 'active-task'
+        task.mkdir()
+        (task / 'draft.txt').write_text('retain until reviewed')
         excludes = subprocess.check_output(['git', '-C', str(target), 'check-ignore', '-v', '.tkstack/.gitignore'], text=True)
         self.assertIn('/.tkstack/', excludes)
         self.assertEqual((target / '.agents/steering').resolve(), target / '.tkstack/steering')
@@ -724,6 +738,7 @@ elif action == 'find':
         before = (target / 'AGENTS.md').read_bytes()
         inventory = {p.relative_to(target): os.readlink(p) for p in target.rglob('*') if p.is_symlink()}
         invoke()
+        self.assertEqual((task / 'draft.txt').read_text(), 'retain until reviewed')
         self.assertEqual({p.relative_to(target): os.readlink(p) for p in target.rglob('*') if p.is_symlink()}, inventory)
         self.assertIn(Path('.cursor/rules/tkstack-steering.mdc'), inventory)
         untracked = subprocess.check_output(['git', '-C', str(target), 'ls-files', '--others', '--exclude-standard'], text=True)
@@ -796,6 +811,7 @@ elif action == 'find':
                                         cwd=project, env=env, text=True, timeout=30)
         self.assertIn(str(home / ".agents/principles/SKILL.md"), prompt)
         self.assertIn("constrain/SKILL.md", prompt)
+        self.assertIn("scratch/SKILL.md", prompt)
         self.assertNotIn("testify/SKILL.md", prompt)
         self.assertNotIn("codify/SKILL.md", prompt)
         self.assertLessEqual({"constrain", "investigate", "learn", "tkstack-principles", "matt-tdd", "caveman"},
