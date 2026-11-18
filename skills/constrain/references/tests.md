@@ -134,8 +134,10 @@ not copied into the snapshot. Run with an unused receipt path:
 
 For a standalone install, call `python3 <installed-skill>/scripts/mutate.py`
 with the same flags. Two clean baseline repetitions precede any mutants;
-defaults are 15 seconds per test and 300 seconds total, configurable within
-the documented bounds. The compiled host has its own outer deadline. Each
+defaults are 15 seconds per test and 300 seconds total, including engine and
+Git setup, configurable within the documented bounds. Before a receipt is
+reserved, a setup failure is reported with elapsed time on standard error. The
+compiled host has its own outer deadline. Each
 case receives a private snapshot under the selected workspace's scoped
 `.tkstack/sessions`; ordinary POSIX child processes are stopped as a group.
 Git discovery in each test is capped before the enclosing checkout. A detached child, blocked filesystem, remote side effect, or

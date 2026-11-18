@@ -41,9 +41,9 @@
     "overlap": "Boundary coercion and routing cases are not repeated as whole skill workflows; compiler freeze invariants remain in test_codify."
   },
   "tests/test_constrain.py": {
-    "sha256": "d9ab04d257d95e120185e50bd404d0e04b6744e338b9340aee77897d91fbd261",
+    "sha256": "d7bc508f16c5e74d1dbc63076826bc527473234b40f994b9a2e6905c1ea365f0",
     "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs. Mutation evidence could misclassify harness errors or deadlines as behavioral detection, or mutate the original checkout.",
-    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail. Exercise bounded mutation execution on a clean Git fixture, including an opt-in real locked Cosmic Ray engine; distinguish assertion failures, passing cells, invalid mutations, test errors, failed baselines, malformed plan versions, source drift and timeouts, verify snapshot Git discovery isolation, ordinary descendant cleanup after both timeouts and successful leaders and never overwrite receipts.",
+    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail. Exercise bounded mutation execution on a clean Git fixture, including an opt-in real locked Cosmic Ray engine; distinguish assertion failures, passing cells, invalid mutations, test errors, failed baselines, a deadline during engine setup, malformed plan versions, source drift and timeouts, verify snapshot Git discovery isolation, ordinary descendant cleanup after both timeouts and successful leaders and never overwrite receipts.",
     "kinds": [
       "contract",
       "simulation"

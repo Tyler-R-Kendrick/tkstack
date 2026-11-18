@@ -112,9 +112,11 @@ def invoke(argv, cwd, timeout, env=None):
             'output_truncated': len(text) > 65536}
 
 
-def git(repo, *args):
-    result = invoke(['git', '-C', str(repo), *args], repo, 15, clean_git_environment())
-    if result['exit'] != 0 or result['timeout']:
+def git(repo, *args, timeout=15):
+    result = invoke(['git', '-C', str(repo), *args], repo, timeout, clean_git_environment())
+    if result['timeout']:
+        raise ValueError('Git operation timed out or the total mutation deadline expired')
+    if result['exit'] != 0:
         raise ValueError('git failed: ' + result['output'])
     return result['output'].strip()
 
@@ -166,6 +168,17 @@ def classify(result):
 
 
 def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, repetitions):
+    started = time.monotonic()
+
+    def remaining():
+        return total_timeout - (time.monotonic() - started)
+
+    def limit(seconds):
+        available = remaining()
+        if available <= 0:
+            raise ValueError('Total mutation deadline exceeded')
+        return min(seconds, available)
+
     repo = repo.resolve(strict=True)
     plan_path = plan_path.resolve(strict=True)
     engine = engine.resolve(strict=True)
@@ -174,15 +187,16 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
     with plan_path.open('rb') as stream:
         plan_bytes = stream.read(1024 * 1024 + 1)
     plan = load_plan(plan_bytes)
-    version = invoke([str(engine), '--version'], repo, 15)
+    version = invoke([str(engine), '--version'], repo, limit(15))
+    if version['timeout']:
+        raise ValueError('Mutation engine version check timed out or the total deadline expired')
     if version['exit'] != 0 or version['output'].strip() != ENGINE_VERSION:
         raise ValueError('Expected ' + ENGINE_VERSION)
-    commit = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}')
-    if git(repo, 'status', '--porcelain', '--untracked-files=no'):
+    commit = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}', timeout=limit(15))
+    if git(repo, 'status', '--porcelain', '--untracked-files=no', timeout=limit(15)):
         raise ValueError('Commit tracked changes before measuring; the snapshot is HEAD')
     for mutant in plan['mutants']:
-        git(repo, 'cat-file', '-e', commit + ':' + mutant['module'])
-    started = time.monotonic()
+        git(repo, 'cat-file', '-e', commit + ':' + mutant['module'], timeout=limit(15))
     report = {'version': 1, 'commit': commit, 'plan_sha256': hashlib.sha256(plan_bytes).hexdigest(),
               'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'json_contract_sha256': hashlib.sha256(Path(json_contract.__file__).read_bytes()).hexdigest(),
@@ -198,8 +212,10 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
                 if os.pathsep in str(temp):
                     raise ValueError('Mutation scratch path cannot contain the Git ceiling separator')
                 archive = temp / 'snapshot.tar'
-                result = invoke(['git', '-C', str(repo), 'archive', '--format=tar', '--output', str(archive), commit], repo, 30, clean_git_environment())
-                if result['exit'] != 0 or result['timeout']:
+                result = invoke(['git', '-C', str(repo), 'archive', '--format=tar', '--output', str(archive), commit], repo, limit(30), clean_git_environment())
+                if result['timeout']:
+                    raise ValueError('Git archive timed out or the total mutation deadline expired')
+                if result['exit'] != 0:
                     raise ValueError('Could not export frozen Git tree: ' + result['output'])
 
                 def snapshot(name):
@@ -208,9 +224,6 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
                     with tarfile.open(archive) as tar:
                         tar.extractall(target, filter='data')
                     return target
-
-                def remaining():
-                    return total_timeout - (time.monotonic() - started)
 
                 def run_test(root, test):
                     if remaining() <= 0:
@@ -295,6 +308,7 @@ def main():
     parser.add_argument('--total-timeout', type=int, default=300)
     parser.add_argument('--baseline-repetitions', type=int, default=2)
     args = parser.parse_args()
+    started = time.monotonic()
     try:
         if (os.name != 'posix' or not hasattr(signal, 'pthread_sigmask') or
                 signal.getsignal(signal.SIGCHLD) != signal.SIG_DFL or
@@ -309,7 +323,7 @@ def main():
         print(json.dumps({'status': report['status'], 'receipt': str(args.output)}))
         return 0 if report['status'] == 'complete' else 1
     except (OSError, ValueError, json.JSONDecodeError) as error:
-        print(str(error), file=sys.stderr)
+        print(f'{error} (elapsed_ms={(time.monotonic() - started) * 1000:.3f})', file=sys.stderr)
         return 1
 
 

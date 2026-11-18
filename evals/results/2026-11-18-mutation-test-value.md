@@ -85,4 +85,13 @@ unchanged baseline under concurrent load; it was recorded as `baseline_invalid`
 and no mutants ran. It is retained as an inconclusive instrumentation result,
 not a test failure or a detection. Final runner verification uses a 30-second
 per-test deadline and is recorded separately; it reproduced the 3/5 original
-and 5/5 final result once each with the completed supervisor and locked tool.
+and 5/5 final result once each with the scoped-snapshot supervisor and locked
+tool. A subsequent fix extended the total deadline to include setup; its real
+engine integration and setup-timeout behavior are checked separately.
+
+For that deadline fix, a deterministic fixture delayed the mutation engine's
+version response by two seconds and requested a one-second total budget. The
+previous runner continued and completed after 2.64 seconds; the revised runner
+stopped the version check and reported the deadline after 1.10 seconds, before
+creating a receipt or running a test. This is one controlled timeout probe,
+not a claim about production latency.

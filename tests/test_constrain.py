@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -293,7 +294,7 @@ else:
         self.plan = self.root / 'plan.json'
         self.output = self.root / 'receipt.json'
 
-    def run_mutations(self, tests, occurrences, timeout=10, source_sha256=None, operator='core/Fixture', version=1):
+    def run_mutations(self, tests, occurrences, timeout=10, source_sha256=None, operator='core/Fixture', version=1, total_timeout=60):
         plan = {'version': version, 'tests': tests, 'mutants': [
             {'id': str(i), 'module': 'app.py', 'operator': operator, 'occurrence': i}
             for i in occurrences]}
@@ -303,7 +304,7 @@ else:
         self.plan.write_text(json.dumps(plan))
         return subprocess.run([sys.executable, str(MUTATE), '--repo', str(self.repo), '--plan', str(self.plan),
             '--engine', str(self.engine), '--output', str(self.output), '--test-timeout', str(timeout),
-            '--total-timeout', '60'], capture_output=True, text=True, timeout=75,
+            '--total-timeout', str(total_timeout)], capture_output=True, text=True, timeout=75,
             env={**os.environ, 'GIT_DIR': str(self.root / 'foreign/.git'),
                  'GIT_WORK_TREE': str(self.root / 'foreign')})
 
@@ -350,6 +351,17 @@ else:
         self.assertEqual(report['status'], 'baseline_invalid')
         self.assertEqual(report['mutants'], [])
         self.assertTrue(all(row['status'] == 'assertion_failure' for row in report['baseline']))
+
+    def test_total_deadline_includes_the_engine_version_check(self):
+        source = self.engine.read_text().replace("print('cosmic-ray, version 8.9.0')",
+                                                 "time.sleep(5); print('cosmic-ray, version 8.9.0')")
+        self.engine.write_text(source)
+        started = time.monotonic()
+        result = self.run_mutations(['test_app.Contract.test_exact'], [0], total_timeout=1)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('deadline', result.stderr)
+        self.assertLess(time.monotonic() - started, 15)
+        self.assertFalse(self.output.exists())
 
     def test_invalid_plan_or_changed_source_stops_before_a_mutation_is_applied(self):
         result = self.run_mutations(['test_app.Contract.test_exact'], [0], version=True)

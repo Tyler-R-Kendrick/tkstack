@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "424d3956268c1c7e9c87b47e5200c17f767ba7d6"
+          "oid": "f0707a96fa6906f5874f3e96c4718fb9979b73f3"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -583,7 +583,7 @@
         },
         "tests/test_constrain.py": {
           "mode": "100644",
-          "oid": "ea5ef7e3074c5beccb881fd093f483a20eaee0f2"
+          "oid": "fdb0323a12938295ce0941f7fcac6b04f7429a65"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the added malformed-plan case and updated suite digest; documentation ownership and the staged policy gate are unchanged."
+      "reason": "Reviewed the setup-deadline test and targeted suite digest; documentation ownership and staged policy behavior are unchanged."
     },
     "execution": {
       "docs": {
@@ -1063,11 +1063,11 @@
         },
         "evals/results/2026-11-18-mutation-test-value.json": {
           "mode": "100644",
-          "oid": "c676c794cc682d30ba02d297a2adabce7b135135"
+          "oid": "567862dfd2117401b9518f1f3967e2a8ad0816eb"
         },
         "evals/results/2026-11-18-mutation-test-value.md": {
           "mode": "100644",
-          "oid": "96b608698fcd14b3a996b8992502157b558ad6ab"
+          "oid": "a9ca61ddb4cf65e6b60537a4c67cc5c9933bacf4"
         },
         "evals/reusify/tasks.json": {
           "mode": "100644",
@@ -1183,7 +1183,7 @@
         },
         "skills/constrain/references/tests.md": {
           "mode": "100644",
-          "oid": "54ee47f1c8ef1d484ac5ad9f33f377052b9c5f00"
+          "oid": "8425d311af29d804d25ea4183b88ee6a5687f11c"
         },
         "skills/constrain/requirements/requirements.in": {
           "mode": "100644",
@@ -1219,7 +1219,7 @@
         },
         "skills/constrain/scripts/mutate.py": {
           "mode": "100644",
-          "oid": "d6de3cdc8e8d0a4d8ab02562b203aa7eae34968f"
+          "oid": "5f943eddad83b37441505204923a26bd787cc3b0"
         },
         "skills/constrain/scripts/normalization.json": {
           "mode": "100644",
@@ -1243,7 +1243,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "dbd6be49935f4101769fca768ba52214480bdd09"
+          "oid": "f6a72d1162a819857775c4f9e5269c4a38634df2"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -3115,7 +3115,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the follow-up strict plan-version validation and recorded runner source; the documented mutation contract and installation are unchanged."
+      "reason": "Reviewed the retained setup-deadline fault probe; the described native command and existing documentation links are unchanged."
     }
   },
   "object_format": "sha1",
