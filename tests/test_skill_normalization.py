@@ -20,10 +20,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / 'skills/learn/skills/codify/scripts'))
 import package_runtime as runtime
+import command_schema
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(ROOT / 'src'))
 from skill_roots import owned  # noqa: E402
-PACKAGES = owned(ROOT)
+PACKAGES = {name: path for name, path in owned(ROOT).items()
+            if command_schema.frontmatter(path / "SKILL.md")[0].get("metadata", {}).get("kind") != "guidance"}
 
 
 class SkillNormalizationTests(unittest.TestCase):
@@ -223,6 +225,7 @@ class SkillNormalizationTests(unittest.TestCase):
             {'id': 'double', 'input': {'value': 3}, 'output': {'value': 6}, 'exit': 0},
             {'id': 'transfer', 'input': {'value': -2}, 'output': {'value': -4}, 'exit': 0},
             {'id': 'missing-value', 'input': {}, 'exit': 1}]}))
+        (scripts / 'lock-runtime.json').write_text(json.dumps({'version': 1, 'files': []}))
         output = scripts / 'compiled.lock.json'
         result = self.call('codify', ['native', 'compile'], ['--source', str(prompt), '--entrypoint', str(entry), '--cases', str(cases), '--root', str(package), '--output', str(output)])
         self.assertEqual(result['status'], 'compiled')

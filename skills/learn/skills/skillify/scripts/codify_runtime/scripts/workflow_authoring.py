@@ -11,6 +11,7 @@ def workflow_files(backend, description):
         raise ValueError("Only the deterministic Python backend is supported")
     suffix, runtime = BACKENDS[backend]
     files = {"scripts/LICENSE.tkstack": (PACKAGE / "LICENSE").read_bytes()}
+    files['scripts/lock-runtime.json'] = (json.dumps({'version': 1, 'files': ['scripts/json_contract.py', 'scripts/workflow.py']}, indent=2) + '\n').encode()
     files["scripts/tkstack_state.py"] = (PACKAGE / "scripts/tkstack_state.py").read_bytes()
     files['references/subcommands.md'] = (PACKAGE / 'references/command-definitions.md').read_bytes()
     for name in ('codify.py', 'workflow_authoring.py', 'command_schema.py', 'command.schema.json', 'command_manual.py', 'json_contract.py', 'package_runtime.py'):

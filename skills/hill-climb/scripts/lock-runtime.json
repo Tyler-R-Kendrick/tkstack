@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "files": [
+    "scripts/contract.json",
+    "scripts/experiment.py",
+    "scripts/experiment_agent_arm.py",
+    "scripts/experiment_evaluate.py",
+    "scripts/experiment_git.py",
+    "scripts/experiment_handoff.py",
+    "scripts/experiment_ledger.py",
+    "scripts/experiment_native_check.py",
+    "scripts/experiment_parallel.py",
+    "scripts/experiment_proposer.py",
+    "scripts/experiment_regrade.py",
+    "scripts/experiment_runner.py",
+    "scripts/hill_climb.py",
+    "scripts/json_contract.py",
+    "scripts/package_runtime.py",
+    "scripts/tkstack_state.py",
+    "templates/task-harness.json"
+  ]
+}

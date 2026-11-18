@@ -16,9 +16,9 @@ python3 skills/learn/skills/codify/scripts/codify.py compile /repo/workflow/PROM
 python3 skills/learn/skills/codify/scripts/codify.py run /repo/workflow/scripts/workflow.lock.json --input input.json
 ```
 
-The executable lock contains exact code/resource bytes, hashes, source/case
-provenance, a native entrypoint, a no-inference declaration, and contract-check
-results. It is an authored deliverable that can be versioned with its source.
+The executable lock contains exact code and resource bytes, optionally
+compressed per file. It also records hashes, source and case provenance, a
+native entrypoint, a no-inference declaration, and contract-check results. It is an authored deliverable that can be versioned with its source.
 Command authors can declare a reviewed, lock-bound execution timeout for work
 that needs more than the ordinary 30-second default. The command and native
 binding must use compatible bounds; see [runner deadlines](runner.md).
@@ -26,7 +26,8 @@ Private staging and publication locks stay inside `.tkstack/` and are ignored.
 `check` and `compile --dry-run` remain read-only. The runner rejects stale inputs;
 it never silently compiles, forwards the Markdown to a model, or substitutes a
 provider. The complete source tree remains necessary for freshness checks.
-`check` rebuilds the snapshot inventory from the entrypoint directory,
+Current runners read v1 and v2 locks. A scoped v3 lock needs a v3-aware runner.
+For v2 and older locks, `check` rebuilds the snapshot inventory from the entrypoint directory,
 `commands/` when present, the whole package when `scripts/contract.json`
 exists, and each `--include` path recorded in the lock. A file that belongs
 in that inventory but is missing from the lock is stale. Nested directories
@@ -36,7 +37,12 @@ a parent package does not freeze those child skills. A lock with no `includes` f
 compiled before those paths were recorded. For that lock, `check` rebuilds
 the entrypoint directory, `commands/`, and the contract package root, and
 still compares every file the lock names. Recompile explicitly after adding
-a source file.
+a source file. Every new build uses a v3 runtime inventory in
+`scripts/lock-runtime.json`; it must list every needed runtime file. The lock
+also retains command definitions and hashes of its source and cases. Unlisted
+files no longer cause staleness, and directory-wide `--include` is rejected.
+Scaffolds start the manifest; maintainers must review dynamic dependencies.
+See the [artifact contract](../skills/learn/skills/codify/references/artifact.md).
 
 Compilation requires positive and rejection cases; deterministic successes run
 twice. Verification uses bounded parallel workers with isolated working copies.

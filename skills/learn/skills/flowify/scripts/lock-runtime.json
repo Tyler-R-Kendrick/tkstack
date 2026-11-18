@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "files": [
+    "LICENSE",
+    "scripts/contract.json",
+    "scripts/flowify.py",
+    "scripts/json_contract.py",
+    "scripts/package_runtime.py",
+    "scripts/tkstack_state.py",
+    "templates/maf/README.md.tmpl",
+    "templates/maf/bindings.py",
+    "templates/maf/inputs.json",
+    "templates/maf/requirements.lock",
+    "templates/maf/requirements.txt",
+    "templates/maf/run.py",
+    "templates/maf/workflow.yaml.tmpl",
+    "templates/rhai/README.md.tmpl",
+    "templates/rhai/inputs.json",
+    "templates/rhai/workflow.rhai.tmpl"
+  ]
+}

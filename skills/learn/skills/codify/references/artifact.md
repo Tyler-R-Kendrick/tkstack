@@ -1,16 +1,20 @@
 # Executable artifact contract
 
-`tkstack.codify/v1` is a canonical JSON build artifact, not a prompt cache or
-another orchestration language. It freezes:
+`tkstack.codify/v3` is the only format emitted by current builds. The runner
+also reads existing v1 and v2 locks. These canonical JSON artifacts freeze:
 
 - Compiler name/version and a SHA-256 of canonical artifact content.
 - Source and contract-case paths/hashes relative to the build root.
 - Root locator relative to the lock location, so relocating the complete tree works.
 - A native Python/Node entrypoint and sorted code/resource inventory, each with
-  SHA-256, file mode, and base64-encoded exact bytes.
+  SHA-256, file mode, and base64-encoded bytes. V2 and v3 optionally compress each
+  file with zlib before base64; decompression is bounded and hashes cover the
+  original bytes. A v1-only runner cannot read v2 or v3 locks; a v2-only
+  runner cannot read v3 locks.
 - A no-inference declaration and passed case IDs/repetition count.
 - Caller-supplied `--include` paths, sorted and unique, relative to the build
-  root (`.` is the root). Locks compiled before this field omit `includes`.
+  root. New builds accept individual files only; older locks may contain
+  directories or omit this field.
 
 The lock contains the **actual runnable code bytes**. `run` validates the lock,
 checks current source/code/cases, writes that frozen image into an isolated
@@ -29,36 +33,33 @@ writers are not covered by a filesystem-wide transaction. Generated artifacts
 are authored deliverables and can be checked in; private compile/run state is
 ignored by `.tkstack/.gitignore`.
 
-`check` and `run` fail on a stale source, case file, or included implementation.
-`check` also rebuilds the snapshot from the entrypoint directory, `commands/`
-when that directory exists, the package root when `scripts/contract.json`
-exists, and each path in `includes` when the lock records that field. A file
-in that inventory that the lock does not name is stale, so adding a reference
-after compilation fails until an explicit recompile. A lock that omits
-`includes` was compiled before those paths were recorded: `check` rebuilds
-the entrypoint directory, `commands/`, and the contract package root, and
-still compares every file the lock names. A nested directory with its own
-`SKILL.md` is a separate package and stays on its own lock. `check` drops
-that package before applying the snapshot limits, so subskill growth does
-not exhaust the parent inventory. Snapshots retain Git-portable executable
-modes (0644/0755). Freshness compares
-the executable bit, so checkout umasks that change owner/group read/write bits
-do not invalidate identical code. Changing executable status still invalidates
-the artifact. Existing locks retain compatibility. This is source execution-mode
-tracking, not an ACL or host filesystem-permission preservation mechanism.
-Recompile explicitly. The runner never falls back to Markdown or silently
-regenerates the artifact. Complete source trees are required for freshness;
-there is currently no detached-source or ignore-staleness execution mode.
+`check` and `run` fail on stale source, cases, command definitions, manifest,
+or declared runtime files, including changed executable modes. For existing v1
+and v2 locks, the runner still checks their recorded legacy inventories. New
+builds never create a whole-package or directory snapshot.
 
-Inventory discovery excludes `.git`, `.tkstack`, `node_modules`, and
-`__pycache__`, and the selected output itself. A package with
-`scripts/contract.json` snapshots the whole package, so keep generated files
-out of that tree. Other workflows snapshot the entrypoint directory and
-`commands/`; include imported code outside those directories explicitly.
-Compile records those `--include` paths. Inventory limits apply to the files
-that remain after nested skill packages are omitted: 512 files and 16 MiB of
-base64 data. Lock parsing also caps total file size at 16 MiB. This is not an
-import tracer or a hermetic build system.
+Every new build requires `scripts/lock-runtime.json` containing
+`{"version": 1, "files": ["relative/path", ...]}` with sorted unique file
+paths. An empty list is valid when the entrypoint needs no other files. The
+compiler embeds those regular files, the manifest, the entrypoint, command
+definitions, and any explicitly included individual files; it separately hashes
+source and cases. The scaffold supplies a starter manifest. Review and update it
+when the implementation changes, including after normalization. The compiler
+rejects missing manifests, directories, symlinks, undeclared native
+entrypoints, and recognizable same-directory Python imports missing from the
+inventory. Dynamic imports, conditional resources and external runtime data
+still require human review and real behavior tests; static checks do not prove
+completeness. Missing dependencies discovered by the compile cases fail the
+build, which leaves the prior lock intact.
+
+Files outside the declared inventory do not stale a new lock. A complete source
+tree is still required to check freshness; there is no detached-source or
+ignore-staleness mode. Inventory limits remain 512 files and 16 MiB of base64
+data before compression. Decoding retains the same aggregate bound and rejects
+trailing, truncated, malformed and oversized compressed streams. Lock parsing
+also caps the serialized file at 16 MiB. This is not an import tracer, a
+hermetic build system, or a guarantee that arbitrary large programs fit a
+particular hosting limit.
 
 Python uses the selected interpreter/standard library; Node needs its actual
 compatible runtime. AI SDK packages are pinned by the frozen npm lock and

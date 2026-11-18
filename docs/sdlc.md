@@ -24,8 +24,14 @@ SDLC planning includes a task-scoped rubric and measurement harness. The
 [measured feature procedure](../skills/sdlc/references/measured-feature-work.md)
 routes this work to `hill-climb`, including revisions to the harness when user
 feedback exposes a gap. It uses only the integration targets needed by the
-task. Routine pass/fail work records why the measurement subworkflow does not
-apply. Installing either skill starts no experiment or paid calls.
+task. Routine pass/fail work outside the web and binary triggers below records
+why the measurement subworkflow does not apply. Installing either skill starts
+no experiment or paid calls.
+
+For web changes that affect loading, rendering, or interaction, SDLC uses the
+installed `web-performance` skill for browser measurements and Chrome guidance.
+Binary-size work uses the profile-guided procedure in `hill-climb`, with actual
+size and runtime guardrails. Missing tools or measurements remain explicit gaps.
 
 The outer loop defines the outcome, decomposes it, challenges the result, and
 delivers it. Each worker runs an inner red → green → refactor loop at a public

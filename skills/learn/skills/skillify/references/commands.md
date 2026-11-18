@@ -65,7 +65,8 @@ accepts 1–16. Successful no-inference cases repeat twice. `--dry-run` only pla
 Use `--dependencies /path/to/node_modules` only for a trusted deterministic
 workflow requiring existing dependencies. The generic CLI also supports
 timeouts, project state and additional included resources. Its `--help` is
-authoritative. The default artifact includes the entrypoint's whole directory.
+authoritative. Every new artifact uses the scoped v3 inventory in
+`scripts/lock-runtime.json`; directory-wide includes are rejected.
 
 After a source/implementation/case change, `check`/`run` fail stale rather than
 rebuild or invoke an agent. Compile explicitly. Source checks and contract cases
@@ -73,4 +74,11 @@ are bounded evidence, not a proof of semantic equivalence or zero network calls.
 The native process executes trusted code with the caller's normal authority.
 
 Compilation forwards the selected project, deadline, dependencies and jobs to canonical Codify.
-Normalized packages include their owned templates/resources by default. Use `--include` for an explicit resource set; supplying code without required native assets is not a complete tool.
+The scaffold creates a starter manifest. Update it after normalization and list
+every import, dynamic helper and required data file. Use `--include` for an
+additional individual file; exercise actual native branches because compile
+cases and static import checks may miss dependencies.
+
+When updating Codify’s bundled engine, run `scripts/sync_codify.py`, then
+`python3 scripts/sync_codify.py --check` from the Skillify directory to
+verify its standalone release copy.

@@ -7,10 +7,10 @@ reference snapshots; a current upstream may add or remove skills. See
 Landmines is an Oxlint plugin rather than a skill. Its installed runtime
 and project invocation are in [integration readiness](integrations.md#landmines).
 
-All 19 repository packages share reserved help/version, explicit contract models,
-retained-report verification, native helper bindings where applicable, and
-reviewed compiled artifacts. [Normalization coverage](normalization.md) describes
-what runs mechanically and what still requires actual semantic/provider work.
+Executable repository packages provide typed contracts and reviewed compiled
+artifacts. `web-performance` is a guidance-only skill using external tools.
+[Normalization coverage](normalization.md) describes what runs mechanically
+and what still requires actual semantic/provider work.
 
 
 In the catalog profile, skills install by origin. Personal skills in `skills/` join every selected
@@ -45,7 +45,7 @@ Kowalski's UI prototype is `emil-prototype`; Matt's engineering prototype keeps
 calls. Upstream bytes stay unchanged. Phase routing for every installed skill
 is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 
-## Skills under development (8)
+## Skills under development (9)
 
 | Skill | Bucket | Invocation |
 | --- | --- | --- |
@@ -56,6 +56,7 @@ is in [the SDLC routing guide](../skills/sdlc/references/skill-routing.md).
 | [`sdlc`](../skills/sdlc/SKILL.md) | personal | User only |
 | [`tkstack-principles`](../skills/tkstack-principles/SKILL.md) | personal | User or model; native startup pointer |
 | [`unslop`](../skills/unslop/SKILL.md) | personal | User or model |
+| [`web-performance`](../skills/web-performance/SKILL.md) | development | User or SDLC subworkflow |
 | [`write`](../skills/write/SKILL.md) | personal | User or model |
 
 ## Learn subskills (7)

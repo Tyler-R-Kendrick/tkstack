@@ -8,11 +8,11 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "f487dc5e683f7b4e49b3882ee8b87cea6e5d975c"
+          "oid": "faff91a989383116697c2f5c08bf32a04a9d62af"
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/skillify.md": {
           "mode": "100644",
@@ -80,13 +80,17 @@
           "mode": "100644",
           "oid": "e5b2f2b08f08ad56d541b55868eaff7ccfde3fb8"
         },
+        "skills/learn/skills/codify/examples/normalize-labels/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "fb09c31decd4093c690fe126a169e9b7d8613182"
+        },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/run.py": {
           "mode": "100644",
           "oid": "79f594de046d12c8fd336dde645ad9516b3171db"
         },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ae5bb00e93fbfd1791a519cfdfa70db4e4bce062"
+          "oid": "dde4eb86bc0778ebed5ed320aa2f680a168af00e"
         },
         "skills/learn/skills/codify/examples/normalize-labels/scripts/workflow.py": {
           "mode": "100644",
@@ -94,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "ca38c68f5d258fb600265c18aa5a57161999c09f"
+          "oid": "dac559f639c4bd183fe9a548ec575cc425b4d542"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -102,7 +106,7 @@
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
-          "oid": "24bdac18384554f25a398b686cb25441b53846ae"
+          "oid": "280ad141c439a3692c68507a04de459e8e31231d"
         },
         "skills/learn/skills/codify/references/compilation.md": {
           "mode": "100644",
@@ -138,7 +142,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
+          "oid": "76feaccc21b25c7067afaf68fc4f8c0518db3ab4"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -159,6 +163,10 @@
         "skills/learn/skills/codify/scripts/json_contract.py": {
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
+        },
+        "skills/learn/skills/codify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "48bcbe7238562e98ce747a2d2b57c6d24c3a9eda"
         },
         "skills/learn/skills/codify/scripts/normalization.json": {
           "mode": "100644",
@@ -182,11 +190,11 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "43c5c90e8a375bae40b16280b2f5ffebe90e7279"
+          "oid": "71aaaf9d80511dbc98f21f9e275bdb97629614f0"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
+          "oid": "93033fc516b3836dc64be1e4ccbc8f88d5937166"
         },
         "skills/learn/skills/codify/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -258,7 +266,7 @@
         },
         "skills/learn/skills/skillify/references/commands.md": {
           "mode": "100644",
-          "oid": "3c17226ea9c9bd36ff79d20a1cdd72480e7cee36"
+          "oid": "79f8ba69fb5f52c63962417f23dee3c6f773cb57"
         },
         "skills/learn/skills/skillify/references/distilled-sources.md": {
           "mode": "100644",
@@ -318,7 +326,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
+          "oid": "76feaccc21b25c7067afaf68fc4f8c0518db3ab4"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -346,7 +354,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
+          "oid": "93033fc516b3836dc64be1e4ccbc8f88d5937166"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -380,6 +388,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/learn/skills/skillify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "3a1e96b495c666520b89283cea13db5dbd372913"
+        },
         "skills/learn/skills/skillify/scripts/normalization.json": {
           "mode": "100644",
           "oid": "06dbbd0c86d6ddca92b9650a8cd1d503f7b3d79a"
@@ -398,7 +410,7 @@
         },
         "skills/learn/skills/skillify/scripts/skillify.py": {
           "mode": "100644",
-          "oid": "5b37edddff3764f4eda09eb8968c4f439571d009"
+          "oid": "820c981a4956adff4f70a70134d7cea7a43fb48b"
         },
         "skills/learn/skills/skillify/scripts/sync_codify.py": {
           "mode": "100644",
@@ -414,7 +426,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "01702f9ebcb4c8034a8b9e756cfcb3e0df2400aa"
+          "oid": "a2280f25115a37b33843c7cd2e904c546835a3e2"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -434,7 +446,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     },
     "catalog": {
       "docs": {
@@ -456,11 +468,11 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5c2d0e68627dad74d6703aa76d1c2a9462dedb48"
+          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -470,11 +482,11 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "b780af07bfca8957a8fa1238e73990a7ff0ad4cb"
+          "oid": "269cc3d0fd26cfdd55dd09cde3b05bdb76b18381"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
-          "oid": "151469d839a3e85ee23ede5311482ceaa9e25a5a"
+          "oid": "57e3f6b27ebdeb97ab3e6e2715630e70c19b563b"
         },
         ".cursor/rules/graphify.mdc": {
           "mode": "100644",
@@ -506,7 +518,7 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "5fefa87a7e678ad5e1b5de68cc4b8456afb51ff6"
+          "oid": "151841ed78412b47e79fc67ce11d4998849205ad"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -514,7 +526,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed SDLC verification selection, checker evidence, Constrain mutation guidance and both packaged skill versions against the catalog and SDLC guide."
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     },
     "documentation": {
       "docs": {
@@ -534,7 +546,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "385cc07428aaef396ce6d5316a2f889634756d98"
+          "oid": "53d9425703cde579fc32fb2082196dbec3346fde"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -571,7 +583,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "525111c249b2da3d6df55c4c3e1da8c9ea5e1cff"
+          "oid": "c1bb195fb345f3072274ae4bc41dcb1778e94214"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -735,7 +747,7 @@
         },
         "tests/test_skill_normalization.py": {
           "mode": "100644",
-          "oid": "6e31daf3abee499cb9a39ec0cf6708f86a85e38e"
+          "oid": "62df97ea71e26e0a7aadca4661f547ee570f46d4"
         },
         "tests/test_skill_routing.py": {
           "mode": "100644",
@@ -759,7 +771,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the documentation gate after compacting the rebased installer test review metadata; the maintenance workflow is unchanged."
+      "reason": "Reviewed combined installer and workflow inventory changes; documentation maintenance procedure is unchanged"
     },
     "execution": {
       "docs": {
@@ -769,13 +781,14 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/runner.md": {
           "mode": "100644",
           "oid": "f37747bd3c5a757eed1106afb9c07ed40eb6a2ff"
         }
       },
+      "docs_refresh_reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -809,9 +822,10 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         }
       },
+      "docs_refresh_reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -889,7 +903,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "36c355f2f69fac4bf58fbd78950fe31b1f2786a4"
+          "oid": "73756ab39843d6ee0a747cee0ff5c372029b88e8"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -905,7 +919,7 @@
         },
         "docs/normalization.md": {
           "mode": "100644",
-          "oid": "c7aa80c2edf69856f70375535781a5b70500a69d"
+          "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         },
         "docs/principles.md": {
           "mode": "100644",
@@ -917,7 +931,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "7cd2d18f260cd48ca28d6c172a9b12ed5e98bb65"
+          "oid": "ae1b1d6d94be37bde2a4054da5d96ba10278574d"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -929,7 +943,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "5c2d0e68627dad74d6703aa76d1c2a9462dedb48"
+          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1405,6 +1419,10 @@
           "mode": "100644",
           "oid": "8b7e1f3c4c99013f5e67764efb5b984d8b2532ee"
         },
+        "skills/hill-climb/references/binary-size.md": {
+          "mode": "100644",
+          "oid": "1bc0e8d167208d35392137f34fc137dfa1b35306"
+        },
         "skills/hill-climb/references/distilled-sources.md": {
           "mode": "100644",
           "oid": "af902bb4a5204584af62a1ce51c99bfe6e3b7e74"
@@ -1423,7 +1441,7 @@
         },
         "skills/hill-climb/references/instrument-and-loop.md": {
           "mode": "100644",
-          "oid": "71bd11a471f956152106b6a4212bb1cbabe91baa"
+          "oid": "ee0755a29ed02a821ccbf808b355339da8495228"
         },
         "skills/hill-climb/references/measurement.md": {
           "mode": "100644",
@@ -1501,6 +1519,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/hill-climb/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "ce7df570fa53a30d7638e410a58ea18fee63c026"
+        },
         "skills/hill-climb/scripts/normalization.json": {
           "mode": "100644",
           "oid": "7b63531ed7393f8d5f6b28c9a52cc40ace0795b1"
@@ -1527,7 +1549,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "9e31b6cac237f6b6f3f2201ef6c8951ad029da3e"
+          "oid": "3dad8bb15d4b5aa0f8c32975e3a651df6f0db0f3"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -1953,6 +1975,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/learn/skills/flowify/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "ad24a483cfa1a3eb65dbd55d60084cb8598fc912"
+        },
         "skills/learn/skills/flowify/scripts/normalization.json": {
           "mode": "100644",
           "oid": "5df0dd3c072766456d87e73726af364d851c5d81"
@@ -1975,7 +2001,7 @@
         },
         "skills/learn/skills/flowify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "680eff6e687f5f391ebe0e43a35e33b5c0a6ede8"
+          "oid": "beeac6e5a2a831c261dc7e6663eccc896193f2cb"
         },
         "skills/learn/skills/flowify/templates/maf/README.md.tmpl": {
           "mode": "100644",
@@ -2723,11 +2749,11 @@
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "8c8a86c4e087db33071849cbf3269eca5d2aa598"
+          "oid": "46b5f877cfa0f73df1b840ea402b6635dc7567ac"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "60656f456ae6154485f8ed42f487c34e51c1a11f"
+          "oid": "a1848f6c2c1ffc3ff6c4b98bb3696ad0adbe2e07"
         },
         "skills/sdlc/references/requirements-and-planning.md": {
           "mode": "100644",
@@ -2743,11 +2769,11 @@
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
-          "oid": "10f3e30750680fcda84bae6a654f595eabf4c135"
+          "oid": "f296d25ab10e408ee87dd037e7f8961eae59750c"
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "a65f7ebaf6d4d81e8c3982849a11e628569a940d"
+          "oid": "af926bcaabfe6c8aa283f2dbc21eea69012fae16"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2768,6 +2794,10 @@
         "skills/sdlc/scripts/json_contract.py": {
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
+        },
+        "skills/sdlc/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "573cf6a18fe997c0770277b77acebcf501382127"
         },
         "skills/sdlc/scripts/normalization.json": {
           "mode": "100644",
@@ -2807,7 +2837,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a9b8daf36beced894a76713f40a813f765893a57"
+          "oid": "0ad48f9058c1b0c980795199d4272ab9e7b89ac1"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2843,7 +2873,7 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "5fefa87a7e678ad5e1b5de68cc4b8456afb51ff6"
+          "oid": "151841ed78412b47e79fc67ce11d4998849205ad"
         },
         "skills/tkstack-principles/LICENSE": {
           "mode": "100644",
@@ -3041,6 +3071,14 @@
           "mode": "100644",
           "oid": "0fca31428f1c638afecc1f10b1ebf7945f30e549"
         },
+        "skills/web-performance/LICENSE": {
+          "mode": "100644",
+          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
+        },
+        "skills/web-performance/SKILL.md": {
+          "mode": "100644",
+          "oid": "1fe87d81315349fe5e510c8d28b37ee5ac24020b"
+        },
         "skills/write/LICENSE": {
           "mode": "100644",
           "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
@@ -3118,8 +3156,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Confirmed the published SDLC and catalog pages cover optional Evalify and Constrain workflows. The skill now points readers to the installed judgment and mutation tools."
+      "no_doc_impact": false,
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     }
   },
   "object_format": "sha1",

@@ -87,9 +87,9 @@ generation manifest and lock are authored package/build artifacts.
 A profile's optional `subskills` map (`name -> {path, description}`) generates
 one mount command per packaged subskill, `run: {skill: skills/<name>}`, which
 passes its `argv` to that subskill's own commands and lock. Learn mounts its
-packaged ___ify subskills this way. Compile a parent with explicit `--include`
-entries for its own files so its lock does not snapshot the subskills, which
-keep their own locks.
+packaged ___ify subskills this way. Each compiled parent declares its own
+runtime files in `scripts/lock-runtime.json`; mounted subskills keep their own
+locks.
 
 ```sh
 python3 skills/learn/skills/skillify/scripts/skillify.py normalize skills/write \
@@ -101,14 +101,14 @@ python3 skills/learn/skills/skillify/scripts/skillify.py normalize skills/write 
 For a real change, inspect the profile and existing assets first. Update actual
 native bindings/criteria and meaningful cases, normalize, review the generated
 diff, update the index/version/marketplace and focused docs, and compile actual
-code. Include the package's templates/resources when native helpers need them:
+code. Declare every required helper and resource in the runtime manifest first:
 
 ```sh
-python3 skills/learn/skills/codify/scripts/codify.py compile skills/write/SKILL.md \
-  --entrypoint skills/write/scripts/run.py \
-  --cases skills/write/scripts/workflow.cases.json \
-  --root skills/write --include skills/write \
-  --output skills/write/scripts/workflow.lock.json --project .
+python3 skills/learn/skills/codify/scripts/codify.py compile skills/hill-climb/SKILL.md \
+  --entrypoint skills/hill-climb/scripts/run.py \
+  --cases skills/hill-climb/scripts/workflow.cases.json \
+  --root skills/hill-climb \
+  --output skills/hill-climb/scripts/workflow.lock.json --project .
 ```
 
 Compilation cases establish model/dispatch smoke behavior. The behavioral suite
@@ -160,13 +160,11 @@ does. Authored text uses LF attributes, including `.cursor/**` and `src/**`;
 pinned vendor bytes are excluded from
 normalization. A real commit/clone regression verifies cached artifact portability.
 Existing source/case/code drift still requires explicit recompilation.
-Learn, Codify, and Instructify workflow locks embed their reference docs.
-Recompile a lock after editing one of those references. Learn's lock now
-includes `skills/learn/scripts/evolve.py`, SDLC's includes
-`skills/sdlc/scripts/routing_inventory.py`, and Skillify's includes
-`skills/learn/skills/skillify/scripts/sync_codify.py`. Codify compile omits
-nested skill packages, and those four locks were recompiled with that
-snapshot. Install links `.agents/steering` to destination-local state and adds
+Existing Learn and Instructify v1 locks still embed their reference docs.
+Newly built locks use explicit v3 runtime inventories: Codify, Skillify,
+Flowify, SDLC and hill-climb embed their declared helpers and data without
+agent-facing guides or maintenance-only tools that the runtime does not use.
+An older package needs a reviewed manifest before its next rebuild. Install links `.agents/steering` to destination-local state and adds
 hashed owned startup sections to external target instruction files.
 
 Self-project installation retains portable repository-owned instruction pointers

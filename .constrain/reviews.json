@@ -30,9 +30,9 @@
     "overlap": "Acquisition is distinct from target link setup; prerequisite/tarball variants stay in test_install."
   },
   "tests/test_codify.py": {
-    "sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b",
+    "sha256": "20fa53c52b6ad56cd92d9a4c32ff2d618fce8019d4aab0c7c4b46dba336648ce",
     "risk": "Frozen executable publication could accept stale, escaping or corrupt inputs, or publish half an artifact.",
-    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Package-root inventory must be frozen on compile and reject changed reference bytes. Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group.",
+    "oracle": "Compile and run real programs; check legacy reads, scoped inventories, missing dependencies, stale inputs, malformed compression, escaping paths, process ownership and atomic publication. Reject command definitions added during verification or before publication without replacing the prior lock.",
     "kinds": [
       "contract",
       "functional",
@@ -442,9 +442,9 @@
     "overlap": "Checks that Testify and Evalify ship as self-contained mounted Learn authoring subskills."
   },
   "tests/test_skill_normalization.py": {
-    "sha256": "a97762d45978aeb78f56ea05da3f1ce38bcf9424909da56da5b224fa99618f31",
+    "sha256": "bd4038c38683be6c864b85b14cf931794715863d8c05a8ef43d5e01822f76b1c",
     "risk": "Shared typed skill transport could ignore native failures, change scope or omit resources after commit/clone.",
-    "oracle": "Execute every owned compiled model/report boundary and representative real native helpers; test tampered evidence, raw args, process cleanup and standalone clone behavior.",
+    "oracle": "Exercise compiled skill contracts and native helpers with declared runtime inputs; reject tampering, invalid arguments and contradictory claims; verify process cleanup and clone portability.",
     "kinds": [
       "contract",
       "functional",

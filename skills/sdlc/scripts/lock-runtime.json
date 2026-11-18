@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "files": [
+    "scripts/contract.json",
+    "scripts/json_contract.py",
+    "scripts/package_runtime.py",
+    "scripts/sdlc.py",
+    "scripts/task_graph_tool.py",
+    "scripts/task_store.py",
+    "scripts/tkstack_state.py"
+  ]
+}

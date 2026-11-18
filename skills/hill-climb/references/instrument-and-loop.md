@@ -23,3 +23,9 @@ For each attempt, keep one causal hypothesis, comparable control, observed work
 counts, and both accepted and rejected results. Preserve the frozen grader and
 untouched confirmation. A sensitivity failure requires a new declared baseline,
 not a quieter criterion that lets a preferred candidate pass.
+
+For web loading or rendering, use the installed `web-performance` skill when
+available to retrieve Chrome guidance and run repeated `agent-browser vitals`
+on representative served pages. Keep tool versions, browser conditions and
+behavior guardrails fixed. If the skill or tools are missing, record the gap.
+For binary-size optimization, use [binary size experiments](binary-size.md).

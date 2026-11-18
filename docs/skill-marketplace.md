@@ -11,7 +11,7 @@ installing `learn@tkstack` installs its subskills as `/learn <name>`.
 | --- | --- |
 | Engineering | `tkstack-principles`, `investigate`, `sdlc` |
 | Learning and authoring | `learn`, `skillify`, `codify`, `reusify`, `lintify`, `testify`, `evalify`, `hookify`, `instructify`, `flowify` |
-| Quality and optimization | `unslop`, `hill-climb`, `constrain` |
+| Quality and optimization | `unslop`, `hill-climb`, `web-performance`, `constrain` |
 | Knowledge and writing | `document`, `write` |
 | Design, media, context | `open-design`, `fal-ai`, `headroom`, `rtk` |
 
@@ -46,7 +46,7 @@ npx skills add Tyler-R-Kendrick/tkstack/skills/investigate
 Other real packages are `document`
 (`skills/document`), `write` (`skills/write`), `fal-ai`
 (`.agents/skills/fal-ai`), `headroom` (`.agents/skills/headroom`),
-`hill-climb` (`skills/hill-climb`), `learn` (`skills/learn`), `open-design`
+`hill-climb` (`skills/hill-climb`), `web-performance` (`skills/web-performance`), `learn` (`skills/learn`), `open-design`
 (`.agents/skills/open-design`), `rtk` (`.agents/skills/rtk`), `sdlc`
 (`skills/sdlc`), `tkstack-principles` (`skills/tkstack-principles`), and
 `unslop` (`skills/unslop`). From a local checkout, replace the GitHub source

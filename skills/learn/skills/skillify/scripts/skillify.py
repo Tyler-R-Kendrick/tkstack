@@ -262,7 +262,6 @@ def compile_skill(directory, cases, entrypoint=None, profiles=(), dry_run=False,
     source = directory / "references/source-skill.txt"
     if not source.is_file():
         source = directory / "SKILL.md"
-    includes = includes or ([directory] if (directory / 'scripts/contract.json').is_file() else [])
     return codify.compile_workflow(source, selected, cases, output=directory / "scripts/workflow.lock.json",
                                    root=directory, profiles=profiles, dry_run=dry_run, dependencies=dependencies, jobs=jobs,
                                    config=config, project=project, timeout=timeout, includes=includes)

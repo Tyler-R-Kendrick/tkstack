@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "files": [
+    "LICENSE",
+    "references/command-definitions.md",
+    "requirements/requirements.in",
+    "requirements/requirements.lock",
+    "scripts/codify.py",
+    "scripts/command.schema.json",
+    "scripts/command_manual.py",
+    "scripts/command_schema.py",
+    "scripts/contract.json",
+    "scripts/json_contract.py",
+    "scripts/package_runtime.py",
+    "scripts/tkstack_state.py",
+    "scripts/workflow_authoring.py",
+    "templates/commands/help.md.tmpl",
+    "templates/commands/run.md.tmpl",
+    "templates/commands/version.md.tmpl",
+    "templates/python/run.py",
+    "templates/python/workflow.py",
+    "templates/tool.md.tmpl"
+  ]
+}
