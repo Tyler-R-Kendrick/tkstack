@@ -108,16 +108,19 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
                 result = self.cli('run', 'blocked.json', ['--output', 'blocked-result.json', flag, 'other'])
                 self.assertNotEqual(result.returncode, 0)
                 self.assertFalse((self.root / 'calls').exists())
-        for bad in ('wrong-source', 'duplicate', 'invalid-time', 'oversized'):
+        for bad in ('wrong-source', 'duplicate', 'invalid-time', 'boolean-time', 'extra-field', 'oversized'):
             with self.subTest(bad=bad):
                 data = json.loads(json.dumps(self.data))
                 if bad == 'wrong-source': data['source'] = 'external'
                 if bad == 'duplicate': data['cases'].append(data['cases'][0])
                 if bad == 'invalid-time': data['cases'][0]['elapsed_ms'] = -1
+                if bad == 'boolean-time': data['cases'][0]['elapsed_ms'] = True
+                if bad == 'extra-field': data['cases'][0]['provider'] = 'unexpected'
                 (self.root / 'cases.json').write_text(' ' * (1024 * 1024 + 1) if bad == 'oversized' else json.dumps(data))
-                result = self.cli('validate', 'bad.time.json')
+                receipt = f'bad-{bad}.time.json'
+                result = self.cli('validate', receipt)
                 self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / 'bad.time.json').exists())
+                self.assertFalse((self.root / receipt).exists())
         self.assertFalse((self.root / 'calls').exists())
 
     def test_extreme_host_duration_fails_cleanly_before_dispatch(self):

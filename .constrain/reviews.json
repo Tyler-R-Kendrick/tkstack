@@ -62,9 +62,9 @@
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
   "tests/test_evalify.py": {
-    "sha256": "89673be9477a7c0c740dc78c425a240cd7d69a8047a18c3ca6d3668587b2f867",
+    "sha256": "3a9d76a493843bb91ae6a4ec54b4a9af352e3196bef27bdce3fe4e2c5253741a",
     "risk": "Host judgment records, calibration, deadline cleanup or contested outputs could be accepted or reported incorrectly.",
-    "oracle": "Exercise the CLI with retained host judgments and stubbed offline assertions; check output, confusion counts, observed and unknown durations including zero, validation rejection before dispatch, deadline receipts and descendant cleanup, and contention. An optional test runs actual Promptfoo assertions on host judgments.",
+    "oracle": "Exercise the CLI with retained host judgments and stubbed offline assertions; check output, confusion counts, observed and unknown durations including zero, validation rejection of malformed fields and boolean/negative times before dispatch with independent receipt paths, deadline receipts and descendant cleanup, and contention. An optional test runs actual Promptfoo assertions on host judgments.",
     "kinds": [
       "contract",
       "simulation",
