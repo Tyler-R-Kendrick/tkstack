@@ -30,9 +30,9 @@
     "overlap": "Acquisition is distinct from target link setup; prerequisite/tarball variants stay in test_install."
   },
   "tests/test_codify.py": {
-    "sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b",
+    "sha256": "83615be98ca7cd73a6601c63ce524bf015e09089f21def584e6430942016e708",
     "risk": "Frozen executable publication could accept stale, escaping or corrupt inputs, or publish half an artifact.",
-    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Package-root inventory must be frozen on compile and reject changed reference bytes. Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group.",
+    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Package-root inventory must be frozen on compile and reject changed reference bytes. Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group. Compressed locks must preserve runnable bytes, read legacy snapshots, and reject malformed, trailing, and oversized streams.",
     "kinds": [
       "contract",
       "functional",

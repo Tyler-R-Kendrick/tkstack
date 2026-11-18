@@ -17,6 +17,7 @@ sys.dont_write_bytecode = True
 import tempfile
 import threading
 import time
+import zlib
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,7 +33,8 @@ _command_spec = importlib.util.spec_from_file_location("codify_commands_" + hash
 command_schema = importlib.util.module_from_spec(_command_spec)
 _command_spec.loader.exec_module(command_schema)
 VERSION = "0.1.0"
-FORMAT = "tkstack.codify/v1"
+FORMAT = "tkstack.codify/v2"
+LEGACY_FORMAT = "tkstack.codify/v1"
 LIMIT = 16 * 1024 * 1024
 SKIP = {".git", ".tkstack", "node_modules", "__pycache__"}
 
@@ -176,6 +178,19 @@ def snapshot(root, paths, output, exclude_prefixes=()):
     return dict(sorted(selected.items()))
 
 
+def pack_files(files):
+    """Compress records only when doing so reduces their serialized size."""
+    packed = {}
+    for name, record in files.items():
+        data = base64.b64decode(record['base64'], validate=True)
+        compressed = base64.b64encode(zlib.compress(data, 9)).decode('ascii')
+        if len(compressed) + len(',"encoding":"zlib"') < len(record['base64']):
+            packed[name] = {**record, 'base64': compressed, 'encoding': 'zlib'}
+        else:
+            packed[name] = record
+    return packed
+
+
 def cases_from(data):
     value = parse_json(data)
     if not isinstance(value, dict) or set(value) != {'version', 'cases'} or type(value['version']) is not int or value['version'] != 1:
@@ -203,18 +218,33 @@ def decode_files(lock):
     files = lock['files']
     if not isinstance(files, dict) or not 1 <= len(files) <= 512:
         raise ValueError("Invalid artifact inventory")
-    decoded, size = {}, 0
+    decoded, encoded_size, raw_size = {}, 0, 0
+    max_raw = LIMIT // 4 * 3
     for name, item in files.items():
         relative_file(name)
-        if not isinstance(item, dict) or set(item) != {'sha256', 'mode', 'base64'} or not isinstance(item['base64'], str) or type(item['mode']) is not int or not 0 <= item['mode'] <= 0o777:
+        if (not isinstance(item, dict) or set(item) not in ({'sha256', 'mode', 'base64'}, {'sha256', 'mode', 'base64', 'encoding'})
+                or not isinstance(item['base64'], str) or type(item['mode']) is not int or not 0 <= item['mode'] <= 0o777):
             raise ValueError("Invalid artifact file record")
-        size += len(item['base64'])
-        if size > LIMIT:
+        encoding = item.get('encoding')
+        if 'encoding' in item and (encoding != 'zlib' or lock['format'] != FORMAT):
+            raise ValueError("Invalid artifact encoding")
+        encoded_size += len(item['base64'])
+        if encoded_size > LIMIT:
             raise ValueError("Artifact exceeds 16 MiB encoded")
         try:
             data = base64.b64decode(item['base64'], validate=True)
-        except ValueError as error:
-            raise ValueError("Invalid artifact encoding") from error
+            if encoding == 'zlib':
+                decoder = zlib.decompressobj()
+                data = decoder.decompress(data, max_raw - raw_size + 1)
+                if len(data) > max_raw - raw_size or decoder.unconsumed_tail:
+                    raise ValueError("Artifact exceeds decoded size limit")
+                if not decoder.eof or decoder.unused_data:
+                    raise ValueError("Invalid artifact compressed stream")
+        except (ValueError, zlib.error) as error:
+            raise ValueError("Invalid or oversized artifact encoding") from error
+        raw_size += len(data)
+        if raw_size > max_raw:
+            raise ValueError("Artifact exceeds decoded size limit")
         if digest(data) != item['sha256']:
             raise ValueError(f"Artifact file hash mismatch: {name}")
         decoded[name] = data
@@ -233,7 +263,7 @@ def validate_includes(includes):
 
 def validate_lock(lock):
     fields = {'format', 'compiler', 'root', 'source', 'cases', 'entrypoint', 'runtime', 'inference', 'files', 'verification', 'artifact_sha256'}
-    if not isinstance(lock, dict) or not fields <= set(lock) <= fields | {'includes'} or lock['format'] != FORMAT or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
+    if not isinstance(lock, dict) or not fields <= set(lock) <= fields | {'includes'} or lock['format'] not in (FORMAT, LEGACY_FORMAT) or lock['compiler'] != {'name': 'codify', 'version': VERSION}:
         raise ValueError("Unsupported codify lock format/compiler")
     unsigned = {key: value for key, value in lock.items() if key != 'artifact_sha256'}
     if digest(canonical(unsigned)) != lock['artifact_sha256']:
@@ -499,7 +529,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
             'entrypoint': entrypoint.relative_to(root).as_posix(), 'runtime': 'python' if entrypoint.suffix == '.py' else 'node',
             'includes': recorded_includes,
             'inference': {'mode': 'explicit' if profile_names else 'none', 'profiles': profile_names},
-            'files': snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root)),
+            'files': pack_files(snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))),
             'verification': {'status': 'passed', 'case_ids': [case['id'] for case in contract], 'repeat_successes': 1 if profile_names else 2}}
     if lock['entrypoint'] not in lock['files']:
         raise ValueError("Entrypoint was excluded from the artifact")
@@ -536,14 +566,14 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
         if failures:
             raise ValueError('; '.join(failures))
     current = snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
-    if current != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+    if pack_files(current) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
         raise ValueError("Build inputs changed during verification")
     lock_id = digest(str(output).encode())[:16]
     writer = ensure_state(state_path('locks', project) / 'codify') / (lock_id + '.lock')
     writer.mkdir()
     temporary = None
     try:
-        if snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root)) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+        if pack_files(snapshot(root, [entrypoint.parent, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
             raise ValueError("Build inputs changed before publication")
         if (output.read_bytes() if output.exists() else None) != before:
             raise ValueError("Lock artifact changed during compilation")

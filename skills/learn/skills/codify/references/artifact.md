@@ -1,13 +1,15 @@
 # Executable artifact contract
 
-`tkstack.codify/v1` is a canonical JSON build artifact, not a prompt cache or
-another orchestration language. It freezes:
+`tkstack.codify/v2` is a canonical JSON build artifact, not a prompt cache or
+another orchestration language. The runner also reads existing v1 locks. It freezes:
 
 - Compiler name/version and a SHA-256 of canonical artifact content.
 - Source and contract-case paths/hashes relative to the build root.
 - Root locator relative to the lock location, so relocating the complete tree works.
 - A native Python/Node entrypoint and sorted code/resource inventory, each with
-  SHA-256, file mode, and base64-encoded exact bytes.
+  SHA-256, file mode, and base64-encoded bytes. V2 optionally compresses each
+  file with zlib before base64; decompression is bounded and hashes cover the
+  original bytes. A v1-only runner cannot read v2 locks.
 - A no-inference declaration and passed case IDs/repetition count.
 - Caller-supplied `--include` paths, sorted and unique, relative to the build
   root (`.` is the root). Locks compiled before this field omit `includes`.
@@ -57,7 +59,9 @@ out of that tree. Other workflows snapshot the entrypoint directory and
 `commands/`; include imported code outside those directories explicitly.
 Compile records those `--include` paths. Inventory limits apply to the files
 that remain after nested skill packages are omitted: 512 files and 16 MiB of
-base64 data. Lock parsing also caps total file size at 16 MiB. This is not an
+base64 data before compression. Decoded v2 contents retain the same aggregate
+size bound; trailing, truncated, malformed, and oversized streams are rejected.
+Lock parsing also caps total file size at 16 MiB. This is not an
 import tracer or a hermetic build system.
 
 Python uses the selected interpreter/standard library; Node needs its actual

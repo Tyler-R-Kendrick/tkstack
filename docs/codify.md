@@ -16,9 +16,9 @@ python3 skills/learn/skills/codify/scripts/codify.py compile /repo/workflow/PROM
 python3 skills/learn/skills/codify/scripts/codify.py run /repo/workflow/scripts/workflow.lock.json --input input.json
 ```
 
-The executable lock contains exact code/resource bytes, hashes, source/case
-provenance, a native entrypoint, a no-inference declaration, and contract-check
-results. It is an authored deliverable that can be versioned with its source.
+The v2 executable lock contains exact code and resource bytes, optionally
+compressed per file. It also records hashes, source and case provenance, a
+native entrypoint, a no-inference declaration, and contract-check results. It is an authored deliverable that can be versioned with its source.
 Command authors can declare a reviewed, lock-bound execution timeout for work
 that needs more than the ordinary 30-second default. The command and native
 binding must use compatible bounds; see [runner deadlines](runner.md).
@@ -26,6 +26,7 @@ Private staging and publication locks stay inside `.tkstack/` and are ignored.
 `check` and `compile --dry-run` remain read-only. The runner rejects stale inputs;
 it never silently compiles, forwards the Markdown to a model, or substitutes a
 provider. The complete source tree remains necessary for freshness checks.
+Current runners read existing v1 locks; v1-only runners cannot read v2 locks.
 `check` rebuilds the snapshot inventory from the entrypoint directory,
 `commands/` when present, the whole package when `scripts/contract.json`
 exists, and each `--include` path recorded in the lock. A file that belongs

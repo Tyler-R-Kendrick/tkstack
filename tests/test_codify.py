@@ -12,6 +12,7 @@ import sys
 import tempfile
 import time
 import unittest
+import zlib
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -150,6 +151,32 @@ class CodifyTests(unittest.TestCase):
             codify.validate_lock(lock)
         with self.assertRaisesRegex(ValueError, 'Duplicate'):
             codify.parse_json('{"x":1,"x":2}')
+
+    def test_compressed_snapshots_preserve_execution_legacy_compatibility_and_limits(self):
+        resource = self.scripts / 'repeated.txt'
+        resource.write_bytes(b'representative frozen data\n' * 2000)
+        self.compile()
+        lock = codify.check(self.output)
+        self.assertEqual(lock['format'], 'tkstack.codify/v2')
+        self.assertEqual(lock['files']['scripts/repeated.txt']['encoding'], 'zlib')
+        self.assertEqual(codify.decode_files(lock)['scripts/repeated.txt'], resource.read_bytes())
+        run = self.cli('run', self.output, '--input', '-', payload={'labels': [' b ', 'a']})
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertEqual(json.loads(run.stdout), {'labels': ['a', 'b']})
+        legacy = json.loads(self.output.read_text())
+        legacy['format'] = 'tkstack.codify/v1'
+        for item in legacy['files'].values():
+            if item.pop('encoding', None) == 'zlib':
+                item['base64'] = base64.b64encode(zlib.decompress(base64.b64decode(item['base64']))).decode()
+        legacy['artifact_sha256'] = codify.digest(codify.canonical({k: v for k, v in legacy.items() if k != 'artifact_sha256'}))
+        self.output.write_bytes(codify.canonical(legacy) + b'\n')
+        self.assertEqual(codify.check(self.output)['format'], 'tkstack.codify/v1')
+        for compressed in (zlib.compress(b'x' * (codify.LIMIT // 4 * 3 + 1)), zlib.compress(resource.read_bytes()) + b'trailing', b'broken'):
+            bad = json.loads(json.dumps(lock))
+            bad['files']['scripts/repeated.txt']['base64'] = base64.b64encode(compressed).decode()
+            bad['artifact_sha256'] = codify.digest(codify.canonical({k: v for k, v in bad.items() if k != 'artifact_sha256'}))
+            with self.assertRaisesRegex(ValueError, 'encoding'):
+                codify.validate_lock(bad)
 
     def test_external_and_symlinked_inputs_are_rejected_before_execution(self):
         (self.scripts / 'foreign.py').symlink_to(self.source)

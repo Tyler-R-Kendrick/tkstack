@@ -8,7 +8,7 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "f487dc5e683f7b4e49b3882ee8b87cea6e5d975c"
+          "oid": "a75bf56bc4d997bba55632356e17091e2223013d"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -94,7 +94,7 @@
         },
         "skills/learn/skills/codify/references/artifact.md": {
           "mode": "100644",
-          "oid": "ca38c68f5d258fb600265c18aa5a57161999c09f"
+          "oid": "dd69bb1048e2af0279f88d64568691ecb0a1856c"
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
@@ -138,7 +138,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
+          "oid": "ae5eb37ec1e0f08d0f37c2ecd73ec9fab1182463"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -182,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "43c5c90e8a375bae40b16280b2f5ffebe90e7279"
+          "oid": "63d16d3a9914318900de6e2200df11368e520860"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -318,7 +318,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
+          "oid": "ae5eb37ec1e0f08d0f37c2ecd73ec9fab1182463"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -414,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "01702f9ebcb4c8034a8b9e756cfcb3e0df2400aa"
+          "oid": "00317d0a702f05c1f11cf520f97ba4c52d79129f"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -433,8 +433,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
+      "no_doc_impact": true,
+      "reason": "Reviewed compression, artifact provenance and v1 compatibility wording"
     },
     "catalog": {
       "docs": {
@@ -534,7 +534,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "2a62b3aba1b13a3fc90cd249263834eddd6fa7bc"
+          "oid": "7e82a46bf7bdfdcec8635de8073eb3b8669dcddc"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -571,7 +571,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "525111c249b2da3d6df55c4c3e1da8c9ea5e1cff"
+          "oid": "f3e96e1bbf4cffbefcbf8b0c3364aaecc1dce3a4"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed executable-skill test selection for guidance-only packages; documentation procedure is unchanged"
+      "reason": "Reviewed Codify compressed-lock regression and bounded decoding evidence; documentation process unchanged"
     },
     "execution": {
       "docs": {
@@ -1531,7 +1531,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "186f1d241b3d908257de548a7d42976fa95f5935"
+          "oid": "6232c1ce11ce2b9b43f50de9c30a2e5b3c9c01dc"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -2807,7 +2807,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "035df2a7eceddb20a037798c204b14c344fc25a8"
+          "oid": "e81420a99149d98787bb34caa02426cabb87bcec"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3126,8 +3126,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed SDLC pass-fail routing and skill distribution documentation against current main"
+      "no_doc_impact": true,
+      "reason": "Reviewed rebuilt compressed workflow locks; skill behavior and usage are unchanged"
     }
   },
   "object_format": "sha1",
