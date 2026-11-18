@@ -135,9 +135,10 @@ not copied into the snapshot. Run with an unused receipt path:
 For a standalone install, call `python3 <installed-skill>/scripts/mutate.py`
 with the same flags. Two clean baseline repetitions precede any mutants;
 defaults are 15 seconds per test and 300 seconds total, including engine and
-Git setup, configurable within the documented bounds. Before a receipt is
-reserved, a setup failure is reported with elapsed time on standard error. The
-compiled host has its own outer deadline. Each
+Git setup, configurable within the documented bounds. Once inputs are validated
+and an unused receipt is reserved, a setup deadline is recorded as
+`setup_timeout` with elapsed time and no mutant results. Earlier input or output
+path failures are reported on standard error. The compiled host has its own outer deadline. Each
 case receives a private snapshot under the selected workspace's scoped
 `.tkstack/sessions`; ordinary POSIX child processes are stopped as a group.
 Git discovery in each test is capped before the enclosing checkout. A detached child, blocked filesystem, remote side effect, or
@@ -149,7 +150,7 @@ The new JSON receipt includes the commit, plan, runner and source hashes, engine
 version, actual mutant diffs, per-case elapsed time and captured output. A
 `passed` cell is a candidate survivor; `assertion_failure` is a **candidate**
 kill until its actual output and mutated behavior are reviewed. `error`,
-`timeout`, `not_run_or_skipped`, `not_run`, `invalid_mutation`, and
+`timeout`, `setup_timeout`, `not_run_or_skipped`, `not_run`, `invalid_mutation`, and
 `engine_timeout` are not kills. A `complete` run means all selected cells were
 attempted, not that all faults were valid or detected. A failed baseline
 prevents mutant execution. Never classify a test as redundant solely from one

@@ -29,6 +29,10 @@ GIT_ENVIRONMENT = {'GIT_DIR', 'GIT_WORK_TREE', 'GIT_COMMON_DIR', 'GIT_INDEX_FILE
                    'GIT_CEILING_DIRECTORIES', 'GIT_DISCOVERY_ACROSS_FILESYSTEM'}
 
 
+class SetupTimeout(ValueError):
+    """A bounded engine or Git setup operation did not finish."""
+
+
 def clean_git_environment():
     return {key: value for key, value in os.environ.items() if key not in GIT_ENVIRONMENT}
 
@@ -115,7 +119,7 @@ def invoke(argv, cwd, timeout, env=None):
 def git(repo, *args, timeout=15):
     result = invoke(['git', '-C', str(repo), *args], repo, timeout, clean_git_environment())
     if result['timeout']:
-        raise ValueError('Git operation timed out or the total mutation deadline expired')
+        raise SetupTimeout('Git operation timed out or the total mutation deadline expired')
     if result['exit'] != 0:
         raise ValueError('git failed: ' + result['output'])
     return result['output'].strip()
@@ -176,7 +180,7 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
     def limit(seconds):
         available = remaining()
         if available <= 0:
-            raise ValueError('Total mutation deadline exceeded')
+            raise SetupTimeout('Total mutation deadline exceeded')
         return min(seconds, available)
 
     repo = repo.resolve(strict=True)
@@ -187,34 +191,37 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
     with plan_path.open('rb') as stream:
         plan_bytes = stream.read(1024 * 1024 + 1)
     plan = load_plan(plan_bytes)
-    version = invoke([str(engine), '--version'], repo, limit(15))
-    if version['timeout']:
-        raise ValueError('Mutation engine version check timed out or the total deadline expired')
-    if version['exit'] != 0 or version['output'].strip() != ENGINE_VERSION:
-        raise ValueError('Expected ' + ENGINE_VERSION)
-    commit = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}', timeout=limit(15))
-    if git(repo, 'status', '--porcelain', '--untracked-files=no', timeout=limit(15)):
-        raise ValueError('Commit tracked changes before measuring; the snapshot is HEAD')
-    for mutant in plan['mutants']:
-        git(repo, 'cat-file', '-e', commit + ':' + mutant['module'], timeout=limit(15))
-    report = {'version': 1, 'commit': commit, 'plan_sha256': hashlib.sha256(plan_bytes).hexdigest(),
+    report = {'version': 1, 'commit': None, 'plan_sha256': hashlib.sha256(plan_bytes).hexdigest(),
               'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'json_contract_sha256': hashlib.sha256(Path(json_contract.__file__).read_bytes()).hexdigest(),
               'state_helper_sha256': hashlib.sha256(Path(tkstack_state.__file__).read_bytes()).hexdigest(),
-              'engine': ENGINE_VERSION, 'engine_launcher_sha256': hashlib.sha256(engine.read_bytes()).hexdigest(),
+              'engine': ENGINE_VERSION, 'engine_version_verified': False,
+              'engine_launcher_sha256': hashlib.sha256(engine.read_bytes()).hexdigest(),
               'python': sys.version, 'python_executable': sys.executable, 'test_timeout_seconds': test_timeout,
               'total_timeout_seconds': total_timeout, 'baseline': [], 'mutants': [], 'status': 'incomplete'}
     output.parent.mkdir(parents=True, exist_ok=True)
     # Reserve the receipt before executing any project code; never overwrite an earlier run.
     with output.open('x', encoding='utf-8') as receipt:
         try:
+            version = invoke([str(engine), '--version'], repo, limit(15))
+            if version['timeout']:
+                raise SetupTimeout('Mutation engine version check timed out or the total deadline expired')
+            if version['exit'] != 0 or version['output'].strip() != ENGINE_VERSION:
+                raise ValueError('Expected ' + ENGINE_VERSION)
+            report['engine_version_verified'] = True
+            commit = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}', timeout=limit(15))
+            report['commit'] = commit
+            if git(repo, 'status', '--porcelain', '--untracked-files=no', timeout=limit(15)):
+                raise ValueError('Commit tracked changes before measuring; the snapshot is HEAD')
+            for mutant in plan['mutants']:
+                git(repo, 'cat-file', '-e', commit + ':' + mutant['module'], timeout=limit(15))
             with tkstack_state.session_tempdir(prefix='constrain-mutation-', project=repo) as temp:
                 if os.pathsep in str(temp):
                     raise ValueError('Mutation scratch path cannot contain the Git ceiling separator')
                 archive = temp / 'snapshot.tar'
                 result = invoke(['git', '-C', str(repo), 'archive', '--format=tar', '--output', str(archive), commit], repo, limit(30), clean_git_environment())
                 if result['timeout']:
-                    raise ValueError('Git archive timed out or the total mutation deadline expired')
+                    raise SetupTimeout('Git archive timed out or the total mutation deadline expired')
                 if result['exit'] != 0:
                     raise ValueError('Could not export frozen Git tree: ' + result['output'])
 
@@ -287,6 +294,10 @@ def experiment(repo, plan_path, engine, output, test_timeout, total_timeout, rep
                                 shutil.rmtree(cell)
                     shutil.rmtree(root)
                 report['status'] = 'complete' if all(row['status'] == 'tested' and all(t['status'] != 'not_run' for t in row['tests']) for row in report['mutants']) else 'incomplete'
+        except SetupTimeout as error:
+            report['status'] = 'setup_timeout'
+            report['error'] = str(error)
+            raise
         except Exception as error:
             report['status'] = 'error'
             report['error'] = str(error)

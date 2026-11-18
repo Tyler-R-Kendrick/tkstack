@@ -92,6 +92,8 @@ engine integration and setup-timeout behavior are checked separately.
 For that deadline fix, a deterministic fixture delayed the mutation engine's
 version response by two seconds and requested a one-second total budget. The
 previous runner continued and completed after 2.64 seconds; the revised runner
-stopped the version check and reported the deadline after 1.10 seconds, before
-creating a receipt or running a test. This is one controlled timeout probe,
-not a claim about production latency.
+stopped the version check and reported the deadline after 1.10 seconds. That
+first fix did not leave a receipt. A follow-up run stopped the same setup after
+1.08 seconds and wrote a `setup_timeout` receipt with elapsed time and no test
+or mutant results. These are controlled timeout probes, not a claim about
+production latency.

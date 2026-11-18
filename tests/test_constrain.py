@@ -361,7 +361,11 @@ else:
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('deadline', result.stderr)
         self.assertLess(time.monotonic() - started, 15)
-        self.assertFalse(self.output.exists())
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report['status'], 'setup_timeout')
+        self.assertFalse(report['engine_version_verified'])
+        self.assertGreaterEqual(report['elapsed_ms'], 500)
+        self.assertEqual((report['baseline'], report['mutants']), ([], []))
 
     def test_invalid_plan_or_changed_source_stops_before_a_mutation_is_applied(self):
         result = self.run_mutations(['test_app.Contract.test_exact'], [0], version=True)

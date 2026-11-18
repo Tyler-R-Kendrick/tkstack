@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "f0707a96fa6906f5874f3e96c4718fb9979b73f3"
+          "oid": "f0f704d4a2bc49bf63ab6f739fc0fc3d204b4546"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -583,7 +583,7 @@
         },
         "tests/test_constrain.py": {
           "mode": "100644",
-          "oid": "fdb0323a12938295ce0941f7fcac6b04f7429a65"
+          "oid": "ca802f114f4bb8045cbd83c241fc7ff3037885f9"
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the setup-deadline test and targeted suite digest; documentation ownership and staged policy behavior are unchanged."
+      "reason": "Reviewed the revised setup-timeout behavioral oracle and suite digest; documentation ownership and staged policy behavior are unchanged."
     },
     "execution": {
       "docs": {
@@ -1063,11 +1063,11 @@
         },
         "evals/results/2026-11-18-mutation-test-value.json": {
           "mode": "100644",
-          "oid": "567862dfd2117401b9518f1f3967e2a8ad0816eb"
+          "oid": "f69a17527f9ada9ff131a6908e22c094e68fd9c7"
         },
         "evals/results/2026-11-18-mutation-test-value.md": {
           "mode": "100644",
-          "oid": "a9ca61ddb4cf65e6b60537a4c67cc5c9933bacf4"
+          "oid": "3efc05db6cfccb15ad6725dddfcc8f1e244d46cc"
         },
         "evals/reusify/tasks.json": {
           "mode": "100644",
@@ -1183,7 +1183,7 @@
         },
         "skills/constrain/references/tests.md": {
           "mode": "100644",
-          "oid": "8425d311af29d804d25ea4183b88ee6a5687f11c"
+          "oid": "a538feb3ccfb2ae349d1d8a60ae69a2ba6ffce67"
         },
         "skills/constrain/requirements/requirements.in": {
           "mode": "100644",
@@ -1219,7 +1219,7 @@
         },
         "skills/constrain/scripts/mutate.py": {
           "mode": "100644",
-          "oid": "5f943eddad83b37441505204923a26bd787cc3b0"
+          "oid": "aca3ed62a4b5b2ced60f4b2518db270a3914ef90"
         },
         "skills/constrain/scripts/normalization.json": {
           "mode": "100644",
@@ -1243,7 +1243,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "f6a72d1162a819857775c4f9e5269c4a38634df2"
+          "oid": "108f943e1c05cef3009b5bdcd72998fed92db076"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -3115,7 +3115,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the retained setup-deadline fault probe; the described native command and existing documentation links are unchanged."
+      "reason": "Reviewed the retained setup-timeout receipt; the detailed mutation reference explains it and existing README and skill links remain accurate."
     }
   },
   "object_format": "sha1",
