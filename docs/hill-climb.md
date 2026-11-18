@@ -77,8 +77,10 @@ revisions so the evidence remains auditable.
 Git branches identify distinct hypotheses. The trial records the exact commit
 and tree, and repeats use clean inputs at that same revision. When equivalent
 trees share a measurement, decisions retain the commit that actually ran and
-label the reuse. Experiment refs,
-worktrees, and evidence belong outside the developer's checkout. Git worktrees
+label the reuse. Exploratory plans, local eval outputs and notes can live in a
+task-owned `.tkstack/.scratch/` directory until reviewed or no longer needed.
+The native Git experiment controller requires its private repository, worktrees
+and controller evidence outside every source checkout. Git worktrees
 share objects but do not guarantee filesystem copy-on-write or isolate an
 untrusted process. Preserve the necessary objects or a verified bundle when
 source replay is required; deleting a branch does not immediately reclaim

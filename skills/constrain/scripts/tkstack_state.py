@@ -13,7 +13,7 @@ sys.dont_write_bytecode = True
 
 BEGIN, END = "# tkstack:private-state:start", "# tkstack:private-state:end"
 DEFAULT = "# Ignore generated/local state; keep explicit repository metadata.\n*\n!.gitignore\n!reuse/\n!reuse/catalog.json\n"
-PRIVATE = {"sessions", "runs", "evidence", "state", "cache", "runtime", "steering", "locks",
+PRIVATE = {".scratch", "sessions", "runs", "evidence", "state", "cache", "runtime", "steering", "locks",
            "sdlc", "hill-climb", "instructify", "skillify", "evolution", "openwiki", "wikiskill",
            "integration-installs", "worktrees", "tmp", "build", "learnings"}
 
@@ -78,7 +78,7 @@ def session_path(session=None, project=None, scope="workspace"):
 
 
 def state_path(namespace, project=None, scope="workspace", session=None):
-    if not re.fullmatch(r"[a-z0-9]+(?:[._-][a-z0-9]+)*", namespace):
+    if namespace != ".scratch" and not re.fullmatch(r"[a-z0-9]+(?:[._-][a-z0-9]+)*", namespace):
         raise ValueError("Use a literal tkstack state namespace")
     identity = session or (os.environ.get("TKSTACK_SESSION_ID") if namespace in SESSION_LOCAL else None)
     if identity:
@@ -156,11 +156,11 @@ def policy_plan(project, namespaces=()):
         start, end = base.index(BEGIN), base.index(END) + len(END)
         if end <= start:
             raise ValueError("Malformed tkstack state policy markers")
-        names.update(re.findall(r"^/([a-z0-9][a-z0-9._-]*)/$", base[start:end], re.M))
+        names.update(re.findall(r"^/(\.scratch|[a-z0-9][a-z0-9._-]*)/$", base[start:end], re.M))
         if base[end:end + 1] == "\n":
             end += 1
         base = base[:start] + base[end:]
-    if any(not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", name) for name in names):
+    if any(name != ".scratch" and not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", name) for name in names):
         raise ValueError("State namespace cannot contain Git ignore metacharacters")
     after = base + ("\n" if base and not base.endswith("\n") else "")
     after += BEGIN + "\n" + "\n".join("/" + name + "/" for name in sorted(names))
@@ -174,6 +174,8 @@ def ensure_state(path):
     container = state_container(path)
     relative = path.relative_to(container)
     namespace = relative.parts[0] if relative.parts else None
+    if namespace == ".scratch" and (container / ".scratch").is_symlink():
+        raise ValueError("Scratch root must not be a symlink")
     container.mkdir(parents=True, exist_ok=True)
     lock = container / ".state-policy.lock"
     for attempt in range(100):

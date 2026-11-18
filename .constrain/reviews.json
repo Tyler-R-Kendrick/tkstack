@@ -313,9 +313,9 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "162c6547f22e8eedcbf6e9dcf60f5c0bdaf9e89964ce12d1ff33a216ab6fe63a",
+    "sha256": "838c578ca7d1636bc0e3267d449eb48c1640dff557086a1fc88c7d0ae4565462",
     "risk": "Stale sources, incompatible Python, failed updates, missing generations, wrong workspaces or destructive reapply can misconfigure consumers or overwrite files.",
-    "oracle": "Exercise source and alias selection, interpreter constraints, update rollback and concurrency, missing-generation uninstall, Landmines rules, owned links, Codex discovery, Git gates and Serena argv/cwd. Assert instructions reserve `.tkstack` for helper state, send agent scratch outside checkouts and exclude the whole `.tkstack/` tree. Mutants cover rollback, interpreters and storage policy.",
+    "oracle": "Exercise source and alias selection, interpreter constraints, update rollback and concurrency, missing-generation uninstall, Landmines rules, owned links, Codex discovery, Git gates and Serena argv/cwd. Verify scratch installation, ignore policy, check failure and preservation across reapply. Mutants cover rollback, interpreters and storage policy.",
     "kinds": [
       "contract",
       "simulation",
@@ -484,9 +484,9 @@
     "overlap": "Runner precedence and timing evidence are distinct from installer launcher creation and the Evalify adapter deadline. The optional native SDK check performs no model calls."
   },
   "tests/test_state_layout.py": {
-    "sha256": "9aa341940f71e5a8aa0a7afd188ff8c2a6fa7e9faf04bea41e779303c1651d5b",
+    "sha256": "c3184b1a2f6f3c99df8c4a30f21571f2d1170bc10e405fe7e8dfd781ba9e8194",
     "risk": "Shared scoped-state discovery or symlink handling could write secrets/evidence to another root or expose private sessions.",
-    "oracle": "Run real state helper/CLI across explicit roots, concurrent initialization, ignore exceptions and symlink attacks; inspect files and unchanged nonselected scopes.",
+    "oracle": "Run real state helper/CLI across explicit roots, concurrent initialization, ignore exceptions and symlink attacks; inspect files and unchanged nonselected scopes. Removing the scratch private rule exposes a draft and fails the test.",
     "kinds": [
       "contract",
       "simulation",

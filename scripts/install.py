@@ -490,6 +490,13 @@ def main():
                 view = learn_view(ROOT) / "SKILL.md"
                 if not view.is_file() or view.read_text() != learn_index(ROOT):
                     raise ValueError("Learn discovery view needs setup")
+            scratch = target / ".tkstack/.scratch"
+            if scratch.is_symlink() or not scratch.is_dir():
+                raise ValueError("Scratch directory needs setup: " + str(scratch))
+            from tkstack_state import policy_plan
+            _, before_policy, after_policy = policy_plan(target)
+            if before_policy != after_policy:
+                raise ValueError("State ignore policy needs setup: " + str(target / ".tkstack/.gitignore"))
             target_setup.verify(plan, instruction_plan)
             if adopted:
                 return subprocess.run([str(target / ".tkstack/tkstack"), "skills", "constrain", "--", "native", "check", "--repo", str(target)]).returncode
@@ -499,6 +506,7 @@ def main():
             prepare_aliases(ROOT, profile, upstreams)
             from tkstack_state import ensure_state
             ensure_state(target / ".tkstack/steering")
+            ensure_state(target / ".tkstack/.scratch")
             if not (target / ".tkstack/steering/rules.md").is_file():
                 subprocess.run([sys.executable, str(ROOT / "skills/learn/scripts/learn.py"),
                                 "--project", str(target), "render"], check=True, capture_output=True, text=True)

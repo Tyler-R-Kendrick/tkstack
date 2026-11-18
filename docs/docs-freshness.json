@@ -182,7 +182,7 @@
         },
         "skills/learn/skills/codify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/codify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -190,7 +190,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "71aaaf9d80511dbc98f21f9e275bdb97629614f0"
+          "oid": "c7c02db3866e6eb712a45ef62acd96b81378567d"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -350,7 +350,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -418,7 +418,7 @@
         },
         "skills/learn/skills/skillify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/skillify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -426,7 +426,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a2280f25115a37b33843c7cd2e904c546835a3e2"
+          "oid": "be886c48b9b32e4b5a33652e898100631062a2c8"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -445,8 +445,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
+      "no_doc_impact": true,
+      "reason": "Reviewed current compact-lock authoring documentation after recompiling the shared state helper; the authoring interface is unchanged."
     },
     "catalog": {
       "docs": {
@@ -472,7 +472,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
+          "oid": "9918b04aeb35c6f5cbd93d188f414b70124fe338"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -482,7 +482,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "269cc3d0fd26cfdd55dd09cde3b05bdb76b18381"
+          "oid": "9346c019128d21c01f3b91056f54da43ff1d29f1"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -494,7 +494,7 @@
         },
         ".cursor/rules/tkstack-steering.mdc": {
           "mode": "100644",
-          "oid": "7fab444803216b47ca4d68d7125dfe3e4c4d64a7"
+          "oid": "9e5c8f3ab7b8330d5d6a101954dee0661d36307e"
         },
         ".github/lever.yml": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "151841ed78412b47e79fc67ce11d4998849205ad"
+          "oid": "f40347effbe324f16a1bd2b6fabc7b883bde13f2"
         },
         "sources.lock.json": {
           "mode": "100644",
@@ -526,7 +526,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
+      "reason": "Reviewed both scratch and web-performance profile placement and marketplace metadata after integrating current main; updated the skill inventory."
     },
     "documentation": {
       "docs": {
@@ -546,7 +546,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "53d9425703cde579fc32fb2082196dbec3346fde"
+          "oid": "6eaeb8a512d38ec02b7d76490b0aacad8bbbe014"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -695,7 +695,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "21bdba401173fb764b76266d388564e159944a62"
+          "oid": "727ab37dcd601029d4ed191d68aa7ab2ea514d5b"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -763,7 +763,7 @@
         },
         "tests/test_state_layout.py": {
           "mode": "100644",
-          "oid": "01e06a7d150dd50685cffd193081a5002916b5ed"
+          "oid": "2438a6363ef260a5c32f5eb24989fabb72dd2849"
         },
         "tests/test_unslop.py": {
           "mode": "100644",
@@ -771,7 +771,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed combined installer and workflow inventory changes; documentation maintenance procedure is unchanged"
+      "reason": "Reviewed the documentation gate after integrating installer regression coverage and current main; maintenance behavior is unchanged."
     },
     "execution": {
       "docs": {
@@ -814,7 +814,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "54c3b8a7ad542226072a53eb2e172f239e6bd137"
+          "oid": "40d83791a700e5b2c9db50158c62ce5d07d83b80"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -849,11 +849,11 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "c3d6a945891fb36e4338268d57d583df601b9c0e"
+          "oid": "0b6b98f9bf3e86bc5bc4ad2f0965ed2c767f7890"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
-          "oid": "d118ab28849a04a318c5154663287c287102d614"
+          "oid": "b6da89bd242f86dad69272a543998cd5ab142fc7"
         },
         "src/README.md": {
           "mode": "100644",
@@ -873,11 +873,11 @@
         },
         "src/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed current installation, bundled tool paths, update recovery, and bootstrap guidance after rebasing the complete TKstack-state exclusion onto main."
+      "reason": "Reviewed installation and bootstrap guidance for creation, checking and Git exclusion of the scratch workspace."
     },
     "skills": {
       "docs": {
@@ -903,7 +903,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "73756ab39843d6ee0a747cee0ff5c372029b88e8"
+          "oid": "7de6561f513e672b41393656327a4fe4eab6c386"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -943,7 +943,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
+          "oid": "9918b04aeb35c6f5cbd93d188f414b70124fe338"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -951,7 +951,7 @@
         },
         "docs/state-layout.md": {
           "mode": "100644",
-          "oid": "4196c7db44cd78eaca8e22c98c9bf3c53d3147c5"
+          "oid": "2af04eec33284bfabf809eba5cb9c86e3f520e04"
         },
         "docs/unslop.md": {
           "mode": "100644",
@@ -1249,7 +1249,7 @@
         },
         "skills/constrain/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/constrain/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1257,7 +1257,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "edb8b8facb5e319fd90398cdcc63e3e5c7a2f0dc"
+          "oid": "516ea6eb00a6c582fb867c4bd0cc493c95127721"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1329,7 +1329,7 @@
         },
         "skills/document/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/document/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1337,7 +1337,7 @@
         },
         "skills/document/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "fdb4c4d16ab22b74210ed1cdc78ccac36a92ee6a"
+          "oid": "e1fd2a4cef9e3b7c0c6fa940147a9d6a670df46b"
         },
         "skills/hill-climb/LICENSE": {
           "mode": "100644",
@@ -1449,7 +1449,7 @@
         },
         "skills/hill-climb/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "6f484399243d63076f5e59d09e05be20c0cb1a8b"
+          "oid": "29cb9049adfebe75dcba0af7e6ca8fac036c5624"
         },
         "skills/hill-climb/references/sources.md": {
           "mode": "100644",
@@ -1541,7 +1541,7 @@
         },
         "skills/hill-climb/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/hill-climb/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1549,7 +1549,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "3dad8bb15d4b5aa0f8c32975e3a651df6f0db0f3"
+          "oid": "26b29796e7b68f5b36f3b93126ac858cdbdef8c9"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -1629,7 +1629,7 @@
         },
         "skills/investigate/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/investigate/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1637,7 +1637,7 @@
         },
         "skills/investigate/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "dfed569e0843d505d67f5588176ce38fa20f87b2"
+          "oid": "aa53d602e230d7a9003ac138ab2d4b05db278921"
         },
         "skills/learn/LICENSE": {
           "mode": "100644",
@@ -1797,7 +1797,7 @@
         },
         "skills/learn/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1805,7 +1805,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "86381ef51abe8b281b3d575426428bde6692b4a6"
+          "oid": "f5f2ec0adad4fb0ca6a35be3032636d90ad779c9"
         },
         "skills/learn/skills/evalify/LICENSE": {
           "mode": "100644",
@@ -1885,7 +1885,7 @@
         },
         "skills/learn/skills/evalify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/evalify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -1893,7 +1893,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a49f37bc8fa0d3a6f1bb80cfd163a02b4af532fe"
+          "oid": "d5b9031754fb222d362a87c7f65cba0f2ba1a46f"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1993,7 +1993,7 @@
         },
         "skills/learn/skills/flowify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/flowify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2001,7 +2001,7 @@
         },
         "skills/learn/skills/flowify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "beeac6e5a2a831c261dc7e6663eccc896193f2cb"
+          "oid": "d1358889c493e514b079966455da790c1b39d17c"
         },
         "skills/learn/skills/flowify/templates/maf/README.md.tmpl": {
           "mode": "100644",
@@ -2145,7 +2145,7 @@
         },
         "skills/learn/skills/hookify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/hookify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2153,7 +2153,7 @@
         },
         "skills/learn/skills/hookify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "22eb83950b06a2dd4ef5bd9a36717f59319fa8bd"
+          "oid": "5f3513992d98d0d1aa09f1aba3610df7256d3be8"
         },
         "skills/learn/skills/instructify/LICENSE": {
           "mode": "100644",
@@ -2249,7 +2249,7 @@
         },
         "skills/learn/skills/instructify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/instructify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2257,7 +2257,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "f873be5c8e770a869b4f9121e700a8011d3d2c76"
+          "oid": "5288fa620ae1ccaa55f376ec24aee94a9d746dbc"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2341,7 +2341,7 @@
         },
         "skills/learn/skills/lintify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/lintify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2349,7 +2349,7 @@
         },
         "skills/learn/skills/lintify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a041c799cedec702872f956ec9513b023453004e"
+          "oid": "0135f72eafac4cb764ba7b04aba2655ad359a134"
         },
         "skills/learn/skills/lintify/templates/eslint/README.md": {
           "mode": "100644",
@@ -2541,7 +2541,7 @@
         },
         "skills/learn/skills/reusify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/reusify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2549,7 +2549,7 @@
         },
         "skills/learn/skills/reusify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "6af02408bb50987782d0259cd2af576991fb28a5"
+          "oid": "23fe9b36f585fb8ce982e1ffb3bbc6b88a2fa77f"
         },
         "skills/learn/skills/testify/LICENSE": {
           "mode": "100644",
@@ -2629,7 +2629,7 @@
         },
         "skills/learn/skills/testify/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/learn/skills/testify/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2637,7 +2637,7 @@
         },
         "skills/learn/skills/testify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "69e76d616a8f932de93c0df51800810e7a92c27d"
+          "oid": "e5d7200d0d33f91db4b244c112508517bf49ff57"
         },
         "skills/learn/templates/improvement.json": {
           "mode": "100644",
@@ -2646,6 +2646,14 @@
         "skills/learn/templates/session-decision.json": {
           "mode": "100644",
           "oid": "3770804c19cb76d8245efa4bbc95250b0ed7ce22"
+        },
+        "skills/scratch/LICENSE": {
+          "mode": "100644",
+          "oid": "3eed60add06356adb06c1f44286f8a6e3012bb7a"
+        },
+        "skills/scratch/SKILL.md": {
+          "mode": "100644",
+          "oid": "96aac4faa2688ddf906214e586eca4dc2e25f5b1"
         },
         "skills/sdlc/LICENSE": {
           "mode": "100644",
@@ -2769,11 +2777,11 @@
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
-          "oid": "f296d25ab10e408ee87dd037e7f8961eae59750c"
+          "oid": "40ef31d25872fd27caa22ef1a023c9c60d0d275f"
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "af926bcaabfe6c8aa283f2dbc21eea69012fae16"
+          "oid": "cd768e2a12f684961a20f35261fc8a10013e2ca3"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2829,7 +2837,7 @@
         },
         "skills/sdlc/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/sdlc/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2837,7 +2845,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "0ad48f9058c1b0c980795199d4272ab9e7b89ac1"
+          "oid": "999b9318c5e92b99ffb10d4976cf4eb0e579d78d"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2873,7 +2881,7 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "151841ed78412b47e79fc67ce11d4998849205ad"
+          "oid": "f40347effbe324f16a1bd2b6fabc7b883bde13f2"
         },
         "skills/tkstack-principles/LICENSE": {
           "mode": "100644",
@@ -2929,7 +2937,7 @@
         },
         "skills/tkstack-principles/references/storage.md": {
           "mode": "100644",
-          "oid": "1b56dc4f78a7a43b4d82fe619b848a179a001db1"
+          "oid": "d8bd46947e07f31e1fca6efe0ecd5d1db3b7334a"
         },
         "skills/tkstack-principles/scripts/contract.json": {
           "mode": "100644",
@@ -2953,7 +2961,7 @@
         },
         "skills/tkstack-principles/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/tkstack-principles/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -2961,7 +2969,7 @@
         },
         "skills/tkstack-principles/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "84b224414cf0db03aabd48a18c77fdfe0ae85a01"
+          "oid": "ed314424fac37eeb6c982119f7d4d8ce0248e532"
         },
         "skills/unslop/LICENSE": {
           "mode": "100644",
@@ -3057,7 +3065,7 @@
         },
         "skills/unslop/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/unslop/scripts/unslop.py": {
           "mode": "100644",
@@ -3069,7 +3077,7 @@
         },
         "skills/unslop/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "0fca31428f1c638afecc1f10b1ebf7945f30e549"
+          "oid": "1221fd0bed93fa35fb348defc1d6e8eba80ec745"
         },
         "skills/web-performance/LICENSE": {
           "mode": "100644",
@@ -3145,7 +3153,7 @@
         },
         "skills/write/scripts/tkstack_state.py": {
           "mode": "100644",
-          "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
+          "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         },
         "skills/write/scripts/workflow.cases.json": {
           "mode": "100644",
@@ -3153,11 +3161,11 @@
         },
         "skills/write/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
+          "oid": "eedb5eeac337b0464b53436c21d9ed340743674c"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
+      "reason": "Reviewed scratch storage and hill-climb guidance alongside the current compact packages and updated the skill inventory and state layout."
     }
   },
   "object_format": "sha1",

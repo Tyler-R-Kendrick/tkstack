@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "personal": ["constrain", "investigate", "learn", "tkstack-principles"],
-    "development": ["constrain", "document", "hill-climb", "investigate", "learn", "sdlc", "tkstack-principles", "unslop", "web-performance", "write"],
-    "design": ["constrain", "investigate", "learn", "open-design", "fal-ai", "tkstack-principles", "write"]
+    "personal": ["constrain", "investigate", "learn", "scratch", "tkstack-principles"],
+    "development": ["constrain", "document", "hill-climb", "investigate", "learn", "scratch", "sdlc", "tkstack-principles", "unslop", "web-performance", "write"],
+    "design": ["constrain", "investigate", "learn", "open-design", "fal-ai", "scratch", "tkstack-principles", "write"]
   },
   "aliases": {
     "pstack": {

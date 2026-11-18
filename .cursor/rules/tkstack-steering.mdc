@@ -33,11 +33,11 @@ evidence remains unreviewed.
 
 Use the learn tool's `show --all-scopes` to inspect workspace, user, and global
 steering with nearest-scope precedence for the same rule ID. Scoped roots come
-from `tkstack_state.py locations` and TKSTACK_*_DIR overrides. Use those roots
-only through TKstack-owned state helpers and write only to the selected scope.
-Never put agent-authored checkpoints, progress notes, handoffs, or arbitrary
-scratch anywhere inside a source checkout, including `.tkstack/`; use an OS
-temporary directory outside the checkout. TKstack-managed sessions remain
+from `tkstack_state.py locations` and TKSTACK_*_DIR overrides. Use the scratch
+skill for drafts, notes, and exploratory evaluations in a task-owned, ignored
+`.tkstack/.scratch/` directory. Never commit scratch. Promote requested durable
+artifacts and clean up only your own finished, confirmed task directory. Use
+state helpers for other managed namespaces. TKstack-managed sessions remain
 ignored under `.tkstack/sessions/<session>/`, and Learn session consolidation
 extracts reusable rules/artifacts through the appropriate ___ify skills.
 Reports/audits and automatic captures keep their scope.
