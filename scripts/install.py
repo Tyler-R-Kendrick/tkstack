@@ -24,10 +24,7 @@ SKILL_PATHS = SKILL_DIRECTORIES
 DEFAULT_HARNESSES = ("codex", "claude", "cursor")
 LEGACY_SKILL_DIRECTORIES = (Path(".muse/skills"),)
 ADOPTED_SOURCE = "adopted"
-AGENT_PATHS = {
-    "claude": Path(".claude/agents"),
-    "cursor": Path(".cursor/agents"),
-}
+AGENT_PATHS = {"claude": Path(".claude/agents"), "cursor": Path(".cursor/agents")}
 
 
 def verify_vendor(root):
@@ -245,7 +242,8 @@ def link_plan(root, target, harnesses, scope="home", profile="catalog"):
         relatives = harness_skill_directories(harness, scope)
         if not relatives:
             continue
-        skills = placed(root, "skills", harness)
+        skills = (collect(root, "skills", "codex") if scope == "project" and profile == "catalog"
+                  and harness in {"codex", "muse"} else placed(root, "skills", harness))
         if profile != "catalog":
             skills = {name: path for name, path in skills.items() if name in selected}
         if "learn" in skills and (root / "skills/learn/skills").is_dir():

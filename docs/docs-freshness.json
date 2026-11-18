@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "79280338098130d599b2e0dc5d893e4ed7e00485"
+          "oid": "0316db47502aad63e20b6f2ffec1f1403f6422f6"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -709,6 +709,10 @@
           "mode": "100644",
           "oid": "f6280a72fd05dfb85a5dd6a6311c53886ee8750b"
         },
+        "tests/test_project_skill_placement.py": {
+          "mode": "100644",
+          "oid": "da277f6d8cb18c6a8fbb0a938829b1173ddf34ec"
+        },
         "tests/test_repo_quality.py": {
           "mode": "100644",
           "oid": "3bd2db74fff78a7e7df891b2c085e132802b52ee"
@@ -759,7 +763,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the compiled Learn dispatch checks and updated suite digests; documentation ownership and policy behavior are unchanged."
+      "reason": "Catalog placement and routing do not change documentation maintenance."
     },
     "execution": {
       "docs": {
@@ -801,7 +805,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "e490f65d45c39dcca098406b02b4c5876518c9c2"
+          "oid": "ca7a0a8174c73b63c2e41c3b6f1d5252fe8778dd"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -835,7 +839,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "be4926b3062bbd0022c77e96fdb36e11ed79d038"
+          "oid": "bbf32e30fb3ac723b79ebdfd7415f881c5e455cf"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -863,7 +867,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
+      "reason": "Reviewed project catalog host discovery, shared Codex views and SDLC routing guidance on current main."
     },
     "skills": {
       "docs": {
@@ -917,7 +921,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "6e673ac7e2a905f4a0a483e4edb6b6f971d3b455"
+          "oid": "bf146355983d4ed74fee10a6421a4e4dd62a6ce6"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -2747,7 +2751,7 @@
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "3da1dcdaec4ca42b3d460b52b7f321a26786edac"
+          "oid": "26e2ad912742b727ac050ecf8acda22e6511694b"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2803,7 +2807,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e02d69440ff8bfbb3f5df971b8d0051daf5ebc6d"
+          "oid": "920868d7b3aaa1e8bc80bfeb1b0426af7eb85d8b"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3114,8 +3118,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed direct helper startup and local imports; disabling bytecode writes preserves the already documented execution and interruption behavior."
+      "no_doc_impact": false,
+      "reason": "Reviewed project catalog host discovery, shared Codex views and SDLC routing guidance on current main."
     }
   },
   "object_format": "sha1",

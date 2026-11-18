@@ -15,6 +15,14 @@ A foreign destination or manually edited owned instruction section stops setup. 
 
 Codex loads user instructions from `$CODEX_HOME/AGENTS.md` or `~/.codex/AGENTS.md`. Claude reads `~/.claude/CLAUDE.md`. Home pointers use absolute paths so the active project can live anywhere. In project scope, setup maintains an owned block in `AGENTS.md` and a Claude import if selected. The rest of each file remains project-owned. The [harness table](harnesses.md) gives skill directory placement.
 
+Select `--profile catalog` for a project to expose the full pinned skill
+catalog to Codex and Muse, including Cursor-origin skills. Both hosts share
+the project skill directory and use the same Codex views, so either can
+reconcile those links. Home installs
+continue to honor each source's normal host placement. Skill instructions are
+portable guidance; host-specific tools, agents, hooks and credentials need
+their own configuration.
+
 External Git project roots receive exact link paths in their local `info/exclude`. Team instructions and the portable `.tkstack/.gitignore` remain visible to Git. Avoid committing machine-specific symlinks. TKStack refuses to take over existing instruction blocks, link destinations or hook managers.
 
 ## Adopt team constraints

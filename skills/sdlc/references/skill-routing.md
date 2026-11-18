@@ -4,6 +4,9 @@ Use this guide to choose an installed skill. The owned `sdlc` skill still runs t
 
 The inventory is generated from the real skill set: every package under `skills/` (including Learn subskills), every adopted package under `.agents/skills/`, every skill the installer places from `vendor/`, and vendored skills that are intentionally not placed. `skills/skills.json` decides placement. It does not ship a separate skill package today. `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing entry, an entry names a missing skill, or this file's generated region is stale. A vendored `SKILL.md` that redeclares an installed name is an error unless that path is on the duplicate allowlist in `skills/sdlc/scripts/routing_inventory.py`. The allowlist is only Caveman's plugin mirror, Impeccable's per-harness builds, and vendor trees whose installer view is the routed copy.
 
+Placement labels describe normal host placement. The project catalog also makes
+the installer's pinned skill sources available to Codex and Muse.
+
 ## Decision guide
 
 Name a skill when the user named it. Otherwise pick the phase, then the stack whose procedure matches. For qualifying SDLC feature work with an observable quality difference, use [measured feature work](measured-feature-work.md) and its task-scoped `hill-climb` subworkflow.
