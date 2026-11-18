@@ -1,4 +1,11 @@
 {
+  "tests/test_project_skill_placement.py": {
+    "sha256": "3f902eeee5313603d3836c43c1a1cd0815dd455117f55e7e7310d6aaf9797c54",
+    "risk": "Project catalog selection may omit portable skills, remove foreign links, or change home and personal placement.",
+    "oracle": "Known Cursor-source skills appear in project Codex plans, Muse preserves recorded links and uses the working shared Graphify view, changing profile removes only owned links, and home and personal installs preserve placement.",
+    "kinds": ["contract", "functional"],
+    "overlap": "Exercises project catalog and receipt reconciliation; general installer tests cover the default profile and target lifecycle."
+  },
   "tests/test_authoring.py": {
     "sha256": "bf3d474b286dc5c04d9c2faa1cd2335e5683eab3d811df09bed2b72d7249da68",
     "risk": "Hook policies or generated CLI contract tests could permit invalid actions, overwrite files, hang, or miss real behavioral faults.",

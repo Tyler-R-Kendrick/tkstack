@@ -16,6 +16,8 @@ Which installed skill fits a phase is
 links that guide from its request table and keeps this page on the outer loop.
 `python3 skills/sdlc/scripts/routing_inventory.py check` fails when a skill has no routing
 entry or an entry names a missing skill.
+Its placement labels describe normal host placement; the project catalog also
+exposes pinned skill sources to Codex and Muse.
 
 For new features and improvements with an observable quality difference,
 SDLC planning includes a task-scoped rubric and measurement harness. The
