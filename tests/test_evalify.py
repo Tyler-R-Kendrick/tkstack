@@ -79,6 +79,23 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertEqual(calibration['confusion'], {'true_positive': 1, 'true_negative': 1,
                                                     'false_positive': 1, 'false_negative': 1})
 
+    def test_host_timing_summary_preserves_unknown_observations(self):
+        self.data['cases'][0]['elapsed_ms'] = 10
+        self.data['cases'][1]['elapsed_ms'] = None
+        self.data['cases'][2]['elapsed_ms'] = 4
+        self.save()
+        result = self.cli('run', 'timing.time.json', ['--output', 'timing.json'])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads((self.root / 'timing.json').read_text())['timing']
+        self.assertEqual(summary, {'observed': 2, 'missing': 1, 'median_ms': 7, 'max_ms': 10})
+        for case in self.data['cases']:
+            case['elapsed_ms'] = None
+        self.save()
+        result = self.cli('run', 'unknown.time.json', ['--output', 'unknown.json'])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads((self.root / 'unknown.json').read_text())['timing']
+        self.assertEqual(summary, {'observed': 0, 'missing': 3, 'median_ms': None, 'max_ms': None})
+
     def test_alternate_model_executable_and_malformed_records_are_rejected_before_dispatch(self):
         for flag in ('--model', '--provider', '--executable', '--config'):
             with self.subTest(flag=flag):

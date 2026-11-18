@@ -170,7 +170,7 @@ def main():
                         if len(stdout) > LIMIT:
                             raise ValueError('Framework result exceeds 1 MiB')
                         result = json.loads(stdout, object_pairs_hook=pairs)
-                        if not isinstance(result, dict) or set(result) != {'calibration', 'current'}:
+                        if not isinstance(result, dict) or set(result) != {'calibration', 'current', 'timing'}:
                             raise ValueError('Invalid offline framework result')
                         write_reserved(result_fd, result)
                     except (ValueError, TypeError) as error:

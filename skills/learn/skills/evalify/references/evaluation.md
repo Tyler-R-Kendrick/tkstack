@@ -64,6 +64,8 @@ review the lock. A project-owned input must be at most 1 MiB and contain:
 current case. `elapsed_ms` is a real host-observed duration, or null when not
 available; never invent it. The output counts matching labeled judgments,
 separates false positives from false negatives, and counts current pass judgments.
+Its timing summary reports the number of observed and missing durations and the
+median and maximum of observed values; absent observations remain unknown.
 It is a descriptive summary, not proof of calibration,
 host identity, an independent evaluator, or model performance.
 
