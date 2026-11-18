@@ -4,7 +4,7 @@
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/codify.md": {
           "mode": "100644",
@@ -434,17 +434,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     },
     "catalog": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
+          "oid": "4bbb9d797f0b85f7657545c0ff649aad9751d623"
         },
         "docs/harnesses.md": {
           "mode": "100644",
@@ -452,7 +452,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
+          "oid": "0fa8d1f662f9a2341c858497fe3a031a7091b1f1"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -460,7 +460,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ba89d324d7f926ead1482ffaa22c4dcf67dee551"
+          "oid": "d8bf937edc2473845f5b6c90c6886bc1d500fd0b"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -492,17 +492,13 @@
           "mode": "100644",
           "oid": "294de2a868bc1dbd051ef975b446c6a5e96bdc8f"
         },
-        "integrations/mcp/package-lock.json": {
+        "integrations/latest.py": {
           "mode": "100644",
-          "oid": "8e1e8a0704461e504741e364d376309175fee96e"
-        },
-        "integrations/mcp/package.json": {
-          "mode": "100644",
-          "oid": "67b3d1c5e8dbfaeae0689b75c416b0384d3ec589"
+          "oid": "c0637edbbbd55e6fbe2e271f637b5fa90d3b7500"
         },
         "mcp.json": {
           "mode": "100644",
-          "oid": "de257d439e7544de6a71be82fce494906110c845"
+          "oid": "146623b62df4474baa552c48cee68d1b712378f9"
         },
         "plugin.json": {
           "mode": "100644",
@@ -514,21 +510,21 @@
         },
         "sources.lock.json": {
           "mode": "100644",
-          "oid": "f568280a5a57d33c7d4a358998fba0c590d25153"
+          "oid": "c388ab78669494b9e1a5f96b72131d33b450de6d"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     },
     "documentation": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/documentation.md": {
           "mode": "100644",
-          "oid": "5b31e9de07a97364363e7533a2ae3c9ac19a63f5"
+          "oid": "51c28d3b590e68377bedd2c5d01a4c1d280875b2"
         }
       },
       "inputs": {
@@ -538,7 +534,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "3812ef7bc1a28f1a57d7e9cd52c3dd9c8cc15be6"
+          "oid": "05a61389dcf4dc82bbc3501184c4b3a373600ab8"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -547,11 +543,11 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "ece8f7f1682312c461569bfce2525be37c1ec3c5"
+          "oid": "5b24dd66c0c59c63719832a0118907e94bc456e4"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
-          "oid": "c57ffb75c86af595da64ae093c405d8416d06afc"
+          "oid": "08456fa822182fecbd11c1d8b15d3fd079f1f505"
         },
         "skills/constrain/scripts/git_snapshot.py": {
           "mode": "100644",
@@ -559,11 +555,11 @@
         },
         "src/check_docs.py": {
           "mode": "100755",
-          "oid": "041655655d5ea2f345404a9c7a8b44bc082242b3"
+          "oid": "8ea1ca7b2a79efa85394547f343804d5e07a2020"
         },
         "tests/installer_stubs.py": {
           "mode": "100644",
-          "oid": "4821274d07722a7644caad7e826b27a558dc3af4"
+          "oid": "4721586ecb23642c581de222c0f5ff889ee1a77a"
         },
         "tests/test_authoring.py": {
           "mode": "100644",
@@ -587,7 +583,7 @@
         },
         "tests/test_docs_hooks.py": {
           "mode": "100644",
-          "oid": "8491f1431657714aa6021c3865189c6ee2e2c056"
+          "oid": "97612d1a80cf7c7e4d999925062cec47c71bf921"
         },
         "tests/test_evalify.py": {
           "mode": "100644",
@@ -687,7 +683,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "0806aff0b095b3d3bd3b8a8efd5d4b9daff6ca56"
+          "oid": "07dde9d034faa7f91054e9a4528dcb0e9ac1d70b"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -762,14 +758,14 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Expanded catalog routing and its owned-tree allowance do not change documentation maintenance."
+      "no_doc_impact": false,
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     },
     "execution": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -787,29 +783,29 @@
         },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "1268fa157614f2a8fc5a1a32e6f5a6f6c1b47f20"
+          "oid": "0121df45a0844542230c29a49a5126d4bf27792e"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     },
     "setup": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
+          "oid": "4bbb9d797f0b85f7657545c0ff649aad9751d623"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "4d296c120dc9767aa1237cb935a7264098a80f86"
+          "oid": "5decc9de4fb7fee1b8577d4b6964c77c9ce85095"
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
+          "oid": "0fa8d1f662f9a2341c858497fe3a031a7091b1f1"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -827,11 +823,11 @@
         },
         ".github/workflows/skills.yml": {
           "mode": "100644",
-          "oid": "abc2c70d36fb98e44359138821d29d0b80d4b72b"
+          "oid": "2bcc5a6aabddf609256e9a62afad6a7444a0063f"
         },
         "install.sh": {
           "mode": "100755",
-          "oid": "a5d8a5b3191d3c13a1a1a1476576fbe77ab9ff1f"
+          "oid": "6f02a1b3370c49f55ca43cf6d39d9defe8e22148"
         },
         "scripts/harness_paths.py": {
           "mode": "100644",
@@ -839,11 +835,11 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "e7c07833e4e455163b64757e8890fdc39514ed58"
+          "oid": "c3d6a945891fb36e4338268d57d583df601b9c0e"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
-          "oid": "15e4a90c69e6feaa5da70508427cc5e1301dc4b1"
+          "oid": "a8ddd69f6b6263f1c60ce5f8437659f7b9144c2c"
         },
         "src/README.md": {
           "mode": "100644",
@@ -867,17 +863,17 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     },
     "skills": {
       "docs": {
         "README.md": {
           "mode": "100644",
-          "oid": "42871e890dfc6152714f57be2cf8e874c73541d0"
+          "oid": "3e7c472fd5944b55dbcaba19ce79b585a36b98a6"
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
+          "oid": "4bbb9d797f0b85f7657545c0ff649aad9751d623"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -897,7 +893,7 @@
         },
         "docs/integrations.md": {
           "mode": "100644",
-          "oid": "14f4fd46c5f7d25ceae36aebb05fff190242d690"
+          "oid": "0fa8d1f662f9a2341c858497fe3a031a7091b1f1"
         },
         "docs/learning.md": {
           "mode": "100644",
@@ -905,7 +901,7 @@
         },
         "docs/lintify.md": {
           "mode": "100644",
-          "oid": "04e5666f9978f5803c678cb2f2c07f88f8570265"
+          "oid": "032c8324a9ed89bf208bbc24993101d64af3bdff"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -929,15 +925,15 @@
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
-          "oid": "53c741379eaf550f3a40d5b80fba63ff426e9527"
+          "oid": "0d8b07b5acca721972f0a87bcd79104a793b7f8e"
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "ba89d324d7f926ead1482ffaa22c4dcf67dee551"
+          "oid": "d8bf937edc2473845f5b6c90c6886bc1d500fd0b"
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "264d84a365207202d741b095be174114b962c991"
+          "oid": "10a532c128270f63701a9c9c5c5a04cb17d16ef8"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1019,7 +1015,7 @@
         },
         "evals/repo-quality/repo_mcp_policy.py": {
           "mode": "100644",
-          "oid": "54bf051054401cd921e648a4370c3a2f25eee410"
+          "oid": "7eb14eeb0ea6d44b5d0f0295502108b32a41ed9e"
         },
         "evals/repo-quality/results/archive/README.md": {
           "mode": "100644",
@@ -1747,7 +1743,7 @@
         },
         "skills/learn/scripts/evolve.py": {
           "mode": "100644",
-          "oid": "4afe70b50e8905cafcad7092d88367e58adba124"
+          "oid": "7df5bd53decc481a53943daaa9ae123cf5479743"
         },
         "skills/learn/scripts/json_contract.py": {
           "mode": "100644",
@@ -1787,7 +1783,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "49f883355e12756540559770e1a07f765743875a"
+          "oid": "86381ef51abe8b281b3d575426428bde6692b4a6"
         },
         "skills/learn/skills/evalify/LICENSE": {
           "mode": "100644",
@@ -2747,11 +2743,11 @@
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
-          "oid": "c7fcd8413f1044bfb351e667739f55754e631b3a"
+          "oid": "10f3e30750680fcda84bae6a654f595eabf4c135"
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "d514dc8ac3514ca38c28e70a9efa4f5aa0a63810"
+          "oid": "a65f7ebaf6d4d81e8c3982849a11e628569a940d"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2807,7 +2803,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e647e9c9c3f71731a306c7fd4aea53e7703cd198"
+          "oid": "391fb2a67ecc65c9f802b324dda5c75218ce9caa"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -3119,13 +3115,13 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
+      "reason": "Reviewed current dotfiles installation, compatible runtime selection, update recovery, Pstack placement, host-bound evolution, and their documented commands after rebasing onto main."
     }
   },
   "object_format": "sha1",
   "policy": {
     "mode": "100644",
-    "oid": "c57ffb75c86af595da64ae093c405d8416d06afc"
+    "oid": "08456fa822182fecbd11c1d8b15d3fd079f1f505"
   },
   "version": 1
 }

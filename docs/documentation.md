@@ -18,8 +18,8 @@ python3 src/check_docs.py check
 The policy in `docs/docs-policy.json` maps source paths to documentation owners.
 The error identifies affected areas and pages. Compare the source change to
 those pages, update actual instructions/examples, and verify relevant commands.
-`render` updates only the README's install-pin block from `PYTHON_VERSION`,
-`UV_VERSION`, and `UV_INSTALLER_SHA256` in `install.sh`. It preserves all other prose.
+`render` updates only the README's install block from `PYTHON_VERSION` in
+`install.sh`. It preserves all other prose.
 
 `refresh` records the reviewed source/doc contents and executable modes in
 `docs/docs-freshness.json`. It requires an actual reason and does not update

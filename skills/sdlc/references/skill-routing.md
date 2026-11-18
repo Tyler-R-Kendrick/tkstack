@@ -67,6 +67,7 @@ routing entry.
 | OpenWiki | Repository wiki retrieval and updates | LangChain's official skill for searching, generating, and updating a repository wiki through its resumable MCP lifecycle. document remains the portable documentation skill when that lifecycle is not selected. |
 | Caveman | Terse agent output and token-cheap exploration | Official Caveman skills and Cavecrew delegation. The voice modes (caveman, megacave, ultracave) change how work is said, not which engineering workflow runs. Explore, review, commit, and learn skills cover the narrower jobs. Native hooks are documented in docs/caveman.md. |
 | Graphify | Architecture questions against an extracted code graph | Official Graphify skill, rendered per harness from the pinned templates. Use it to query structure, communities, and paths before guessing how a codebase fits together. Indexing is a separate explicit runtime step. |
+| Landmines | Optional JS/TS testing, style, structure, and type linting | Current Oxlint rules and runtime are installed with the default dotfiles catalog. Review the recommended policy and release-specific limitations before running it in a project. Landmines is a native linter plugin, not an installed agent skill. |
 
 | Skill | Stack | What it is for | Strengths | Best SDLC phase | Placement |
 | --- | --- | --- | --- | --- | --- |

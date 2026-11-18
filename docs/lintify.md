@@ -9,6 +9,10 @@ bad/transfer fixtures, an invocation, and observed enforcement evidence. Reuse
 an existing project rule or linter before writing a plugin. The skill is an
 authoring tool, not another lint engine.
 
+For JS/TS, the installed [Landmines integration](integrations.md#landmines)
+supplies existing Oxlint rules for testing, style, structure, and types. Review
+its recommended policy and release-specific limits before enabling it.
+
 Markdown is a first-class rule source. **Lintbook** compiles readable intent
 plus Datafox into deterministic artifacts; ordinary checking needs no model.
 The invoking agent handles any residual semantic judgment in its current conversation.

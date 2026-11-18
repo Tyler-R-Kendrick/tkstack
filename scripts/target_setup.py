@@ -57,6 +57,7 @@ def instruction_changes(root, target, harnesses, scope="project", remove=False, 
         home_body = (f"Read <{target / '.agents/principles/SKILL.md'}> and applicable references.\n"
                      f"Read matching learned rules in <{target / '.agents/steering/rules.md'}>.\n"
                      f"From the active project invoke `{shlex.quote(str(target / '.tkstack/tkstack'))} skills <name> -- <command>`. "
+                     f"Bundled tool commands are in `{target / '.tkstack/bin'}`. "
                      "Keep project state in the active project's .tkstack directory.\n")
         if "codex" in harnesses or "codex" in previous:
             paths[codex_directory(target, scope) / "AGENTS.md"] = home_body if "codex" in harnesses else None
@@ -200,17 +201,21 @@ def status(target, root, profile):
     print("Project constraint policy:", "configured" if (target / ".constrain/config.json").is_file() else "available (--adopt)")
     print("Native agent hooks: optional; confirm registration and event delivery in the host")
     for name, spec in servers.items():
+        command = spec["command"].replace("${PLUGIN_ROOT}", str(root)) if "command" in spec else None
         if spec.get("type") == "streamable-http":
             readiness = "client OAuth and live connection unverified"
-        elif not shutil.which(spec["command"]):
-            readiness = "needs executable " + spec["command"]
-        elif name in ("playwright", "firecrawl"):
+        elif not (Path(command).is_file() if "/" in command else shutil.which(command)):
+            readiness = "needs executable " + command
+        elif name in ("playwright", "firecrawl", "graphify"):
             entry = spec["args"][0].replace("${PLUGIN_ROOT}", str(root))
-            readiness = "local runtime present" if Path(entry).is_file() else "needs npm ci in integrations/mcp"
-            if name == "firecrawl" and not os.environ.get("FIRECRAWL_API_KEY"):
-                readiness += "; cloud credentials unverified"
+            readiness = "local runtime present" if Path(entry).is_file() else "needs a dotfiles update"
+            readiness += ("; cloud credentials unverified" if name == "firecrawl" and not os.environ.get("FIRECRAWL_API_KEY")
+                          else "; client-owned graph unverified" if name == "graphify" else "")
         else:
             readiness = "executable present; client-owned graph unverified"
         print(f"MCP {name}: portable definition available; {readiness}")
-    executable = shutil.which("serena")
+    managed = root / ".tkstack/runtime/current/serena/bin/serena"
+    executable = str(managed) if managed.is_file() else shutil.which("serena")
     print("Serena:", executable or "needs host-provisioned executable", "(project registration via --serena-command)")
+    landmines = root / ".tkstack/runtime/current/bin/landmines"
+    print("Landmines:", "local runtime present" if landmines.is_file() else "needs a dotfiles update")

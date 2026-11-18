@@ -1,10 +1,10 @@
 # Official Caveman plugins
 
 The canonical publisher is [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman).
-Version **4.0.1** is pinned at
+The historical **4.0.1** snapshot is recorded at
 `9b68f7ed12b05e7efaff18e65c5a3fc2849fd0a4`. Its Claude marketplace contains one
 plugin named `caveman`; the repository also supplies native Cursor and Codex
-plugin layouts. This installation uses those official sources, rather than a
+plugin layouts. Home dotfiles setup uses the current official sources, rather than a
 third-party skill with the same name.
 
 The selected snapshot includes all 22 root skills, three Cavecrew agents,
@@ -45,7 +45,7 @@ controls; enabling incompatible voices together requires an explicit choice.
 Claude's hook subprocess stores Caveman flags/history under
 `.tkstack/state/caveman/claude`, isolated from home settings. The adapter removes
 the three `CAVECREW_*_MODEL` variables in that subprocess because upstream
-overrides can rewrite installed agent files. Vendor pins remain immutable.
+overrides can rewrite installed agent files. Historical vendor snapshots remain immutable.
 Inherited provider authentication and routing are preserved. The separate
 proxy/CLI service, MCP shrink, statusline, account integration, and Gemini or
 OpenCode runtime installation are not enabled by this plugin setup.

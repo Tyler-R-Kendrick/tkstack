@@ -14,7 +14,15 @@ sys.path.insert(0, str(ROOT / "src"))
 from tkstack_state import ensure_state
 from skill_roots import owned
 
-sys.path.insert(0, str(ROOT / "vendor/skillopt"))
+generation = ROOT / ".tkstack/cache/upstreams/current"
+if generation.is_dir():
+    generation = generation.resolve()
+    engine = generation / "sources/skillopt"
+    engine_revision = json.loads((generation / "sources.json").read_text())["skillopt"]["revision"]
+else:
+    engine = ROOT / "vendor/skillopt"
+    engine_revision = json.loads((ROOT / "sources.lock.json").read_text())["sources"]["skillopt"]["revision"]
+sys.path.insert(0, str(engine))
 
 from skillopt_sleep.tasks_file import load_tasks_file
 
@@ -75,10 +83,9 @@ def prepare(skill, run_dir):
     cfg = SimpleNamespace(evolve_memory=False, auto_adopt=False,
                           gate_no_regression=True, gate_mode="on", edit_budget=1,
                           managed_skill_path=lambda: str(target))
-    lock = json.loads((ROOT / "sources.lock.json").read_text())["sources"]["skillopt"]
     frozen = {"version": 2, "skill": skill, "target": str(target),
               "skill_sha256": identity(target), "tasks_sha256": identity(source),
-              "engine_revision": lock["revision"], "mode": "invoking-agent",
+              "engine_revision": engine_revision, "mode": "invoking-agent",
               "preferences": PREFERENCES}
     pinned = run_dir / "inputs.json"
     if pinned.exists() and json.loads(pinned.read_text()) != frozen:

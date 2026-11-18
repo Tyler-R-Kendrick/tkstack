@@ -103,8 +103,8 @@ class DocumentationHookTests(unittest.TestCase):
 
     def test_generated_readme_block_and_local_links_are_checked_from_the_snapshot(self):
         path = self.root / 'install.sh'
-        path.write_text(path.read_text().replace('PYTHON_VERSION=3.12.15', 'PYTHON_VERSION=9.9.9', 1))
-        self.assertTrue(any('install pins are stale' in error for error in docs.check(self.snapshot())))
+        path.write_text(path.read_text().replace('PYTHON_VERSION=3\n', 'PYTHON_VERSION=9.9.9\n', 1))
+        self.assertTrue(any('install settings are stale' in error for error in docs.check(self.snapshot())))
         (self.root / 'README.md').write_text((self.root / 'README.md').read_text().replace('[Usage](docs/use.md)', '[Usage](docs/missing.md)'))
         self.assertTrue(any('missing local link' in error for error in docs.check(self.snapshot())))
 
@@ -136,7 +136,7 @@ class DocumentationHookTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Invalid documentation review record'):
             docs.check(self.snapshot())
         script = self.root / 'install.sh'
-        script.write_text(script.read_text().replace('PYTHON_VERSION=3.12.15\n', '', 1))
+        script.write_text(script.read_text().replace('PYTHON_VERSION=3\n', '', 1))
         with self.assertRaisesRegex(ValueError, 'install.sh is missing PYTHON_VERSION'):
             docs.profile_block(self.snapshot())
 

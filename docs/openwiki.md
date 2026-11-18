@@ -1,8 +1,9 @@
 # OpenWiki
 
-[LangChain's OpenWiki](https://github.com/langchain-ai/openwiki) **0.7.2** is
-installed locally with its official `openwiki` skill and stdio MCP server for
-Codex, Claude Code, and Cursor. Restart the harness to discover the connection.
+[LangChain's OpenWiki](https://github.com/langchain-ai/openwiki) is included
+with its official `openwiki` skill. Home dotfiles setup installs the current
+CLI; register the stdio MCP server through the chosen host and restart it to
+discover the connection.
 
 Ask your agent to initialize a wiki:
 
@@ -36,11 +37,9 @@ Node **24.19.0** and npm **11.9.0** on Linux x86-64.
 python3 scripts/install.py --target .
 ```
 
-That links the skill. It does not run `npm ci` or register MCP.
-The npm package version recorded with the source pin is **openwiki 0.7.2**
-(`sources.lock.json`). This repository does not commit an npm lock for it.
-A host that wants the CLI installs that package itself. Runtime files stay
-under ignored `.tkstack/`.
+That links the skill for project scope. Home dotfiles setup installs the latest
+published OpenWiki CLI under ignored `.tkstack/runtime/`; registration remains
+with the host.
 
 Run the upstream `openwiki` CLI when Node and the package are installed. tkstack
 does not wrap it. A host MCP entry, if you add one, uses
@@ -59,9 +58,8 @@ symlinked components, so the two installers should not manage the same files.
 
 The six vendored documentation/skill/metadata files come unchanged from
 [`305599f8e44203f9ca6b74bb6b38eebaf0b0405e`](https://github.com/langchain-ai/openwiki/tree/305599f8e44203f9ca6b74bb6b38eebaf0b0405e).
-Their Git blob identities and modes are in `sources.lock.json`. The published
-npm package is **0.7.2**. This repository does not commit that tarball's
-integrity lock. Its official skill matches the vendored skill.
+Their Git blob identities and modes are in `sources.lock.json`. They document
+the earlier 0.7.2 snapshot; the installed CLI and current skill may be newer.
 Only `integrations/openwiki` is installed as a skill; upstream connector-authoring
 and Mermaid helpers are not added to the global skill catalog.
 

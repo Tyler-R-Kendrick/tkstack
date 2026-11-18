@@ -26,7 +26,9 @@ were not installed or executed for this comparison.
 
 ## Current host-bound integration
 
-The pinned SkillOpt task parser is used for reviewed authored case files.
+The SkillOpt task parser is used for reviewed authored case files. Home
+dotfiles setup fetches the current source and the driver records the actual
+source revision used for each run; the bundled snapshot is an offline reference.
 [`evolve.py`](../skills/learn/scripts/evolve.py) validates and pins the skill,
 case bytes and source revision, then returns readiness for the invoking agent.
 It does not run an optimizer, choose a model, launch a separate agent harness,

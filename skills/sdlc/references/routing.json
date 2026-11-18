@@ -117,6 +117,11 @@
       "title": "Graphify",
       "best_for": "Architecture questions against an extracted code graph",
       "summary": "Official Graphify skill, rendered per harness from the pinned templates. Use it to query structure, communities, and paths before guessing how a codebase fits together. Indexing is a separate explicit runtime step."
+    },
+    "landmines": {
+      "title": "Landmines",
+      "best_for": "Optional JS/TS testing, style, structure, and type linting",
+      "summary": "Current Oxlint rules and runtime are installed with the default dotfiles catalog. Review the recommended policy and release-specific limitations before running it in a project. Landmines is a native linter plugin, not an installed agent skill."
     }
   },
   "skills": {

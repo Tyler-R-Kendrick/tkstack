@@ -6525,6 +6525,231 @@
           "mode": "100644"
         }
       }
+    },
+    "landmines": {
+      "repository": "https://github.com/interfere-inc/landmines",
+      "revision": "92084b12872103b0f9245c0325ab571df00a574b",
+      "path": ".",
+      "version": "0.1.0",
+      "license": "MIT",
+      "paths": {
+        "skills": null,
+        "agents": null,
+        "rules": null
+      },
+      "selection": "Historical upstream release snapshot; home setup installs the latest published package.",
+      "evaluation": "source-reviewed-and-native-cli-smoke-tested",
+      "evaluation_report": "docs/integrations.md",
+      "files": {
+        ".changeset/README.md": {
+          "git_blob": "225fafe1d4aa1c37117a0fb0be4e76884143ae70",
+          "mode": "100644"
+        },
+        ".changeset/config.json": {
+          "git_blob": "23a7704703d7a98b108c433c5174013ccbc9b15b",
+          "mode": "100644"
+        },
+        ".editorconfig": {
+          "git_blob": "86a63dc0f579c863700f2cf6090be9f05c1875e5",
+          "mode": "100644"
+        },
+        ".github/CODEOWNERS": {
+          "git_blob": "873353ee0cdf592ec97752f1071bc93ac799c0c4",
+          "mode": "100644"
+        },
+        ".github/workflows/ci.yml": {
+          "git_blob": "228d18b951369b298a35e70e2f24f1ab3dd9e8a6",
+          "mode": "100644"
+        },
+        ".github/workflows/release.yml": {
+          "git_blob": "7cea8f0ab223b5f75f6a97c7124ef321d6ee4f0a",
+          "mode": "100644"
+        },
+        ".gitignore": {
+          "git_blob": "bd912ebf9019a3c602fe5f2dd8f5a51583d3db90",
+          "mode": "100644"
+        },
+        ".oxfmtrc.jsonc": {
+          "git_blob": "5487dc0297e641753e57c0517929039117ed927c",
+          "mode": "100644"
+        },
+        ".oxlintrc.jsonc": {
+          "git_blob": "42210438269095b3d2fb7e82b8c8bae39b4607cc",
+          "mode": "100644"
+        },
+        "LICENSE": {
+          "git_blob": "370e8815cea01fe5cc6d28d7799fa82f4fa25d1e",
+          "mode": "100644"
+        },
+        "README.md": {
+          "git_blob": "2a9c38ea22cc4a89746cf6fb6d23f7c1dd5508eb",
+          "mode": "100644"
+        },
+        "bun.lock": {
+          "git_blob": "2ff67757f5615be441dc64963f21008bbcd72c10",
+          "mode": "100644"
+        },
+        "bunfig.toml": {
+          "git_blob": "36a3e9fb95aebbc1d22519198ddc146cd9f7c452",
+          "mode": "100644"
+        },
+        "package.json": {
+          "git_blob": "85e33b9296580db3f15c5bb6936874be453ba5ae",
+          "mode": "100644"
+        },
+        "packages/landmines/CHANGELOG.md": {
+          "git_blob": "69e00ab26a68afbdc3724da6f532a07089c7f416",
+          "mode": "100644"
+        },
+        "packages/landmines/LICENSE": {
+          "git_blob": "370e8815cea01fe5cc6d28d7799fa82f4fa25d1e",
+          "mode": "100644"
+        },
+        "packages/landmines/README.md": {
+          "git_blob": "2a9c38ea22cc4a89746cf6fb6d23f7c1dd5508eb",
+          "mode": "100644"
+        },
+        "packages/landmines/configs/recommended.json": {
+          "git_blob": "672e138ef42b2f4e5a1498ca425f5e362d981dc8",
+          "mode": "100644"
+        },
+        "packages/landmines/package.json": {
+          "git_blob": "7387201699cce5c3ec00ec1b7561c28deef91159",
+          "mode": "100644"
+        },
+        "packages/landmines/src/lib/allowlist.ts": {
+          "git_blob": "de0b86ce102c47faeec9920b9f807cf26e82636f",
+          "mode": "100644"
+        },
+        "packages/landmines/src/lib/test-owner.ts": {
+          "git_blob": "7abc06769fe8ba1ee6e3fe06f1bd48fbb7e65bd2",
+          "mode": "100644"
+        },
+        "packages/landmines/src/plugins/structure.ts": {
+          "git_blob": "7b21b0888735208776c82fc66020f7072b571cdf",
+          "mode": "100644"
+        },
+        "packages/landmines/src/plugins/style.ts": {
+          "git_blob": "636fa8a18d3c47286a4e0c6a69bce6d832125600",
+          "mode": "100644"
+        },
+        "packages/landmines/src/plugins/testing.ts": {
+          "git_blob": "41a68607b3f3d4db55d53af115efe8ffc880ffa8",
+          "mode": "100644"
+        },
+        "packages/landmines/src/plugins/types.ts": {
+          "git_blob": "16e4f653e9dd6ba0ccf880ad0242a1763553fd45",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/colocated-tests.test.ts": {
+          "git_blob": "84308668255e0b2af462c87fefed2d50c63fe84c",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/colocated-tests.ts": {
+          "git_blob": "70946fda2a32d6d60fc06bbc17d206f02af7bfdc",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-comments.test.ts": {
+          "git_blob": "36fa7ca15e65647c037c471eb4f11e607e53f718",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-comments.ts": {
+          "git_blob": "439d18eb3849debceafefbdc40a9cd5b061e962e",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-explicit-return-types.test.ts": {
+          "git_blob": "ce854160962f1d16fc698b12194d86a8b3f8b25e",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-explicit-return-types.ts": {
+          "git_blob": "5a6eb8c2693675fdd8402fd4b0664c24a32f44ed",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-fixed-sleep.test.ts": {
+          "git_blob": "22593c07b68197c46565a58f979e371b205077fd",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-fixed-sleep.ts": {
+          "git_blob": "97b4ad669da35acaccfa551be0c18646fe2d8ac1",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-flake-masking.test.ts": {
+          "git_blob": "99edce1d437e127c8157ad1fb5990c9515b0dd7c",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-flake-masking.ts": {
+          "git_blob": "92033a6802c048a6969a34540011ded9fa480aae",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-test-doubles.test.ts": {
+          "git_blob": "7a85347af25b9c375ab42beee7b4c9c35511bb00",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-test-doubles.ts": {
+          "git_blob": "d541c7563e0415804a05a877d785930a82ff1b3a",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-unsignaled-poll.test.ts": {
+          "git_blob": "0731fc26b62a37633248b79cbc34343d0b01dd55",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/no-unsignaled-poll.ts": {
+          "git_blob": "c0eef1c8b1b7d04800e444d85d1d192399d2a13f",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/package-exports.test.ts": {
+          "git_blob": "e0cc81e47db390981a4d46b64cd812ac23a6e5b6",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/package-exports.ts": {
+          "git_blob": "973872e71889d0e38396f5b5c387a441c8945ec6",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/rule.test-utils.test.ts": {
+          "git_blob": "c583e0e423057d6e83f68f49c7886a3df016d758",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/rule.test-utils.ts": {
+          "git_blob": "9bc430e1dc105a465cb96251f845133093c54818",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/strict-msw.test.ts": {
+          "git_blob": "ff795f70930211a40b1ee5de3a05799887d29244",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/strict-msw.ts": {
+          "git_blob": "ed36bcedadf179cecb267ec744305fe6a1373b01",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/test-file-names.test.ts": {
+          "git_blob": "50b63e303ebb47744b0a56a06532c3b02b029a54",
+          "mode": "100644"
+        },
+        "packages/landmines/src/rules/test-file-names.ts": {
+          "git_blob": "28afca1456b9f0ac3191314036f4d844dd474eb1",
+          "mode": "100644"
+        },
+        "packages/landmines/tsconfig.json": {
+          "git_blob": "993196f0ca3f1fb88299b0dd4d59be435a679681",
+          "mode": "100644"
+        },
+        "packages/landmines/tsdown.config.ts": {
+          "git_blob": "ad477fe3b09bf57d99a7491bc2838757fd48e1b3",
+          "mode": "100644"
+        },
+        "packages/landmines/vitest.config.ts": {
+          "git_blob": "53487dbf52e4c6a8ade521588ba2961846e3e3ca",
+          "mode": "100644"
+        },
+        "tsconfig.base.json": {
+          "git_blob": "4ce5c29dc684187048b833551e6f49a62acde823",
+          "mode": "100644"
+        },
+        "turbo.json": {
+          "git_blob": "4bf8d34ca1d965f38ae91978369e2d628ba72462",
+          "mode": "100644"
+        }
+      }
     }
   }
 }
