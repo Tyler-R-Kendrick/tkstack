@@ -82,7 +82,12 @@ the helper reserves them before analysis. Its 20-second default deadline
 (1–25 seconds) and timing receipt cover offline processing only, not the
 agent's prior judgment. A crash can leave an incomplete reservation. Direct
 POSIX execution cleans the ordinary process group; detached descendants and
-remote actions require separate reconciliation.
+remote actions require separate reconciliation. Direct POSIX execution requires
+non-reaping `waitid` support and the default `SIGCHLD` disposition; it fails
+closed if the host cannot provide them. A direct SIGINT or SIGTERM stops the
+owned group and records an `interrupted` receipt with the signal and elapsed
+time. Output is size-checked after the process stops; temporary output files
+can grow during its deadline.
 
 Sources: [Promptfoo assertion API](https://www.promptfoo.dev/docs/configuration/expected-outputs/),
 [Anthropic's agent evaluation guidance](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents),

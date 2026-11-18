@@ -7,11 +7,13 @@ The detailed [machine-readable record](2026-11-17-host-bound-hill-climb.json)
 contains plans, runner sources and hashes, repetitions, representative logs,
 and the same-conversation Evalify smoke test.
 
-Each row below is one authored regression scenario. Before the corresponding
+The rows below are authored regression scenarios, not a count of independent
+risks or a proof that each test has unique value. Before the corresponding
 change its target failed in all three repetitions; after the change it passed
 in all three. A separate existing behavioral guard passed in all three runs
-before and after. Fourteen scenarios were rerun on the merged stack; the last
-was measured directly on that stack.
+before and after. The [follow-up value review](2026-11-18-mutation-test-value.md)
+groups overlapping risks, identifies the scratch-only checks, and measures a
+sample of real faults against individual tests.
 
 | Scenario | Before | After |
 | --- | ---: | ---: |
@@ -22,7 +24,6 @@ was measured directly on that stack.
 | Model-based comparisons require repetition and nonzero noise | 0/3 | 3/3 |
 | Evalify rejects a selected external executable | 0/3 | 3/3 |
 | Evolution rejects an alternate backend selector | 0/3 | 3/3 |
-| Hill-climb exposes no command-based agent provider | 0/3 | 3/3 |
 | Offline framework scores retained host judgments | 0/3 | 3/3 |
 | The runner rejects a separate model profile | 0/3 | 3/3 |
 | Codify rejects a separate agent-runtime scaffold | 0/3 | 3/3 |
@@ -49,6 +50,13 @@ changes. They are targeted correctness evidence, not an independent holdout or
 a measured improvement in model judgment. The Evalify smoke used the current
 agent's own judgments and self-authored labels; all host judgment durations were
 unknown. Promptfoo scored the retained labels without calling a model.
+
+The original summary also counted a scratch check for the absence of a
+`CommandProvider` symbol. That structural probe has been removed from the
+highlighted set: the permanent proposer test checks the stronger behavior that
+an alternative provider is rejected before the ledger reserves anything. The
+machine-readable historical run is retained as provenance, not as a separate
+claim of independent regression value.
 
 The shared runner records local timing for compiled operations. Direct helpers
 and MCP calls made by other hosts do not automatically pass through it, and

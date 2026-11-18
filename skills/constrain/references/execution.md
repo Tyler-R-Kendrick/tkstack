@@ -26,3 +26,4 @@ Model and verify do not mutate application/learning records; compiled invocation
 
 - Deterministic rules detect supported test, dependency, execution, boundary and budget defects; they do not prove semantic test value or verify downloaded artifacts by themselves.
 - Unlocked MCP runtime fetches and unsupported acquisition paths remain explicitly reported; recorded review does not authenticate reviewer judgment or native hook activation.
+- Mutation runs execute repository tests and the supplied locally installed Cosmic Ray tool; failures still require human inspection and are not proof of meaningful kills or semantic equivalence.

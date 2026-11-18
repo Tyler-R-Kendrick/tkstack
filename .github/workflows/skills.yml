@@ -24,6 +24,10 @@ jobs:
         run: |
           python -m venv .tkstack/runtime/command-schema
           .tkstack/runtime/command-schema/bin/python -m pip install --require-hashes -r skills/learn/skills/codify/requirements/requirements.lock
+      - name: Install locked mutation tool
+        run: |
+          timeout 30s python -m venv .tkstack/runtime/mutation
+          timeout 180s .tkstack/runtime/mutation/bin/python -m pip install --require-hashes -r skills/constrain/requirements/requirements.lock
       - name: Install checksum-pinned Lean 4.19.0
         run: |
           curl -fSL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst" https://github.com/leanprover/lean4/releases/download/v4.19.0/lean-4.19.0-linux.tar.zst
@@ -45,4 +49,5 @@ jobs:
       - name: Run the full offline regression suite
         env:
           REPO_QUALITY_GATE: "1"
+          TKSTACK_COSMIC_RAY_BIN: ${{ github.workspace }}/.tkstack/runtime/mutation/bin/cosmic-ray
         run: .tkstack/runtime/command-schema/bin/python -B -m unittest discover -s tests -v

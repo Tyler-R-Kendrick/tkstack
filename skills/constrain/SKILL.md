@@ -2,7 +2,7 @@
 name: constrain
 description: Enforce repository constraints when adding or reviewing tests, files, folders, or documentation. Use for constrain, test-value review, sparsity budgets, or preventing low-value CI noise. Run deterministic checks, inspect behavioral oracles, and retain only tests with distinct regression value.
 license: MIT
-compatibility: Python 3.11+ and Git for the standalone checker. Typed commands use tkstack's shared runtime.
+compatibility: Python 3.11+ and Git for the standalone checker. Python mutation experiments also require POSIX waitid and the separately installed locked Cosmic Ray tool. Typed commands use tkstack's shared runtime.
 metadata:
   author: Tyler Kendrick
   version: "0.1.0"
@@ -29,6 +29,7 @@ The typed runner is `.tkstack/tkstack skills constrain -- <command>`:
 | `verify` | [Verify a retained review report](commands/verify.md) |
 | `native check` | [Enforce explicit repository policy](commands/native_check.md) |
 | `native audit` | [Inspect repository findings](commands/native_audit.md) |
+| `native mutate` | [Run a bounded Python mutation matrix](commands/native_mutate.md) |
 
 Report-shape validation records a review; it does not run the repository gate.
 Use `native check` for enforcement. [Execution details](references/execution.md)
@@ -87,5 +88,7 @@ The engine reads `.constrain/config.json` from the selected repository. It never
 imports test code, calls a model, installs hooks, or writes review records.
 Semantic value requires inspecting actual assertions and fault sensitivity;
 a passing budget, coverage percentage, or reviewer attestation is insufficient.
-The checker does not rank tests, run mutations, or optimize the suite; the
-test-value reference describes a separate evidence-driven review and its limits.
+The checker does not rank tests or optimize the suite. The separate mutation
+command executes selected Python mutants and records per-test outcomes; it does
+not decide which assertions are meaningful or which tests are safe to remove.
+Use the test-value reference to plan and review those experiments.

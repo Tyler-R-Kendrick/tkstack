@@ -6,6 +6,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,6 +29,8 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
   if (fs.existsSync('hang')) {
     const child = cp.spawn(process.execPath, ['-e', 'setTimeout(()=>{}, 30000)'], {stdio: 'ignore'});
     fs.writeFileSync('child.pid', String(child.pid));
+    fs.writeFileSync('parent.tmp', String(process.pid));
+    fs.renameSync('parent.tmp', 'parent.pid');
     await new Promise(() => {});
   }
   if (fs.existsSync('slow')) await new Promise(resolve => setTimeout(resolve, 700));
@@ -61,6 +64,12 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertEqual((receipt['source'], receipt['framework'], receipt['status']),
                          ('invoking-agent', 'promptfoo assertions', 'pass'))
         self.assertGreaterEqual(receipt['elapsed_ms'], 0)
+        routed = subprocess.run([sys.executable, '-B', str(ROOT / 'src/tkstack.py'), '--project', str(self.root),
+            'skills', 'learn', '--', 'evalify', 'native', 'run', '--project', str(self.root),
+            '--cases', 'cases.json', '--receipt', 'typed.time.json', '--output', 'typed.json'],
+            cwd=self.root, capture_output=True, text=True, timeout=45)
+        self.assertEqual(routed.returncode, 0, routed.stderr)
+        self.assertEqual(json.loads(routed.stdout)['status'], 'pass')
         self.data['cases'][0]['judgment'] = False
         self.save()
         self.assertEqual(self.cli('run', 'mismatch.time.json', ['--output', 'mismatch.json']).returncode, 0)
@@ -88,6 +97,12 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertEqual(result.returncode, 0, result.stderr)
         summary = json.loads((self.root / 'timing.json').read_text())['timing']
         self.assertEqual(summary, {'observed': 2, 'missing': 1, 'median_ms': 7, 'max_ms': 10})
+        self.data['cases'][0]['elapsed_ms'] = 0
+        self.save()
+        result = self.cli('run', 'zero.time.json', ['--output', 'zero.json'])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads((self.root / 'zero.json').read_text())['timing']
+        self.assertEqual(summary, {'observed': 2, 'missing': 1, 'median_ms': 2, 'max_ms': 4})
         for case in self.data['cases']:
             case['elapsed_ms'] = None
         self.save()
@@ -102,16 +117,19 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
                 result = self.cli('run', 'blocked.json', ['--output', 'blocked-result.json', flag, 'other'])
                 self.assertNotEqual(result.returncode, 0)
                 self.assertFalse((self.root / 'calls').exists())
-        for bad in ('wrong-source', 'duplicate', 'invalid-time', 'oversized'):
+        for bad in ('wrong-source', 'duplicate', 'invalid-time', 'boolean-time', 'extra-field', 'oversized'):
             with self.subTest(bad=bad):
                 data = json.loads(json.dumps(self.data))
                 if bad == 'wrong-source': data['source'] = 'external'
                 if bad == 'duplicate': data['cases'].append(data['cases'][0])
                 if bad == 'invalid-time': data['cases'][0]['elapsed_ms'] = -1
+                if bad == 'boolean-time': data['cases'][0]['elapsed_ms'] = True
+                if bad == 'extra-field': data['cases'][0]['provider'] = 'unexpected'
                 (self.root / 'cases.json').write_text(' ' * (1024 * 1024 + 1) if bad == 'oversized' else json.dumps(data))
-                result = self.cli('validate', 'bad.time.json')
+                receipt = f'bad-{bad}.time.json'
+                result = self.cli('validate', receipt)
                 self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / 'bad.time.json').exists())
+                self.assertFalse((self.root / receipt).exists())
         self.assertFalse((self.root / 'calls').exists())
 
     def test_extreme_host_duration_fails_cleanly_before_dispatch(self):
@@ -122,6 +140,28 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
         self.assertIn('Elapsed milliseconds', result.stderr)
         self.assertNotIn('Traceback', result.stderr)
         self.assertFalse((self.root / 'calls').exists())
+
+    @unittest.skipUnless(os.name == 'posix' and hasattr(os, 'waitid') and hasattr(os, 'WNOWAIT'), 'POSIX process supervision')
+    def test_direct_analysis_keeps_ownership_until_group_cleanup(self):
+        wrapper = '''import os, sys
+sys.path.insert(0, sys.argv.pop(1))
+import evalify
+original = os.killpg
+def guarded(pid, sig):
+    try:
+        os.waitid(os.P_PID, pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+    except ChildProcessError:
+        raise RuntimeError('group leader was already reaped')
+    return original(pid, sig)
+os.killpg = guarded
+raise SystemExit(evalify.main())
+'''
+        env = {key: value for key, value in os.environ.items() if key != 'TKSTACK_CODIFY_EXECUTION'}
+        result = subprocess.run([sys.executable, '-c', wrapper, str(HELPER.parent), 'run',
+            '--project', str(self.root), '--cases', 'cases.json', '--receipt', 'owned.json',
+            '--output', 'owned-result.json'], env=env, capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads((self.root / 'owned.json').read_text())['status'], 'pass')
 
     @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
     def test_timeout_stops_offline_analysis_group_and_records_elapsed_time(self):
@@ -141,6 +181,38 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
                 os.kill(child, signal.SIGKILL)
             except ProcessLookupError:
                 pass
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_interrupted_analysis_records_outcome_and_stops_its_group(self):
+        (self.root / 'hang').touch()
+        env = {key: value for key, value in os.environ.items() if key != 'TKSTACK_CODIFY_EXECUTION'}
+        process = subprocess.Popen([sys.executable, str(HELPER), 'run', '--project', str(self.root),
+            '--cases', 'cases.json', '--receipt', 'interrupted.json', '--output', 'interrupted-result.json'],
+            env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        pids = []
+        try:
+            deadline = time.monotonic() + 8
+            while not (self.root / 'parent.pid').exists() and time.monotonic() < deadline:
+                time.sleep(.02)
+            pids = [int((self.root / name).read_text()) for name in ('parent.pid', 'child.pid')]
+            process.terminate()
+            out, err = process.communicate(timeout=10)
+            self.assertEqual(process.returncode, 143, out + err)
+            receipt = json.loads((self.root / 'interrupted.json').read_text())
+            self.assertEqual(receipt['status'], 'interrupted')
+            for pid in pids:
+                stat = Path(f'/proc/{pid}/stat')
+                alive = stat.exists() and stat.read_text().split(') ', 1)[1].split()[0] != 'Z'
+                self.assertFalse(alive, f'Interrupted analysis left process {pid} running')
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            for pid in pids:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
 
     def test_concurrent_analysis_reserves_receipt_and_output_before_dispatch(self):
         (self.root / 'slow').touch()
