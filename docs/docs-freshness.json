@@ -538,7 +538,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "0b07fbe707d81a6599fa2e1facfcb5741fe27ea0"
+          "oid": "b63ad201606881ee3dc916422d534c6345355988"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -591,7 +591,7 @@
         },
         "tests/test_evalify.py": {
           "mode": "100644",
-          "oid": "7db5cc5d502f2dd5b909fce8743d276ca0cffc4d"
+          "oid": "815bf5143c089983d9f6c573ed890901b31f495c"
         },
         "tests/test_experiment_agent_arm.py": {
           "mode": "100644",
@@ -759,7 +759,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed observed and absent host duration cases."
+      "reason": "Reviewed clean rejection of unrepresentable host durations; existing documentation already requires finite timing values."
     },
     "execution": {
       "docs": {
@@ -1811,7 +1811,7 @@
         },
         "skills/learn/skills/evalify/scripts/evalify.py": {
           "mode": "100644",
-          "oid": "8633349efc230a71cb8867a2a8b32e2f67f8325a"
+          "oid": "3e82b4be3673e62e5c5c7903e92e0d19596f3fc0"
         },
         "skills/learn/skills/evalify/scripts/json_contract.py": {
           "mode": "100644",
@@ -1839,7 +1839,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "a037e77f361090d8b44237aba6b59bcf79128ed7"
+          "oid": "c639c93b78d5140b4d79a48fcb6ff8733411206a"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -3082,8 +3082,8 @@
           "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed observed and missing host-case durations with upstream supervision."
+      "no_doc_impact": true,
+      "reason": "Reviewed clean rejection of unrepresentable host durations; existing documentation already requires finite timing values."
     }
   },
   "object_format": "sha1",

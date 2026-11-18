@@ -114,6 +114,15 @@ module.exports = {assertions: {runAssertion: async ({assertion, providerResponse
                 self.assertFalse((self.root / 'bad.time.json').exists())
         self.assertFalse((self.root / 'calls').exists())
 
+    def test_extreme_host_duration_fails_cleanly_before_dispatch(self):
+        self.data['cases'][0]['elapsed_ms'] = 10 ** 1000
+        self.save()
+        result = self.cli('run', 'extreme.time.json', ['--output', 'extreme.json'])
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Elapsed milliseconds', result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertFalse((self.root / 'calls').exists())
+
     @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
     def test_timeout_stops_offline_analysis_group_and_records_elapsed_time(self):
         (self.root / 'hang').touch()

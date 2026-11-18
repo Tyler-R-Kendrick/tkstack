@@ -68,8 +68,13 @@ def read_cases(path):
         if type(case['judgment']) is not bool or (case['reference'] is not None and type(case['reference']) is not bool):
             raise ValueError('Judgment and labeled reference must be boolean')
         elapsed = case['elapsed_ms']
-        if elapsed is not None and (isinstance(elapsed, bool) or not isinstance(elapsed, (int, float)) or not math.isfinite(elapsed) or elapsed < 0):
-            raise ValueError('Elapsed milliseconds must be null or a nonnegative finite number')
+        if elapsed is not None:
+            try:
+                valid = not isinstance(elapsed, bool) and isinstance(elapsed, (int, float)) and math.isfinite(elapsed) and elapsed >= 0
+            except OverflowError:
+                valid = False
+            if not valid:
+                raise ValueError('Elapsed milliseconds must be null or a nonnegative finite number')
     return raw, data
 
 
