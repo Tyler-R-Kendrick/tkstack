@@ -167,9 +167,9 @@
           "vendor/**"
         ],
         "max_files": 900,
-        "max_bytes": 10200000,
+        "max_bytes": 10300000,
         "max_depth": 9,
-        "reason": "Allow the requested Evalify subskill and integrity-locked Promptfoo dependency plus its compiled artifact and focused deadline guidance."
+        "reason": "Allow Evalify and its locked dependencies, plus the expanded Pstack catalog's routing inventory and compiled SDLC artifact."
       }
     ]
   },

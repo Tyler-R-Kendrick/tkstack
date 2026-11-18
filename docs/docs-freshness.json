@@ -448,7 +448,7 @@
         },
         "docs/harnesses.md": {
           "mode": "100644",
-          "oid": "4df1a693650181cf0ec41deb31473aec0afafc14"
+          "oid": "6f556ff757cea2c334e95e54421640f4b8c38a51"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -460,7 +460,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "150040b3d7842aba7aec8f78ab020ffda1adc55c"
+          "oid": "ba89d324d7f926ead1482ffaa22c4dcf67dee551"
         },
         "docs/t3code.md": {
           "mode": "100644",
@@ -510,15 +510,15 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "673c90836936edb9438cb6cdc30ac3c79b737b71"
+          "oid": "5fefa87a7e678ad5e1b5de68cc4b8456afb51ff6"
         },
         "sources.lock.json": {
           "mode": "100644",
-          "oid": "eda7d859cdacc37d8c0942eacf5f1092429cd491"
+          "oid": "f568280a5a57d33c7d4a358998fba0c590d25153"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed README, skills and normalization against bounded mutation execution, locked tool installation, scoped snapshots, test-value evidence, CI, and retained semantic limits; setup and authoring behavior is otherwise unchanged."
+      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
     },
     "documentation": {
       "docs": {
@@ -534,11 +534,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "b3ee24a52525c1ba085ddbb23f4a49c74ca9f894"
+          "oid": "d8244c36f408aea818e0f8b01a07f467aad98881"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "0316db47502aad63e20b6f2ffec1f1403f6422f6"
+          "oid": "3812ef7bc1a28f1a57d7e9cd52c3dd9c8cc15be6"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -687,7 +687,7 @@
         },
         "tests/test_install.py": {
           "mode": "100644",
-          "oid": "b5718eff74f6190efa4dab2e8ade9ba06784a4e3"
+          "oid": "0806aff0b095b3d3bd3b8a8efd5d4b9daff6ca56"
         },
         "tests/test_instructify.py": {
           "mode": "100644",
@@ -763,7 +763,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Catalog placement and routing do not change documentation maintenance."
+      "reason": "Expanded catalog routing and its owned-tree allowance do not change documentation maintenance."
     },
     "execution": {
       "docs": {
@@ -805,7 +805,7 @@
         },
         "docs/bootstrap.md": {
           "mode": "100644",
-          "oid": "ca7a0a8174c73b63c2e41c3b6f1d5252fe8778dd"
+          "oid": "4d296c120dc9767aa1237cb935a7264098a80f86"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -839,7 +839,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "bbf32e30fb3ac723b79ebdfd7415f881c5e455cf"
+          "oid": "e7c07833e4e455163b64757e8890fdc39514ed58"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -867,7 +867,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed project catalog host discovery, shared Codex views and SDLC routing guidance on current main."
+      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
     },
     "skills": {
       "docs": {
@@ -925,7 +925,7 @@
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
-          "oid": "e28e61063ce8796b7b2b3ee82b0fab00268df90d"
+          "oid": "40d4deb08f753cd629bf94be11e51d2418b9d246"
         },
         "docs/skill-evolution.md": {
           "mode": "100644",
@@ -933,7 +933,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "150040b3d7842aba7aec8f78ab020ffda1adc55c"
+          "oid": "ba89d324d7f926ead1482ffaa22c4dcf67dee551"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -2747,11 +2747,11 @@
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
-          "oid": "530ac5bc9798fc1c08da9b1d7717e858f24c719e"
+          "oid": "c7fcd8413f1044bfb351e667739f55754e631b3a"
         },
         "skills/sdlc/references/skill-routing.md": {
           "mode": "100644",
-          "oid": "26e2ad912742b727ac050ecf8acda22e6511694b"
+          "oid": "d514dc8ac3514ca38c28e70a9efa4f5aa0a63810"
         },
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
@@ -2779,7 +2779,7 @@
         },
         "skills/sdlc/scripts/routing_inventory.py": {
           "mode": "100644",
-          "oid": "1705a843d08f0bdc50e353fb895cecc1ea545f23"
+          "oid": "b140236c970e1a4af27f774146823c673fee0667"
         },
         "skills/sdlc/scripts/run.py": {
           "mode": "100644",
@@ -2807,7 +2807,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "920868d7b3aaa1e8bc80bfeb1b0426af7eb85d8b"
+          "oid": "e647e9c9c3f71731a306c7fd4aea53e7703cd198"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2843,7 +2843,7 @@
         },
         "skills/skills.json": {
           "mode": "100644",
-          "oid": "673c90836936edb9438cb6cdc30ac3c79b737b71"
+          "oid": "5fefa87a7e678ad5e1b5de68cc4b8456afb51ff6"
         },
         "skills/tkstack-principles/LICENSE": {
           "mode": "100644",
@@ -3119,7 +3119,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed project catalog host discovery, shared Codex views and SDLC routing guidance on current main."
+      "reason": "Reviewed Pstack 0.15.43 source pin, project catalog discovery, alias routing and compiled inventory against current main."
     }
   },
   "object_format": "sha1",

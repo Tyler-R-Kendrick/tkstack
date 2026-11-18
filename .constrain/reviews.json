@@ -310,9 +310,9 @@
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "3c5e5b44549a76b2b1458e5062ea0e5e2e328e33a0056558e7978034442adf32",
+    "sha256": "d696aba0c62e2faf6dfdf002b46b253475e95364a7bd1506371a670f689cfb01",
     "risk": "Source-only setup, wrong workspace selection, lost host instructions or destructive reapply can leave consumers silently misconfigured.",
-    "oracle": "Compare the full owned link set, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
+    "oracle": "Compare the full owned link set, selective Pstack caller aliases, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
     "kinds": [
       "contract",
       "simulation",
