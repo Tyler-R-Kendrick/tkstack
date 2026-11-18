@@ -62,8 +62,11 @@ review the lock. A project-owned input must be at most 1 MiB and contain:
 
 `reference` is a reviewed expected judgment for calibration, or null for a
 current case. `elapsed_ms` is a real host-observed duration, or null when not
-available; never invent it. The output counts matching labeled judgments and
-current pass judgments. It is a descriptive summary, not proof of calibration,
+available; never invent it. The output counts matching labeled judgments,
+separates false positives from false negatives, and counts current pass judgments.
+Its timing summary reports the number of observed and missing durations and the
+median and maximum of observed values; absent observations remain unknown.
+It is a descriptive summary, not proof of calibration,
 host identity, an independent evaluator, or model performance.
 
 ```sh
@@ -79,7 +82,12 @@ the helper reserves them before analysis. Its 20-second default deadline
 (1–25 seconds) and timing receipt cover offline processing only, not the
 agent's prior judgment. A crash can leave an incomplete reservation. Direct
 POSIX execution cleans the ordinary process group; detached descendants and
-remote actions require separate reconciliation.
+remote actions require separate reconciliation. Direct POSIX execution requires
+non-reaping `waitid` support and the default `SIGCHLD` disposition; it fails
+closed if the host cannot provide them. A direct SIGINT or SIGTERM stops the
+owned group and records an `interrupted` receipt with the signal and elapsed
+time. Output is size-checked after the process stops; temporary output files
+can grow during its deadline.
 
 Sources: [Promptfoo assertion API](https://www.promptfoo.dev/docs/configuration/expected-outputs/),
 [Anthropic's agent evaluation guidance](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents),

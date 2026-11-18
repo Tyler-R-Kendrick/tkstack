@@ -1,6 +1,6 @@
 """Portable marketplace copies and fail-closed evolution integration."""
 
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 import importlib.util
 from io import StringIO
 import json
@@ -142,6 +142,12 @@ class SkillEvolutionTests(unittest.TestCase):
         self.assertFalse((self.run_dir / "result.json").exists())
         self.assertFalse((self.run_dir / "state/state.json").exists())
         self.assertEqual(target.read_bytes(), before)
+        saved = {path.relative_to(self.run_dir): path.read_bytes() for path in self.run_dir.rglob('*') if path.is_file()}
+        with patch.object(sys, 'argv', [*args, '--backend', 'mock']), redirect_stderr(StringIO()):
+            with self.assertRaises(SystemExit):
+                evolve.main()
+        self.assertEqual(saved, {path.relative_to(self.run_dir): path.read_bytes()
+                                 for path in self.run_dir.rglob('*') if path.is_file()})
 
 
 if __name__ == "__main__":

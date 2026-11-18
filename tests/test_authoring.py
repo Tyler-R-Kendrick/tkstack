@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -273,6 +274,11 @@ class TestifyTests(unittest.TestCase):
         self.invoke('create', expected=1)
         self.assertEqual(self.target.read_bytes(), before)
         self.assertEqual(json.loads(self.invoke('run').stdout)['status'], 'pass')
+        routed_run = subprocess.run([sys.executable, '-B', str(ROOT / 'src/tkstack.py'), '--project', str(self.root),
+            'skills', 'learn', '--', 'testify', 'native', 'run', '--project', str(self.root),
+            '--target', 'tests/test_cli.py'], cwd=self.root, capture_output=True, text=True, timeout=45)
+        self.assertEqual(routed_run.returncode, 0, routed_run.stdout + routed_run.stderr)
+        self.assertEqual(json.loads(routed_run.stdout)['status'], 'pass')
         original = self.program.read_text()
         self.program.write_text(original.replace('"value": 7', '"value": 8'))
         failed = json.loads(self.invoke('run', expected=1).stdout)
@@ -308,6 +314,122 @@ class TestifyTests(unittest.TestCase):
         (self.root / 'tests/link').symlink_to(outside, target_is_directory=True)
         self.invoke('create', expected=1, target='tests/link/test_escape.py')
         self.assertEqual(list(outside.iterdir()), [])
+
+    @unittest.skipUnless(os.name == 'posix' and hasattr(os, 'waitid') and hasattr(os, 'WNOWAIT'), 'POSIX process supervision')
+    def test_generated_case_keeps_group_ownership_until_cleanup(self):
+        self.invoke('create')
+        wrapper = '''import importlib.util, os, subprocess, sys
+spec = importlib.util.spec_from_file_location('generated_contract', sys.argv[1])
+module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+original = os.killpg
+def guarded(pid, sig):
+    try:
+        os.waitid(os.P_PID, pid, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+    except ChildProcessError:
+        raise RuntimeError('group leader was already reaped')
+    return original(pid, sig)
+os.killpg = guarded
+assert module.run_case([sys.executable, '-c', 'print("ok")'], sys.argv[2], 5).stdout == 'ok\\n'
+try:
+    module.run_case([sys.executable, '-c', 'import time; time.sleep(5)'], sys.argv[2], .2)
+except subprocess.TimeoutExpired:
+    pass
+else:
+    raise AssertionError('deadline did not expire')
+'''
+        env = {key: value for key, value in os.environ.items() if key != 'TKSTACK_CODIFY_EXECUTION'}
+        result = subprocess.run([sys.executable, '-c', wrapper, str(self.target), str(self.root)],
+                                env=env, capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_direct_run_outer_deadline_stops_the_generated_case_group(self):
+        self.program.write_text('''import os, pathlib, subprocess, sys, time
+root = pathlib.Path(__file__).resolve().parent.parent
+child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+tmp = root / 'pids.tmp'
+tmp.write_text(__import__('json').dumps([os.getpid(), child.pid]))
+tmp.replace(root / 'pids.json')
+time.sleep(30)
+''')
+        self.data['timeout'] = 30
+        self.data['cases'] = [{'name': 'slow', 'args': [], 'exit': 0, 'stdout_text': ''}]
+        self.save_spec()
+        self.invoke('create')
+        wrapper = '''import importlib.util, pathlib, subprocess, sys
+sys.path.insert(0, str(pathlib.Path(sys.argv[1]).parent))
+spec = importlib.util.spec_from_file_location('testify_review', sys.argv[1])
+module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
+module.RUN_TIMEOUT = 3
+original = subprocess.run
+def shorten(*args, **kwargs):
+    if kwargs.get('timeout') == 120: kwargs['timeout'] = 3
+    return original(*args, **kwargs)
+module.subprocess.run = shorten
+raise SystemExit(module.main(['run', '--project', sys.argv[2], '--target', 'tests/test_cli.py']))
+'''
+        env = {key: value for key, value in os.environ.items() if key != 'TKSTACK_CODIFY_EXECUTION'}
+        result = subprocess.run([sys.executable, '-c', wrapper, str(self.script), str(self.root)],
+                                cwd=self.root, env=env, capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 124, result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertEqual((receipt['status'], receipt['timeout_seconds']), ('timeout', 3))
+        self.assertGreaterEqual(receipt['elapsed_ms'], 2500)
+        pids = json.loads((self.root / 'pids.json').read_text())
+        try:
+            for pid in pids:
+                stat = Path(f'/proc/{pid}/stat')
+                alive = stat.exists() and stat.read_text().split(') ', 1)[1].split()[0] != 'Z'
+                self.assertFalse(alive, f'Outer deadline left process {pid} running')
+        finally:
+            for pid in pids:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_direct_run_interruption_stops_the_generated_case_group(self):
+        self.program.write_text('''import json, os, pathlib, subprocess, sys, time
+root = pathlib.Path(__file__).resolve().parent.parent
+child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+tmp = root / 'pids.tmp'
+tmp.write_text(json.dumps([os.getpid(), child.pid]))
+tmp.replace(root / 'pids.json')
+time.sleep(30)
+''')
+        self.data['timeout'] = 30
+        self.data['cases'] = [{'name': 'slow', 'args': [], 'exit': 0, 'stdout_text': ''}]
+        self.save_spec()
+        self.invoke('create')
+        env = {key: value for key, value in os.environ.items() if key != 'TKSTACK_CODIFY_EXECUTION'}
+        process = subprocess.Popen([sys.executable, str(self.script), 'run', '--project', str(self.root),
+            '--target', 'tests/test_cli.py'], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        pids = []
+        try:
+            deadline = time.monotonic() + 8
+            while not (self.root / 'pids.json').exists() and time.monotonic() < deadline:
+                time.sleep(.02)
+            pids = json.loads((self.root / 'pids.json').read_text())
+            process.terminate()
+            out, err = process.communicate(timeout=10)
+            self.assertEqual(process.returncode, 143, out + err)
+            self.assertEqual(json.loads(out)['status'], 'interrupted')
+            for pid in pids:
+                stat = Path(f'/proc/{pid}/stat')
+                alive = stat.exists() and stat.read_text().split(') ', 1)[1].split()[0] != 'Z'
+                self.assertFalse(alive, f'Interrupted run left process {pid} running')
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            for pid in pids:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
 
     @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
     def test_generated_case_timeout_cleans_ordinary_descendants(self):

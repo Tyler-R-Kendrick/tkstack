@@ -1,8 +1,8 @@
 {
   "tests/test_authoring.py": {
-    "sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+    "sha256": "bf3d474b286dc5c04d9c2faa1cd2335e5683eab3d811df09bed2b72d7249da68",
     "risk": "Hook policies or generated CLI contract tests could permit invalid actions, overwrite files, hang, or miss real behavioral faults.",
-    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression. A real generated CLI deadline must stop its ordinary POSIX child processes.",
+    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression. A real generated CLI deadline must stop its ordinary POSIX child processes. Generated cases retain process-group ownership; direct overall timeout and interruption stop the generated test group and report elapsed outcomes. The compiled Learn command executes the same supported operation.",
     "kinds": [
       "contract",
       "simulation"
@@ -41,9 +41,9 @@
     "overlap": "Boundary coercion and routing cases are not repeated as whole skill workflows; compiler freeze invariants remain in test_codify."
   },
   "tests/test_constrain.py": {
-    "sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
-    "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs.",
-    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail.",
+    "sha256": "6109ce788f2c92c49cb903b39063028622a04c818888174d474753704f33e0a3",
+    "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs. Mutation evidence could misclassify harness errors or deadlines as behavioral detection, or mutate the original checkout.",
+    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail. Exercise bounded mutation execution on a clean Git fixture, including an opt-in real locked Cosmic Ray engine; distinguish assertion failures, passing cells, invalid mutations, test errors, failed baselines, a retained timeout receipt during engine setup, malformed plan versions, source drift and timeouts, verify snapshot Git discovery isolation, ordinary descendant cleanup after both timeouts and successful leaders and never overwrite receipts.",
     "kinds": [
       "contract",
       "simulation"
@@ -62,15 +62,15 @@
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
   "tests/test_evalify.py": {
-    "sha256": "0212a6e8742ba2adb8cbdad956fc8d7ad1f56053901334c482f1cdbbfe026a3e",
-    "risk": "The evaluation adapter could hide failed or empty runs, reuse outputs, or hang without recording timeout evidence.",
-    "oracle": "Run the adapter with passing, failing, empty and hanging processes; inspect exit, timing, receipt and ordinary child cleanup. Optionally run real Promptfoo with a fixture judge and explicit grader errors. Concurrent runs must reserve output and receipt before starting a provider, with only one dispatch per contested path. Oversized valid framework output must be rejected before parsing with an explicit receipt. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
+    "sha256": "ad3d690227c9e25432524fe758ffe40fe4c9e953a613fe85c29393f055c16b66",
+    "risk": "Host judgment records, calibration, deadline cleanup or contested outputs could be accepted or reported incorrectly.",
+    "oracle": "Exercise the CLI with retained host judgments and stubbed offline assertions; check output, confusion counts, observed and unknown durations including zero, validation rejection of malformed fields and boolean/negative times before dispatch with independent receipt paths, deadline receipts and descendant cleanup, and contention. An optional test runs actual Promptfoo assertions on host judgments. Direct analysis retains process-group ownership through cleanup and records interruption after stopping ordinary descendants. The compiled Learn command executes the same supported operation.",
     "kinds": [
       "contract",
       "simulation",
       "functional"
     ],
-    "overlap": "These tests exercise the Evalify native adapter and timeout boundary; framework semantic quality and real model calibration require separate evaluations."
+    "overlap": "These exercise distinct validation, scoring, timing, concurrency and process boundaries; stubbed and real framework checks cover adapter behavior and actual assertion integration respectively."
   },
   "tests/test_experiment_agent_arm.py": {
     "sha256": "8f1f290d6320fdf00dea6ec2d82d3a82cfc50d6c70477d152cc86850246def16",
@@ -421,9 +421,9 @@
     "overlap": "Includes behavioral-test and nondeterministic evaluation routing alongside other decision-record mechanisms."
   },
   "tests/test_skill_evolution.py": {
-    "sha256": "012f4206071fdbd798d0f3e426423d9f89d9b4bc60de1690282e9fc3d559dd3a",
+    "sha256": "1d6598777178c9b2ee327c7512e9be056bf08e0d8ca8998791202a03022fe26a",
     "risk": "Skill improvement could publish changed or unanswered candidates using stale proof or weak substring grading.",
-    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes. Prepare each requested authored suite and check its splits and non-adoption gate. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
+    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes. Prepare each requested authored suite and check its splits and non-adoption gate. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Evolution preparation rejects an alternate backend option without changing its recorded run state.",
     "kinds": [
       "contract",
       "functional",

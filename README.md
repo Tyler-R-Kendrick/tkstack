@@ -59,9 +59,10 @@ for execution and isolation limits.
 Constrain's [test-value review](skills/constrain/references/tests.md) ranks
 tests by risk and evidence, checks overlap across the test pyramid, and compares
 fault detection and cost before pruning. Its checker inventories supported tests
-and enforces configured rules; it does not rank tests, run mutation testing, or
-prove that a suite improvement works. Those conclusions require the separate
-review and measurements described in the guide.
+and enforces configured rules. A separate bounded mutation command runs selected
+Python faults against individual unittest cases in isolated Git snapshots. Review
+the resulting failures and costs before deciding whether a test can be pruned;
+neither a checker pass nor a mutation count proves test value.
 The review also incorporates UB Mode's function-risk, mutation and duplication
 signals, with their measurement limits and tool side effects made explicit.
 Executed TKStack operations use a bounded runner and retain local timing records;
