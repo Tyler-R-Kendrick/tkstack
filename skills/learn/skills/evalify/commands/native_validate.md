@@ -3,7 +3,7 @@ schema: tkstack.command/v1
 tool:
   type: function
   name: evalify_native_validate
-  description: Validate a Promptfoo configuration with a timed receipt.
+  description: Validate host-judged cases and retain a timed receipt.
   strict: true
   parameters:
     type: object
@@ -15,10 +15,7 @@ tool:
       project:
         type: string
         minLength: 1
-      config:
-        type: string
-        minLength: 1
-      executable:
+      cases:
         type: string
         minLength: 1
       receipt:
@@ -31,8 +28,7 @@ tool:
     required:
     - operation
     - project
-    - config
-    - executable
+    - cases
     - receipt
     - timeout
     additionalProperties: false
@@ -43,10 +39,8 @@ cli:
   flags:
     project:
     - --project
-    config:
-    - --config
-    executable:
-    - --executable
+    cases:
+    - --cases
     receipt:
     - --receipt
     timeout:
@@ -60,6 +54,6 @@ run:
 
 # Native validate
 
-Validate a Promptfoo configuration with a timed receipt.
+Validate host-judged cases and retain a timed receipt.
 
 [Execution contract](../references/execution.md) describes effects, paths, evidence, and limitations. Frontmatter defines the exact typed signature.

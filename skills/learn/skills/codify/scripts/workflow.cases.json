@@ -22,7 +22,7 @@
           },
           {
             "id": "inference-boundary",
-            "description": "Execute code on reuse; declare any residual model/provider/harness inference explicitly."
+            "description": "Keep semantic inference with the invoking agent and execute deterministic compiled code."
           }
         ],
         "facts_schema": {

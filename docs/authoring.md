@@ -18,7 +18,7 @@ report when an MCP host or remote provider cannot enforce cancellation.
 
 Use `/codify <prompt-or-markdown>` to lower a procedure once into native code
 and freeze a verified executable lock. It owns the shared workflow templates,
-compiler/runner, and optional inference runtime extracted from Skillify.
+and compiler/runner extracted from Skillify.
 Skillify consumes its generated standalone release for skill packaging. Future
 runs execute the frozen artifact and fail on stale inputs; they do not silently
 rebuild or interpret prose. See [Codify](codify.md).
@@ -40,22 +40,20 @@ Run the tool rather than reconstructing its algorithm through inference.
 python3 skills/learn/skills/skillify/scripts/skillify.py scaffold \
   --target /repo/skills/inspect-contracts --name inspect-contracts \
   --description 'Inspect consumer/provider contracts when asked about compatibility.'
-python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk --dry-run
+python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing --dry-run
 python3 skills/learn/skills/skillify/scripts/skillify.py check /repo/skills/inspect-contracts --require-tool
 ```
 
 The scaffold creates that index, four linked topic/tool pages, a script-backed
 workflow/CLI starter, and a license. `convert` safely seeds an existing owned
 skill migration. Complete its actual algorithm and verification before delivery.
-The optional `--backend ai-sdk` supplies TypeScript, a native tool export, and
-locked Vercel AI SDK profiles for model providers, Decisions, and harnesses.
 See [conversion, configuration, and evidence](skillify.md).
 `check` reads metadata, resources, local inline links and Python syntax in a
 restricted portable profile. It neither executes scripts nor proves behavioral
 or trigger quality. See [the exact profile](../skills/learn/skills/skillify/references/validation.md).
 Use real behavior tests for observable helper contracts and actual artifact
-review for semantic quality. Existing `learn improve` and SkillOpt processes
-remain in place for evidence-backed automatic revision/adoption.
+review for semantic quality. Semantic review remains with the invoking agent; case preparation does not
+launch another model or harness.
 
 ## Reusify
 
@@ -88,7 +86,7 @@ incremental generation, shared-code boundaries, migration, and proof. See
 Use `/lintify <standard>` or `$lintify` to produce a native CLI rule/config,
 scoped diagnostics, meaningful fixtures, and a verified invocation. Reuse the
 project's linter and existing rules first. Markdown can describe deterministic
-compiled checks with lintbook or semantic model-evaluated checks with GPTLint.
+compiled checks with lintbook. The invoking agent handles residual semantic review.
 The latter remains probabilistic and needs actual evaluation before a reliable
 gate can be claimed.
 
@@ -97,8 +95,8 @@ python3 skills/learn/skills/lintify/scripts/lintify.py scaffold \
   --backend eslint --target /tmp/my-lint-example
 ```
 
-The helper also supplies lintbook and GPTLint examples. It creates only a new
-isolated package and activates no rule. Native ESLint behavior and GPTLint
+The helper also supplies a lintbook example. It creates only a new
+isolated package and activates no rule. Native ESLint behavior and
 parsing/discovery have direct evidence; semantic evaluation and native lintbook
 compilation remain unverified. See [the guide](lintify.md) for commands,
 runtime requirements, source versions, and exact evidence boundaries.
@@ -237,7 +235,7 @@ See the [test selection procedure](../skills/learn/skills/testify/references/sel
 
 ## Evalify
 
-Use `/learn evalify` for nondeterministic behavior requiring a calibrated
-model-graded evaluation. It includes a reviewed npm lock for Promptfoo and
-records bounded run timing; installation, provider setup and actual judge
-calibration remain explicit.
+Use `/learn evalify` for structured judgments made by the invoking agent.
+A pinned Promptfoo library scores retained judgments against reviewed labels
+offline; no second model, provider or agent harness is selected. The receipt
+times offline processing and does not authenticate the source of the judgment.

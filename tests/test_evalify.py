@@ -1,4 +1,4 @@
-"""The evaluation adapter preserves real runner outcomes and timeout evidence."""
+"""Host-judged evaluation records and bounded offline framework analysis."""
 import json
 import os
 from pathlib import Path
@@ -18,145 +18,121 @@ class EvalifyTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory(prefix='evalify-test-')
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        (self.root / 'config.yaml').write_text('fixture: true\n')
-        self.runner = self.root / 'runner'
-        self.runner.write_text('''#!/usr/bin/env python3
-import json, os, pathlib, subprocess, sys, time
-root = pathlib.Path.cwd()
-(root / 'pid').write_text(str(os.getpid()))
-if (root / 'hang').exists():
-    child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
-    (root / 'childpid').write_text(str(child.pid))
-    time.sleep(30)
-if 'eval' in sys.argv:
-    rows = [] if (root / 'empty').exists() else [{'success': not (root / 'fail').exists()}]
-    pathlib.Path(sys.argv[sys.argv.index('-o') + 1]).write_text(json.dumps({'results': {'results': rows}}))
-    (root / 'argv.json').write_text(json.dumps(sys.argv))
-    sys.exit(100 if (root / 'fail').exists() else 0)
+        package = self.root / '.tkstack/runtime/evalify/node_modules/promptfoo'
+        package.mkdir(parents=True)
+        (package / 'package.json').write_text(json.dumps({'version': '0.125.1'}))
+        (package / 'index.js').write_text('''
+const fs = require('fs'), cp = require('child_process');
+module.exports = {assertions: {runAssertion: async ({assertion, providerResponse}) => {
+  fs.appendFileSync('calls', 'call\\n');
+  if (fs.existsSync('hang')) {
+    const child = cp.spawn(process.execPath, ['-e', 'setTimeout(()=>{}, 30000)'], {stdio: 'ignore'});
+    fs.writeFileSync('child.pid', String(child.pid));
+    await new Promise(() => {});
+  }
+  if (fs.existsSync('slow')) await new Promise(resolve => setTimeout(resolve, 700));
+  return {pass: assertion.value === providerResponse.output};
+}}};
 ''')
-        self.runner.chmod(0o755)
+        self.data = {'version': 1, 'source': 'invoking-agent', 'cases': [
+            {'id': 'good', 'judgment': True, 'reference': True, 'elapsed_ms': 10},
+            {'id': 'bad', 'judgment': False, 'reference': False, 'elapsed_ms': None},
+            {'id': 'current', 'judgment': True, 'reference': None, 'elapsed_ms': 4}]}
+        self.save()
 
-    def cli(self, op, receipt, extra=()):
-        return subprocess.run([sys.executable, str(HELPER), op, '--project', str(self.root),
-            '--config', 'config.yaml', '--executable', str(self.runner), '--receipt', receipt,
-            *extra], capture_output=True, text=True, timeout=15)
+    def save(self):
+        (self.root / 'cases.json').write_text(json.dumps(self.data))
 
-    def test_runner_results_are_bounded_retained_and_fail_closed(self):
-        result = self.cli('run', 'pass.time.json', ['--output', 'pass.json'])
+    def cli(self, operation, receipt, extra=()):
+        return subprocess.run([sys.executable, str(HELPER), operation, '--project', str(self.root),
+            '--cases', 'cases.json', '--receipt', receipt, *extra], capture_output=True, text=True, timeout=30)
+
+    def test_validated_host_judgments_are_scored_without_model_selection(self):
+        valid = self.cli('validate', 'validate.time.json')
+        self.assertEqual(valid.returncode, 0, valid.stderr)
+        self.assertFalse((self.root / 'calls').exists())
+        result = self.cli('run', 'run.time.json', ['--output', 'result.json'])
         self.assertEqual(result.returncode, 0, result.stderr)
-        receipt = json.loads((self.root / 'pass.time.json').read_text())
-        self.assertEqual((receipt['status'], receipt['result_count'], receipt['passed']), ('pass', 1, 1))
+        receipt = json.loads((self.root / 'run.time.json').read_text())
+        scores = json.loads((self.root / 'result.json').read_text())
+        self.assertEqual(scores, {'calibration': {'matched': 2, 'total': 2}, 'current': {'passed': 1, 'total': 1}})
+        self.assertEqual((receipt['source'], receipt['framework'], receipt['status']),
+                         ('invoking-agent', 'promptfoo assertions', 'pass'))
         self.assertGreaterEqual(receipt['elapsed_ms'], 0)
-        self.assertEqual(len(receipt['executable_sha256']), 64)
-        argv = json.loads((self.root / 'argv.json').read_text())
-        self.assertIn('--no-cache', argv)
-        self.assertIn('--no-share', argv)
-        (self.root / 'fail').touch()
-        result = self.cli('run', 'fail.time.json', ['--output', 'fail.json'])
-        self.assertNotEqual(result.returncode, 0)
-        receipt = json.loads((self.root / 'fail.time.json').read_text())
-        self.assertEqual((receipt['status'], receipt['failed']), ('fail', 1))
-        (self.root / 'fail').unlink()
-        (self.root / 'empty').touch()
-        result = self.cli('run', 'empty.time.json', ['--output', 'empty.json'])
-        self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(json.loads((self.root / 'empty.time.json').read_text())['status'], 'error')
-        self.assertNotEqual(self.cli('run', 'new.time.json', ['--output', 'pass.json']).returncode, 0)
+        self.data['cases'][0]['judgment'] = False
+        self.save()
+        self.assertEqual(self.cli('run', 'mismatch.time.json', ['--output', 'mismatch.json']).returncode, 0)
+        self.assertEqual(json.loads((self.root / 'mismatch.json').read_text())['calibration']['matched'], 1)
 
-    def test_timeout_stops_direct_runner_and_records_elapsed_time(self):
+    def test_alternate_model_executable_and_malformed_records_are_rejected_before_dispatch(self):
+        for flag in ('--model', '--provider', '--executable', '--config'):
+            with self.subTest(flag=flag):
+                result = self.cli('run', 'blocked.json', ['--output', 'blocked-result.json', flag, 'other'])
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / 'calls').exists())
+        for bad in ('wrong-source', 'duplicate', 'invalid-time', 'oversized'):
+            with self.subTest(bad=bad):
+                data = json.loads(json.dumps(self.data))
+                if bad == 'wrong-source': data['source'] = 'external'
+                if bad == 'duplicate': data['cases'].append(data['cases'][0])
+                if bad == 'invalid-time': data['cases'][0]['elapsed_ms'] = -1
+                (self.root / 'cases.json').write_text(' ' * (1024 * 1024 + 1) if bad == 'oversized' else json.dumps(data))
+                result = self.cli('validate', 'bad.time.json')
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / 'bad.time.json').exists())
+        self.assertFalse((self.root / 'calls').exists())
+
+    @unittest.skipUnless(os.name == 'posix' and Path('/proc').is_dir(), 'POSIX process cleanup fixture')
+    def test_timeout_stops_offline_analysis_group_and_records_elapsed_time(self):
         (self.root / 'hang').touch()
-        result = self.cli('validate', 'timeout.json', ['--timeout', '1'])
+        result = self.cli('run', 'timeout.json', ['--output', 'timeout-result.json', '--timeout', '1'])
         self.assertEqual(result.returncode, 124, result.stderr)
         receipt = json.loads((self.root / 'timeout.json').read_text())
         self.assertEqual((receipt['status'], receipt['timeout_seconds']), ('timeout', 1))
         self.assertGreaterEqual(receipt['elapsed_ms'], 500)
-        self.assertLess(receipt['elapsed_ms'], 12000)
-        pid = int((self.root / 'pid').read_text())
-        with self.assertRaises(ProcessLookupError):
-            os.kill(pid, 0)
-        child = int((self.root / 'childpid').read_text())
+        child = int((self.root / 'child.pid').read_text())
         try:
             state = Path(f'/proc/{child}/stat')
             alive = state.exists() and state.read_text().split(') ', 1)[1].split()[0] != 'Z'
-            self.assertFalse(alive, 'Timed-out runner left its child process running')
+            self.assertFalse(alive, 'Timed-out analysis left its child process running')
         finally:
             try:
                 os.kill(child, signal.SIGKILL)
             except ProcessLookupError:
                 pass
 
-    def test_concurrent_runs_reserve_receipt_and_output_before_dispatch(self):
-        self.runner.write_text('''#!/usr/bin/env python3
-import json, pathlib, sys, time
-root = pathlib.Path.cwd()
-with (root / 'calls').open('a') as calls:
-    calls.write('call\\n')
-    calls.flush()
-time.sleep(0.7)
-pathlib.Path(sys.argv[sys.argv.index('-o') + 1]).write_text(json.dumps({'results': {'results': [{'success': True}]}}))
-''')
-        self.runner.chmod(0o755)
+    def test_concurrent_analysis_reserves_receipt_and_output_before_dispatch(self):
+        (self.root / 'slow').touch()
+        self.data['cases'] = self.data['cases'][:1]
+        self.save()
         for collision in ('receipt', 'output'):
             with self.subTest(collision=collision):
-                root = self.root / collision
-                root.mkdir()
-                (root / 'config.yaml').write_text('fixture: true\n')
+                calls = self.root / 'calls'
+                calls.unlink(missing_ok=True)
                 commands = []
                 for index in range(2):
                     receipt = 'same-receipt.json' if collision == 'receipt' else f'receipt-{index}.json'
                     output = 'same-output.json' if collision == 'output' else f'output-{index}.json'
-                    commands.append([sys.executable, str(HELPER), 'run', '--project', str(root),
-                        '--config', 'config.yaml', '--executable', str(self.runner), '--receipt', receipt, '--output', output])
+                    commands.append([sys.executable, str(HELPER), 'run', '--project', str(self.root),
+                        '--cases', 'cases.json', '--receipt', receipt, '--output', output])
                 processes = [subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) for command in commands]
                 results = [process.communicate(timeout=10) for process in processes]
                 self.assertEqual(sorted(process.returncode for process in processes), [0, 1], results)
-                self.assertEqual((root / 'calls').read_text().splitlines(), ['call'])
+                self.assertEqual(calls.read_text().splitlines(), ['call'])
+                for path in self.root.glob('*.json'):
+                    if path.name != 'cases.json': path.unlink()
 
-    def test_oversized_result_is_bounded_and_reported(self):
-        self.runner.write_text('''#!/usr/bin/env python3
-import pathlib, sys
-output = pathlib.Path(sys.argv[sys.argv.index('-o') + 1])
-with output.open('wb') as stream:
-    stream.write(b'{"results":{"results":[{"success":true,"padding":"')
-    for _ in range(65): stream.write(b'x' * (1024 * 1024))
-    stream.write(b'"}]}}')
-''')
-        self.runner.chmod(0o755)
-        result = self.cli('run', 'large.time.json', ['--output', 'large.json'])
-        self.assertNotEqual(result.returncode, 0)
-        receipt = json.loads((self.root / 'large.time.json').read_text())
-        self.assertEqual(receipt['status'], 'error')
-        self.assertIn('exceeds 64 MiB', result.stderr)
-
-    @unittest.skipUnless(PROMPTFOO, 'set TKSTACK_PROMPTFOO_BIN for the real Promptfoo integration')
-    def test_real_promptfoo_calls_a_fixture_judge_and_reports_mixed_results(self):
-        (self.root / 'judge.cjs').write_text('''module.exports = class Judge {
-  id() { return 'fixture'; }
-  async callApi(prompt) { const pass = prompt.includes('GOOD-CANDIDATE');
-    return {output: JSON.stringify({pass, score: pass ? 1 : 0, reason: 'fixture'})}; }
-};''')
-        (self.root / 'config.yaml').write_text('''prompts: ['{{answer}}']
-providers: [echo]
-defaultTest:
-  options: {provider: 'file://judge.cjs'}
-tests:
-  - vars: {answer: GOOD-CANDIDATE}
-    assert: [{type: llm-rubric, value: A good answer}]
-  - vars: {answer: BAD-CANDIDATE}
-    assert: [{type: llm-rubric, value: A good answer}]
-''')
-        self.runner = Path(PROMPTFOO)
+    @unittest.skipUnless(PROMPTFOO, 'set TKSTACK_PROMPTFOO_BIN for real Promptfoo assertions')
+    def test_real_promptfoo_scores_preexisting_host_judgments_without_a_model(self):
+        modules = next(path for path in Path(PROMPTFOO).resolve().parents if path.name == 'node_modules')
+        local_modules = self.root / '.tkstack/runtime/evalify/node_modules'
+        import shutil
+        shutil.rmtree(local_modules)
+        local_modules.symlink_to(modules, target_is_directory=True)
         result = self.cli('run', 'native.time.json', ['--output', 'native.json'])
-        self.assertNotEqual(result.returncode, 0)
-        receipt = json.loads((self.root / 'native.time.json').read_text())
-        self.assertEqual((receipt['result_count'], receipt['passed'], receipt['failed']), (2, 1, 1))
-        self.assertEqual(receipt['grader_errors'], 0)
-        self.assertEqual(receipt['status'], 'fail')
-        (self.root / 'judge.cjs').write_text("module.exports = class Judge { id(){return 'error'} async callApi(){return {error:'grader unavailable'}} };\n")
-        result = self.cli('run', 'judge-error.time.json', ['--output', 'judge-error.json'])
-        self.assertNotEqual(result.returncode, 0)
-        receipt = json.loads((self.root / 'judge-error.time.json').read_text())
-        self.assertEqual(receipt['grader_errors'], 2)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        scores = json.loads((self.root / 'native.json').read_text())
+        self.assertEqual(scores, {'calibration': {'matched': 2, 'total': 2}, 'current': {'passed': 1, 'total': 1}})
 
 
 if __name__ == '__main__':

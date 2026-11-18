@@ -13,7 +13,7 @@
     },
     {
       "id": "inference-boundary",
-      "description": "Execute code on reuse; declare any residual model/provider/harness inference explicitly."
+      "description": "Keep semantic inference with the invoking agent and execute deterministic compiled code."
     }
   ],
   "facts_schema": {
@@ -90,8 +90,7 @@
           "schema": {
             "type": "string",
             "enum": [
-              "python",
-              "ai-sdk"
+              "python"
             ]
           },
           "flags": [
@@ -182,19 +181,6 @@
           "repeat": true,
           "default": []
         },
-        "config": {
-          "schema": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "flags": [
-            "--config"
-          ],
-          "path": true,
-          "default": null
-        },
         "project": {
           "schema": {
             "type": "string",
@@ -205,20 +191,6 @@
           ],
           "path": true,
           "default": "."
-        },
-        "profile": {
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "flags": [
-            "--profile"
-          ],
-          "repeat": true,
-          "default": []
         },
         "dependencies": {
           "schema": {
@@ -259,7 +231,7 @@
         "native",
         "compile"
       ],
-      "description": "Compile supplied native code and actual contract cases with the existing codify compiler. Cases can execute their declared effects/inference; retain actual authorization and explicit profiles."
+      "description": "Compile supplied code and cases without selecting a separate model or agent harness."
     },
     "native_run": {
       "entrypoint": "scripts/codify.py",
@@ -296,19 +268,6 @@
           "path": true,
           "default": "."
         },
-        "config": {
-          "schema": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "flags": [
-            "--config"
-          ],
-          "path": true,
-          "default": null
-        },
         "dependencies": {
           "schema": {
             "type": [
@@ -339,7 +298,7 @@
         "native",
         "run"
       ],
-      "description": "Run the explicitly selected verified artifact through the native Codify runtime; preserves its declared code effects and model/profile configuration."
+      "description": "Run the verified deterministic artifact without selecting a separate model or agent harness."
     }
   },
   "limits": [

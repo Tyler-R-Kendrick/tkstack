@@ -101,9 +101,7 @@ python3 <skillify-directory>/scripts/skillify.py scaffold \
 
 The result is an incomplete **draft**: an index, four linked topic/interface
 pages, a script-backed workflow and CLI, and a license. Pure Python is the
-smallest default for deterministic work. Select `--backend ai-sdk` for
-TypeScript with the locked Vercel AI SDK runtime, native tool export, and
-explicit language/Decisions/harness profiles. Replace placeholders and implement
+supported scaffold for deterministic work. Replace placeholders and implement
 the actual procedure in `scripts/workflow.*`. Complete the callable interface
 and native verification before delivering; add command pages when appropriate.
 The bundled MIT license is suitable for this
@@ -160,7 +158,7 @@ Structural checks alone do not establish skill effectiveness or model gains.
 For subjective output, inspect actual artifacts against the brief; don't add a
 meaningless keyword/test-count proxy just to manufacture a score.
 
-Use the existing `learn improve`/SkillOpt adoption process for automatic revision
+Use the current agent and reviewed evidence for revision
 search when real adapters and held-out cases are available. An explicit feature
 request can use appropriate engineering tests without pretending a model trial
 ran. `hill-climb` can manage a bounded genuine eval; it does not replace missing

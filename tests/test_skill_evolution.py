@@ -88,7 +88,7 @@ class SkillEvolutionTests(unittest.TestCase):
 
     def test_evolution_scopes_memory_and_gates_without_global_config(self):
         with patch.object(evolve, "ROOT", self.fixture):
-            cfg, tasks, _ = evolve.prepare("learn", self.run_dir, "handoff")
+            cfg, tasks, _ = evolve.prepare("learn", self.run_dir)
         self.assertFalse(cfg.evolve_memory)
         self.assertFalse(cfg.auto_adopt)
         self.assertTrue(cfg.gate_no_regression)
@@ -101,21 +101,21 @@ class SkillEvolutionTests(unittest.TestCase):
     def test_all_requested_authored_suites_can_prepare_for_evolution(self):
         for skill in ('learn', 'testify', 'constrain', 'hill-climb'):
             with self.subTest(skill=skill):
-                cfg, tasks, _ = evolve.prepare(skill, self.root / '.tkstack' / ('run-' + skill), 'mock')
+                cfg, tasks, _ = evolve.prepare(skill, self.root / '.tkstack' / ('run-' + skill))
                 self.assertFalse(cfg.auto_adopt)
                 self.assertEqual({task.split for task in tasks}, {'train', 'val', 'test'})
 
     def test_changed_live_skill_cannot_reuse_old_evolution_proof(self):
         with patch.object(evolve, "ROOT", self.fixture):
-            evolve.prepare("learn", self.run_dir, "handoff")
+            evolve.prepare("learn", self.run_dir)
             target = self.fixture / "skills/learn/SKILL.md"
             target.write_text(target.read_text() + "\nA changed live obligation.\n")
             with self.assertRaisesRegex(ValueError, "inputs changed"):
-                evolve.prepare("learn", self.run_dir, "handoff")
+                evolve.prepare("learn", self.run_dir)
 
     def test_choice_graders_reject_pending_markers_and_embedded_answers(self):
         with patch.object(evolve, "ROOT", self.fixture):
-            _, tasks, _ = evolve.prepare("learn", self.run_dir, "handoff")
+            _, tasks, _ = evolve.prepare("learn", self.run_dir)
         for task in tasks:
             for response in ["[[SKILLOPT-SLEEP-PENDING:abcdef0123456789]]", "A or B or C", "", "The answer is A"]:
                 with self.subTest(task=task.id, response=response):
@@ -128,16 +128,17 @@ class SkillEvolutionTests(unittest.TestCase):
         original["tasks"][0]["judge"]["checks"][0]["arg"] = "B"
         source.write_text(json.dumps(original))
         with patch.object(evolve, "ROOT", self.fixture), self.assertRaisesRegex(ValueError, "anchored action grader"):
-            evolve.prepare("learn", self.run_dir, "handoff")
+            evolve.prepare("learn", self.run_dir)
 
-    def test_unanswered_handoff_does_not_publish_completion_or_mutate_skill(self):
+    def test_preparation_never_launches_another_model_or_mutates_skill(self):
         target = self.fixture / "skills/learn/SKILL.md"
         before = target.read_bytes()
         args = ["evolve.py", "learn", "--run-dir", str(self.run_dir)]
-        with patch.object(evolve, "ROOT", self.fixture), patch.object(sys, "argv", args), redirect_stdout(StringIO()):
+        captured = StringIO()
+        with patch.object(evolve, "ROOT", self.fixture), patch.object(sys, "argv", args), redirect_stdout(captured):
             status = evolve.main()
-        self.assertEqual(status, 3)
-        self.assertTrue((self.run_dir / "handoff/pending.json").is_file())
+        self.assertEqual(status, 0)
+        self.assertFalse(json.loads(captured.getvalue())["automatic_model_calls"])
         self.assertFalse((self.run_dir / "result.json").exists())
         self.assertFalse((self.run_dir / "state/state.json").exists())
         self.assertEqual(target.read_bytes(), before)

@@ -79,8 +79,8 @@ the expected effect and a falsifier: “defer index loading off startup because
 the trace shows it blocking first paint,” rather than “try caching.”
 
 Change one coherent lever per round. Keep the incumbent and rejected patches.
-Use isolated worktrees for independent candidates; when delegation is permitted
-and useful, give each agent a narrow hypothesis and separate worktree. In an
+Use isolated worktrees for candidate changes while the invoking agent retains
+the same model, harness and conversation. In an
 active `sdlc` workflow, use its leased DAG, verified COW/sparse worktree and cache
 rules, BDD/contracts, and independent adversarial review. Shared caches must
 not introduce mutable cross-branch state or contaminate cold-cache benchmarks.
@@ -147,9 +147,7 @@ requirements, not only the metric. For UI/media, compare rendered screenshots,
 recordings, and full assets as appropriate; use `unslop`'s current confirmed
 patterns as a quality gate. During a fixed-rubric comparison, hold its snapshot
 constant and restart if a correction changes it. Preserve functionality and
-accessibility while improving design. For custom skill prompt changes, retain
-the `learn improve` proposal and use the configured SkillOpt adoption gate when
-its real eval suite applies. This generic loop does not bypass that gate.
+accessibility while improving design. For custom skill prompt changes, retain the current agent's proposal and evidence without launching a separate optimizer model.
 
 Deliver accepted commits and stacked PRs within the authorized scope. An active
 `sdlc` workload owns final independent evidence review and PR babysitting:

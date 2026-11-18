@@ -27,6 +27,11 @@ Tool: `.tkstack/tkstack skills hill-climb -- <command>`. Omit the command for de
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
 <!-- tkstack:execution:end -->
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Use deterministic local tools for supporting checks.
+
+
 
 Improve an actual outcome through bounded attributable experiments. This skill
 does not start an experiment, spend money, or expand merge authority by existing.
@@ -39,7 +44,6 @@ does not start an experiment, spend money, or expand merge authority by existing
 | Inspect example plan | [Plan template](templates/plan.json) |
 | Build or improve a task-specific Git experiment harness | [Git-backed experiments](references/git-experiments.md) |
 | Capture a task harness brief | [Task harness template](templates/task-harness.json) |
-| Run a native MAF YAML experiment workflow | [Optional MAF workflow](workflows/experiment-cycle/README.md) |
 
 Ground the real workload and prove the instrument can distinguish good/bad
 behavior. Freeze inputs, metric, runner, grader, guardrails, splits, threshold,
@@ -53,7 +57,7 @@ Confirm a fixed winner on untouched cases. Preserve user targets and stop rules.
 
 Use the real project runner; `scripts/hill_climb.py` checks supported receipts,
 not experiment truth. Missing proof stays inconclusive. An active SDLC workflow
-and SkillOpt's custom-skill adoption gate retain their guarantees. See
+retain their guarantees when they do not require another agent or model. See
 [sources](references/sources.md) and [added synthesis](references/distilled-sources.md).
 
 For session/repository/workspace records, read [local state storage](references/storage.md).

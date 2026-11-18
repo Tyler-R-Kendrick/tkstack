@@ -393,7 +393,6 @@ def add_parsers(commands):
     invoke.add_argument('--call', help='Tool-call JSON file, or - for stdin; otherwise use -- <command> [args]')
     invoke.add_argument('--project', type=Path)
     invoke.add_argument('--timeout', type=int, default=30)
-    invoke.add_argument('--config', type=Path)
     invoke.add_argument('--dependencies', type=Path)
     # parse_known_args in the frontend preserves only tokens after an explicit --.
     return listing, invoke
@@ -409,4 +408,4 @@ def operation(engine, args, argv=(), call=None):
         if argv:
             raise ValueError('Select a tool call or CLI arguments, not both')
         call = json_value(call)
-    return execute(engine, args.directory, argv, call, args.project, args.timeout, args.dependencies, args.config)
+    return execute(engine, args.directory, argv, call, args.project, args.timeout, args.dependencies, None)

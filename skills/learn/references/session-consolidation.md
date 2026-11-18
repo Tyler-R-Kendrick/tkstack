@@ -66,7 +66,7 @@ provenance and redact secrets/private details before authoring reusable content.
 A fact such as a current port number belongs to the local session. An uncertain
 mechanism stays unresolved; do not force every session into a new skill.
 
-The reasoning step may use the active agent or an explicitly configured model
+The reasoning step uses the invoking agent in its current conversation
 for residual judgment. It is not replaced by keyword scoring. Facts, hashes,
 bounds, decision shape, routing, dependencies, and effects are checked in code.
 Do not invent model-confidence thresholds or claim measured improvement.

@@ -35,20 +35,19 @@ Examples:
 
 ```text
 /hill-climb reduce cold startup latency below 100ms while preserving the contracts
-/hill-climb improve this skill's held-out task success within a $10 eval budget
+/hill-climb improve this skill against representative cases
 /hill-climb improve this landing page against the brief, using unslop as a quality gate
 ```
 
 Visual examples require actual rendering and artifact inspection; source-only
 or keyword scores cannot establish a design win. A fixed unslop rubric snapshot
 is hashed with the run; new user corrections change the rubric and require a
-fresh comparison. For skill-prompt changes, the configured `learn improve` and
-SkillOpt adoption gate still applies when its real suite is available.
+fresh comparison. For skill-prompt changes, use the invoking agent and retain its evidence;
+do not claim blind confirmation when the agent can see the cases.
 Checkout-level grades live in [`evals/repo-quality`](../evals/repo-quality/)
-([Repository quality](../evals/README.md)). That promptfoo rubric is not this
-skill's JSONL comparison helper and does not adopt a patch.
+([Repository quality](../evals/README.md)). Those rubric anchors are not this skill's JSONL comparison helper and do not adopt a patch.
 
-Independent candidates can use separate worktrees and authorized subagents.
+Candidates can use separate worktrees while the invoking agent remains in control.
 Concurrent timing measurements must not contaminate one another. An explicitly
 active `sdlc` workflow owns COW/sparse isolation, BDD/contract testing, evidence,
 independent final review, incremental commits, stacked PRs and babysitting.
@@ -88,10 +87,7 @@ sandboxes require separate integration.
 The [Git experiment guide](../skills/hill-climb/references/git-experiments.md)
 documents the request format and recovery limits, including bounded scripted
 proposals, host-agent handoff, preallocated parallel trials, and an optional
-Harbor separate-verifier backend and bounded local GEPA search. The optional
-[MAF YAML workflow](../skills/hill-climb/workflows/experiment-cycle/README.md)
-runs a bounded sequence of those requests with its own Python and .NET runtime
-prerequisites.
+bounded local GEPA search. A separate agent or evaluation harness is not launched.
 
 The private Git store verifies ownership and separation from registered source
 worktrees, disables hooks, and rejects configured external filter drivers during

@@ -88,7 +88,7 @@ class SkillifyWorkflowTests(unittest.TestCase):
         self.assertEqual(self.invoke({}).returncode, 3)
 
     def test_scaffold_and_conversion_supply_reserved_discovery_without_a_lock(self):
-        for mode in ('python', 'ai-sdk', 'convert'):
+        for mode in ('python', 'convert'):
             with self.subTest(mode=mode):
                 if self.target.exists():
                     shutil.rmtree(self.target)
@@ -168,62 +168,7 @@ class SkillifyWorkflowTests(unittest.TestCase):
         with ThreadPoolExecutor(max_workers=2) as pool:
             self.assertCountEqual(list(pool.map(attempt, range(2))), ["workflow-draft", "collision"])
 
-    def test_ai_sdk_scaffold_is_standalone_locked_and_escapes_description(self):
-        description = "Use quotes ' and \" literally; ${notCode}, @TITLE@, @COMMAND@, @ENTRYPOINT@."
-        skillify.scaffold(self.target, self.target.name, description, "ai-sdk")
-        self.assertEqual(skillify.metadata((self.target / "SKILL.md").read_text())[0]["description"], description)
-        package = json.loads((self.target / "scripts/package.json").read_text())
-        self.assertEqual(package["dependencies"]["ai"], "7.0.158")
-        self.assertTrue((self.target / "scripts/package-lock.json").is_file())
-        self.assertIn(json.dumps(description), (self.target / "scripts/tool.ts").read_text())
-        config = json.loads((self.target / "scripts/profiles.json").read_text())
-        self.assertEqual(config["profiles"], {})
-        self.assertEqual(config["providers"], {})
-        self.assertIn("node scripts/run.ts --input", (self.target / "references/tool.md").read_text())
-
-    @unittest.skipUnless(os.environ.get("TKSTACK_AI_SDK_DEPENDENCIES"), "Set TKSTACK_AI_SDK_DEPENDENCIES to the locked runtime's node_modules for native checks")
-    def test_native_ai_sdk_cli_tool_export_and_bundled_contracts(self):
-        dependencies = Path(os.environ["TKSTACK_AI_SDK_DEPENDENCIES"]).resolve(strict=True)
-        self.assertEqual(json.loads((dependencies / "ai/package.json").read_text())["version"], "7.0.158")
-        skillify.scaffold(self.target, self.target.name, "Normalize labels.", "ai-sdk")
-        scripts = self.target / "scripts"
-        (scripts / "node_modules").symlink_to(dependencies, target_is_directory=True)
-        (scripts / "workflow.ts").write_text('''import { z } from 'zod';
-import { createHash } from 'node:crypto';
-export const inputSchema = z.object({labels: z.array(z.string().max(1024)).max(64)}).strict();
-export const outputSchema = z.object({labels: z.array(z.string()), sha256: z.string().length(64)}).strict();
-export type Inference = unknown;
-export async function execute(input: z.infer<typeof inputSchema>, _inference: Inference) {
-  const labels = [...new Set(input.labels.map(label => label.trim()))].sort();
-  return {labels, sha256: createHash('sha256').update(JSON.stringify(labels)).digest('hex')};
-}
-''')
-        (scripts / "verify-tool.mjs").write_text('''import assert from 'node:assert/strict';
-import { createWorkflowTool } from './tool.ts';
-import { createInference } from './inference.ts';
-const tool = createWorkflowTool(createInference({version: 1, providers: {}, profiles: {}}));
-const context = {toolCallId: 'fixture', messages: []};
-assert.deepEqual((await tool.execute({labels: [' b ', 'a', 'a']}, context)).labels, ['a', 'b']);
-await assert.rejects(tool.execute({labels: [1]}, context));
-console.log('Native AI SDK tool invocation and input/output contracts passed.');
-''')
-        for command in ([str(dependencies / ".bin/tsc"), "--noEmit", "--pretty", "false"],
-                        ["node", "--test", "--test-isolation=none", "runtime.test.ts"],
-                        ["node", "verify-tool.mjs"]):
-            result = subprocess.run(command, cwd=scripts, text=True, capture_output=True)
-            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        input_path = self.root / "input.json"
-        payload = {"labels": ['quote"', '😀', ' b ', 'a', 'a']}
-        input_path.write_text(json.dumps(payload))
-        command = ["node", str(scripts / "run.ts"), "--input", str(input_path)]
-        first = subprocess.run(command, cwd=self.root, capture_output=True, text=True)
-        second = subprocess.run(command, cwd=self.root, capture_output=True, text=True)
-        self.assertEqual(first.returncode, 0, first.stderr)
-        labels = ['a', 'b', 'quote"', '😀']
-        digest = hashlib.sha256(json.dumps(labels, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
-        self.assertEqual(json.loads(first.stdout), {"labels": labels, "sha256": digest})
-        self.assertEqual(first.stdout, second.stdout)
-        input_path.write_text('{"labels":[1]}')
-        self.assertEqual(subprocess.run(command, cwd=self.root, capture_output=True).returncode, 1)
-        self.complete()
-        self.assertEqual(skillify.validate(self.target, require_tool=True)["tool_entrypoint"], "scripts/run.ts")
+    def test_separate_agent_runtime_cannot_be_scaffolded(self):
+        with self.assertRaisesRegex(ValueError, 'deterministic Python'):
+            skillify.scaffold(self.target, self.target.name, 'Normalize labels.', 'ai-sdk')
+        self.assertFalse(self.target.exists())

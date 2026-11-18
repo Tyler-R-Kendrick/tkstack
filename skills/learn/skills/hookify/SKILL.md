@@ -27,6 +27,11 @@ Tool: `.tkstack/tkstack skills hookify -- <command>`. Omit the command for deter
 `model` reads the explicit contract; `verify` checks retained facts/evidence. Native commands execute existing code. Residual semantic decisions use the focused procedures below; a recorded review is not an independently authenticated judgment.
 <!-- tkstack:execution:end -->
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Deterministic local tools may support the current agent's work.
+
+
 
 Turn an explicit mechanically observable rule into enforcement at the right
 boundary. Prefer deterministic code and existing type/lint/contract/CI checks.

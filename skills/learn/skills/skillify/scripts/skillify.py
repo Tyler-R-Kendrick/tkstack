@@ -292,11 +292,9 @@ def main():
     compiler.add_argument("directory", type=Path)
     compiler.add_argument("--cases", type=Path, required=True)
     compiler.add_argument("--entrypoint")
-    compiler.add_argument("--profile", dest="profiles", action="append", default=[])
     compiler.add_argument("--dry-run", action="store_true")
     compiler.add_argument("--dependencies", type=Path)
     compiler.add_argument("--jobs", type=int, default=4)
-    compiler.add_argument("--config", type=Path)
     compiler.add_argument("--project", type=Path)
     compiler.add_argument("--timeout", type=int, default=30)
     compiler.add_argument("--include", type=Path, action="append", default=[])
@@ -313,8 +311,8 @@ def main():
                 raise ValueError("--entrypoint requires --require-tool")
             result = validate(args.directory, args.require_tool, args.entrypoint)
         elif args.command == "compile":
-            result = compile_skill(args.directory, args.cases, args.entrypoint, args.profiles,
-                                   args.dry_run, args.dependencies, args.jobs, args.config, args.project, args.timeout, args.include)
+            result = compile_skill(args.directory, args.cases, args.entrypoint, (),
+                                   args.dry_run, args.dependencies, args.jobs, None, args.project, args.timeout, args.include)
         elif args.command == "convert":
             result = convert(args.directory, args.backend, args.dry_run)
         else:

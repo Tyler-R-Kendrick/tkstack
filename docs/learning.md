@@ -42,7 +42,7 @@ trace described in [the runner guide](runner.md); direct helpers and MCP hosts
 need their own supported instrumentation.
 Evalify reserves its receipt and result paths before dispatch so concurrent
 runs cannot silently reuse them; reconcile incomplete reservations after a crash.
-Its adapter rejects result files above 64 MiB before parsing.
+The helper accepts at most 1 MiB of host-judged cases and uses only offline assertions.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:
@@ -169,8 +169,8 @@ artifacts, while stating the observation window and gaps. They do not change
 the store, rewrite skills, retire rules, or disable integrations. Absence of
 an observed invocation is not proof that an integration is unused.
 
-For automatic revision search, keep the selected SkillOpt gate. Explicit feature
-implementation is assessed through its actual behavioral checks; do not label
+Keep revision work and semantic judgment in the invoking agent conversation.
+Explicit feature implementation is assessed through its behavioral checks; do not label
 that engineering work a measured gain in model quality. See
 [Grok source findings](grok-learn.md) for the upstream investigation and the
 read-only `learn.py locate-grok` helper. The portable implementation was not
@@ -185,21 +185,10 @@ runs from the pinned Python source without package downloads. An isolated
 workspace at `.tkstack/wikiskill` uses its Codex backend and includes upstream
 demo tasks. No inference, skill evolution, or paid training has been run.
 
-`learn show --json` is the provider-neutral interchange snapshot. A WikiSkill
-or another evaluator can use the evidence to propose candidates and compare
-them against held-out tasks. Keep evaluation traces and private wikis outside
-startup context, and preserve evidence IDs in accepted changes. Rule examples
-check clarity; they do not establish a measured improvement in model behavior.
-The steering system works without WikiSkill, a daemon, or a model-specific
-memory store.
-
-After comparing SkillOpt, WikiSkill, Vally, and Waza, the selected revision
-engine for the custom `learn` and `sdlc` packages is SkillOpt-Sleep. The
-[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) driver keeps evidence and steering
-unchanged, turns off project-memory edits, and stages only skill proposals
-behind strict improvement and per-task no-regression gates. See
-[the comparison and initial trial](skill-evolution.md). WikiSkill remains
-installed for its evidence/knowledge organization and optional future tasks.
+`learn show --json` is the provider-neutral interchange snapshot. Rule
+examples check clarity; they do not establish model improvement. The pinned
+SkillOpt task parser validates authored cases without launching a model or a
+separate harness. See [the historical comparison and current boundary](skill-evolution.md).
 
 For a standalone marketplace installation, the helper defaults to the working
 project's `.tkstack/steering/` when no explicit or existing shared store exists.

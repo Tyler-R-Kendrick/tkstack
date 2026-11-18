@@ -22,7 +22,10 @@ from json_contract import loads as strict_json_loads
 from experiment_git import GitExperiment, _paths, _run
 from experiment_ledger import Ledger
 from experiment_runner import run_trial
-from experiment_harbor_controller import (run_controller_harbor, validate_controller_harbor, verify_controller_harbor)
+def _unsupported_harness(*args, **kwargs):
+    raise ValueError("A separate evaluation harness is not supported; use the invoking agent")
+
+run_controller_harbor = validate_controller_harbor = verify_controller_harbor = _unsupported_harness
 from experiment_evaluate import _validate_spec, compare, feedback_revision, regrade_matrix, validate_calibration
 from experiment_agent_arm import propose_to_arm
 from experiment_proposer import ProposalRunner, ScriptedProvider
@@ -185,6 +188,8 @@ def config_for(root):
     config = read(path)
     if config.get("version") != 1:
         raise ValueError("unsupported experiment configuration")
+    if "backend" in config:
+        raise ValueError("A separate evaluation harness is not supported")
     return config
 
 
@@ -974,6 +979,8 @@ def draft(request):
 def execute(request):
     if not isinstance(request, dict):
         raise ValueError("request must be a JSON object")
+    if "backend" in request:
+        raise ValueError("A separate evaluation harness is not supported")
     action = request["action"]
     if action == "draft":
         return draft(request)
@@ -1029,7 +1036,7 @@ def execute_locked(request, root):
         return {"worktree": str(path), "identity": git.resolve(experiment, request["arm"])}
     if action == "propose":
         # The native request exposes only a deterministic, zero-model provider.
-        # Trusted host code can inject a broker via the Python proposer API.
+        # The invoking agent retains responsibility for semantic proposals.
         allowed = {"action", "root", "arm", "expected", "edits", "prompt", "run_key",
                    "timeout", "message", "writers_stopped"}
         if set(request) - allowed:

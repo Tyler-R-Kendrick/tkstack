@@ -3,7 +3,7 @@ schema: tkstack.command/v1
 tool:
   type: function
   name: evalify_native_run
-  description: Run Promptfoo with a bounded timeout and timed receipt.
+  description: Score host judgments offline with deterministic Promptfoo assertions.
   strict: true
   parameters:
     type: object
@@ -15,10 +15,7 @@ tool:
       project:
         type: string
         minLength: 1
-      config:
-        type: string
-        minLength: 1
-      executable:
+      cases:
         type: string
         minLength: 1
       receipt:
@@ -34,8 +31,7 @@ tool:
     required:
     - operation
     - project
-    - config
-    - executable
+    - cases
     - receipt
     - timeout
     - output
@@ -47,10 +43,8 @@ cli:
   flags:
     project:
     - --project
-    config:
-    - --config
-    executable:
-    - --executable
+    cases:
+    - --cases
     receipt:
     - --receipt
     timeout:
@@ -66,6 +60,6 @@ run:
 
 # Native run
 
-Run Promptfoo with a bounded timeout and timed receipt.
+Score host judgments offline with deterministic Promptfoo assertions.
 
 [Execution contract](../references/execution.md) describes effects, paths, evidence, and limitations. Frontmatter defines the exact typed signature.

@@ -33,19 +33,21 @@ class LintifyTests(unittest.TestCase):
         self.root = Path(temporary.name)
 
     def test_native_packages_are_examples_with_hidden_rules_and_real_locks(self):
-        for backend in ("eslint", "lintbook", "gptlint"):
+        for backend in ("eslint", "lintbook"):
             target = self.root / backend
             result = lintify.scaffold(backend, target)
             self.assertEqual(result["status"], "example")
             self.assertFalse(result["native_validated"])
             self.assertFalse(result["policy_activated"])
             self.assertEqual((target / "LICENSE").read_bytes(), (ROOT / "LICENSE").read_bytes())
-        self.assertTrue((self.root / "gptlint/.gptlint/comment-implementation-agreement.md").is_file())
         self.assertTrue((self.root / "lintbook/.lintbook/gen/no-dbg.df").is_file())
         self.assertFalse(list((self.root / "lintbook/.lintbook/gen").glob("*.json")))
-        for backend, version in (("eslint", "9.39.1"), ("gptlint", "1.6.0")):
+        for backend, version in (("eslint", "9.39.1"),):
             lock = json.loads((self.root / backend / "package-lock.json").read_text())
             self.assertEqual(lock["packages"]["node_modules/" + backend]["version"], version)
+        with self.assertRaisesRegex(ValueError, 'Unsupported backend'):
+            lintify.scaffold('gptlint', self.root / 'other-model')
+        self.assertFalse((self.root / 'other-model').exists())
 
     def test_existing_directory_file_and_dangling_link_are_preserved(self):
         directory = self.root / "directory"
@@ -103,14 +105,14 @@ class LintifyTests(unittest.TestCase):
         def create(_):
             barrier.wait(timeout=3)
             try:
-                lintify.scaffold("gptlint", destination)
+                lintify.scaffold("eslint", destination)
                 return "created"
             except FileExistsError:
                 return "collision"
         with ThreadPoolExecutor(max_workers=2) as workers:
             results = list(workers.map(create, range(2)))
         self.assertCountEqual(results, ["created", "collision"])
-        self.assertTrue((destination / "gptlint.config.mjs").is_file())
+        self.assertTrue((destination / "eslint.config.mjs").is_file())
         self.assertTrue((destination / "LICENSE").is_file())
 
     def test_standalone_package_does_not_copy_cache_or_change_its_source(self):

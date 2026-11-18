@@ -2,7 +2,6 @@
 """Run compiled skills/workflows through Codify, without interpreting their prompts."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
-from copy import deepcopy
 import json
 import os
 from pathlib import Path
@@ -79,7 +78,7 @@ def discover(project=None):
         if not path.exists():
             continue
         value = read_json(path)
-        if not isinstance(value, dict) or type(value.get('version')) is not int or value.get('version') != 1 or set(value) - {'version', 'skills', 'workflows', 'config', 'dependencies'}:
+        if not isinstance(value, dict) or type(value.get('version')) is not int or value.get('version') != 1 or set(value) - {'version', 'skills', 'workflows', 'dependencies'}:
             raise ValueError('Expected a version 1 runner registry: ' + str(path))
         for kind in entries:
             mapping = value.get(kind, {})
@@ -89,7 +88,7 @@ def discover(project=None):
                 if not isinstance(name, str) or not NAME.fullmatch(name):
                     raise ValueError('Invalid registry name')
                 entries[kind][name] = resolve_path(target, path.parent)
-        for key in ('config', 'dependencies'):
+        for key in ('dependencies',):
             if key in value:
                 settings[key] = resolve_path(value[key], path.parent)
                 settings[key + '_scope'] = scope
@@ -114,58 +113,25 @@ def target(entries, kind, name, workspace):
 def inspect(path):
     if path.is_file():
         lock = codify.check(path)
+        if lock['inference']['mode'] != 'none':
+            raise ValueError('Separate model or harness profiles are not supported; use the invoking agent')
         return {'status': 'ready', 'artifact_sha256': lock['artifact_sha256'], 'inference': lock['inference']}
     items = codify.command_schema.catalog(path)
     if not items:
         raise ValueError('No compiled command interface; use Skillify/Codify explicitly. There is no prompt/inference fallback.')
     artifacts = [codify.command_schema.bound_lock(codify, path, item) for item in items if 'artifact' in item['run']]
+    if any(lock['inference']['mode'] != 'none' for lock in artifacts):
+        raise ValueError('Separate model or harness profiles are not supported; use the invoking agent')
     return {'status': 'ready' if artifacts else 'help-only', 'commands': [item['cli']['path'] for item in items],
             'inference_profiles': sorted({name for lock in artifacts for name in lock['inference']['profiles']})}
 
 
 def configuration(lock, explicit, scopes, settings, environment):
-    if lock['inference']['mode'] == 'none':
-        if explicit is not None:
-            raise ValueError('This lock declares no inference; --config is not accepted')
-        return None
-    selected = explicit or environment.get('TKSTACK_CONFIG')
-    if selected is None:
-        for scope in ('workspace', 'user', 'global'):
-            candidate = scopes[scope] / 'profiles.json'
-            if settings.get('config_scope') == scope:
-                selected = settings['config']
-                break
-            if candidate.is_file():
-                selected = candidate
-                break
-        if selected is None:
-            selected = settings.get('config')
-    if selected is None:
-        files = codify.decode_files(lock)
-        name = str(Path(lock['entrypoint']).parent / 'profiles.json')
-        if name not in files:
-            raise ValueError('Declared inference needs --config or scoped profiles.json')
-        value = codify.parse_json(files[name])
-    else:
-        value = read_json(Path(selected).expanduser().absolute())
-    if not isinstance(value, dict) or type(value.get('version')) is not int or value.get('version') != 1 or not isinstance(value.get('profiles'), dict) or not isinstance(value.get('providers'), dict):
-        raise ValueError('Expected the existing version 1 Vercel AI SDK providers/profiles configuration')
-    required = set(lock['inference']['profiles'])
-    if not required <= set(value['profiles']):
-        raise ValueError('Configuration is missing declared profiles: ' + ', '.join(sorted(required - set(value['profiles']))))
-    result = deepcopy(value)
-    result['profiles'] = {name: result['profiles'][name] for name in sorted(required)}
-    providers = set()
-    for name, profile in result['profiles'].items():
-        if not isinstance(profile, dict):
-            raise ValueError('Invalid named inference profile: ' + name)
-        if profile.get('kind') != 'harness':
-            provider = profile.get('provider')
-            if not isinstance(provider, str) or provider not in value['providers']:
-                raise ValueError('Missing provider for declared profile: ' + name)
-            providers.add(provider)
-    result['providers'] = {name: value['providers'][name] for name in sorted(providers)}
-    return result
+    if lock['inference']['mode'] != 'none':
+        raise ValueError('Separate model or harness profiles are not supported; use the invoking agent')
+    if explicit is not None:
+        raise ValueError('External inference configuration is not supported')
+    return None
 
 
 def parser():
@@ -183,7 +149,6 @@ def parser():
         source = run.add_mutually_exclusive_group()
         source.add_argument('--call', help='OpenAI tool-call JSON file, or - for stdin')
         source.add_argument('--input', help='Raw JSON for a directly selected *.lock.json workflow, or - for stdin')
-        run.add_argument('--config', type=Path, help='Existing Vercel AI SDK version 1 profile configuration')
         run.add_argument('--dependencies', type=Path, help='Explicit locked node_modules reuse')
         run.add_argument('--timeout', type=int, default=30)
     for name in ('tools', 'check'):
@@ -241,7 +206,7 @@ def main(argv=None):
                 environment = os.environ.copy()
                 environment['TKSTACK_WORKSPACE_DIR'] = str(scopes['workspace'])
                 def invoke(lock, payload, _project, timeout, _dependencies, _config):
-                    config = configuration(lock, args.config, scopes, settings, environment)
+                    config = configuration(lock, None, scopes, settings, environment)
                     dependencies = args.dependencies or (settings.get('dependencies') if lock['runtime'] == 'node' else None)
                     return timing.invoke(codify.invoke, lock, payload, workspace, timeout, dependencies, config, environment, scopes['workspace'], kind, selected.name)
                 engine = SimpleNamespace(check=codify.check, invoke=invoke, project_root=lambda: workspace)

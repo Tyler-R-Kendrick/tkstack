@@ -81,11 +81,6 @@
       },
       {
         "rule": "tests.constant-oracle",
-        "path": "tests/test_experiment_proposer.py:ProposerTests.test_mismatched_allowlist_is_rejected_before_reservation",
-        "reason": "The constant self.fail is an unreachable fake-broker sentinel; the test asserts rejection and an empty ledger."
-      },
-      {
-        "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_proposer_integration.py:ProposerIntegrationTests.test_scope_rejection_and_untrusted_provider_do_not_edit_arm",
         "reason": "fail_call executes the public controller and asserts nonzero exit; the test also checks the diagnostic and persisted state."
       },

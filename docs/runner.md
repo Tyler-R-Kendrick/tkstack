@@ -78,15 +78,13 @@ Learn's ___ify skills, also register under their own names, so
 `.tkstack/tkstack skills codify -- help` and
 `.tkstack/tkstack skills learn -- codify help` reach the same package and lock.
 Harness installation still links only the parent. Each scoped `.tkstack` root
-can add `runner.json` with version 1 and optional `skills`, `workflows`, `config`,
-and `dependencies` fields:
+can add `runner.json` with version 1 and optional `skills`, `workflows`, and `dependencies` fields:
 
 ```json
 {
   "version": 1,
   "skills": {"my-skill": "../skills/my-skill"},
   "workflows": {"release": "../workflows/release"},
-  "config": "profiles.json",
   "dependencies": "runtime/workflow-node/node_modules"
 }
 ```
@@ -106,40 +104,17 @@ does not synthesize a function signature for a bare lock; select its package
 for `tools` exports. A manifest path is an explicit code selection: keep normal
 review/trust boundaries for the compiled code it names.
 
-## Model, provider, decision, and harness configuration
+## Model and execution boundary
 
-Pure-code locks ignore ambient model settings and Node caches. Explicit
-`--config` on a no-inference lock is rejected, preserving Codify's contract.
-For locks declaring inference, use the existing **version 1 Vercel AI SDK**
-`providers`/`profiles` format, including language chat/Responses/gateway,
-decision, or supported harness profiles. Reuse
-[the canonical configuration contract](../skills/learn/skills/codify/references/inference.md).
-No second model schema, guessed default model, or provider fallback is added.
+The invoking agent supplies all semantic judgment in its current conversation,
+model and harness. The runner does not offer a provider, model or agent-harness
+selection. Legacy locks declaring separate inference are rejected before
+execution. No-inference declarations are not an OS sandbox: execute only
+trusted code and use the host's actual isolation controls where needed.
 
-Selection order is explicit `--config`, TKSTACK_CONFIG, then workspace/user/global
-configuration. At each scope an explicit registry `config` wins over that
-root's conventional `profiles.json`; a source default comes after scoped files.
-Absent an external config, the runner uses a frozen bundled `profiles.json`.
-All declared profiles must exist. It projects the chosen document to those
-profiles and their referenced providers, preserving profile/model/provider
-values, budgets, and credential environment-variable references. Unrelated
-profiles are not handed to a lock that did not declare them.
-
-The same native Vercel AI SDK configuration validator runs at the workflow's
-inference boundary. The runner validates the document version/collections and
-named profile/provider references before invoking code; it does not claim those
-checks replace the SDK's full language/decision/harness validation. Configured
-model calls remain inference. CLI dispatch itself requires none, and pure-code
-locks execute their declared algorithm without a prompt/agent interpretation.
-
-`--dependencies` explicitly reuses a locked `node_modules`; an optional registry
-default applies only to Node locks. Codify checks installed direct package
-versions against the frozen package. Preserve the actual lock/dependency setup
-from the workflow's authoring instructions. This runner performs no downloads.
-Each child receives an independent environment preserving proxy, CA, auth,
-and guard variables; its TKSTACK_WORKSPACE_DIR is the selected execution scope.
-Runtime configuration is passed through private temporary session files rather
-than rewriting source, locks, or user credentials.
+`--dependencies` reuses preinstalled Node dependencies for supported
+deterministic workflows. The runner performs no downloads. Child processes use
+the selected workspace and retain the user's ordinary environment.
 
 ## Run it
 

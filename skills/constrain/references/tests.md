@@ -176,8 +176,9 @@ tasks with real tool effects or safe simulations. Grade the final observable
 outcome, and inspect traces for required safety, authorization or side-effect
 invariants without requiring one arbitrary route. Separate task, selection and
 untouched confirmation cases; run repeated trials for nondeterministic behavior
-and report success, variability, cost and latency. Calibrate any model grader
+and report success, variability, cost and latency. Use the invoking agent for semantic grading and calibrate its judgments
 against reviewed examples; deterministic checks verify facts where possible.
+Do not launch another model or agent harness.
 An answer claiming success is not proof the environment reached that state.
 
 ## Existing checks and review records

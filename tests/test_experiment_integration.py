@@ -42,6 +42,16 @@ class ExperimentIntegrationTests(unittest.TestCase):
     def git(self, *args):
         return subprocess.check_output(["git", "-C", str(self.source), *args], text=True).strip()
 
+    def test_separate_evaluation_harness_is_rejected_before_initialization(self):
+        request = self.directory / 'alternate.json'
+        request.write_text(json.dumps({'action': 'init', 'root': str(self.root),
+                                       'backend': {'kind': 'harbor'}}))
+        result = subprocess.run([sys.executable, str(SCRIPT), '--request', str(request)],
+                                text=True, capture_output=True, timeout=10)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('separate evaluation harness', result.stderr)
+        self.assertFalse(self.root.exists())
+
     def _prepare(self, action, fields):
         if action not in ("init", "revise", "calibration-run"):
             return fields

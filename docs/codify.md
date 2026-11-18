@@ -17,7 +17,7 @@ python3 skills/learn/skills/codify/scripts/codify.py run /repo/workflow/scripts/
 ```
 
 The executable lock contains exact code/resource bytes, hashes, source/case
-provenance, a native entrypoint, declared inference profiles, and contract-check
+provenance, a native entrypoint, a no-inference declaration, and contract-check
 results. It is an authored deliverable that can be versioned with its source.
 Private staging and publication locks stay inside `.tkstack/` and are ignored.
 `check` and `compile --dry-run` remain read-only. The runner rejects stale inputs;
@@ -62,13 +62,9 @@ python3 skills/learn/skills/skillify/scripts/skillify.py compile /repo/skills/my
 `sync_codify.py --check` compares that release with canonical Codify source. There is no reverse
 Codify-to-Skillify dependency. Flowify still owns MAF/Rhai authoring/native host
 validation; its definitions and actual host bindings can be included in a lock.
-The version-pinned Vercel AI SDK runtime now lives at
-`skills/learn/skills/codify/scripts/ai-runtime/`. Providers/models, chat/Responses, native
-Decisions, and harness definitions remain explicit and configurable. Pure
-Python runs need no model or dependency installation. Node runs use explicitly
-supplied installed dependencies from `npm ci` against the frozen package lock;
-execution never downloads them. No-inference mode is a reviewed declaration,
-not a universal static/network isolation guarantee.
+Semantic inference stays with the invoking agent and its current model and
+harness. The compiler accepts deterministic workflows and rejects separate
+model/harness profiles. Trusted executable code is not a network sandbox.
 
 The complete [normalization example](../skills/learn/skills/codify/examples/normalize-labels/PROMPT.md)
 has seven contract cases and a built

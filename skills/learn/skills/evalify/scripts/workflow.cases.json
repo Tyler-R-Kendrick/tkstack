@@ -10,7 +10,7 @@
       "output": {
         "version": 1,
         "name": "evalify",
-        "purpose": "Design and execute calibrated evaluations of nondeterministic behavior using established frameworks.",
+        "purpose": "Calibrate judgments already made by the invoking agent using deterministic framework assertions.",
         "criteria": [
           {
             "id": "task",
@@ -44,9 +44,9 @@
           "additionalProperties": false
         },
         "limits": [
-          "A recorded review does not authenticate judge calibration, model behavior, or semantic quality.",
-          "Promptfoo must be separately installed; native execution can call providers and execute configuration code.",
-          "The helper deadline does not prove remote cancellation or cleanup of detached descendants."
+          "Recorded source identity and per-case timings cannot authenticate the invoking host or judge calibration.",
+          "The helper performs no inference, model selection, provider selection, or agent-harness launch.",
+          "Detached subprocesses and remote effects are outside the local deadline."
         ]
       }
     },

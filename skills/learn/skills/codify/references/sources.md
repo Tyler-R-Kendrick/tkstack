@@ -15,8 +15,6 @@ runner executes those bytes and does not reinterpret the source Markdown.
 Residual inference, if needed by that code, stays explicit and probabilistic.
 Codify is not a GH-AW compiler, replacement, or compatible `.lock.yml` producer.
 
-The native workflow templates and version-pinned Vercel AI SDK boundary were
-extracted from the owned Skillify package. The inference reference records
-actual SDK versions, official APIs, concurrency controls, and verification
-limits. Use the real MAF/Grok hosts for those workflow languages; this artifact
-format only freezes code/resources and an interpreter invocation.
+The deterministic workflow templates were extracted from the owned Skillify
+package. The earlier separate inference runtime is no longer offered; semantic
+work stays with the invoking agent and its current model and harness.

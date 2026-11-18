@@ -3,8 +3,8 @@ schema: tkstack.command/v1
 tool:
   type: function
   name: codify_native_run
-  description: Run the explicitly selected verified artifact through the native Codify
-    runtime; preserves its declared code effects and model/profile configuration.
+  description: Run the verified deterministic artifact without selecting a separate
+    model or agent harness.
   strict: true
   parameters:
     type: object
@@ -22,10 +22,6 @@ tool:
       project:
         type: string
         minLength: 1
-      config:
-        type:
-        - string
-        - 'null'
       dependencies:
         type:
         - string
@@ -39,7 +35,6 @@ tool:
     - artifact
     - input
     - project
-    - config
     - dependencies
     - timeout
     additionalProperties: false
@@ -54,8 +49,6 @@ cli:
     - --input
     project:
     - --project
-    config:
-    - --config
     dependencies:
     - --dependencies
     timeout:
@@ -63,7 +56,6 @@ cli:
   defaults:
     operation: native_run
     project: .
-    config: null
     dependencies: null
     timeout: 30
 run:
@@ -72,6 +64,6 @@ run:
 
 # Native run
 
-Run the explicitly selected verified artifact through the native Codify runtime; preserves its declared code effects and model/profile configuration.
+Run the verified deterministic artifact without selecting a separate model or agent harness.
 
 [Execution contract](../references/execution.md) describes effects, paths, evidence, and limitations. Frontmatter defines the exact typed signature.

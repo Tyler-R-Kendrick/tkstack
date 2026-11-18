@@ -15,23 +15,14 @@ making the agent reconstruct that algorithm every time.
    errors, effects, and completion. Decompose operations by real dependencies
    and read/write ownership. Turn facts, branching, gates, and algorithms into
    code. Freeze authoritative constraints outside model-generated content.
-3. Choose the smallest actual runtime. A pure Python function/CLI is sufficient
-   for a simple deterministic procedure. Use TypeScript and Vercel AI SDK for
-   explicit inference boundaries. Retain an existing suitable native engine;
-   `flowify`, when available, supplies MAF YAML or Grok-hosted Rhai. Keep those
-   definitions and bindings in `scripts/` and invoke their actual host. The AI
-   SDK supplies inference/harness interfaces; it is not a durable workflow
-   engine, nor a substitute for MAF/Rhai validation.
+3. Choose the smallest actual runtime. Python is the supported scaffold for
+   deterministic procedures. Keep residual semantic work in the invoking agent.
 4. Create the executable definition and thin CLI/tool wrapper. Reuse existing
    functions and native engines. Compile decisions, retries, limits, dependency
    readiness, fan-in, and failure propagation into code; do not invent a private
    workflow DSL or leave required steps in an agent's checklist.
-5. Implement the actual procedure. If a residual judgment needs inference,
-   isolate it behind a named [profile](inference.md), send only relevant state,
-   validate its output, and apply the same deterministic policy gate. A decision
-   model may remain probabilistic; an LLM behind an API stays an LLM. Missing
-   profiles or invalid/unknown output must not become success or trigger an
-   unrequested provider fallback.
+5. Implement the actual procedure. Residual semantic judgment remains in the
+   invoking conversation; do not select another model or agent harness.
 6. Update `SKILL.md` to index the callable entrypoint and topic/feature/command/
    parameter references. Document exact setup, CLI/import/tool registration,
    schemas/examples, errors, effects, and how to inspect output. Keep the initial
@@ -56,9 +47,8 @@ skills/example/
   SKILL.md                 # code-mode prompt, invocation/discovery index
   LICENSE
   scripts/
-    workflow.py or .ts      # executable procedure/source of truth
-    run.py or .ts           # JSON CLI wrapper
-    tool.ts                 # AI SDK tool export for the TS backend
+    workflow.py             # executable procedure/source of truth
+    run.py                  # JSON CLI wrapper
     ...                     # native definitions, schemas, bindings, locks
   references/
     tool.md                 # setup, tool I/O, subcommands/parameters, errors
@@ -67,18 +57,9 @@ skills/example/
     verification.md
 ```
 
-The generated Python CLI accepts `--input <json-file|->`; TS accepts
-`--input <json-file>` and optional `--config <profiles-json>`. Run from any
-directory by supplying the actual script/input paths. The tool guide's examples
-run from the skill directory. Standard output is the JSON result; diagnostics
-go to stderr. Success exits 0, failure 1, unfinished workflow 3; Python argparse
-usage errors exit 2. A generated TS `createWorkflowTool(inference)` exports a
-native AI SDK `tool()` with input/output schemas for programmatic registration.
-
-Pure-code workflows need no model credentials. The optional AI SDK runtime
-starts with empty profiles. Configure actual model/provider/harness definitions
-only when a workflow explicitly calls them. Creating/scaffolding a package does
-not start a model, agent, sandbox, publication, or a standing hook.
+The generated Python CLI accepts `--input <json-file|->`. Standard output is
+the JSON result; diagnostics go to stderr. Success exits 0, failure 1,
+unfinished workflow 3, and argparse usage errors exit 2.
 
 `convert` retains the exact prior `SKILL.md` bytes as
 `references/source-skill.txt`, creates new execution assets, and replaces the
@@ -91,8 +72,7 @@ ordinary errors. Crashes and nonparticipating writers are not a global transacti
 
 ## Compile the verified artifact
 
-Codify now owns the reusable code-generation templates, inference runtime,
-compiler, and locked runner. Skillify packages the skill-specific interface and
+Codify now owns the reusable code-generation templates, compiler, and locked runner. Skillify packages the skill-specific interface and
 ships a generated standalone copy. After implementing and verifying the actual
 procedure, run `skillify.py compile <skill> --cases <contract-cases.json>`.
 This freezes code/provenance under `scripts/workflow.lock.json`; document its

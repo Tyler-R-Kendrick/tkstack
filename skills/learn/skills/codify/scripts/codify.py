@@ -339,6 +339,8 @@ def check(path):
 
 
 def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, environment=None):
+    if lock['inference']['mode'] != 'none' or config is not None:
+        raise ValueError("Separate model or harness inference is not supported; use the invoking agent")
     decoded = decode_files(lock)
     if not isinstance(payload, dict) or len(canonical(payload)) > 1024 * 1024:
         raise ValueError("Input must be a JSON object within 1 MiB")
@@ -417,11 +419,15 @@ def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, e
 
 def compile_workflow(source, entrypoint, cases, output=None, root=None, includes=(), profiles=(), dry_run=False,
                      project=None, jobs=4, timeout=30, dependencies=None, config=None):
+    if profiles or config is not None:
+        raise ValueError("Separate model or harness inference is not supported; use the invoking agent")
     root = (root or source.parent).resolve(strict=True)
     recorded_includes = sorted({include_name(root, path) for path in includes})
     if (root / 'commands').exists():
         command_schema.catalog(root)
         includes = [*includes, root / 'commands']
+    if (root / 'scripts' / 'contract.json').is_file():
+        includes = [*includes, root]
     source, entrypoint, cases = [regular(path.absolute(), root) for path in (source, entrypoint, cases)]
     output = (output or source.with_suffix('.lock.json')).absolute()
     if not output.is_relative_to(root) or output.is_symlink() or output in (source, entrypoint, cases):
@@ -527,7 +533,6 @@ def main(argv=None):
     build.add_argument('--root', type=Path)
     build.add_argument('--output', type=Path)
     build.add_argument('--include', dest='includes', action='append', type=Path, default=[])
-    build.add_argument('--profile', dest='profiles', action='append', default=[])
     build.add_argument('--jobs', type=int, default=4)
     build.add_argument('--dry-run', action='store_true')
     inspect = commands.add_parser('check')
@@ -536,7 +541,6 @@ def main(argv=None):
     run.add_argument('artifact', type=Path)
     run.add_argument('--input', required=True)
     for command in (build, run):
-        command.add_argument('--config', type=Path)
         command.add_argument('--project', type=Path, help='Active project for ignored .tkstack state; default current project')
         command.add_argument('--timeout', type=int, default=30)
         command.add_argument('--dependencies', type=Path, help='Explicit installed node_modules for the artifact dependency lock')
@@ -574,7 +578,7 @@ def main(argv=None):
             raw = sys.stdin.read(1024 * 1024 + 1) if args['input'] == '-' else read_bytes(Path(args['input']))
             if len(raw) > 1024 * 1024:
                 raise ValueError('Input exceeds 1 MiB')
-            code, out, err = invoke(artifact, parse_json(raw), args['project'] or project_root(), args['timeout'], args['dependencies'], args['config'])
+            code, out, err = invoke(artifact, parse_json(raw), args['project'] or project_root(), args['timeout'], args['dependencies'], None)
             if code == 0:
                 parse_json(out)
             sys.stdout.write(out)

@@ -8,11 +8,8 @@ packages. Authoring completes the actual executable behavior after scaffolding.
 python3 <skillify-directory>/scripts/skillify.py scaffold \
   --target /repo/skills/inspect-contracts --name inspect-contracts \
   --description 'Inspect compatibility when asked to review contracts.'
-python3 <skillify-directory>/scripts/skillify.py scaffold \
-  --target /repo/skills/semantic-classify --name semantic-classify \
-  --description 'Classify the explicitly supplied residual state.' --backend ai-sdk
-python3 <skillify-directory>/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk --dry-run
-python3 <skillify-directory>/scripts/skillify.py convert /repo/skills/existing --backend ai-sdk
+python3 <skillify-directory>/scripts/skillify.py convert /repo/skills/existing --dry-run
+python3 <skillify-directory>/scripts/skillify.py convert /repo/skills/existing
 python3 <skillify-directory>/scripts/skillify.py check /repo/skills/inspect-contracts --require-tool
 python3 <skillify-directory>/scripts/skillify.py check <skillify-directory> --require-tool --entrypoint scripts/skillify.py
 ```
@@ -23,7 +20,6 @@ python3 <skillify-directory>/scripts/skillify.py check <skillify-directory> --re
 | `--target` | Required explicit destination; its basename must equal `--name`. |
 | `--name` | Required lowercase kebab-case skill name, at most 64 characters. |
 | `--description` | Required nonempty selection/outcome description, at most 1024 characters. |
-| `--backend python\|ai-sdk` | Default `python` for pure-code execution. `ai-sdk` supplies TypeScript, native AI SDK `tool()` export, inference profiles/runtime, and locked dependencies. |
 | `convert directory` | Seed migration of an existing owned skill. Preserve exact Markdown as authoring data; install absent execution resources and update its invocation index. Does not infer the algorithm or overwrite helpers. |
 | `convert --dry-run` | Read-only concrete file plan and source hash; no writer lock or changes. |
 | `check directory` | Read-only structural validation; does not execute helpers, call models, or fetch URLs. |
@@ -66,18 +62,15 @@ and a rejection; rejection emits no success stdout. Compilation executes these
 cases in private `.tkstack` run directories. Default concurrency is 4; `--jobs`
 accepts 1–16. Successful no-inference cases repeat twice. `--dry-run` only plans.
 
-Use repeated `--profile name` for explicit residual inference and
-`--dependencies /path/to/node_modules` for a verified npm-ci installation of
-AI SDK dependencies. The full generic CLI also supports timeouts, project state,
-additional included resources, and explicit inference configuration. Its
-`--help` is authoritative. The default artifact includes the entrypoint's whole
-directory, excluding dependencies, state, bytecode, Git, and that lock itself.
-Use generic Codify `--include` for additional runtime resources outside it.
+Use `--dependencies /path/to/node_modules` only for a trusted deterministic
+workflow requiring existing dependencies. The generic CLI also supports
+timeouts, project state and additional included resources. Its `--help` is
+authoritative. The default artifact includes the entrypoint's whole directory.
 
 After a source/implementation/case change, `check`/`run` fail stale rather than
 rebuild or invoke an agent. Compile explicitly. Source checks and contract cases
 are bounded evidence, not a proof of semantic equivalence or zero network calls.
 The native process executes trusted code with the caller's normal authority.
 
-Compilation forwards explicit `--config`, `--project`, `--timeout`, named profiles, dependencies and jobs to canonical Codify. It does not invent a provider or drop the selected workspace/harness profile.
+Compilation forwards the selected project, deadline, dependencies and jobs to canonical Codify.
 Normalized packages include their owned templates/resources by default. Use `--include` for an explicit resource set; supplying code without required native assets is not a complete tool.

@@ -443,8 +443,8 @@ make host execution a sandbox or prove the judgment is semantically correct.
 
 ### Bounded host-agent proposals
 
-Host agents can inspect the task brief and frozen development evidence, work on
-separate authorized arms, and submit their changes through `freeze`. For a
+The invoking agent can inspect the task brief and frozen development evidence,
+work on authorized arms, and submit changes through `freeze`. For a
 small deterministic text proposal the `propose` action combines scoped edit,
 receipt, and freeze. An `init` request may set `max_proposals` from 1 to 100;
 the default is five. Proposal attempts are counted separately from trial starts
@@ -461,19 +461,17 @@ and remain counted after failed or uncertain attempts.
 ```
 
 The native JSON action accepts only supplied text edits, not arbitrary provider
-commands. Its local scripted provider makes no model call. Trusted embedding
-code may register a broker through the Python proposer interface, but this
-package does not ship a provider that enforces a total model-token ceiling.
-Use host agents under the host's own budget and authorization controls; do
-not interpret `max_tokens: 0` as proof of a host-agent or verifier's spending.
+commands. Its local scripted provider makes no model call. The proposer
+accepts no command-based agent provider; semantic proposals remain in the
+invoking conversation. Do not interpret `max_tokens: 0` as proof of host spending.
 A recorded proposal must still pass evaluation and any required confirmation.
 
 ### Parallel trials for one selected target
 
 The `parallel` action accepts up to 128 predeclared assignments and a
 `max_workers` value from 1 to 16. It atomically reserves every trial slot
-before starting any worker. Each worker uses the selected local or Harbor
-backend and receives a separate frozen source export and the experiment's one registered target; a batch does not discover
+before starting any worker. Each worker uses the selected local
+executor and receives a separate frozen source export and the experiment's one registered target; a batch does not discover
 or schedule other languages. Parallel timing may be affected by host resource
 contention, so use sequential paired trials when isolation of a performance
 measurement requires it.
@@ -495,59 +493,6 @@ dispatched or uncertain work and confirmation claims remain for reconciliation.
 A `partial` response is not eligible evidence. The MAF workflow can sequence a
 bounded parallel batch with other controller actions; its outer request list
 is still sequential.
-
-### Harbor with a separate verifier
-
-For a task that needs a containerized verifier, `init` can select an explicit
-Harbor backend instead of a local `registry`. Install Harbor 0.26.0 in an
-isolated, locked environment and supply its executable, a digest-pinned Docker
-image, and an independently controlled verifier directory. Set `evaluator_file`
-to that directory's `test.sh`. The backend object is frozen with the experiment:
-
-```json
-{
-  "kind": "harbor",
-  "verifier_dir": "/trusted/verifier",
-  "verifier_sha256": "REPLACE_WITH_VERIFIER_DIRECTORY_DIGEST",
-  "image": "example/image@sha256:REPLACE_WITH_IMAGE_DIGEST",
-  "harbor_bin": "/opt/harbor/bin/harbor",
-  "harbor_bin_sha256": "REPLACE_WITH_EXECUTABLE_SHA256",
-  "network_mode": "no-network",
-  "timeout_seconds": 120
-}
-```
-
-Compute the verifier digest with `verifier_digest` from
-`scripts/experiment_harbor.py`; it includes file and directory paths, bytes,
-and modes. The executable hash does not freeze the rest of its Python
-installation; lock that environment separately. The verifier reads
-`/tests/case.input`, writes its SHA-256 to
-`/logs/verifier/case_sha256.txt`, and emits Harbor numeric rewards for each
-required gate, metric, and positive `work_count`. Gates use 0 or 1. This
-adapter does not yet support structured qualitative evidence from Harbor.
-
-Oracle stages the exact frozen source and a separate verifier grades it; no
-model is invoked by the adapter. The verifier is trusted code and can make
-external calls if its network policy allows them. The backend must explicitly select `no-network` or `public`;
-`no-network` must be supported by the host container engine; there is no automatic
-fallback to public networking. Explicit `public` networking requires the
-operator's own spending and isolation controls. A timeout or lost terminal
-receipt after dispatch remains uncertain and charged until independently
-reconciled. A container is not, by itself, a guarantee against a hostile host
-or privileged container configuration.
-
-On POSIX, each native test or judge runs in its own managed process group. A
-pipe handshake prevents the stage from executing before the wrapper registers
-its group. With `waitid(WNOWAIT)`, normal completion stops remaining same-group
-children before the next stage. On an outer deadline the runner sends SIGTERM,
-allows up to half a second for wrapper cleanup, then sends SIGKILL. An inner
-native timeout stops its stage and produces a noneligible trial.
-
-A deliberately detached session or a hard wrapper/host crash can evade this
-supervision. Without `waitid(WNOWAIT)`, normal-exit child cleanup is not
-guaranteed. Use an OS sandbox or cgroup when commands are untrusted or stronger
-cleanup is required. Git export has separate subprocess timeouts and can extend
-past the experiment deadline before dispatch is rejected.
 
 ### Optional GEPA search over supplied text candidates
 

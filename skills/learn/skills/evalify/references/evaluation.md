@@ -1,103 +1,86 @@
-# Design and evaluate nondeterministic behavior
+# Host-bound evaluation
 
-1. Name the real task, observable outcome, constraints and failure modes. Use
-   deterministic checks for state, schema, safety and other objective facts;
-   use an LLM judge only for residual semantic judgment. Test the real system
-   or its retained output, not a fabricated stand-in presented as production.
-2. Reuse a project's existing evaluation suite when possible. Promptfoo is the
-   default here: it is already used by TKStack, is open source, supports native
-   `llm-rubric`, provider adapters, CI and OpenTelemetry traces. Inspect AI is
-   an alternative when a task needs its agent and sandbox primitives. Preserve
-   native framework formats; do not invent a parallel evaluation DSL.
-3. Define a narrow rubric with success and failure anchors, required evidence,
-   explicit judge provider/model/configuration and handling for ambiguity and
-   errors. Include context the judge actually needs and treat model output and
-   retrieved text as untrusted data. Calibrate on independently human-labeled
-   good, bad, borderline and adversarial cases; inspect disagreements. Model
-   consensus, a JSON schema, and temperature zero do not establish correctness.
-4. Keep related examples together across train, selection and untouched
-   confirmation splits; record provenance and avoid private data in public
-   artifacts. Freeze the task, dataset, framework version, target, judge,
-   rubric and runner before comparison. Repeated runs require actual independent
-   trials and uncertainty estimates; do not use cache hits as new samples.
-5. For agents, check the final environment and necessary safety/side-effect
-   invariants; use traces to diagnose trajectories without enforcing an
-   arbitrary exact path. Record model versions, calls, retries, latency, cost,
-   errors, run counts and relevant tool state. OpenTelemetry/OTLP may carry
-   traces when the real application emits them; a configured collector alone
-   does not prove instrumentation or successful capture.
-6. Set per-request and overall deadlines and an explicit spending limit before
-   live execution. Retain elapsed monotonic time, timeout status and a bounded
-   run receipt. A timeout does not prove remote cancellation or a product
-   defect; reconcile uncertain side effects before retrying. A latency SLO or
-   benchmark needs a realistic workload, baseline, repetitions and noise, not
-   an arbitrary safety timeout.
-7. Compare matched baseline and candidate runs with fixed gates; improve one
-   hypothesis at a time. Confirm the fixed winner on genuinely untouched cases.
-   Report inconclusive or exploratory results when no independent cases, real
-   model calls or calibrated grader are available.
+The current agent and the harness that invoked it remain responsible for the
+task and semantic judgments. Do not launch another agent, select a model or
+provider, or start a second agent harness to produce an evaluation. The host
+may provide a trustworthy model identity, deadline, duration or trace; record
+what it actually exposes and mark unavailable values unknown.
 
-## Promptfoo workflow
+1. Define the actual task, observable outcome, constraints and concrete
+   failure modes. Check objective state, schemas, safety and tool effects
+   deterministically. The invoking agent judges only the residual semantic
+   question in the current conversation.
+2. Establish a narrow rubric with good, bad, borderline and adversarial
+   examples. When available, use independently human-reviewed reference
+   labels and inspect disagreements. A matching output or schema alone does
+   not establish that a semantic judgment is reliable.
+3. Keep related cases together across development, selection and confirmation.
+   A case or label the current agent has seen is not a blind holdout. If the
+   host cannot supply unseen cases without starting a different agent or model,
+   report the confirmation as unavailable; do not manufacture independence.
+4. Retain actual outcomes, rubric, supplied labels, model/host identity when
+   exposed, elapsed time and timeout outcomes. Avoid putting private prompts in
+   public reports. An agent's reported success is not proof that the target
+   environment reached the requested state.
+5. Set bounded operation and overall deadlines, and retain their observed
+   elapsed times. A timeout is a safety ceiling, not a latency SLO, and does not
+   prove remote cancellation. A performance claim needs representative work,
+   repeated measurements, uncertainty and appropriate guardrails.
+6. Improve one hypothesis at a time using matched evidence. Repeated
+   same-context judgments are observations, not independent samples. Report
+   limitations and failures rather than presenting an authored fixture or a
+   framework pass as a measured model-quality gain.
 
-Use the project's existing reviewed installation or the packaged npm lock
-(`requirements/package.json` and `requirements/package-lock.json`, currently
-Promptfoo 0.125.1). That version requires Node.js 22.22.0 or newer. To provision
-the packaged lock without modifying an installed skill, copy the two manifests
-to `/project/.tkstack/runtime/evalify/`, then run:
+## Offline framework scoring
+
+Promptfoo 0.125.1 is pinned in the package lock and is used as an established
+assertion library, not as an agent harness or model provider. The helper invokes
+only its fixed `equals` assertion on judgments already supplied by the invoking
+agent; it accepts no framework config, custom executable, provider or model.
+It disables telemetry and update checks and blocks common Node network APIs.
+It does not execute a target or make an LLM-as-a-judge call: the current agent
+does the semantic judging as part of its existing conversation.
+
+If needed, install the integrity-locked dependency into the selected project:
 
 ```sh
+mkdir -p /project/.tkstack/runtime/evalify
+cp <evalify>/requirements/package*.json /project/.tkstack/runtime/evalify/
 npm ci --prefix /project/.tkstack/runtime/evalify --ignore-scripts --no-audit --no-fund
 ```
 
-Update the manifests together through npm and review the resulting lock.
-Do not rely on `npx -y` to acquire unreviewed dependencies at execution time.
-Use the framework's own YAML/JSON test formats, provider adapters and
-`llm-rubric` assertions. Set the grader provider explicitly: otherwise framework
-credential discovery can select a different model. Validate a known-good and a
-known-bad answer and a grader-error case. A mocked provider demonstrates wiring,
-not judge quality. `--no-share` prevents framework result sharing but target and
-grader requests still reach their configured services.
+The runtime needs Node.js 22.22.0 or newer. Update the manifests together and
+review the lock. A project-owned input must be at most 1 MiB and contain:
 
-The typed commands accept a project, existing configuration, explicitly supplied
-Promptfoo executable, absent receipt path and (for run) an absent JSON output.
-They enforce a default 20-second deadline (1–25 seconds), disable cache, sharing,
-telemetry and update checks, and write a timing receipt. The outer TKStack runner
-also has its own deadline. For longer workloads invoke the installed Promptfoo
-CLI through an appropriate bounded supervisor; record equivalent timing and
-cleanup evidence. The adapter rejects result files over 64 MiB before parsing;
-use the native framework with an appropriate supervisor for larger results.
-See [execution](execution.md) for limits and side effects.
-The receipt counts nonpassing results and the subset explicitly marked as
-grader errors by Promptfoo. Inspect retained result details for other transport,
-provider or grading errors; an unclassified failure is not proof of bad output.
-The executable hash identifies only that file, not its dependency tree or a
-remote model revision; retain the actual lock and provider configuration too.
-On POSIX, direct helper execution isolates and cleans its process group; compiled
-execution shares the enclosing runner's group. Detached descendants and remote
-operations can outlive local cancellation and must be reconciled separately.
-
-For example, after reviewing a project-owned config and installing the pinned
-CLI, create the chosen output directory and invoke the mounted commands:
-
-```sh
-mkdir -p /project/.tkstack/eval-runs
-.tkstack/tkstack --project /project skills learn -- evalify native validate \
-  --project /project --config evals/my-suite.yaml \
-  --executable /project/.tkstack/runtime/evalify/node_modules/.bin/promptfoo --receipt .tkstack/eval-runs/validate.json
-.tkstack/tkstack --project /project skills learn -- evalify native run \
-  --project /project --config evals/my-suite.yaml \
-  --executable /project/.tkstack/runtime/evalify/node_modules/.bin/promptfoo --output .tkstack/eval-runs/result.json \
-  --receipt .tkstack/eval-runs/run.json
+```json
+{"version":1,"source":"invoking-agent","cases":[
+  {"id":"known-good","judgment":true,"reference":true,"elapsed_ms":120},
+  {"id":"known-bad","judgment":false,"reference":false,"elapsed_ms":null},
+  {"id":"current","judgment":true,"reference":null,"elapsed_ms":null}
+]}
 ```
 
-Each output and receipt must be absent before invocation. The command does not
-create a dataset, install a framework, or authorize provider spending by itself.
-It reserves both paths exclusively before starting Promptfoo, so overlapping
-runs cannot silently share either name. An interrupted or crashed process may
-leave an empty reservation; inspect provider-side effects and the retained files
-before removing it or retrying.
+`reference` is a reviewed expected judgment for calibration, or null for a
+current case. `elapsed_ms` is a real host-observed duration, or null when not
+available; never invent it. The output counts matching labeled judgments and
+current pass judgments. It is a descriptive summary, not proof of calibration,
+host identity, an independent evaluator, or model performance.
 
-Sources: [Promptfoo model-graded rubrics](https://www.promptfoo.dev/docs/configuration/expected-outputs/model-graded/llm-rubric/),
-[Promptfoo OTLP tracing](https://www.promptfoo.dev/docs/tracing/),
-[Inspect model grading](https://inspect.aisi.org.uk/model-graded.html), and
-[Anthropic agent evaluations](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents).
+```sh
+.tkstack/tkstack --project /project skills learn -- evalify native validate \
+  --project /project --cases evals/host-judgments.json --receipt .tkstack/eval-runs/validate.json
+.tkstack/tkstack --project /project skills learn -- evalify native run \
+  --project /project --cases evals/host-judgments.json --output .tkstack/eval-runs/results.json \
+  --receipt .tkstack/eval-runs/timing.json
+```
+
+Create the output directory first. Output and receipt paths must be absent;
+the helper reserves them before analysis. Its 20-second default deadline
+(1–25 seconds) and timing receipt cover offline processing only, not the
+agent's prior judgment. A crash can leave an incomplete reservation. Direct
+POSIX execution cleans the ordinary process group; detached descendants and
+remote actions require separate reconciliation.
+
+Sources: [Promptfoo assertion API](https://www.promptfoo.dev/docs/configuration/expected-outputs/),
+[Anthropic's agent evaluation guidance](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents),
+and [OpenTelemetry traces](https://opentelemetry.io/docs/concepts/signals/traces/).

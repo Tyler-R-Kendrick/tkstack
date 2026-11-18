@@ -1,6 +1,6 @@
 # Execution contract
 
-Design and execute calibrated evaluations of nondeterministic behavior using established frameworks.
+Calibrate judgments already made by the invoking agent using deterministic framework assertions.
 
 Use `.tkstack/tkstack skills evalify -- help`, `.tkstack/tkstack skills evalify -- version`, and `.tkstack/tkstack skills evalify -- model`.
 Run `.tkstack/tkstack skills evalify -- verify --report /path/to/report.json` for mechanical evidence verification.
@@ -19,10 +19,10 @@ Read `scripts/contract.json` for the exact JSON Schema of `facts`. A report has 
 
 ## Effects, scope, and native tools
 
-Model and verify do not mutate application/learning records; compiled invocation uses the shared runner's ignored .tkstack temporary materialization. Reserved help/version and direct metadata checks initialize no state. Relative report/evidence/native paths resolve against the selected workspace, never Codify staging. Native bindings execute the existing named helper with typed parameters, preserved output/exit status, a bounded timeout, and no shell strings. Their documented effects retain the user's authorization boundary; invoking a verification operation does not authorize publication, generation, or configuration changes. All temporary state stays in scoped `.tkstack/sessions/`; durable data follows the owned state helper. Chat/Responses, Decisions, and harness inference remain explicit Vercel AI SDK profiles when an actual workflow needs them. These mechanical operations request no inference.
+Model and verify do not mutate application/learning records; compiled invocation uses the shared runner's ignored .tkstack temporary materialization. Reserved help/version and direct metadata checks initialize no state. Relative report/evidence/native paths resolve against the selected workspace, never Codify staging. Native bindings execute the existing named helper with typed parameters, preserved output/exit status, a bounded timeout, and no shell strings. Their documented effects retain the user's authorization boundary; invoking a verification operation does not authorize publication, generation, or configuration changes. All temporary state stays in scoped `.tkstack/sessions/`; durable data follows the owned state helper. Semantic judgment stays with the invoking agent and its current model and harness. These mechanical operations request no inference.
 
 ## Limits
 
-- A recorded review does not authenticate judge calibration, model behavior, or semantic quality.
-- Promptfoo must be separately installed; native execution can call providers and execute configuration code.
-- The helper deadline does not prove remote cancellation or cleanup of detached descendants.
+- Recorded source identity and per-case timings cannot authenticate the invoking host or judge calibration.
+- The helper performs no inference, model selection, provider selection, or agent-harness launch.
+- Detached subprocesses and remote effects are outside the local deadline.

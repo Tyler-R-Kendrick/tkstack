@@ -181,7 +181,7 @@ Plan, create without overwriting, run and demonstrate fault sensitivity.
 ## evalify
 
 Usage: `/learn evalify [request]`; help: `/learn help evalify` is read-only.
-Read `skills/evalify/SKILL.md` for the Promptfoo-backed evaluation workflow,
-explicit model-judge calibration and timed native commands. Use Testify for a
+Read `skills/evalify/SKILL.md` for the invoking-agent evaluation workflow,
+offline Promptfoo assertion scoring and timed native commands. Use Testify for a
 deterministic behavioral regression and Evalify for residual nondeterministic
 behavior; combine them when both protect distinct contracts.

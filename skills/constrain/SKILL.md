@@ -10,6 +10,11 @@ metadata:
 
 # Constrain
 
+
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Use deterministic local tools for supporting checks.
+
 Run `python3 <installed-skill>/scripts/constrain.py check --repo <workspace>`.
 The source checkout and checked workspace are separate inputs. Omitted typed
 commands show help. Use the installer's `--target /absolute/project --adopt` to

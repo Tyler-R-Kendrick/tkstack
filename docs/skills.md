@@ -374,5 +374,5 @@ need semantic review. See the [project adoption instructions](bootstrap.md#adopt
 
 `testify` ships inside Learn and creates distinct, fault-sensitive behavioral
 tests. Use `/learn testify`; it is not separately installed. `evalify` ships
-inside Learn for calibrated model-graded evaluations using Promptfoo or an
-appropriate existing framework; use `/learn evalify`.
+inside Learn for judgments made by the invoking agent and offline Promptfoo
+assertion scoring; use `/learn evalify`.

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "name": "evalify",
-  "purpose": "Design and execute calibrated evaluations of nondeterministic behavior using established frameworks.",
+  "purpose": "Calibrate judgments already made by the invoking agent using deterministic framework assertions.",
   "criteria": [
     {
       "id": "task",
@@ -51,24 +51,14 @@
           ],
           "path": true
         },
-        "config": {
+        "cases": {
           "schema": {
             "type": "string",
             "minLength": 1
           },
           "flags": [
-            "--config"
+            "--cases"
           ]
-        },
-        "executable": {
-          "schema": {
-            "type": "string",
-            "minLength": 1
-          },
-          "flags": [
-            "--executable"
-          ],
-          "path": true
         },
         "receipt": {
           "schema": {
@@ -96,7 +86,7 @@
         "native",
         "validate"
       ],
-      "description": "Validate a Promptfoo configuration with a timed receipt."
+      "description": "Validate host-judged cases and retain a timed receipt."
     },
     "native_run": {
       "entrypoint": "scripts/evalify.py",
@@ -114,24 +104,14 @@
           ],
           "path": true
         },
-        "config": {
+        "cases": {
           "schema": {
             "type": "string",
             "minLength": 1
           },
           "flags": [
-            "--config"
+            "--cases"
           ]
-        },
-        "executable": {
-          "schema": {
-            "type": "string",
-            "minLength": 1
-          },
-          "flags": [
-            "--executable"
-          ],
-          "path": true
         },
         "receipt": {
           "schema": {
@@ -168,12 +148,12 @@
         "native",
         "run"
       ],
-      "description": "Run Promptfoo with a bounded timeout and timed receipt."
+      "description": "Score host judgments offline with deterministic Promptfoo assertions."
     }
   },
   "limits": [
-    "A recorded review does not authenticate judge calibration, model behavior, or semantic quality.",
-    "Promptfoo must be separately installed; native execution can call providers and execute configuration code.",
-    "The helper deadline does not prove remote cancellation or cleanup of detached descendants."
+    "Recorded source identity and per-case timings cannot authenticate the invoking host or judge calibration.",
+    "The helper performs no inference, model selection, provider selection, or agent-harness launch.",
+    "Detached subprocesses and remote effects are outside the local deadline."
   ]
 }

@@ -10,6 +10,11 @@ metadata:
 
 # Testify
 
+Semantic work stays with the invoking agent in its current conversation, model
+and harness. Do not select another model or provider or launch another agent
+harness. Deterministic local tools may support the current agent's work.
+
+
 For `/learn testify`, first read [test selection](references/selection.md). Identify
 an actual fault and independent observable oracle; inspect existing tests and
 production boundaries. Apply parse-don't-validate at input boundaries and use
