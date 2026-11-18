@@ -250,6 +250,39 @@ class CodifyTests(unittest.TestCase):
                 self.compile(jobs=1)
         self.assertFalse(self.output.exists())
 
+    def test_command_added_during_verification_cannot_publish_a_stale_lock(self):
+        self.compile()
+        before = self.output.read_bytes()
+        actual = codify.invoke
+        def add_command(*args, **kwargs):
+            result = actual(*args, **kwargs)
+            commands = self.root / 'commands'
+            commands.mkdir(exist_ok=True)
+            (commands / 'normalize.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
+            return result
+        with patch.object(codify, 'invoke', side_effect=add_command):
+            with self.assertRaisesRegex(ValueError, 'changed during verification'):
+                self.compile(jobs=1)
+        self.assertEqual(self.output.read_bytes(), before)
+
+    def test_command_added_before_publication_cannot_publish_a_stale_lock(self):
+        self.compile()
+        before = self.output.read_bytes()
+        actual = codify.command_definition_paths
+        calls = 0
+        def add_command(root):
+            nonlocal calls
+            calls += 1
+            if calls == 3:
+                commands = self.root / 'commands'
+                commands.mkdir()
+                (commands / 'normalize.md').write_bytes((ROOT / 'skills/learn/skills/codify/examples/normalize-labels/commands/normalize.md').read_bytes())
+            return actual(root)
+        with patch.object(codify, 'command_definition_paths', side_effect=add_command):
+            with self.assertRaisesRegex(ValueError, 'changed before publication'):
+                self.compile(jobs=1)
+        self.assertEqual(self.output.read_bytes(), before)
+
     def test_standalone_codify_and_skillify_copy_have_no_original_repository_dependency(self):
         for name in ('codify', 'skillify'):
             copy = self.root / 'plugin cache' / name

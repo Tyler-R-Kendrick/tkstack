@@ -7,6 +7,7 @@ an independent review, a real provider verification, or native hosting checks.
 import copy
 from concurrent.futures import ThreadPoolExecutor
 import importlib.util
+import io
 import json
 from pathlib import Path
 import shutil
@@ -539,6 +540,72 @@ class SdlcTests(unittest.TestCase):
             invalid["checks"][2].update(changes)
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 self.gate(invalid)
+
+    def test_required_checker_verdict_covers_the_exercised_candidate(self):
+        policy = {"R1": {"check_kinds": ["bdd"], "artifact_kinds": ["checker-verdict"]}}
+        manifest = self.manifest(evidence_plan=policy)
+        artifact = self.artifact("history-result.json", ["R1"], kind="checker-verdict")
+        manifest["artifacts"].append(artifact)
+        manifest["compliance"][0]["evidence"].append(artifact["path"])
+        path = self.reports / artifact["path"]
+        for verdict, reached in (("accepted", True), ("rejected", True), ("inconclusive", True),
+                                 ("accepted", False), ("accepted", 1)):
+            with self.subTest(verdict=verdict, reached=reached):
+                path.write_text(json.dumps({"verdict": verdict, "target_reached": reached}))
+                artifact["sha256"] = sdlc.file_digest(path)
+                if verdict == "accepted" and reached is True:
+                    self.assertEqual(self.gate(manifest)["structural_gate"], "pass")
+                else:
+                    with self.assertRaisesRegex(ValueError, "checker verdict"):
+                        self.gate(manifest)
+
+        path.write_text('{"verdict":"rejected","verdict":"accepted","target_reached":true}')
+        artifact["sha256"] = sdlc.file_digest(path)
+        with self.assertRaisesRegex(ValueError, "Duplicate JSON field"):
+            self.gate(manifest)
+
+        path.write_text(json.dumps({"verdict": "accepted", "target_reached": True}))
+        artifact["sha256"] = sdlc.file_digest(path)
+        failed = self.artifact("second-history.json", ["R1"], kind="checker-verdict")
+        failed_path = self.reports / failed["path"]
+        failed_path.write_text(json.dumps({"verdict": "rejected", "target_reached": True}))
+        failed["sha256"] = sdlc.file_digest(failed_path)
+        manifest["artifacts"].append(failed)
+        # Omitting this candidate result from the compliance row cannot hide it.
+        with self.assertRaisesRegex(ValueError, "checker verdict"):
+            self.gate(manifest)
+        failed.update(side="before", revision=self.frozen["git_base_sha"])
+        manifest["compliance"][0]["evidence"].append(failed["path"])
+        self.assertEqual(self.gate(manifest)["structural_gate"], "pass")
+
+        artifact.update(side="before", revision=self.frozen["git_base_sha"])
+        with self.assertRaisesRegex(ValueError, "candidate checker verdict"):
+            self.gate(manifest)
+
+    def test_gate_checks_the_verdict_from_the_hashed_bytes(self):
+        policy = {"R1": {"check_kinds": ["bdd"], "artifact_kinds": ["checker-verdict"]}}
+        manifest = self.manifest(evidence_plan=policy)
+        artifact = self.artifact("history.json", ["R1"], kind="checker-verdict")
+        path = self.reports / artifact["path"]
+        path.write_text(json.dumps({"verdict": "rejected", "target_reached": True}))
+        artifact["sha256"] = sdlc.file_digest(path)
+        manifest["artifacts"].append(artifact)
+        manifest["compliance"][0]["evidence"].append(artifact["path"])
+        original_open = Path.open
+        accepted = json.dumps({"verdict": "accepted", "target_reached": True})
+        first_read = True
+
+        def open_snapshot(checked_path, mode="r", *args, **kwargs):
+            nonlocal first_read
+            if checked_path == path and "r" in mode:
+                if not first_read:
+                    return io.BytesIO(accepted.encode()) if "b" in mode else io.StringIO(accepted)
+                first_read = False
+            return original_open(checked_path, mode, *args, **kwargs)
+
+        with patch.object(Path, "open", open_snapshot):
+            with self.assertRaisesRegex(ValueError, "checker verdict|hash mismatch"):
+                self.gate(manifest)
 
     def test_visual_evidence_is_required_for_each_applicable_requirement(self):
         policy = {requirement: {"check_kinds": ["bdd", "contract"], "artifact_kinds": ["screenshot"]}

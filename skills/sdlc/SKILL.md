@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Python 3.11+ with SQLite and Git for deterministic task coordination. Typed commands use the shared installed Codify command runtime. Full lifecycle requires actual delegation/PR capabilities and a reflink-capable filesystem for strict COW. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.5.2"
+  version: "0.6.1"
   disable-model-invocation: "true"
 ---
 
@@ -43,7 +43,8 @@ judgment, evidence, and authorized delivery described below.
 | New feature or improvement with an observable quality difference | [Measured feature work](references/measured-feature-work.md) |
 | Plan or decompose only | [Requirements and planning](references/requirements-and-planning.md) |
 | Architecture or refactor | [Interfaces and refactoring](references/architecture-and-refactoring.md) |
-| Test or verify behavior | [Behavioral verification](references/behavioral-verification.md) |
+| Select a strategy or framework, design an eval, model a protocol, or prove an invariant | [Testing strategy and tradeoffs](references/testing-strategy.md) |
+| Exercise a test seam, replace tests, or verify behavior | [Behavioral verification](references/behavioral-verification.md) |
 | Review only | [Review findings](references/review-findings.md) |
 | Deliver, modernize, babysit, or hand off | [Delivery and handoff](references/delivery-and-handoff.md) |
 | Choose which installed skill fits the work | [Skill routing](references/skill-routing.md) |

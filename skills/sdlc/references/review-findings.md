@@ -7,6 +7,12 @@ documented invariants? Style preferences are not defects.
 
 Use concrete failing inputs or event sequences. For each candidate, record its
 location, mechanism, affected requirement, consequence, and smallest correction.
+When a change replaces a test or relies on a checker, inspect the [fault
+comparison and checker controls](behavioral-verification.md). Trace the
+actual verdict through the runner into the retained requirement evidence.
+For an eval, model or proof, use the [method's acceptance criteria](testing-strategy.md).
+Check the population, reachability bounds or theorem hypotheses and verify the
+implementation boundary before closing the requirement or retiring tests.
 Search for counter-evidence: a validating caller, an impossible state, an already
 handled error, a deliberate supported limit. Discard unsupported worries.
 

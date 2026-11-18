@@ -584,10 +584,6 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     recorded_includes = sorted({include_name(root, path) for path in includes})
     if not (root / RUNTIME_MANIFEST).is_file():
         raise ValueError('A scripts/lock-runtime.json file is required; declare each runtime dependency')
-    includes = [*(regular(root / relative_file(name), root) for name in recorded_includes),
-                *runtime_manifest_paths(root)]
-    if (root / 'commands').exists():
-        includes = [*includes, *command_definition_paths(root)]
     source, entrypoint, cases = [regular(path.absolute(), root) for path in (source, entrypoint, cases)]
     output = (output or source.with_suffix('.lock.json')).absolute()
     if not output.is_relative_to(root) or output.is_symlink() or output in (source, entrypoint, cases):
@@ -605,7 +601,11 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     profile_names = sorted(set(profiles))
     if any(not isinstance(name, str) or not name for name in profile_names):
         raise ValueError("Inference profiles must be nonempty names")
-    files = snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
+    def current_snapshot():
+        inputs = [entrypoint, *(regular(root / relative_file(name), root) for name in recorded_includes),
+                  *runtime_manifest_paths(root), *command_definition_paths(root)]
+        return snapshot(root, inputs, output, exclude_prefixes=nested_skill_prefixes(root))
+    files = current_snapshot()
     check_runtime_dependencies(root, files)
     lock = {'format': SCOPED_FORMAT, 'compiler': {'name': 'codify', 'version': VERSION},
             'root': Path(os.path.relpath(root, output.parent)).as_posix(),
@@ -651,7 +651,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
                 failures.append(str(error))
         if failures:
             raise ValueError('; '.join(failures))
-    current = snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))
+    current = current_snapshot()
     if pack_files(current) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
         raise ValueError("Build inputs changed during verification")
     lock_id = digest(str(output).encode())[:16]
@@ -659,7 +659,7 @@ def compile_workflow(source, entrypoint, cases, output=None, root=None, includes
     writer.mkdir()
     temporary = None
     try:
-        if pack_files(snapshot(root, [entrypoint, *includes], output, exclude_prefixes=nested_skill_prefixes(root))) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
+        if pack_files(current_snapshot()) != lock['files'] or read_bytes(source) != source_data or read_bytes(cases) != case_data:
             raise ValueError("Build inputs changed before publication")
         if (output.read_bytes() if output.exists() else None) != before:
             raise ValueError("Lock artifact changed during compilation")

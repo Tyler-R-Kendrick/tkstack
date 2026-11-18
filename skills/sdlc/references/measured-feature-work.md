@@ -9,6 +9,9 @@ fix with a clear pass/fail regression, a documentation-only edit, or a scoped
 review can use its existing evidence plan, subject to the web and binary
 triggers below.
 
+Use the [eval selection criteria](testing-strategy.md#evals-for-judgment-and-distributions)
+to decide whether a case set and grader add evidence beyond an ordinary test.
+
 This decision requires interpreting the request and its real context. The
 helper can validate recorded facts, but cannot determine intent or whether a
 rubric captures user-perceived quality. Do not invent a numeric score as

@@ -142,7 +142,7 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "a0c0b2d2ab73ea23329f955c9e2eba00b91e3bf3"
+          "oid": "76feaccc21b25c7067afaf68fc4f8c0518db3ab4"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
@@ -190,7 +190,7 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "4939792a107b4e38dd7eb6e067c24e26f7ef1335"
+          "oid": "71aaaf9d80511dbc98f21f9e275bdb97629614f0"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
@@ -326,7 +326,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "a0c0b2d2ab73ea23329f955c9e2eba00b91e3bf3"
+          "oid": "76feaccc21b25c7067afaf68fc4f8c0518db3ab4"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
@@ -426,7 +426,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "934554d591912a848f7298b67fd91d16178aa2c4"
+          "oid": "a2280f25115a37b33843c7cd2e904c546835a3e2"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -445,8 +445,8 @@
           "oid": "a9b0ac87ba1c50c57e335b6de7791eb177a0b353"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed optional null delegate support and named Skillify maintenance command; existing usage documentation remains accurate"
+      "no_doc_impact": false,
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     },
     "catalog": {
       "docs": {
@@ -472,18 +472,17 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "c264824ce123ceb32c53a2c3d871d5d2f8c91ed8"
+          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
         },
         "docs/t3code.md": {
           "mode": "100644",
           "oid": "9411acdc5aa81d526e88e52f44f42caaee0c9d67"
         }
       },
-      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "5e741266bf8ca68990a46272455feb2872c9fcae"
+          "oid": "269cc3d0fd26cfdd55dd09cde3b05bdb76b18381"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -527,7 +526,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed SDLC pass-fail routing and skill distribution documentation against current main"
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     },
     "documentation": {
       "docs": {
@@ -547,7 +546,7 @@
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "4a1eca973aa8e7b6a6e24626381ef8c2deb0c80d"
+          "oid": "d1d95657a39439aabce950d4654ba34dde0cf390"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -584,7 +583,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "dd9c3ae8fb23650341c89cbbbe2ab146f07e785b"
+          "oid": "c1bb195fb345f3072274ae4bc41dcb1778e94214"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -732,11 +731,11 @@
         },
         "tests/test_sdlc.py": {
           "mode": "100644",
-          "oid": "7732570618840a0893b53d8f9aee3c55d1ada0f4"
+          "oid": "7dcb96609d6d19091122bc8c7b9cb15d2fa8af00"
         },
         "tests/test_sdlc_store.py": {
           "mode": "100644",
-          "oid": "555eb74225dd39f55ad4a0f84b173df5a6c30e7f"
+          "oid": "f77533eeeaf70898e19049607f33218f3e802ce3"
         },
         "tests/test_session_learning.py": {
           "mode": "100644",
@@ -772,7 +771,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed optional delegate compatibility and inventory rejection tests; documentation process unchanged"
+      "reason": "Reviewed command inventory race regression; the documentation maintenance process is unchanged"
     },
     "execution": {
       "docs": {
@@ -789,7 +788,7 @@
           "oid": "f37747bd3c5a757eed1106afb9c07ed40eb6a2ff"
         }
       },
-      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
+      "docs_refresh_reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance",
       "inputs": {
         "src/runner.json": {
           "mode": "100644",
@@ -826,7 +825,7 @@
           "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         }
       },
-      "docs_refresh_reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows",
+      "docs_refresh_reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -932,7 +931,7 @@
         },
         "docs/sdlc.md": {
           "mode": "100644",
-          "oid": "1e37e1c66d9d0951ac54dfeef5c01e0f2b79ccf6"
+          "oid": "ae1b1d6d94be37bde2a4054da5d96ba10278574d"
         },
         "docs/skill-distillation.md": {
           "mode": "100644",
@@ -944,7 +943,7 @@
         },
         "docs/skills.md": {
           "mode": "100644",
-          "oid": "c264824ce123ceb32c53a2c3d871d5d2f8c91ed8"
+          "oid": "f8d397231806bb118ced5490b25728de13f00b5e"
         },
         "docs/standards.md": {
           "mode": "100644",
@@ -1126,7 +1125,7 @@
         },
         "skills/constrain/SKILL.md": {
           "mode": "100644",
-          "oid": "971299d9a364e5410fa3cbf93286fc27eb447d40"
+          "oid": "d7e4ce86c1f7a677918cfd9af3ecb979d514aa7f"
         },
         "skills/constrain/commands/help.md": {
           "mode": "100644",
@@ -1186,7 +1185,7 @@
         },
         "skills/constrain/references/selection.md": {
           "mode": "100644",
-          "oid": "0daa1e1c1a46bbe5e68b4e6f4aa961099a3c0901"
+          "oid": "e62ab22b6126dd4faa41fb03edf66d6cda7cfbcd"
         },
         "skills/constrain/references/storage.md": {
           "mode": "100644",
@@ -1198,7 +1197,7 @@
         },
         "skills/constrain/references/tests.md": {
           "mode": "100644",
-          "oid": "a538feb3ccfb2ae349d1d8a60ae69a2ba6ffce67"
+          "oid": "76ac2677416be900ce48874a3d63cbe4b7fea41d"
         },
         "skills/constrain/requirements/requirements.in": {
           "mode": "100644",
@@ -1258,7 +1257,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "108f943e1c05cef3009b5bdcd72998fed92db076"
+          "oid": "edb8b8facb5e319fd90398cdcc63e3e5c7a2f0dc"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -2654,7 +2653,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "d820d1cd7424d2a12187fc952be2b5b870f86112"
+          "oid": "4c77cac816e6cc6d93245c548478ad7d49d0e53e"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2718,19 +2717,19 @@
         },
         "skills/sdlc/references/architecture-and-refactoring.md": {
           "mode": "100644",
-          "oid": "788ef5c8815b3df1d9e021492475c2410c3e4611"
+          "oid": "2ddd67c9299f70ef49c852fc6f5fa004e2adb8dd"
         },
         "skills/sdlc/references/behavioral-verification.md": {
           "mode": "100644",
-          "oid": "0cb829f8f3bc0632caefd7074becc533038134c2"
+          "oid": "54c5f8b34bee140ab7bbd2a22f799b3c7551167b"
         },
         "skills/sdlc/references/delivery-and-handoff.md": {
           "mode": "100644",
-          "oid": "0c6f17079318b1bbb396dcb94d0d896a4d71daad"
+          "oid": "da66615d20bdd80abbfe64ef8b6e19ef4338d143"
         },
         "skills/sdlc/references/distilled-sources.md": {
           "mode": "100644",
-          "oid": "ca1dd6c80328fc652ffbd9872a2e02bbb813d62e"
+          "oid": "0dab933a429a31c36eea69d38ecac85be57ab3cb"
         },
         "skills/sdlc/references/durable-task-graph.md": {
           "mode": "100644",
@@ -2738,7 +2737,7 @@
         },
         "skills/sdlc/references/evidence-format.md": {
           "mode": "100644",
-          "oid": "54438239349147b8b276910ebd26f3ebe503e1c6"
+          "oid": "ad08dafe6c3f064a97f29e06ffd55922c7d8ba71"
         },
         "skills/sdlc/references/execution.md": {
           "mode": "100644",
@@ -2746,19 +2745,19 @@
         },
         "skills/sdlc/references/loops-and-contracts.md": {
           "mode": "100644",
-          "oid": "5c51709f9bf68fb8ae804ed8321cc7c5ea423d40"
+          "oid": "0ba6305e4ef6311930d1fdd274b47012d72612f0"
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "290c5a46fb693803a772beff331612670a59ec31"
+          "oid": "46b5f877cfa0f73df1b840ea402b6635dc7567ac"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
-          "oid": "d05f1e4fd3278009bdc1d12fffe30ff2b043aabf"
+          "oid": "a1848f6c2c1ffc3ff6c4b98bb3696ad0adbe2e07"
         },
         "skills/sdlc/references/requirements-and-planning.md": {
           "mode": "100644",
-          "oid": "da956e3a27bec0c32d8818cda8dceb2e365828f1"
+          "oid": "a59197a8d18b64f46d64511ba582e745a222aa23"
         },
         "skills/sdlc/references/review-and-stacks.md": {
           "mode": "100644",
@@ -2766,7 +2765,7 @@
         },
         "skills/sdlc/references/review-findings.md": {
           "mode": "100644",
-          "oid": "428deea952d93b122257a354a9de5b1c47f9036b"
+          "oid": "d3a52f428cda09604f6b75bd38ea6832caba9239"
         },
         "skills/sdlc/references/routing.json": {
           "mode": "100644",
@@ -2779,6 +2778,10 @@
         "skills/sdlc/references/storage.md": {
           "mode": "100644",
           "oid": "a8f364a8cb24785ed4d359cd7fbc7a5780aa91b2"
+        },
+        "skills/sdlc/references/testing-strategy.md": {
+          "mode": "100644",
+          "oid": "3d777d96adbb9e6bd0bfd70f0a490be55e3d4f10"
         },
         "skills/sdlc/references/worktrees-and-swarm.md": {
           "mode": "100644",
@@ -2814,7 +2817,7 @@
         },
         "skills/sdlc/scripts/sdlc.py": {
           "mode": "100644",
-          "oid": "4f6e4ba85ae0902420de4cd85a9f39ee69e62185"
+          "oid": "ad295df8b5ebd76aacd0a7721c2c20badd9b1446"
         },
         "skills/sdlc/scripts/task_graph_tool.py": {
           "mode": "100644",
@@ -2834,7 +2837,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "b126deacd0684f84be56b39aaf4a84ed5f55e807"
+          "oid": "0ad48f9058c1b0c980795199d4272ab9e7b89ac1"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2850,7 +2853,7 @@
         },
         "skills/sdlc/templates/review.md": {
           "mode": "100644",
-          "oid": "bdd75c46cbc318c4e1d3876eaf183a9026710fb6"
+          "oid": "ec5e92ed8a40fc1c51227e8ced1636d3d8993252"
         },
         "skills/sdlc/templates/revision.json": {
           "mode": "100644",
@@ -2866,7 +2869,7 @@
         },
         "skills/sdlc/templates/workload.md": {
           "mode": "100644",
-          "oid": "2d35709cdfc621f67918c9d00f619fc4439aee8b"
+          "oid": "1f13ab493d11400737af9a9b7f51d741210e5ad7"
         },
         "skills/skills.json": {
           "mode": "100644",
@@ -3154,7 +3157,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed mandatory file-level runtime inventories, no full-snapshot creation and rebuilt authoring workflows"
+      "reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance"
     }
   },
   "object_format": "sha1",

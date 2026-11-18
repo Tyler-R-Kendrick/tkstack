@@ -397,7 +397,9 @@ replace Pstack's `tdd` name.
 
 `constrain` owns test-value selection, verification-category review, repository
 sparsity and deployment artifact budgets. See [its index](../skills/constrain/SKILL.md)
-for the CLI and category references. Each adopted workspace owns its policy in
+for the CLI and category references. The [verification selection policy](../skills/constrain/references/selection.md)
+covers evals, bounded state models, proofs, and the runtime boundaries each
+method leaves open. Each adopted workspace owns its policy in
 `.constrain/`. Its duplicate-body gate compares tests within the same fixture
 context and decorators; matching assertions across different contexts still
 need semantic review. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).

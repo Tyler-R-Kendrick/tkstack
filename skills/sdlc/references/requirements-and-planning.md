@@ -12,7 +12,11 @@ reason if measurement is not applicable to the current task.
 
 Give requirements stable IDs and express behavior as Given/When/Then examples.
 Identify real consumer/provider contracts and supported versions. Record what
-each check can and cannot prove. A schema is not proof of producer behavior.
+each check can and cannot prove. For a consequential fault or proposed test
+replacement, use the [testing strategy](testing-strategy.md) to choose the method, its
+framework and the least expensive adequate boundary. Record the distinguishing
+observation and the assumption a more expensive check would test. Reuse an
+existing check when it already covers the obligation.
 
 Decompose into the smallest independently verifiable and deliverable outcomes.
 A narrow complete behavior is useful; an isolated unfinished layer is not.

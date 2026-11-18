@@ -68,3 +68,10 @@ This is independently written synthesis from the installed pinned catalog. Gener
 Selected by static reuse/portability fit, not a benchmark of quality or usage. Host tools and model names are capability-dependent; missing execution or independence remains explicit. Source defaults never create new user authority, private-history access, model spend, publication, or merge permission.
 
 BDD with real contracts stays the acceptance policy. Do not copy upstream defaults for E2E suites, forced interviews, stale-comment dismissal, automatic publication, or a fixed provider/model roster.
+
+The test-selection guidance adapts replayable schedules, independent history
+checks and real-boundary verification to the existing BDD and Constrain
+policies. [Deterministic simulation](https://martinfowler.com/articles/deterministic-simulation-testing.html) · [Jepsen histories](https://github.com/jepsen-io/history) · [Pact test scope](https://docs.pact.io/getting_started/testing-scope) · [Stateful properties](https://hypothesis.readthedocs.io/en/latest/stateful.html) · [Recovery under partial healing](https://tigerbeetle.com/blog/2023-07-06-simulation-testing-for-liveness/)
+
+Method selection distinguishes a finite configured state space, a theorem over
+a specified domain and a result on a population of cases. [TLC model configuration](https://tla.msr-inria.inria.fr/tlatoolbox/doc/model/overview-page.html) · [Lean proof validation](https://lean-lang.org/doc/reference/latest/ValidatingProofs/)
