@@ -8,7 +8,7 @@ a four-tool performance benchmark.
 
 | Tool | Appropriate use | Fit for these two skills |
 | --- | --- | --- |
-| [SkillOpt / SkillOpt-Sleep](https://github.com/microsoft/SkillOpt) | Bounded text edits driven by scored attempts, separate validation, rejection history, and staged promotion | **Selected.** Sleep can target an existing SKILL.md, disable memory edits, use native Codex or fresh-context handoffs, and require improvement with no per-task regression. Its Python Sleep engine needs no research-package dependencies. |
+| [SkillOpt / SkillOpt-Sleep](https://github.com/microsoft/SkillOpt) | Bounded text edits driven by scored attempts, separate validation, rejection history, and staged promotion | **Historical selection.** Its task parser is retained; separate model and harness execution is no longer offered. Its Python Sleep engine needs no research-package dependencies. |
 | [WikiSkill](https://github.com/ashutoshsinghpr7/wikiskill) | Accumulate raw evidence, maintain a wiki of patterns, and distill/gate skills within a domain workspace | Useful foundation for `learn`'s evidence/knowledge/steering separation and already installed. Its broader wiki workspace and task-validator loop add less value for revising two existing packaged workflows. The pinned implementation is independent of the paper authors. |
 | [Microsoft Vally](https://microsoft.github.io/vally/) | Extensible trajectory evaluation with custom executors, graders, isolated environments, and reports | A strong future choice for behavioral evaluation across harnesses. Its documented core evaluates rather than proposes bounded revisions; a separate optimizer and native executor integration are still needed for this task. |
 | [Microsoft Waza](https://github.com/microsoft/waza/tree/v0.39.0) | Repository/CLI/MCP workflow scenarios, artifact and behavior graders, adversarial checks, readiness/coverage and CI regression gates | Especially useful for deeper SDLC workflow evaluation. The published Go CLI is heavier than the dependency-free Sleep component, and its evaluation/authoring/token tools are not a substitute for a general validation-gated revision optimizer. |
@@ -24,51 +24,24 @@ and Waza's released README. A direct `microsoft/vally` repository lookup returne
 and Microsoft's documented `@microsoft/vally-cli` consumers. Waza and Vally
 were not installed or executed for this comparison.
 
-## Installed integration
+## Current host-bound integration
 
-The lock pins `microsoft/SkillOpt` at
-`bc0a392ef0a7f92840ec673d80204d34ced169d0`: the complete `skillopt_sleep/`
-package plus license, metadata, and workflow references (52 exact upstream
-files). The selected handoff and stricter gate features require this source
-revision; they are not claimed to be in the PyPI 0.2.0 wheel. Research code,
-datasets, WebUI, global plugins, transcript harvesting, and scheduling are not
-required by this integration.
-
-[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) targets any owned `skills/<name>/SKILL.md`, with isolated state under `.tkstack/evolution/`.
-It ignores global Sleep configuration, disables memory evolution and automatic
-adoption, limits the edit budget to one, and enables strict improvement plus
-per-task no-regression gates. Input hashes pin the live skill, tasks, optimizer
-preferences, backend, and engine revision; changed inputs require a new run
-directory. Upstream bytes remain unchanged.
+The pinned SkillOpt task parser is used for reviewed authored case files.
+[`evolve.py`](../skills/learn/scripts/evolve.py) validates and pins the skill,
+case bytes and source revision, then returns readiness for the invoking agent.
+It does not run an optimizer, choose a model, launch a separate agent harness,
+or automatically adopt changes.
 
 ```sh
-python3 skills/learn/scripts/evolve.py learn --backend mock --dry-run
-python3 skills/learn/scripts/evolve.py sdlc --backend mock --dry-run
-python3 skills/learn/scripts/evolve.py learn
-python3 skills/learn/scripts/evolve.py sdlc
+python3 skills/learn/scripts/evolve.py learn --dry-run
+python3 skills/learn/scripts/evolve.py constrain
 ```
 
-`mock` only checks wiring. The default `handoff` backend emits actual model
-prompts and exits 3 while replies are pending. Follow the pinned
-[handoff workflow](../vendor/skillopt/plugins/claude-code/commands/skillopt-sleep-handoff.md):
-one fresh-context native subagent per verbatim prompt, no references or parent
-history, then write its observed raw reply to the requested answer file and
-repeat the same command. Cap concurrent calls to available agent slots.
-Do not synthesize answers from the answer key or from the optimizer's context.
-
-On a host with network/model access, `--backend codex` uses the installed,
-authenticated CLI and its normal budget. No provider endpoint or credentials
-are changed. The source-only handoff route was used here because execution
-sandboxing blocked ordinary package/network calls despite the managed host
-allowlist. Native session agents supplied the model responses.
-
-The driver writes `result.json` only after a completed handoff run. A completed
-run is reused idempotently while its pinned inputs match. For new tasks or a
-changed skill, select a new `--run-dir`. Read the reported `staging_dir/report.md`,
-diagnostics, exact proposed diff, tests, and original requirements before any
-promotion. Use upstream's explicit adoption path for an accepted proposal;
-do not overwrite the live skill as a substitute. This initial run produced no
-proposal requiring adoption.
+The invoking agent carries out semantic work in its current conversation.
+Visible examples and labels are not independent holdouts. If a host cannot
+supply a genuinely independent confirmation without another agent or model,
+report the evidence gap. The earlier comparison and trial below are historical,
+not current instructions to launch a separate backend.
 
 ## Recorded initial trial
 

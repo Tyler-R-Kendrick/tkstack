@@ -120,6 +120,31 @@ class HillClimbTests(unittest.TestCase):
         self.save()
         self.assertEqual(self.compare()["decision"], "eligible")
 
+    def test_large_sample_intervals_do_not_understate_student_t_uncertainty(self):
+        for count, critical in ((32, 2.0395), (42, 2.0196)):
+            with self.subTest(cases=count):
+                # Set the mean gain between the normal and Student-t limits.
+                half = (1.96 + critical) / 2
+                spread = (count - 1) ** 0.5 / half
+                ids = [f'case-{i}' for i in range(count)]
+                self.plan.update(reps=1, noise_floor=0, min_gain=0.1,
+                    splits={'train': ['train'], 'selection': ids, 'confirm': ['confirm']})
+                self.rows = [{'case': name, 'rep': 0, 'metrics': {'latency': 100, 'quality': 1},
+                    'gate_passed': True, 'work_count': 1, 'error_count': 0, 'evidence': self.receipt} for name in ids]
+                self.changed = copy.deepcopy(self.rows)
+                for i, row in enumerate(self.changed):
+                    row['metrics']['latency'] -= 1 + (spread if i < count // 2 else -spread)
+                self.save()
+                self.assertEqual(self.compare()['decision'], 'reject')
+
+    def test_model_comparisons_require_repeated_baseline_and_nonzero_noise(self):
+        self.plan['model_based'] = True
+        for reps, noise in ((1, 1), (2, 0)):
+            with self.subTest(reps=reps, noise=noise):
+                self.plan.update(reps=reps, noise_floor=noise)
+                with self.assertRaisesRegex(ValueError, 'Model-based comparisons'):
+                    hill.validate_plan(self.plan, self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

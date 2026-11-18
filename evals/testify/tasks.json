@@ -1,7 +1,8 @@
 {
   "format": "skillopt_sleep.tasks.v1",
   "reviewed": true,
-  "provenance": "authored boundary-selection scenarios; not a model-performance claim",
+  "provenance": "author-created decision regression scenarios",
+  "provenance_note": "Authored boundary-selection scenarios; not a model-performance claim.",
   "tasks": [
     {
       "id": "testify-train",

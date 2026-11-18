@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "name": "evalify",
+  "purpose": "Calibrate judgments already made by the invoking agent using deterministic framework assertions.",
+  "criteria": [
+    {
+      "id": "task",
+      "description": "Define the actual workload and observable success, including deterministic gates."
+    },
+    {
+      "id": "judge",
+      "description": "Calibrate any model judge against independently labeled examples and record limitations."
+    },
+    {
+      "id": "measurement",
+      "description": "Retain matched runs, elapsed time, costs, failures and confirmation evidence."
+    }
+  ],
+  "facts_schema": {
+    "type": "object",
+    "properties": {
+      "actual_work_observed": {
+        "type": "boolean",
+        "const": true
+      },
+      "judge_calibrated": {
+        "type": "boolean",
+        "const": true
+      }
+    },
+    "required": [
+      "actual_work_observed",
+      "judge_calibrated"
+    ],
+    "additionalProperties": false
+  },
+  "native": {
+    "native_validate": {
+      "entrypoint": "scripts/evalify.py",
+      "prefix": [
+        "validate"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "cases": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--cases"
+          ]
+        },
+        "receipt": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--receipt"
+          ]
+        },
+        "timeout": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "flags": [
+            "--timeout"
+          ],
+          "default": 20
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "validate"
+      ],
+      "description": "Validate host-judged cases and retain a timed receipt."
+    },
+    "native_run": {
+      "entrypoint": "scripts/evalify.py",
+      "prefix": [
+        "run"
+      ],
+      "parameters": {
+        "project": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--project"
+          ],
+          "path": true
+        },
+        "cases": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--cases"
+          ]
+        },
+        "receipt": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--receipt"
+          ]
+        },
+        "timeout": {
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "flags": [
+            "--timeout"
+          ],
+          "default": 20
+        },
+        "output": {
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": [
+            "--output"
+          ]
+        }
+      },
+      "suffix": [],
+      "cli_path": [
+        "native",
+        "run"
+      ],
+      "description": "Score host judgments offline with deterministic Promptfoo assertions."
+    }
+  },
+  "limits": [
+    "Recorded source identity and per-case timings cannot authenticate the invoking host or judge calibration.",
+    "The helper performs no inference, model selection, provider selection, or agent-harness launch.",
+    "Detached subprocesses and remote effects are outside the local deadline."
+  ]
+}

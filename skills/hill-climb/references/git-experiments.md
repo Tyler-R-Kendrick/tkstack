@@ -12,29 +12,21 @@ existing helper.
 ## Host-agent rounds
 
 The agent already handling the user's task proposes and implements each
-hypothesis using its host's existing tools and context. It may use the host's
-native subagents for independent work when both delegation and the work are
-authorized. Otherwise it performs the same rounds sequentially. The host
-does not need to launch another coding-agent runtime, configure a separate
-provider, or create a new model account to use this workflow. Git, Python,
-and the selected project's actual evaluator remain ordinary tool dependencies.
-For example, use the capabilities already available to Codex, Claude Code, or
-GitHub Copilot in the host that invoked the skill. Do not substitute a different
-coding agent for the active host.
+hypothesis in its existing conversation, model and harness. Do not start
+another agent or model for the experiment. Git, Python and deterministic project
+evaluators remain ordinary local tool dependencies.
 
 After preparing the task brief and `init` request described below:
 
 1. Invoke `native experiment --request PATH` with an `allocate` request for a
    candidate arm. Use the returned identity in a `host-start` request before
-   delegating or editing. This reserves an attempt and records the host,
+   editing. This reserves an attempt and records the host,
    logical worker name, and hypothesis; a lost response must be reconciled.
-2. Give the worker the user outcome, one hypothesis and its falsifier,
-   baseline identity, owned paths, development evidence, quality contract,
-   selected skills, budget and stop rule. Identify its private worktree and
-   which checks it should run. Keep confirmation cases outside its context.
-   For a sequential round, the invoking agent uses the same handoff itself.
+2. Record the outcome, one hypothesis and falsifier, baseline identity,
+   owned paths, development evidence, quality contract, budget and stop rule.
+   Do not call cases visible in this conversation an independent holdout.
 3. The host agent edits only the authorized paths in the returned worktree.
-   Join delegated work and verify that writers have stopped. Send `host-finish`
+   Verify that writers have stopped. Send `host-finish`
    with the run key, `outcome: "frozen"`, a message, and `writers_stopped: true`.
    The controller checks the scoped freeze and records the candidate's commit
    and tree. Supply the host's task ID and reported token usage if available;
@@ -72,9 +64,7 @@ The host-reported task ID and usage are observations, not independently
 authenticated billing records.
 
 The `propose` action described later is an optional way to apply supplied text
-edits. It is not needed for a host agent to edit and freeze its arm. Optional
-MAF, GEPA, and Harbor integrations serve their documented purposes; they are
-not prerequisites for the host-driven loop.
+edits. It is not needed for a host agent to edit and freeze its arm. The optional local GEPA search uses supplied text and performs no model call.
 
 ## Scope and instrument
 
@@ -404,7 +394,7 @@ changes and descendant processes need the host's normal supervision. The
 deadline does not stop external agents or provide a provider spending limit.
 On POSIX, wrapper timeout and SIGTERM ask the controller to stop registered
 local trial groups before a bounded forced kill. A hard kill, host crash,
-detached child session, or remote Harbor execution can evade this cleanup.
+or detached child session can evade this cleanup.
 If child ownership is lost, descendants can survive and require external
 process reconciliation before retrying. Inspect the ledger after interruption.
 A lost run response before a receipt is persisted leaves its reservation
@@ -556,13 +546,11 @@ make host execution a sandbox or prove the judgment is semantically correct.
 
 ### Bounded host-agent proposals
 
-Host agents can inspect the task brief and frozen development evidence, work on
-separate authorized arms, and submit their changes through the host lifecycle
-above. For a small deterministic text proposal the optional `propose` action
-combines scoped edit, receipt, and freeze. An `init` request may set
-`max_proposals` from 1 to 100; the default is five. Registered host and scripted
-proposal attempts are counted separately from trial starts and remain counted
-after failed or uncertain attempts.
+The invoking agent can inspect the task brief and frozen development evidence,
+work on authorized arms, and submit changes through the host lifecycle above.
+The optional `propose` action applies supplied deterministic text edits.
+Registered host and scripted proposals count against the proposal budget,
+including failed or uncertain attempts.
 
 ```json
 {
@@ -575,19 +563,17 @@ after failed or uncertain attempts.
 ```
 
 The native JSON action accepts only supplied text edits, not arbitrary provider
-commands. Its local scripted provider makes no model call. Trusted embedding
-code may register a broker through the Python proposer interface, but this
-package does not ship a provider that enforces a total model-token ceiling.
-Use host agents under the host's own budget and authorization controls; do
-not interpret `max_tokens: 0` as proof of a host-agent or verifier's spending.
+commands. Its local scripted provider makes no model call. The proposer
+accepts no command-based agent provider; semantic proposals remain in the
+invoking conversation. Do not interpret `max_tokens: 0` as proof of host spending.
 A recorded proposal must still pass evaluation and any required confirmation.
 
 ### Parallel trials for one selected target
 
 The `parallel` action accepts up to 128 predeclared assignments and a
 `max_workers` value from 1 to 16. It atomically reserves every trial slot
-before starting any worker. Each worker uses the selected local or Harbor
-backend and receives a separate frozen source export and the experiment's one registered target; a batch does not discover
+before starting any worker. Each worker uses the selected local
+executor and receives a separate frozen source export and the experiment's one registered target; a batch does not discover
 or schedule other languages. Parallel timing may be affected by host resource
 contention, so use sequential paired trials when isolation of a performance
 measurement requires it.
@@ -606,49 +592,7 @@ measurement requires it.
 `parallel-status` reads the retained batch manifest and ledger while workers
 run. `parallel-recover` releases only reservations that were never dispatched;
 dispatched or uncertain work and confirmation claims remain for reconciliation.
-A `partial` response is not eligible evidence. The MAF workflow can sequence a
-bounded parallel batch with other controller actions; its outer request list
-is still sequential.
-
-### Harbor with a separate verifier
-
-For a task that needs a containerized verifier, `init` can select an explicit
-Harbor backend instead of a local `registry`. Install Harbor 0.26.0 in an
-isolated, locked environment and supply its executable, a digest-pinned Docker
-image, and an independently controlled verifier directory. Set `evaluator_file`
-to that directory's `test.sh`. The backend object is frozen with the experiment:
-
-```json
-{
-  "kind": "harbor",
-  "verifier_dir": "/trusted/verifier",
-  "verifier_sha256": "REPLACE_WITH_VERIFIER_DIRECTORY_DIGEST",
-  "image": "example/image@sha256:REPLACE_WITH_IMAGE_DIGEST",
-  "harbor_bin": "/opt/harbor/bin/harbor",
-  "harbor_bin_sha256": "REPLACE_WITH_EXECUTABLE_SHA256",
-  "network_mode": "no-network",
-  "timeout_seconds": 120
-}
-```
-
-Compute the verifier digest with `verifier_digest` from
-`scripts/experiment_harbor.py`; it includes file and directory paths, bytes,
-and modes. The executable hash does not freeze the rest of its Python
-installation; lock that environment separately. The verifier reads
-`/tests/case.input`, writes its SHA-256 to
-`/logs/verifier/case_sha256.txt`, and emits Harbor numeric rewards for each
-required gate, metric, and positive `work_count`. Gates use 0 or 1. This
-adapter does not yet support structured qualitative evidence from Harbor.
-
-Oracle stages the exact frozen source and a separate verifier grades it; no
-model is invoked by the adapter. The verifier is trusted code and can make
-external calls if its network policy allows them. The backend must explicitly select `no-network` or `public`;
-`no-network` must be supported by the host container engine; there is no automatic
-fallback to public networking. Explicit `public` networking requires the
-operator's own spending and isolation controls. A timeout or lost terminal
-receipt after dispatch remains uncertain and charged until independently
-reconciled. A container is not, by itself, a guarantee against a hostile host
-or privileged container configuration.
+A `partial` response is not eligible evidence.
 
 On POSIX, each native test or judge runs in its own managed process group. A
 pipe handshake prevents the stage from executing before the wrapper registers
@@ -662,6 +606,7 @@ supervision. Local POSIX trials fail closed if `waitid(WNOWAIT)` is unavailable.
 Use an OS sandbox or cgroup when commands are untrusted or stronger
 cleanup is required. Git export has separate subprocess timeouts and can extend
 past the experiment deadline before dispatch is rejected.
+
 
 ### Optional GEPA search over supplied text candidates
 

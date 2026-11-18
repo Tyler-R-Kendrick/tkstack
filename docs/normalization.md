@@ -30,15 +30,17 @@ state. Relative external paths resolve against the selected workspace.
 
 ## Coverage of every owned skill
 
-Every row has a modified progressive command index, an explicit model, compiled
-code, actual positive/transfer/adversarial proof tests, and a completed real
-SkillOpt decision trial. The native/semantic column states what those mechanical
-checks do not replace.
+These packages have progressive command indexes, explicit models and compiled
+code. The earlier recorded SkillOpt trial covers the packages and revisions
+named in its results; it does not establish an evaluation result for Evalify.
+The native/semantic column states what mechanical checks do not replace.
 
 | Skill | Executable core / native binding | Required domain work |
 | --- | --- | --- |
 | codify | Model/report gates; native scaffold, check, compile, run | One-time semantic lowering and actual native outcome verification |
+| constrain | Policy check and audit; bounded Python mutation matrix | Review fault relevance, assertion failures, independent boundaries and pruning decisions |
 | document | Source/knowledge ownership and evidence constraints | Grounded composition, link/command checks; actual OpenWiki lifecycle if selected |
+| evalify | Timed Promptfoo validation and bounded native execution | An installed framework and calibrated judgments from the invoking agent when required |
 | fal-ai | Provider/job/output claim constraints | Selected provider submission/recovery and actual retrieved media inspection |
 | flowify | Model/report gates; native scaffold, inspect, check | Real MAF/Rhai runtime validation and execution |
 | headroom | Reversibility, fidelity, routing constraints | Actual compressor/proxy and exact original-context retrieval |

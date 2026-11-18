@@ -29,8 +29,8 @@ no `/learn` prompt. See [source findings](../references/grok-build.md).
 - **`/learn improve <skill>`:** derive a bounded procedural improvement or a new
   reusable skill from actual task evidence. Follow the improvement workflow,
   retain a candidate and validation evidence, then apply only within the task's
-  established change scope. Use the configured SkillOpt gate for automated
-  revisions when real evaluation tasks are available.
+  established change scope. Keep semantic evaluation in the invoking agent
+  and report unavailable independent confirmation.
 - **Locate Grok's original:** run `learn.py locate-grok` with an optional
   `--grok-home <directory>`. It inspects known local skill/cache paths and bundle
   hashes without login, network access, or transcript harvesting. A missing
@@ -125,9 +125,8 @@ context. Run `check` to verify evidence links and generated files.
 
 For each new active rule, state how it changes the current decision and check a
 transfer case plus a boundary case. These examples test the rule's clarity;
-they do not establish measured improvement in model behavior. A WikiSkill or
-other evaluation backend can run held-out tasks against exported candidates,
-but requires real tasks, a validator, and its normal execution authorization.
+they do not establish measured improvement in model behavior. Keep semantic review in the invoking conversation. Cases visible to that
+agent are not an independent holdout.
 Do not rewrite pinned upstream skills as a side effect of learning.
 
 Finish with a short account of what was captured, what changed in the reasoning,

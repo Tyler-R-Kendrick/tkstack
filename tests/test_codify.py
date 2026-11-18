@@ -67,6 +67,18 @@ class CodifyTests(unittest.TestCase):
         self.assertEqual(list((self.root / '.tkstack/sessions').iterdir()), [])
         self.assertFalse((self.scripts / '__pycache__').exists())
 
+    def test_contract_package_compiles_its_default_inventory_and_rejects_drift(self):
+        (self.scripts / 'contract.json').write_text('{}')
+        reference = self.root / 'references/guide.md'
+        reference.parent.mkdir()
+        reference.write_text('Stable behavioral contract.')
+        self.compile()
+        artifact = codify.check(self.output)
+        self.assertIn('references/guide.md', artifact['files'])
+        reference.write_text('Changed behavioral contract.')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            codify.check(self.output)
+
     def test_preview_and_check_are_read_only_and_drafts_cannot_compile(self):
         self.assertEqual(self.compile(dry_run=True)['status'], 'planned')
         self.assertFalse((self.root / '.tkstack').exists())
@@ -188,8 +200,8 @@ class CodifyTests(unittest.TestCase):
         config = self.root / 'profiles.json'
         config.write_text('{"version":1,"providers":{},"profiles":{}}')
         result = self.cli('run', self.output, '--input', '-', '--config', config, payload={'labels': []})
-        self.assertEqual(result.returncode, 1)
-        self.assertIn('declares no inference', result.stderr)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('unrecognized arguments', result.stderr)
 
     def test_deadline_terminates_execution_and_removes_private_run(self):
         self.compile()
@@ -356,26 +368,13 @@ class CodifyTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), {'labels': ['a', 'b']})
 
-    @unittest.skipUnless(os.environ.get('TKSTACK_AI_SDK_DEPENDENCIES'), 'Native SDK dependencies optional')
-    def test_native_ai_sdk_artifact_executes_with_locked_external_dependencies(self):
-        target = self.root / 'sdk'
-        codify.scaffold(self.source, target, 'ai-sdk')
-        (target / 'scripts/workflow.ts').write_text('''import { z } from 'zod';
-export const inputSchema = z.object({labels: z.array(z.string())}).strict();
-export const outputSchema = inputSchema;
-export type Inference = unknown;
-export async function execute(input: z.infer<typeof inputSchema>, _inference: Inference) {
-  return {labels: [...new Set(input.labels.map(x => x.trim()))].sort()};
-}
-''')
-        shutil.copy2(self.cases, target / 'cases.json')
-        deps = Path(os.environ['TKSTACK_AI_SDK_DEPENDENCIES'])
-        artifact = target / 'scripts/workflow.lock.json'
-        codify.compile_workflow(target / 'PROMPT.md', target / 'scripts/run.ts', target / 'cases.json', artifact,
-                                root=target, dependencies=deps, project=self.root)
-        run = self.cli('run', artifact, '--dependencies', deps, '--input', '-', payload={'labels': ['z', 'a']})
-        self.assertEqual(run.returncode, 0, run.stderr)
-        self.assertEqual(json.loads(run.stdout), {'labels': ['a', 'z']})
+    def test_alternate_model_runtime_and_profiles_cannot_be_scaffolded_or_compiled(self):
+        with self.assertRaisesRegex(ValueError, 'deterministic Python'):
+            codify.scaffold(self.source, self.root / 'sdk', 'ai-sdk')
+        self.assertFalse((self.root / 'sdk').exists())
+        with self.assertRaisesRegex(ValueError, 'invoking agent'):
+            self.compile(profiles=['other'])
+        self.assertFalse(self.output.exists())
 
 
 class CodifyReleaseTests(unittest.TestCase):

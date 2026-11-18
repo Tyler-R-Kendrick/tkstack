@@ -1,4 +1,4 @@
-"""Deterministic repo-quality checks and the promptfoo eval config."""
+"""Deterministic repository quality checks."""
 
 import importlib.util
 import io
@@ -15,19 +15,6 @@ from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parent.parent
-PROMPTFOO_PACKAGE = "promptfoo@0.125.1"
-METRICS = (
-    "conventions",
-    "minimal_setup",
-    "minimal_code",
-    "cross_harness",
-    "marketplace_install",
-    "direct_install",
-    "state_of_the_art",
-    "documentation",
-    "developer_experience",
-    "dotfiles",
-)
 
 
 def load_checks():
@@ -57,21 +44,6 @@ def load_snapshot():
 checks = load_checks()
 snapshot = load_snapshot()
 
-
-def _metric_scores(path):
-    data = json.loads(path.read_text(encoding="utf-8"))
-    scores = {}
-    for row in data["results"]["results"]:
-        named = row.get("namedScores") or {}
-        if named:
-            scores.update(named)
-            continue
-        grading = row.get("gradingResult") or {}
-        for component in grading.get("componentResults") or []:
-            metric = (component.get("assertion") or {}).get("metric")
-            if metric:
-                scores[metric] = component.get("score")
-    return scores
 
 
 def failure_message(result):
@@ -714,143 +686,6 @@ class RepoQualityTests(unittest.TestCase):
                 self.assertNotIn("which are linked", line, label)
                 self.assertNotIn("orchestrator", line, label)
 
-    def test_judge_prompt_is_argv1_with_extra_args(self):
-        script = ROOT / "evals" / "repo-quality" / "judge.py"
-        environment = os.environ.copy()
-        environment.pop("CURSOR_API_KEY", None)
-        environment["REPO_QUALITY_JUDGE"] = (
-            f"{sys.executable} -c \"import sys; sys.stdout.write(sys.argv[1])\""
-        )
-        completed = subprocess.run(
-            [sys.executable, str(script), "GRADE-PROMPT", "{\"options\":true}", "{\"context\":true}"],
-            cwd=tempfile.gettempdir(),
-            env=environment,
-            capture_output=True,
-            text=True,
-            timeout=30,
-            check=False,
-        )
-        self.assertEqual(completed.returncode, 0, completed.stderr[-2000:])
-        self.assertEqual(completed.stdout.strip(), "GRADE-PROMPT")
-
-    def test_failed_judge_does_not_emit_its_stdout(self):
-        script = ROOT / "evals" / "repo-quality" / "judge.py"
-        environment = os.environ.copy()
-        environment.pop("CURSOR_API_KEY", None)
-        environment["REPO_QUALITY_JUDGE"] = (
-            f"{sys.executable} -c \"import sys; sys.stdout.write('SECRET-GRADE'); sys.exit(1)\""
-        )
-        completed = subprocess.run(
-            [sys.executable, str(script), "GRADE-PROMPT", "{\"options\":true}", "{\"context\":true}"],
-            cwd=tempfile.gettempdir(),
-            env=environment,
-            capture_output=True,
-            text=True,
-            timeout=30,
-            check=False,
-        )
-        self.assertNotEqual(completed.returncode, 0)
-        self.assertNotIn("SECRET-GRADE", completed.stdout)
-        self.assertNotIn("SECRET-GRADE", completed.stderr)
-        self.assertIn("judge provider: REPO_QUALITY_JUDGE", completed.stderr)
-
-    def _judge_module(self, name):
-        path = ROOT / "evals" / "repo-quality" / "judge.py"
-        spec = importlib.util.spec_from_file_location(name, path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
-
-    def test_judge_timeout_is_900_seconds_and_retries_once(self):
-        module = self._judge_module("repo_quality_judge_timeout")
-        self.assertEqual(module.TIMEOUT_SECONDS, 900)
-        self.assertEqual(module.TIMEOUT_ATTEMPTS, 2)
-        saved = os.environ.copy()
-        try:
-            os.environ.pop("CURSOR_API_KEY", None)
-            os.environ["REPO_QUALITY_JUDGE"] = f"{sys.executable} -c \"import sys; sys.exit(0)\""
-            attempts = {"n": 0}
-
-            def once(command, **kwargs):
-                attempts["n"] += 1
-                self.assertEqual(kwargs["timeout"], 900)
-                if attempts["n"] == 1:
-                    raise subprocess.TimeoutExpired(command, 900)
-                return subprocess.CompletedProcess(command, 0, stdout="grade\n", stderr="")
-
-            stdout, stderr = io.StringIO(), io.StringIO()
-            with mock.patch.object(module.subprocess, "run", once), \
-                    mock.patch.object(module.sys, "stdout", stdout), \
-                    mock.patch.object(module.sys, "stderr", stderr):
-                code = module.main(["judge.py", "GRADE-PROMPT"])
-            self.assertEqual(code, 0, stderr.getvalue())
-            self.assertEqual(attempts["n"], 2)
-            self.assertEqual(stdout.getvalue(), "grade\n")
-            self.assertIn("retrying once", stderr.getvalue())
-            self.assertNotIn("GRADE-PROMPT", stdout.getvalue() + stderr.getvalue())
-
-            def always(command, **kwargs):
-                raise subprocess.TimeoutExpired(command, kwargs.get("timeout"))
-
-            stdout, stderr = io.StringIO(), io.StringIO()
-            with mock.patch.object(module.subprocess, "run", always), \
-                    mock.patch.object(module.sys, "stdout", stdout), \
-                    mock.patch.object(module.sys, "stderr", stderr):
-                code = module.main(["judge.py", "GRADE-PROMPT"])
-            self.assertEqual(code, 124)
-            self.assertEqual(stdout.getvalue(), "")
-            self.assertIn("judge timed out; retrying once\n", stderr.getvalue())
-            self.assertIn("judge timed out\n", stderr.getvalue())
-        finally:
-            os.environ.clear()
-            os.environ.update(saved)
-
-    def test_default_grok_judge_uses_prompt_file(self):
-        path = ROOT / "evals" / "repo-quality" / "judge.py"
-        spec = importlib.util.spec_from_file_location("repo_quality_judge", path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        saved = os.environ.copy()
-        try:
-            os.environ.pop("CURSOR_API_KEY", None)
-            os.environ.pop("REPO_QUALITY_JUDGE", None)
-            argv, _environment, stdin, provider = module.judge_invocation(
-                "SECRET-PROMPT", "prompt.txt"
-            )
-        finally:
-            os.environ.clear()
-            os.environ.update(saved)
-        self.assertEqual(provider, "grok")
-        self.assertIsNone(stdin)
-        self.assertIn("--prompt-file", argv)
-        self.assertIn("prompt.txt", argv)
-        self.assertNotIn("SECRET-PROMPT", argv)
-        self.assertNotIn("-p", argv)
-
-
-    @unittest.skipUnless(os.environ.get("RUN_JUDGE") == "1", "set RUN_JUDGE=1 to run promptfoo")
-    def test_judge_eval(self):
-        output = ROOT / "evals" / "repo-quality" / "results" / "latest.json"
-        output.parent.mkdir(parents=True, exist_ok=True)
-        completed = subprocess.run(
-            [
-                "npx", "-y", PROMPTFOO_PACKAGE, "eval",
-                "-c", "evals/repo-quality/eval.yaml",
-                "--no-cache", "-o", "evals/repo-quality/results/latest.json",
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-            timeout=1800,
-            check=False,
-        )
-        detail = (completed.stdout + "\n" + completed.stderr)[-4000:]
-        self.assertTrue(output.is_file(), detail)
-        scores = _metric_scores(output)
-        for metric in METRICS:
-            self.assertIn(metric, scores, detail)
-            self.assertEqual(scores[metric], 1.0, detail)
-        self.assertEqual(completed.returncode, 0, detail)
 
 
 if __name__ == "__main__":

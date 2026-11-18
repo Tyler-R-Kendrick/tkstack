@@ -31,4 +31,4 @@ For a retrospective, distinguish repeated mechanisms, successful transferable
 procedures, temporary facts, and untested hypotheses. Preserve failed attempts
 so the next session does not repeat them. Inspect only authorized history.
 Direct requested feature changes use appropriate engineering validation;
-automatic revision search retains SkillOpt's held-out strict/no-regression gates.
+retain no-regression gates and report when independent confirmation is unavailable.

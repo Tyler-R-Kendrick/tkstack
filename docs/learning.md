@@ -13,25 +13,42 @@ pointer without migrating the evidence.
 
 Use `/learn help` (or `$learn help` in Codex) to discover commands, or
 `/learn help <name>` for focused guidance. Directly select `skillify`, `hookify`,
-`instructify`, `flowify`, `lintify`, `testify`, `reusify`, or `codify` as a Learn subcommand:
+`instructify`, `flowify`, `lintify`, `testify`, `evalify`, `reusify`, or `codify` as a Learn subcommand:
 
 ```text
 /learn help reusify
 /learn reusify init src --preview
 /learn skillify package our contract-review procedure as a reusable tool
 /learn lintify enforce the stated invariant with our existing CLI linter
+/learn evalify evaluate the agent with a calibrated semantic rubric
 /learn codify compile docs/release.md into scripts/release.lock.json
 ```
 
 Learn preserves the request, nested commands, parameters, evidence, and scope,
 then follows the named subskill's index and actual tools. The packaged ___ify
 skills are packaged inside Learn at `skills/learn/skills/<name>/`, so they ship
-and install with it rather than as separate skills. Preview/audit intent
-keeps the entire handoff read-only. Help and missing payloads show guidance
+and install with it rather than as separate skills. Preview/audit intent keeps
+the handoff itself read-only; a compiled invocation still writes its local timing
+record. Help and missing payloads show guidance
 without capturing feedback or reviewing sessions. A direct route does not
 start a full consolidation sweep. A missing subskill is reported as an
 explicit dependency; the Learn helper still provides its help.
 See the [bundled command contract](../skills/learn/references/subcommands.md).
+Learn and its subskills require finite default execution bounds and timing
+evidence for supported operations. A timeout does not establish that a remote
+MCP operation was cancelled or that a latency SLO was met.
+Compiled TKStack operations record elapsed time and outcomes in the workspace
+trace described in [the runner guide](runner.md); direct helpers and MCP hosts
+need their own supported instrumentation.
+Evalify reserves its receipt and result paths before dispatch so concurrent
+runs cannot silently reuse them; reconcile incomplete reservations after a crash.
+The helper accepts at most 1 MiB of host-judged cases and uses only offline assertions.
+Calibration reports false positives and false negatives separately when reviewed
+reference labels are supplied.
+Host-observed case durations are summarized separately from offline processing
+time, with missing durations counted rather than filled in.
+The [host-bound testing evidence](../evals/results/2026-11-17-host-bound-hill-climb.md)
+records repeated local regressions and the limits of same-conversation evaluation.
 
 The Python helper also supports `help [topic]`; no command prints help and
 exits successfully without initializing state:
@@ -158,8 +175,8 @@ artifacts, while stating the observation window and gaps. They do not change
 the store, rewrite skills, retire rules, or disable integrations. Absence of
 an observed invocation is not proof that an integration is unused.
 
-For automatic revision search, keep the selected SkillOpt gate. Explicit feature
-implementation is assessed through its actual behavioral checks; do not label
+Keep revision work and semantic judgment in the invoking agent conversation.
+Explicit feature implementation is assessed through its behavioral checks; do not label
 that engineering work a measured gain in model quality. See
 [Grok source findings](grok-learn.md) for the upstream investigation and the
 read-only `learn.py locate-grok` helper. The portable implementation was not
@@ -174,21 +191,10 @@ runs from the pinned Python source without package downloads. An isolated
 workspace at `.tkstack/wikiskill` uses its Codex backend and includes upstream
 demo tasks. No inference, skill evolution, or paid training has been run.
 
-`learn show --json` is the provider-neutral interchange snapshot. A WikiSkill
-or another evaluator can use the evidence to propose candidates and compare
-them against held-out tasks. Keep evaluation traces and private wikis outside
-startup context, and preserve evidence IDs in accepted changes. Rule examples
-check clarity; they do not establish a measured improvement in model behavior.
-The steering system works without WikiSkill, a daemon, or a model-specific
-memory store.
-
-After comparing SkillOpt, WikiSkill, Vally, and Waza, the selected revision
-engine for the custom `learn` and `sdlc` packages is SkillOpt-Sleep. The
-[`skills/learn/scripts/evolve.py`](../skills/learn/scripts/evolve.py) driver keeps evidence and steering
-unchanged, turns off project-memory edits, and stages only skill proposals
-behind strict improvement and per-task no-regression gates. See
-[the comparison and initial trial](skill-evolution.md). WikiSkill remains
-installed for its evidence/knowledge organization and optional future tasks.
+`learn show --json` is the provider-neutral interchange snapshot. Rule
+examples check clarity; they do not establish model improvement. The pinned
+SkillOpt task parser validates authored cases without launching a model or a
+separate harness. See [the historical comparison and current boundary](skill-evolution.md).
 
 For a standalone marketplace installation, the helper defaults to the working
 project's `.tkstack/steering/` when no explicit or existing shared store exists.

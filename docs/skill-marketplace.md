@@ -2,7 +2,7 @@
 
 Owned root packages live under `skills/<name>/`; third-party-derived packages
 live in `.agents/skills/<name>/`. Learn carries `codify`, `flowify`, `hookify`,
-`instructify`, `lintify`, `reusify`, `skillify`, and `testify` under its own
+`instructify`, `lintify`, `reusify`, `skillify`, `testify`, and `evalify` under its own
 `skills/` directory. Each contains its own skill index, license, conditional
 references and resources. The root marketplace lists each root package;
 installing `learn@tkstack` installs its subskills as `/learn <name>`.
@@ -10,7 +10,7 @@ installing `learn@tkstack` installs its subskills as `/learn <name>`.
 | Area | Packages |
 | --- | --- |
 | Engineering | `tkstack-principles`, `investigate`, `sdlc` |
-| Learning and authoring | `learn`, `skillify`, `codify`, `reusify`, `lintify`, `testify`, `hookify`, `instructify`, `flowify` |
+| Learning and authoring | `learn`, `skillify`, `codify`, `reusify`, `lintify`, `testify`, `evalify`, `hookify`, `instructify`, `flowify` |
 | Quality and optimization | `unslop`, `hill-climb`, `constrain` |
 | Knowledge and writing | `document`, `write` |
 | Design, media, context | `open-design`, `fal-ai`, `headroom`, `rtk` |

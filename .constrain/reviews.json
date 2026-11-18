@@ -1,13 +1,13 @@
 {
   "tests/test_authoring.py": {
-    "sha256": "eea8b74b19e913d5f2e987eff683810f33e4a2d91e07d54fd52f8a1ff996cd83",
-    "risk": "A malformed or ambiguous hook policy could permit a blocked tool or overwrite a package.",
-    "oracle": "Replay the native hook protocol and CLI against valid, invalid, duplicate-key and standalone-copy cases; inspect actual decisions, exits and preserved files.",
+    "sha256": "bf3d474b286dc5c04d9c2faa1cd2335e5683eab3d811df09bed2b72d7249da68",
+    "risk": "Hook policies or generated CLI contract tests could permit invalid actions, overwrite files, hang, or miss real behavioral faults.",
+    "oracle": "Exercise actual hook and Testify commands with valid, invalid and duplicate input, default and invalid deadlines, no-overwrite behavior and a seeded CLI regression. A real generated CLI deadline must stop its ordinary POSIX child processes. Generated cases retain process-group ownership; direct overall timeout and interruption stop the generated test group and report elapsed outcomes. The compiled Learn command executes the same supported operation.",
     "kinds": [
       "contract",
       "simulation"
     ],
-    "overlap": "Adds Testify CLI planning, no-overwrite, invalid-input, real execution and mutation detection; this is distinct from native linter and hook policy tests."
+    "overlap": "Testify planning, default deadlines and fault sensitivity are distinct from native linter, hook policy, and runner timeout tests."
   },
   "tests/test_bootstrap.py": {
     "sha256": "6800df3a8c211b9729a321123565d80d8803b03b02bdbd8485abfe3bcb279395",
@@ -20,9 +20,9 @@
     "overlap": "Acquisition is distinct from target link setup; prerequisite/tarball variants stay in test_install."
   },
   "tests/test_codify.py": {
-    "sha256": "9ed567366177ace1010bde51af7fd9d38b25b324d5fffe1d7d7c2a9b1333419b",
+    "sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b",
     "risk": "Frozen executable publication could accept stale, escaping or corrupt inputs, or publish half an artifact.",
-    "oracle": "Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group.",
+    "oracle": "Compile and execute real local programs; mutate source, cases, inventory and publication timing; assert rejection, immutable execution and atomic publication. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Package-root inventory must be frozen on compile and reject changed reference bytes. Real compiled commands exercise stale and escaping inputs, atomic publication, interrupted process launch and lost child ownership without signalling an unowned group.",
     "kinds": [
       "contract",
       "functional",
@@ -41,9 +41,9 @@
     "overlap": "Boundary coercion and routing cases are not repeated as whole skill workflows; compiler freeze invariants remain in test_codify."
   },
   "tests/test_constrain.py": {
-    "sha256": "e94a9b72cabbf84f196cb356e70dee2ca22f1bf29ad0470ad2b708dc549f5887",
-    "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs.",
-    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries.",
+    "sha256": "6109ce788f2c92c49cb903b39063028622a04c818888174d474753704f33e0a3",
+    "risk": "A constraint gate could admit noise, stale staged approval or oversized ignored build outputs. Mutation evidence could misclassify harness errors or deadlines as behavioral detection, or mutate the original checkout.",
+    "oracle": "Invoke the real CLI against isolated Git snapshots, known-bad/good tests, exact exceptions, symlinks and deployment byte/growth boundaries. Distinct fixture and decorator contexts remain valid while renamed same-context duplicate bodies fail. Exercise bounded mutation execution on a clean Git fixture, including an opt-in real locked Cosmic Ray engine; distinguish assertion failures, passing cells, invalid mutations, test errors, failed baselines, a retained timeout receipt during engine setup, malformed plan versions, source drift and timeouts, verify snapshot Git discovery isolation, ordinary descendant cleanup after both timeouts and successful leaders and never overwrite receipts.",
     "kinds": [
       "contract",
       "simulation"
@@ -61,10 +61,21 @@
     ],
     "overlap": "Retains staged snapshot and hook wiring behavior; test_constrain separately owns constraint predicates, not documentation freshness."
   },
+  "tests/test_evalify.py": {
+    "sha256": "ad3d690227c9e25432524fe758ffe40fe4c9e953a613fe85c29393f055c16b66",
+    "risk": "Host judgment records, calibration, deadline cleanup or contested outputs could be accepted or reported incorrectly.",
+    "oracle": "Exercise the CLI with retained host judgments and stubbed offline assertions; check output, confusion counts, observed and unknown durations including zero, validation rejection of malformed fields and boolean/negative times before dispatch with independent receipt paths, deadline receipts and descendant cleanup, and contention. An optional test runs actual Promptfoo assertions on host judgments. Direct analysis retains process-group ownership through cleanup and records interruption after stopping ordinary descendants. The compiled Learn command executes the same supported operation.",
+    "kinds": [
+      "contract",
+      "simulation",
+      "functional"
+    ],
+    "overlap": "These exercise distinct validation, scoring, timing, concurrency and process boundaries; stubbed and real framework checks cover adapter behavior and actual assertion integration respectively."
+  },
   "tests/test_experiment_agent_arm.py": {
-    "sha256": "3225d3326def8d256f81516804c4687b3415b6c7049bd818f1a408f41f3f5917",
+    "sha256": "8f1f290d6320fdf00dea6ec2d82d3a82cfc50d6c70477d152cc86850246def16",
     "risk": "A proposal could change protected paths or apply to a stale or dirty arm.",
-    "oracle": "Temporary Git worktrees and retained receipts verify scope, preimages, failure handling and frozen identities.",
+    "oracle": "Temporary Git worktrees and retained receipts verify scope, preimages, failure handling and frozen identities. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "functional"
@@ -120,50 +131,10 @@
     ],
     "overlap": "Exercises the separate-worktree handoff boundary; promotion and controller tests validate the private ref and retained decision."
   },
-  "tests/test_experiment_harbor.py": {
-    "sha256": "b25d9ceb5b4511a6acdfa4369e85d91d9c882e82f4045a35f170889a69b9f5a0",
-    "risk": "A backend could accept a malformed result, wrong verifier, missing case or uncertain dispatch as a valid trial.",
-    "oracle": "Pinned fixture data and simulated Harbor process outcomes assert separate verifier configuration, receipt validation and error classification.",
-    "kinds": [
-      "contract",
-      "functional"
-    ],
-    "overlap": "Adapter-level checks do not substitute for real-container evidence or controller integration."
-  },
-  "tests/test_experiment_harbor_controller.py": {
-    "sha256": "b1d1eee61c4228ba9ed3817fa1f5a90bfc54f9cf6b35c23363d077ab39348a53",
-    "risk": "A backend translation could bind results to the wrong image, verifier, case or candidate.",
-    "oracle": "A fake executable Harbor process and changed receipts exercise the bridge and provenance validation.",
-    "kinds": [
-      "contract",
-      "functional"
-    ],
-    "overlap": "Tests translation independently from the broader controller lifecycle."
-  },
-  "tests/test_experiment_harbor_integration.py": {
-    "sha256": "b311c319810fa24f65caac09996cc8bf7f18f0c421a277b2d336e13e9b581ce1",
-    "risk": "A Harbor-backed controller or optimizer could use altered evidence or an uncalibrated verifier to select or promote a candidate.",
-    "oracle": "Real controller, Git and SQLite operations use a deterministic fake Harbor executable for selection, confirmation, scoped score calibration and revision; real GEPA rejects a tampered cached manifest.",
-    "kinds": [
-      "contract",
-      "functional"
-    ],
-    "overlap": "Exercises controller decisions; live Harbor compatibility is separately recorded outside the offline suite."
-  },
-  "tests/test_experiment_harbor_parallel.py": {
-    "sha256": "0821850ff534250d3a635440edf54ccd5fca7fd984d98c5390110edf7b7df6db",
-    "risk": "Parallel Harbor trials could lose reservation accounting or reuse uncertain results.",
-    "oracle": "Overlapping fake backend trials assert receipt identity, comparison, tamper rejection and charged unknown outcomes.",
-    "kinds": [
-      "contract",
-      "functional"
-    ],
-    "overlap": "Covers parallel backend integration beyond single-run Harbor and local batch tests."
-  },
   "tests/test_experiment_integration.py": {
-    "sha256": "4883e8acf64c392cf1db5fe758bb087b141759c83860bd7a119a5b32f23f0b9a",
+    "sha256": "117d38f387c5891d43556d11fceb15284357d23925bebd87d6bcb5dd072cb959",
     "risk": "Stale evidence, invalid confirmation, changed evaluator inputs or interrupted promotion could advance the wrong candidate.",
-    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery and same-tree provenance; the compiled skill must register and compare a host-written arm.",
+    "oracle": "CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery, same-tree source provenance and tamper rejection against retained decisions and refs. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Alternate evaluation harness requests must fail before initialization. CLI, Git and SQLite fixtures exercise feedback, regrading, confirmation, crash recovery and same-tree provenance; the compiled skill must register and compare a host-written arm.",
     "kinds": [
       "contract",
       "functional"
@@ -199,16 +170,6 @@
     ],
     "overlap": "Checks the durable ledger directly; the finite model explores an abstract state machine and controller tests verify callers.",
     "sha256": "a82f48dc4b8d9db54ebd0c025659878488090e6fbcce200935bf6a603df0945d"
-  },
-  "tests/test_experiment_maf.py": {
-    "sha256": "0651fa09e8ad1ff1b5439306cf907907ceea21c348041ce431102d1c2cb90a61",
-    "risk": "The workflow could reorder actions, proceed after failed work or alter request bytes.",
-    "oracle": "Validated input snapshots and subprocess receipts establish ordering and failure propagation, scoped calibration and host lifecycle routing; optional tests execute a native MAF graph.",
-    "kinds": [
-      "contract",
-      "functional"
-    ],
-    "overlap": "Binding tests simulate external stages; the opt-in graph checks the actual MAF boundary."
   },
   "tests/test_experiment_model.py": {
     "risk": "Reservation or promotion guards might fail under modeled concurrency, crash, or stale-ref transitions.",
@@ -271,9 +232,9 @@
     "overlap": "Checks proposal accounting separately from trial reservations and provider invocation."
   },
   "tests/test_experiment_proposer.py": {
-    "sha256": "36cd0e0bd9c44dbb7d9e665d9d1aa946281fcaa3580630db23bb9914fd6d60bb",
+    "sha256": "b2340e82feb9625c3d766ddd07f6bdc92743fb1314ce7f9a4745eeb4619a94c6",
     "risk": "An untrusted or over-budget provider could run or alter unauthorized files.",
-    "oracle": "Provider and broker fixtures check frozen inputs, scope, bounded usage, failures and durable receipts.",
+    "oracle": "Provider and broker fixtures check frozen inputs, scope, bounded usage, failures and durable receipts. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "functional"
@@ -333,16 +294,16 @@
     "overlap": "Experiences/locator behavior is not correction activation; that lifecycle stays in test_learn."
   },
   "tests/test_hill_climb.py": {
-    "sha256": "8c6f1c8222fbb7f870fb30bd1347183854cb7fbdcbbd71984e2595872417280f",
+    "sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
     "risk": "A noisy, regressing or workload-changing candidate could be accepted as a measured improvement.",
-    "oracle": "Feed paired receipts with missing samples, drift, leakage and quality regressions; assert actual keep/reject decisions and evidence requirements.",
+    "oracle": "Feed paired receipts with missing samples, drift, leakage and quality regressions; assert actual keep/reject decisions and evidence requirements. Borderline paired gains at larger sample sizes must fail when the Student-t interval includes zero. Model-based plans must declare repeated measurements and a positive noise floor.",
     "kinds": [
       "contract"
     ],
     "overlap": "Decision algebra uses controlled receipts; live benchmark/provider execution is intentionally outside this offline gate."
   },
   "tests/test_install.py": {
-    "sha256": "e6457aa520a202897fd4521ced92357ecd96a6424a28fdfaf96e59baecd8f25a",
+    "sha256": "3c5e5b44549a76b2b1458e5062ea0e5e2e328e33a0056558e7978034442adf32",
     "risk": "Source-only setup, wrong workspace selection, lost host instructions or destructive reapply can leave consumers silently misconfigured.",
     "oracle": "Compare the full owned link set, real native Codex prompt, Git index gate, uninstall effects, isolated source hooksPath, two Serena argv/cwd pairs and mismatched archive bytes; exercise shared-directory cleanup, foreign aliases and teardown after switching hook managers.",
     "kinds": [
@@ -393,9 +354,9 @@
     "overlap": "Retains one external helper contract, not duplicate statistical assertions in root Python tests."
   },
   "tests/test_lintify.py": {
-    "sha256": "8486e3c79295e1783f8ba762c6b862bc39f66ba0e7f79357ea7ea0ac04940955",
+    "sha256": "763505841084367c06eed92710ef579790b4f5815e1c96738e582e6f18e218cd",
     "risk": "Linter scaffolding could overwrite an existing path, follow escaping templates or leave partial output under concurrency.",
-    "oracle": "Run scaffold helper against collision, corruption, simultaneous writer and injected copy-error cases; inspect exact preserved and rolled-back files.",
+    "oracle": "Run scaffold helper against collision, corruption, simultaneous writer and injected copy-error cases; inspect exact preserved and rolled-back files. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "simulation"
@@ -403,9 +364,9 @@
     "overlap": "Template syntax/locks are discovery contracts; native third-party linter semantics are explicitly separate from helper packaging."
   },
   "tests/test_repo_quality.py": {
-    "sha256": "93fa781b6c04225a12e69dcbda1def37de1870a81817f8e758c90d72b0c25479",
+    "sha256": "866f3641d79a09006e264148cff6ed660893186a6a26b49411676e2f1ce91f65",
     "risk": "Published plugin commands, bounded review snapshots and measured release gates can disagree with the shipped install surface.",
-    "oracle": "Check immutable MCP definitions and reject invalid launch properties. Inspect retained target verification evidence in the bounded snapshot.",
+    "oracle": "Check immutable MCP definitions and reject invalid launch properties. Inspect retained target verification evidence in the bounded snapshot. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "simulation",
@@ -449,7 +410,7 @@
     "overlap": "Durability/process ownership is distinct from in-memory graph policy; tests share risks but assert different persistence boundaries, not duplicated unit mocks."
   },
   "tests/test_session_learning.py": {
-    "sha256": "80363a7a17cd5238403ec6f90a97801f0d615ac876fc8b693c988a8f6ad5da75",
+    "sha256": "830f416302f64edf0eb38d745c9f6cec14b0855ed31b50e811a2cd67bfda0cc5",
     "risk": "Session evidence could silently schedule changes, merge active/unrelated sessions or leak out of ignored workspace storage.",
     "oracle": "Use actual lifecycle/review/plan CLIs and isolated files, malformed graphs, binary/oversized evidence and symlink cases; assert explicit scope and saved evidence.",
     "kinds": [
@@ -457,18 +418,18 @@
       "state-machine",
       "functional"
     ],
-    "overlap": "Includes the explicit behavioral-test routing kind alongside other decision-record mechanisms."
+    "overlap": "Includes behavioral-test and nondeterministic evaluation routing alongside other decision-record mechanisms."
   },
   "tests/test_skill_evolution.py": {
-    "sha256": "78e98d5fbf94ed254969d528a055f86b55960cfb2779a703b28aa2f200675a4b",
+    "sha256": "1d6598777178c9b2ee327c7512e9be056bf08e0d8ca8998791202a03022fe26a",
     "risk": "Skill improvement could publish changed or unanswered candidates using stale proof or weak substring grading.",
-    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes.",
+    "oracle": "Copy standalone packages, execute scoped improvement handoffs and mutate graded source/evidence; assert no false completion or cache/global writes. Prepare each requested authored suite and check its splits and non-adoption gate. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks. Evolution preparation rejects an alternate backend option without changing its recorded run state.",
     "kinds": [
       "contract",
       "functional",
       "simulation"
     ],
-    "overlap": "The Learn distribution check includes Testify as a self-contained mounted authoring subskill."
+    "overlap": "Checks that Testify and Evalify ship as self-contained mounted Learn authoring subskills."
   },
   "tests/test_skill_normalization.py": {
     "sha256": "a97762d45978aeb78f56ea05da3f1ce38bcf9424909da56da5b224fa99618f31",
@@ -492,9 +453,9 @@
     "overlap": "Removed source-substring CI test; routing consumer validation remains distinct from physical install placement."
   },
   "tests/test_skillify_workflows.py": {
-    "sha256": "f4d929d6c3adf0922afaa1c61a126a9797452d9ea50733ad19f4b9b3c5549f3d",
+    "sha256": "b5cd2e7f2568596e50aebb2617107890c68dd788b5251ab194c46e3a6b71a2c5",
     "risk": "A draft or standalone generated skill could falsely claim implementation or publish partial package conversion.",
-    "oracle": "Run real scaffold/conversion and frozen workflow commands with collisions, concurrent writers and copied packages; assert output, rejection and publication rollback.",
+    "oracle": "Run real scaffold/conversion and frozen workflow commands with collisions, concurrent writers and copied packages; assert output, rejection and publication rollback. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "functional",
@@ -503,14 +464,14 @@
     "overlap": "Owns authoring conversion semantics; generic compiler and parser behavior have dedicated suites instead of duplicated per-skill edge cases."
   },
   "tests/test_stack_runner.py": {
-    "sha256": "2e8a82e6ef5a8230ee4797d90f6df61d2975632f1f52562ddd6e6b05f1b9e7aa",
-    "risk": "Registry precedence or provider selection could execute in a source/cache workspace or silently fall back to inference.",
-    "oracle": "Invoke actual CLI/tool surfaces against isolated registries, explicit projects and compiled fixtures; assert selected paths, output, rejection and state preservation.",
+    "sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+    "risk": "Registry precedence, provider selection, missing deadlines or unsafe timing traces could misroute execution, hang, or expose payloads.",
+    "oracle": "Invoke the actual runner against isolated registries and compiled fixtures; assert paths, outputs, rejection, state preservation, timing metadata, payload exclusion and a real deadline. Direct lock payloads with reserved-looking operation names must still produce private timing records. Reviewed the current-agent-only model and harness boundary and retained distinct executable failure checks.",
     "kinds": [
       "contract",
       "functional"
     ],
-    "overlap": "Runner precedence is distinct from installer launcher creation. The optional native SDK check stays opt-in and performs no model calls."
+    "overlap": "Runner precedence and timing evidence are distinct from installer launcher creation and the Evalify adapter deadline. The optional native SDK check performs no model calls."
   },
   "tests/test_state_layout.py": {
     "sha256": "9aa341940f71e5a8aa0a7afd188ff8c2a6fa7e9faf04bea41e779303c1651d5b",

@@ -12,28 +12,23 @@ subcommands, parameters, contracts, and evidence. Execution, branching, policy
 gates, dependencies, bounded concurrency, and error handling belong in code.
 Use an existing runtime when it fits; `flowify` remains the owner of MAF/Rhai
 authoring. Native definitions and bindings also belong in the skill's scripts
-folder. The AI SDK supplies model/decision/harness boundaries, not a new workflow
-DSL or an implied durable scheduler.
+folder. Semantic work stays with the invoking agent and its current model and harness.
 
 ```sh
 python3 skills/learn/skills/skillify/scripts/skillify.py scaffold \
   --target /repo/skills/my-tool --name my-tool \
-  --description 'Use for the actual intended task.' --backend ai-sdk
+  --description 'Use for the actual intended task.'
 
 python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing \
-  --backend ai-sdk --dry-run
+  --dry-run
 python3 skills/learn/skills/skillify/scripts/skillify.py convert /repo/skills/existing \
-  --backend ai-sdk
+
 
 python3 skills/learn/skills/skillify/scripts/skillify.py check /repo/skills/my-tool --require-tool
 ```
 
-The pure Python backend is the smallest default for deterministic work. The
-AI SDK backend supplies TypeScript workflow/CLI definitions, a native `tool()`
-export, configuration validation, and a locked inference runtime. Both begin as
-explicit drafts: implement the actual algorithm and native tests before calling
-conversion complete. Their unimplemented workflow exits 3. A successful helper
-run does not prove a Markdown procedure has been correctly compiled.
+The Python backend produces a draft. Implement the actual algorithm and
+native tests before calling conversion complete. An unfinished workflow exits 3.
 
 The bundled shared dispatcher accepts ordinary text for nullable string flags
 (including paths), `null` for absence, and JSON-quoted strings when needed.
@@ -56,8 +51,7 @@ and [helper commands](../skills/learn/skills/skillify/references/commands.md).
 
 ## Shared compiler and executable lock
 
-[Codify](codify.md) now owns the templates, compiler/runner, and optional AI SDK
-runtime. Skillify consumes a generated standalone release.
+[Codify](codify.md) owns the deterministic templates and compiler/runner. Skillify consumes a generated standalone release.
 `python3 skills/learn/skills/skillify/scripts/sync_codify.py --check` rejects
 drift between that release and canonical Codify source.
 After implementing the workflow and real contract cases, run:
@@ -73,59 +67,13 @@ checks reject drift, execute the frozen code, and never compile implicitly.
 Skill-specific source preservation/indexing stays with Skillify; generic
 prompt/Markdown compilation can be reused independently through Codify.
 
-## Model, Decisions, and harness configuration
+## Host inference and verification
 
-The version-pinned Vercel AI SDK 7 runtime provides separate interfaces for:
-
-- Chat Completions and Responses through OpenAI-compatible providers, plus
-  explicitly selected Gateway language models.
-- Native `experimental_decide` calls through OpenAI, TypeSafe, or Gateway
-  decision-model instances. This is separate from chat/Responses endpoints.
-- Official Codex and Claude Code harness adapters with model, authentication,
-  tool/permission selection, bounded steps, and explicit Vercel sandbox setup.
-
-Configuration is a version 1 providers/profiles document, with model and key
-names taken from environment variables. The shape is in
-[inference](../skills/learn/skills/skillify/references/inference.md).
-The generated CLI accepts `--config <profiles-json>`; code can supply a
-configuration to `createInference`.
-Profiles are validated, selected explicitly, and have no silent provider fallback
-or process-wide default-provider mutation. Runtime defaults are empty and need
-no model credentials for deterministic paths.
-
-Calls share a bounded active/queued capacity budget. Deadlines and cancellation
-reach the native SDK. A specialized decision model can still be probabilistic;
-an LLM behind a decision API is not deterministic. Keep the final policy gate
-in workflow code. See [configuration and native limits](../skills/learn/skills/skillify/references/inference.md)
-for exact versions, supported profiles, authentication, and harness restrictions.
-
-## Verification
-
-Python regressions exercise real generated tool output, source preservation,
-preview scope, collisions, unsafe paths, cooperative writer contention, rollback,
-and unfinished-workflow rejection. Optional native tests use the locked Node
-dependencies to compile a generated TS skill, invoke its CLI and SDK `tool()`,
-check repeatability and negative inputs, and run seven bundled SDK contracts.
-
-The SDK contracts use injected HTTP fixtures through the actual installed SDK:
-they check distinct wire endpoints, model/profile selection, invalid decision
-responses, cancellation, capacity ownership, and official harness instantiation.
-They do not run a paid provider request or live harness session. The native
-decision/harness APIs are experimental; upgrades require version-matched checks.
-
-```sh
-npm --prefix skills/learn/skills/codify/scripts/ai-runtime ci
-npm --prefix skills/learn/skills/codify/scripts/ai-runtime run check
-npm --prefix skills/learn/skills/codify/scripts/ai-runtime test
-TKSTACK_AI_SDK_DEPENDENCIES="$PWD/skills/codify/scripts/ai-runtime/node_modules" \
-  python3 -m unittest discover -s tests -p test_skillify_workflows.py -v
-```
-
-The workspace's isolated validation dependencies and receipts are under ignored
-`.tkstack/evidence/skillify-runtime/`. Structural profile checks exclude installed
-`node_modules`, bytecode caches, and Git internals; they do not traverse third-party
-dependency trees as owned skill resources. Real execution and output review
-remain separate from source/packaging validation.
+The invoking agent supplies semantic judgment in its current conversation.
+Skillify does not scaffold a second agent runtime or select another model.
+Legacy inference profiles are rejected before compiled execution. Native
+behavior, stale-source rejection, process deadlines and the actual artifact
+still require focused verification.
 
 ## Markdown subcommands and OpenAI tool signatures
 

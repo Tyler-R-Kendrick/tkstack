@@ -368,7 +368,14 @@ replace Pstack's `tdd` name.
 `constrain` owns test-value selection, verification-category review, repository
 sparsity and deployment artifact budgets. See [its index](../skills/constrain/SKILL.md)
 for the CLI and category references. Each adopted workspace owns its policy in
-`.constrain/`. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
+`.constrain/`. Its duplicate-body gate compares tests within the same fixture
+context and decorators; matching assertions across different contexts still
+need semantic review. See the [project adoption instructions](bootstrap.md#adopt-team-constraints).
+For Python/unittest projects, Constrain can also run a selected, bounded
+Cosmic Ray mutation matrix; [test-value review](../skills/constrain/references/tests.md)
+explains installation, isolation, outcome classification and review limits.
 
 `testify` ships inside Learn and creates distinct, fault-sensitive behavioral
-tests. Use `/learn testify`; it is not separately installed.
+tests. Use `/learn testify`; it is not separately installed. `evalify` ships
+inside Learn for judgments made by the invoking agent and offline Promptfoo
+assertion scoring; use `/learn evalify`.

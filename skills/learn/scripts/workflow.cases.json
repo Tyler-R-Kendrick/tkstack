@@ -92,6 +92,10 @@
           "testify": {
             "path": "skills/testify",
             "description": "Design, create, run and fault-check a distinct behavioral test with an independent oracle."
+          },
+          "evalify": {
+            "path": "skills/evalify",
+            "description": "Design and run calibrated evaluations for nondeterministic outputs with an established framework."
           }
         },
         "limits": [

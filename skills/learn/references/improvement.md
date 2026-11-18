@@ -69,26 +69,21 @@ Preserve a meaningful before/after comparison. Check relative resources and
 the actual helper behavior as appropriate; a token count or correct heading
 does not establish a better procedure.
 
-For automatic revision search, use the configured SkillOpt-Sleep integration
-with separate training, validation, and test cases. Keep the strict improvement
-and per-task no-regression gates. A missing validator, exhausted budget, or
-unanswered model prompt is pending evidence. A tie gives no measured reason to
-replace the baseline. Keep evidence IDs with the candidate and final decision.
+The invoking agent prepares and judges candidates in its existing conversation.
+The repository's `skills/learn/scripts/evolve.py` validates authored decision
+cases without launching a model or a separate harness. Preserve separate cases,
+strict no-regression gates and actual evidence. A case or label visible to this
+agent is not a blind confirmation. Report missing independent evaluation.
 
-The repository's `skills/learn/scripts/evolve.py` supports the configured learn/sdlc decision
-regressions; broader or newly created skills need real task adapters and cases.
-Do not call those small decision tests proof of full workflow performance.
-An explicitly requested feature implementation may be validated by meaningful
-behavioral checks; report that engineering evidence separately from optimizer
-scores or claims of model-quality improvement.
+Explicit feature implementation is assessed by its behavioral checks; do not
+present those checks as measured model-quality improvement.
 
 ## 5. Apply, preserve provenance, and verify
 
 Before changing a live target, compare its current bytes to the recorded
 baseline and reconcile any drift. Retain a reviewable diff and a rollback copy.
-For a SkillOpt-accepted candidate, use its explicit adoption/backup mechanism
-within the established authorization. Direct implementation follows the user's
-requested change scope. Respect any explicitly requested review boundary.
+Apply a reviewed candidate only within the established authorization. Direct
+implementation follows the user's requested change scope. Respect any explicitly requested review boundary.
 
 Keep packages in root `skills/<name>/`, update their version and marketplace
 metadata when shipped, and refresh affected tests and installation checks.

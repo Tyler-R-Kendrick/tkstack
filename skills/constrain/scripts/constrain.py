@@ -68,9 +68,13 @@ def test_inventory(snapshot, policy):
                         flags.append('self-comparison')
                 if any(isinstance(x.test, ast.Constant) for x in bare):
                     flags.append('constant-oracle')
-                # Hash only executable body, so renaming a copied test cannot hide duplication.
+                # A body is comparable only in the same fixture context and
+                # with the same parameters and decorators. Other contexts may
+                # exercise distinct behavior even when their assertions match.
                 body = node.body[1:] if node.body and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant) and isinstance(node.body[0].value.value, str) else node.body
-                signature = ast.dump(ast.Module(body=body, type_ignores=[]), include_attributes=False)
+                signature = (parent, ast.dump(node.args, include_attributes=False),
+                             tuple(ast.dump(item, include_attributes=False) for item in node.decorator_list),
+                             ast.dump(ast.Module(body=body, type_ignores=[]), include_attributes=False))
                 if signature in bodies:
                     flags.append('duplicate-body')
                 else:

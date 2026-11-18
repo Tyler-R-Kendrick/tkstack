@@ -1,18 +1,18 @@
 """Test the proposer against frozen source, real ledger and deterministic providers."""
 import base64
 from concurrent.futures import ThreadPoolExecutor
-import hashlib
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "skills/hill-climb/scripts"))
 from experiment_ledger import Ledger
-from experiment_proposer import ProposalRunner, ScriptedProvider, CommandProvider, EnforcingBroker
+from experiment_proposer import ProposalRunner, ScriptedProvider
 
 
 def git(repo, *args):
@@ -64,93 +64,43 @@ class ProposerTests(unittest.TestCase):
         self.assertEqual(result["changes"], [])
         self.assertEqual(self.ledger.status("demo")["runs"][0]["actual_tokens"], 0)
 
-    def test_direct_agent_without_enforcing_broker_is_not_dispatched(self):
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        provider = CommandProvider([str(executable)], {str(executable): digest}, broker=None)
-        with self.assertRaisesRegex(ValueError, "enforcing broker"):
-            self.run_agent(provider, tokens=50)
+    def test_alternative_agent_provider_is_rejected_before_reservation(self):
+        class Alternative:
+            def execute(self, **kwargs):
+                raise AssertionError("must not execute")
+        with self.assertRaisesRegex(ValueError, "not registered"):
+            self.run_agent(Alternative(), tokens=50)
         self.assertEqual(self.ledger.status("demo")["runs"], [])
 
-    def test_registered_broker_receives_fixed_command_and_budget(self):
-        class Broker(EnforcingBroker):
-            def execute(self, *, argv, cwd, prompt, max_tokens, timeout):
-                self.request = argv, cwd, prompt, max_tokens, timeout
-                (cwd / "app.txt").write_text("proposed")
-                return {"usage_tokens": 12, "provider_receipt": {"request_id": "test", "tokens": 12}}
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        broker = Broker()
-        provider = CommandProvider([str(executable), "--fixed"], {str(executable): digest}, broker=broker)
-        result = self.run_agent(provider, tokens=50)
-        self.assertEqual(result["status"], "proposed")
-        self.assertEqual(broker.request[0], (str(executable), "--fixed"))
-        self.assertEqual(broker.request[3], 50)
-        self.assertEqual(result["usage_tokens"], 12)
-        self.assertEqual(self.ledger.status("demo")["settled_tokens"], 12)
-
-    def test_broker_failure_is_uncertain_and_keeps_reservation(self):
-        class Broker(EnforcingBroker):
-            def execute(self, **kwargs):
-                raise TimeoutError("lost agent response")
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        provider = CommandProvider([str(executable)], {str(executable): digest}, broker=Broker())
-        with self.assertRaises(TimeoutError):
-            self.run_agent(provider, tokens=60)
+    def test_interrupted_scripted_proposal_keeps_the_reservation_uncertain(self):
+        with patch.object(ScriptedProvider, 'execute', side_effect=TimeoutError("lost result")):
+            with self.assertRaises(TimeoutError):
+                self.run_agent(ScriptedProvider({}), tokens=60)
         status = self.ledger.status("demo")
         self.assertEqual(status["reserved_tokens"], 60)
         self.assertEqual(status["runs"][0]["status"], "uncertain")
 
-    def test_mismatched_allowlist_is_rejected_before_reservation(self):
-        class Broker(EnforcingBroker):
-            def execute(self, **kwargs):
-                self.fail("must not execute")
-
-        executable = Path(sys.executable).resolve()
-        provider = CommandProvider([str(executable)], {str(executable): "0" * 64}, broker=Broker())
-        with self.assertRaisesRegex(ValueError, "differs"):
-            self.run_agent(provider, tokens=30)
-        self.assertEqual(self.ledger.status("demo")["runs"], [])
-
-    def test_provider_overrun_cannot_produce_a_candidate(self):
-        class Broker(EnforcingBroker):
-            def execute(self, *, cwd, **kwargs):
-                (cwd / "app.txt").write_text("discard")
-                return {"usage_tokens": 31, "provider_receipt": {"request_id": "test"}}
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        provider = CommandProvider([str(executable)], {str(executable): digest}, broker=Broker())
-        result = self.run_agent(provider, tokens=30)
+    def test_reported_overrun_cannot_produce_a_candidate(self):
+        outcome = {"usage_tokens": 31, "provider_receipt": {"fixture": True}}
+        with patch.object(ScriptedProvider, 'execute', return_value=outcome):
+            result = self.run_agent(ScriptedProvider({}), tokens=30)
         self.assertEqual(result["status"], "rejected")
         self.assertEqual(result["changes"], [])
         self.assertTrue(self.ledger.status("demo")["overrun"])
 
     def test_local_concurrency_limit_applies_before_reservation(self):
-        started = threading.Event()
-        release = threading.Event()
-
-        class Broker(EnforcingBroker):
-            def execute(self, **kwargs):
-                started.set()
-                if not release.wait(5):
-                    raise TimeoutError("test worker did not get released")
-                return {"usage_tokens": 0, "provider_receipt": {"request_id": "first"}}
-
-        executable = Path(sys.executable).resolve()
-        digest = hashlib.sha256(executable.read_bytes()).hexdigest()
-        provider = CommandProvider([str(executable)], {str(executable): digest}, broker=Broker())
-        runner = ProposalRunner(self.ledger, {"agent": provider}, max_concurrency=1)
-
+        started, release = threading.Event(), threading.Event()
+        def execute(**kwargs):
+            started.set()
+            if not release.wait(5):
+                raise TimeoutError("test worker did not get released")
+            return {"usage_tokens": 0, "provider_receipt": {"fixture": True}}
+        runner = ProposalRunner(self.ledger, {"agent": ScriptedProvider({})}, max_concurrency=1)
         def invoke(key, timeout):
             return runner.run(experiment="demo", run_key=key, repo=self.repo,
                               commit=self.commit, tree=self.tree, provider="agent", prompt="x",
                               allowed_paths=["app.txt"], max_tokens=10, timeout=timeout)
-
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        with patch.object(ScriptedProvider, 'execute', side_effect=execute), ThreadPoolExecutor(max_workers=2) as pool:
             first = pool.submit(invoke, "first", 5)
             self.assertTrue(started.wait(5))
             try:

@@ -1,0 +1,3446 @@
+{
+  "date": "2026-11-17",
+  "scope": "Executable local production-boundary regressions for Learn, Constrain and Hill-climb",
+  "interpretation": "Exploratory authored cases; not independent holdout, model-quality, latency, or population estimates. One whole target test ran per repetition; subcases exercise related failure modes. Logs are local and their hashes identify the captured bytes. The earlier external-executable Evalify adapter was removed after the user prohibited alternate models/harnesses.",
+  "plan": {
+    "objective": "Improve distinct production contracts in Learn, Constrain, Hill-climb and their harnesses",
+    "baseline_commit": "0aaf5ba",
+    "paid_calls": 0,
+    "max_rounds": 8,
+    "max_minutes": 240,
+    "repetitions": 3,
+    "actionable_gain": "deterministic contract failures become passing in every repetition with existing guard green",
+    "splits": "Exploratory authored cases; shared with proposer, no claim of untouched or independent semantic holdout",
+    "guardrails": "Each frozen target has an existing meaningful behavioral guard",
+    "runner_sha256": "1007daa22b8e7ccc828b4ef43051f57f601e6b91ea51f7ad3963cd558a6aadb6",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "runners": {
+    "benchmark.py": "1007daa22b8e7ccc828b4ef43051f57f601e6b91ea51f7ad3963cd558a6aadb6",
+    "extra.py": "bfe2503874ea257040d0415c3bb224d1f4a1614b5012e9eda9b998dd3af98b60",
+    "bench8.py": "9c60d176ac03bac9b0e9e87920731247718380aa6dcc1ce05980b1cd70d48070"
+  },
+  "budget": {
+    "paid_calls": 0,
+    "rounds": 8,
+    "repetitions_per_target": 3,
+    "repetitions_per_guard": 3
+  },
+  "instrument_correction": "The initial Learn evolution test used an invalid state directory. It was fixed, rebaselined as baseline-v2 before the candidate, and the invalid first run is not counted as evidence.",
+  "limitations": [
+    "Cases and hypotheses were authored in the same session, so no untouched or independent confirmation is claimed.",
+    "A local Promptfoo integration used a deterministic fixture judge, not a live model or calibrated semantic judge.",
+    "Elapsed values are diagnostic only; no performance speedup is asserted.",
+    "The first five baseline cases were measured against the base commit with their regression tests present in the worktree; the corrected evolution baseline was taken after round 1."
+  ],
+  "rounds": [
+    {
+      "case": "timing",
+      "problem": "Untrusted direct payload could suppress timing for model, verify and native_plan.",
+      "candidate_commit": "5422d5e",
+      "baseline_commit": "0aaf5ba",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 5272.244,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-target-0.log",
+            "log_sha256": "20d01fd0d22cc1c3d1305d6b5682368df822ba8f6709d536037442176c0d7ce2",
+            "log_contents": "F\n======================================================================\nFAIL: test_direct_workflow_payload_cannot_hide_timing (test_stack_runner.StackRunnerTests.test_direct_workflow_payload_cannot_hide_timing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_stack_runner.py\", line 114, in test_direct_workflow_payload_cannot_hide_timing\n    self.assertEqual([entry['status'] for entry in entries], ['pass'] * 3)\nAssertionError: Lists differ: [] != ['pass', 'pass', 'pass']\n\nSecond list contains 3 additional elements.\nFirst extra element 0:\n'pass'\n\n- []\n+ ['pass', 'pass', 'pass']\n\n----------------------------------------------------------------------\nRan 1 test in 2.451s\n\nFAILED (failures=1)\n"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 1352.021,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-target-1.log",
+            "log_sha256": "4695a303139b6d383fd50e72f813ea90edcbb496455ac9f6792a6a65ae1d9fbf"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 1383.632,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-target-2.log",
+            "log_sha256": "12203e9bbc1c1d81ac0baf61d8c7d5c2ebd2e9119a297e9c5f38e4735f3d2ec4"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1942.863,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-guard-0.log",
+            "log_sha256": "7987157a21063c408cffa7e6bb667d9664f44dc5b15c38e1ff3541c43b49aca7"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1965.972,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-guard-1.log",
+            "log_sha256": "917ae8dd8a3a282c6c2e8cc8660cf43798c01689a66c59630bb326f5c5a0f2ee"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1963.601,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "baseline-timing-guard-2.log",
+            "log_sha256": "46cafb8d06d0dda4ddaa29d9ffbd1501acc75cad93cb9854be1cf2891da48860"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1342.331,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-target-0.log",
+            "log_sha256": "9725328c82393a8bc89359c95400da070f5eaa8c632a86f46090be28da3b4c74",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 1.148s\n\nOK\n"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1341.301,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-target-1.log",
+            "log_sha256": "573e3dbc497177185420c8379d349ef2f1d55d3c3dfdc3633096057a9e4c2b00"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1306.783,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-target-2.log",
+            "log_sha256": "f075b77e5ef4c398469d94255c15e3b456b7bf6baf92aca41d0fa27751c7d2e2"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1890.996,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-guard-0.log",
+            "log_sha256": "3280be2402d299cfe21b333f05b29642110f310cdd3e1caa86830bf173bdd8f3"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 2054.552,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-guard-1.log",
+            "log_sha256": "bba6eacaab0079dbb5ff5fb21449bd49d3b18af1cccc0375d69bb34d7a59ff4b"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 2082.997,
+            "test_sha256": "4526667d5ee0893b684e2c324a9a2542e2cac272b5b5c2d696dd660718baa55e",
+            "log": "round-1-timing-guard-2.log",
+            "log_sha256": "bc2abedec3db2944603d49f5fbe7b28bef25aba7470332bb04dda90f98a2e16a"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_stack_runner.py",
+        "target": "test_direct_workflow_payload_cannot_hide_timing",
+        "guard": "test_runner_records_a_real_deadline_without_recording_payload",
+        "timeout_seconds": 45
+      },
+      "superseded": false,
+      "merged_candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1288.676,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-target-0.log",
+            "log_sha256": "9fd7d5cb2d681ff9a8a1a3a86047644c2851199a7f8d4ac1e0b23a9e69456899"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1203.473,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-target-1.log",
+            "log_sha256": "66ab91596d2624028e645550eadf8607246b63cf3501d1085d6a05bd14c90385"
+          },
+          {
+            "check": "timing",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1262.408,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-target-2.log",
+            "log_sha256": "8a41d0d1854bb9f9169f7d39eea1f9b89127287f646ccd21aa3dd37238c562da"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1989.584,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-guard-0.log",
+            "log_sha256": "e8b235aef253428ca2483778a8f67d5f7bf77c62f3c16a0e9b16d3d5209c888b"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1997.102,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-guard-1.log",
+            "log_sha256": "49a0a665a36c9310f87a115dae8e09a919294da4a934733bc867ea67fd8730b4"
+          },
+          {
+            "check": "timing",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 2007.308,
+            "test_sha256": "8758562371b8a5cedb7caca62e118745db62cb915920c49cd74582d1a839a9bb",
+            "log": "merged-timing-guard-2.log",
+            "log_sha256": "b54de909a972efec5a4aa20c1dc0e74611f3df1feb3ed0659fbbdcd4ef08edb3"
+          }
+        ],
+        "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 1.083s\n\nOK\n"
+      }
+    },
+    {
+      "case": "eval-concurrency",
+      "problem": "Concurrent invocations could dispatch twice for one receipt or output.",
+      "candidate_commit": "d55fc12",
+      "baseline_commit": "0aaf5ba",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 1778.213,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-target-0.log",
+            "log_sha256": "e37bda052ab8e1d5044dd254c990389be2669b6721188b42178ceb6d458ffb1c",
+            "log_contents": "FF\n======================================================================\nFAIL: test_concurrent_runs_reserve_receipt_and_output_before_dispatch (test_evalify.EvalifyTests.test_concurrent_runs_reserve_receipt_and_output_before_dispatch) (collision='receipt')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_evalify.py\", line 113, in test_concurrent_runs_reserve_receipt_and_output_before_dispatch\n    self.assertEqual((root / 'calls').read_text().splitlines(), ['call'])\nAssertionError: Lists differ: ['call', 'call'] != ['call']\n\nFirst list contains 1 additional elements.\nFirst extra element 1:\n'call'\n\n- ['call', 'call']\n+ ['call']\n\n======================================================================\nFAIL: test_concurrent_runs_reserve_receipt_and_output_before_dispatch (test_evalify.EvalifyTests.test_concurrent_runs_reserve_receipt_and_output_before_dispatch) (collision='output')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_evalify.py\", line 112, in test_concurrent_runs_reserve_receipt_and_output_before_dispatch\n    self.assertEqual(sorted(process.returncode for process in processes), [0, 1], results)\nAssertionError: Lists differ: [0, 0] != [0, 1]\n\nFirst differing element 1:\n0\n1\n\n- [0, 0]\n?     ^\n\n+ [0, 1]\n?     ^\n : [('{\"config\": \"/tmp/evalify-test-34yta8ro/output/config.yaml\", \"config_sha256\": \"65228ee0b67abe976d6ae1e31d8d1f668af62399fec58dfb66eb5c47582f9fde\", \"elapsed_ms\": 767.563, \"executable\": \"/tmp/evalify-test-34yta8ro/runner\", \"executable_sha256\": \"b73a9fdd0b52bc0a98e4c57a1d10d8384d86d037d71d770629a7d8f5c5b6a275\", \"exit_code\": 0, \"failed\": 0, \"grader_errors\": 0, \"operation\": \"run\", \"output\": \"/tmp/evalify-test-34yta8ro/output/same-output.json\", \"passed\": 1, \"receipt\": \"/tmp/evalify-test-34yta8ro/output/receipt-0.json\", \"result_count\": 1, \"started_at\": \"2026-11-17T23:34:14.100578+00:00\", \"status\": \"pass\", \"timeout_seconds\": 20, \"version\": 1}\\n', ''), ('{\"config\": \"/tmp/evalify-test-34yta8ro/output/config.yaml\", \"config_sha256\": \"65228ee0b67abe976d6ae1e31d8d1f668af62399fec58dfb66eb5c47582f9fde\", \"elapsed_ms\": 770.132, \"executable\": \"/tmp/evalify-test-34yta8ro/runner\", \"executable_sha256\": \"b73a9fdd0b52bc0a98e4c57a1d10d8384d86d037d71d770629a7d8f5c5b6a275\", \"exit_code\": 0, \"failed\": 0, \"grader_errors\": 0, \"operation\": \"run\", \"output\": \"/tmp/evalify-test-34yta8ro/output/same-output.json\", \"passed\": 1, \"receipt\": \"/tmp/evalify-test-34yta8ro/output/receipt-1.json\", \"result_count\": 1, \"started_at\": \"2026-11-17T23:34:14.092601+00:00\", \"status\": \"pass\", \"timeout_seconds\": 20, \"version\": 1}\\n', '')]\n\n----------------------------------------------------------------------\nRan 1 test in 1.680s\n\nFAILED (failures=2)\n"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 1779.393,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-target-1.log",
+            "log_sha256": "0a91ba0a9355d4eef8457df710d008498dd11d008c6069c105fb1a4e34d3fe81"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 1772.523,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-target-2.log",
+            "log_sha256": "7985e1503c39d21d0cecad0e44dc1a062a497710e0def132b4566133aa0a9ac7"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 506.884,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-guard-0.log",
+            "log_sha256": "60a6a63859e9de2b7627d478255c5e0951283f152f546737b2c0957f2153e759"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 490.254,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-guard-1.log",
+            "log_sha256": "5c19c02ae377c9fe47073f17a290297ba5e56e20c325baa7354eef3b6783725c"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 480.144,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "baseline-eval-concurrency-guard-2.log",
+            "log_sha256": "6975822c4957e2a02c7141ce31bd8b2006c12f286fdd2998954e5daf74e96c3a"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 2120.35,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-target-0.log",
+            "log_sha256": "e0b47e3ed6ef17a84bf3e228d5a9c685ff478ce819fb32e855e281821e60b029",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 2.030s\n\nOK\n"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1789.181,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-target-1.log",
+            "log_sha256": "f46ac13f1cf826ad72acbf037776552eb1b3f17cbd169887772b1a7e1a5048af"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1775.011,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-target-2.log",
+            "log_sha256": "1b8542aa9fe3db3088648647ff343ab105e01de6fadbfb83997ac702112b08ff"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 601.731,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-guard-0.log",
+            "log_sha256": "6e161f24114f24250c85a35a47095db85a560287522f27a5578a3d16d1a776b3"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 530.333,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-guard-1.log",
+            "log_sha256": "60a6a63859e9de2b7627d478255c5e0951283f152f546737b2c0957f2153e759"
+          },
+          {
+            "check": "eval-concurrency",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 761.744,
+            "test_sha256": "7b3bd048d44a2ab58504eee6e4fdf87543f3cd7d31980abe375373279fd68954",
+            "log": "round-2-eval-concurrency-guard-2.log",
+            "log_sha256": "645d8524824754b97bc4e2a2ec9ea6021228d60b223bb3bddbdbc724255e0dcb"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_evalify.py",
+        "target": "test_concurrent_runs_reserve_receipt_and_output_before_dispatch",
+        "guard": "test_runner_results_are_bounded_retained_and_fail_closed",
+        "timeout_seconds": 45
+      },
+      "superseded": true,
+      "superseded_reason": "The affected adapter or evolution interface was replaced by the host-bound implementation; these historical measurements do not establish current behavior."
+    },
+    {
+      "case": "learn-evolution",
+      "problem": "Authored Testify suite was rejected by the evolution driver.",
+      "candidate_commit": "b4b4998",
+      "baseline_commit": "0aaf5ba",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 408.057,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-target-0.log",
+            "log_sha256": "e0b149bb825e2398b06a8419d72c4d96412fafc39ae0d22a210143ffa4b0a7fc",
+            "log_contents": "E\n======================================================================\nERROR: test_all_requested_authored_suites_can_prepare_for_evolution (test_skill_evolution.SkillEvolutionTests.test_all_requested_authored_suites_can_prepare_for_evolution) (skill='testify')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_skill_evolution.py\", line 104, in test_all_requested_authored_suites_can_prepare_for_evolution\n    cfg, tasks, _ = evolve.prepare(skill, self.root / '.tkstack' / ('run-' + skill), 'mock')\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/work/tkstack-constrain/skills/learn/scripts/evolve.py\", line 67, in prepare\n    raise ValueError(\"Evaluation provenance must be explicit\")\nValueError: Evaluation provenance must be explicit\n\n----------------------------------------------------------------------\nRan 1 test in 0.086s\n\nFAILED (errors=1)\n"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 440.461,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-target-1.log",
+            "log_sha256": "01e741a1a909ea4fd6653ccf184823afd1f125826d42e82da0f52e869f3f301c"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 461.995,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-target-2.log",
+            "log_sha256": "2cb067404c94d0cdaa6f05de934f8f0e29f4d40cb9f0de296ad14f8e3595de09"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 292.498,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-guard-0.log",
+            "log_sha256": "961e6a8ef800622b54a68897f159af84129fed1463c28234e0790b1e1b67e4f5"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 366.68,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-guard-1.log",
+            "log_sha256": "e8e9851dac2a2818b5f207a493e32ae7e8ba12fcb5256f8b5c368a8d60ef11ed"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 294.442,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "baseline-v2-learn-evolution-guard-2.log",
+            "log_sha256": "3230caf5bcf7b75210d6ff84024c594754689765ada21013297a85b6f4fb1f1f"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 409.386,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-target-0.log",
+            "log_sha256": "8aab28da655a3f21320b0a03d2b54e0849d74845284cd66aeabfb61ac5c33c84",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 0.078s\n\nOK\n"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 382.647,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-target-1.log",
+            "log_sha256": "c61a7d071bcbbd18c2b81c3641e7cd2e933d0cc2c5112a561ad4fc5bd497790d"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 471.119,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-target-2.log",
+            "log_sha256": "4632815690a6aa3e285c43e96e2e924a7b2d4f371fec6b0c0d7a7f176b9661ee"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 330.87,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-guard-0.log",
+            "log_sha256": "15e1b3902e99e62bc7f061b84c3f571d085b893e42f8ed52ac52d3ab8d134652"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 474.947,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-guard-1.log",
+            "log_sha256": "27720ea34c6e809f456b08ef815888e0f633d38494a7382b76939c824a99e8b8"
+          },
+          {
+            "check": "learn-evolution",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 343.655,
+            "test_sha256": "0ceda5302a2f4e97148f5d87d83f61446aa59362651b2fd78e9de630cfbf3f4f",
+            "log": "round-3-learn-evolution-guard-2.log",
+            "log_sha256": "20f07600223b8fe9057d561239cc10f6baa6ac50c34daceeab97c28b080b8a20"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_skill_evolution.py",
+        "target": "test_all_requested_authored_suites_can_prepare_for_evolution",
+        "guard": "test_evolution_scopes_memory_and_gates_without_global_config",
+        "timeout_seconds": 45
+      },
+      "superseded": true,
+      "superseded_reason": "The affected adapter or evolution interface was replaced by the host-bound implementation; these historical measurements do not establish current behavior."
+    },
+    {
+      "case": "constrain-context",
+      "problem": "Distinct fixture or decorator contexts were called duplicate tests.",
+      "candidate_commit": "d9d4e25",
+      "baseline_commit": "0aaf5ba",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 165.308,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-target-0.log",
+            "log_sha256": "6167b9eaf73c10b8474f3f731fd73e5b535c950b82311bec338e1845c4904102",
+            "log_contents": "F\n======================================================================\nFAIL: test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates (test_constrain.ConstrainTests.test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_constrain.py\", line 108, in test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates\n    self.assertEqual(self.cli()['status'], 'pass')\n                     ^^^^^^^^^^\n  File \"/workspace/work/tkstack-constrain/tests/test_constrain.py\", line 57, in cli\n    self.assertEqual(result.returncode, expected, result.stdout + result.stderr)\nAssertionError: 1 != 0 : {\n  \"errors\": [\n    {\n      \"line\": 7,\n      \"path\": \"tests/test_contract.py:First.test_decorated_case\",\n      \"rule\": \"tests.duplicate-body\"\n    },\n    {\n      \"line\": 10,\n      \"path\": \"tests/test_contract.py:Second.test_result\",\n      \"rule\": \"tests.duplicate-body\"\n    }\n  ],\n  \"findings\": [\n    {\n      \"line\": 7,\n      \"path\": \"tests/test_contract.py:First.test_decorated_case\",\n      \"rule\": \"tests.duplicate-body\"\n    },\n    {\n      \"line\": 10,\n      \"path\": \"tests/test_contract.py:Second.test_result\",\n      \"rule\": \"tests.duplicate-body\"\n    }\n  ],\n  \"inventory\": {\n    \"tests/test_contract.py\": {\n      \"bytes\": 504,\n      \"sha256\": \"9fef5d6a07ed729a9f297be36a52be1d631facad9025a8673e5f7e8cc8e70b21\",\n      \"tests\": [\n        \"First.test_result\",\n        \"First.test_decorated_case\",\n        \"Second.test_result\"\n      ]\n    }\n  },\n  \"limits\": \"AST checks and hash-bound review records do not prove semantic test value. Review the asserted behavior and demonstrate fault sensitivity; never refresh hashes merely to pass.\",\n  \"metrics\": {\n    \"boundaries\": {\n      \"boundary_files\": 0,\n      \"document_files\": 0\n    },\n    \"constraint-policy\": {\n      \"bytes\": 2009,\n      \"depth\": 2,\n      \"files\": 2\n    },\n    \"dependencies\": {\n      \"action_sources\": 0,\n      \"container_sources\": 0,\n      \"npm_manifests\": 0,\n      \"npm_packages\": 0,\n      \"pip_locks\": 0,\n      \"workflow_files\": 0\n    },\n    \"documentation\": {\n      \"bytes\": 0,\n      \"depth\": 0,\n      \"files\": 0\n    },\n    \"owned-tree\": {\n      \"bytes\": 2513,\n      \"depth\": 2,\n      \"files\": 3\n    },\n    \"shared-code\": {\n      \"bytes\": 0,\n      \"depth\": 0,\n      \"files\": 0\n    },\n    \"test_bytes\": 504,\n    \"test_cases\": 3,\n    \"tests\": {\n      \"bytes\": 504,\n      \"depth\": 2,\n      \"files\": 1\n    }\n  },\n  \"status\": \"fail\",\n  \"warnings\": []\n}\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.073s\n\nFAILED (failures=1)\n"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 168.944,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-target-1.log",
+            "log_sha256": "92b1b05731f136ea2d2f8d3eaeb199f6955e75b2ae38254545194f773ac5cab7"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 190.384,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-target-2.log",
+            "log_sha256": "977da67bb6c779e484a7ad2309c0d02c2727680e6e1535c85d89cdcb03077cb6"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 243.338,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-guard-0.log",
+            "log_sha256": "0ea3575e1c4b57c29f9e75e0dbf01b1445e4a2abc62b3c91873059ccba6b41e0"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 260.953,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-guard-1.log",
+            "log_sha256": "5217fa3153e3f4772c8e9ceecc6449a9ae01a9636ad96efa308211386472d833"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 233.332,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "baseline-constrain-context-guard-2.log",
+            "log_sha256": "3a314a6d8f9251e677430dd02d9ae5a86e2a6b471a7fcff6931268ab56d25285"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 230.047,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-target-0.log",
+            "log_sha256": "c9921cc137de3dbc5a1e098ca9c64e5c664017fdc03b581f056c391b22049657",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 0.106s\n\nOK\n"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 205.94,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-target-1.log",
+            "log_sha256": "ac68ced8012b35c5d79d212eac39f915687c14b17bc9f697f6b3e9c76e402ec4"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 219.314,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-target-2.log",
+            "log_sha256": "d046292568ebccad9ce9feb12cc17e8ab9182ab9d91004251f4742927b6baa16"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 356.522,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-guard-0.log",
+            "log_sha256": "b3863de40bdc191d8cc001e14a618e30d250c9733ba0897709962f097e9e0f0a"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 337.343,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-guard-1.log",
+            "log_sha256": "d577ce294f5fbd4e9ad4ab464851155181041ed5a059d6760ac0dd7b0b801765"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 347.634,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "round-4-constrain-context-guard-2.log",
+            "log_sha256": "8e85e933a8cda635d6acadd884559c103cdfe68c5554551a2207dfe76bfd1383"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_constrain.py",
+        "target": "test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates",
+        "guard": "test_duplicate_renamed_tests_and_budget_growth_block_without_automatic_baseline",
+        "timeout_seconds": 45
+      },
+      "superseded": false,
+      "merged_candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 279.258,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-target-0.log",
+            "log_sha256": "35ea7414ffb5171809327e897ef69295162f3e674bf08c73a9d47ebe72208f26"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 217.783,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-target-1.log",
+            "log_sha256": "1e3a12908c5971a7c44475aa09ca6b7e7668ce4e672bcc1563ade48c9b98db31"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 212.848,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-target-2.log",
+            "log_sha256": "8f71a68091b29800ed34a8b75bf13a5f917f3ee5d925687f3fd5d24011e2284a"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 280.347,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-guard-0.log",
+            "log_sha256": "3420909f8b5c2e3ee7325bad5947edcfa5b9f48b5d7f6d59842d38ed1ffb6865"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 270.827,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-guard-1.log",
+            "log_sha256": "b6cbec792e1e42b5b6145e501e0330e5580ef5e9339e2250396d328c0ff58b39"
+          },
+          {
+            "check": "constrain-context",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 305.613,
+            "test_sha256": "52dff5782550c272fe27ec87bf53e252fa860bc1bcbfe9091254e5eba96ad439",
+            "log": "merged-constrain-context-guard-2.log",
+            "log_sha256": "64ef6a1d5dbc4246f2f0b78e2a4fad11112a3c5229a99dfafe49b4cbbccda2ef"
+          }
+        ],
+        "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.121s\n\nOK\n"
+      }
+    },
+    {
+      "case": "hill-interval",
+      "problem": "A normal cutoff accepted borderline gains at 32 and 42 cases.",
+      "candidate_commit": "6719372",
+      "baseline_commit": "0aaf5ba",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 143.67,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-target-0.log",
+            "log_sha256": "c134a14aad36eb5ed92291708c169815fe811de64ce3b83b3fa3d39324757e94",
+            "log_contents": "FF\n======================================================================\nFAIL: test_large_sample_intervals_do_not_understate_student_t_uncertainty (test_hill_climb.HillClimbTests.test_large_sample_intervals_do_not_understate_student_t_uncertainty) (cases=32)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_hill_climb.py\", line 138, in test_large_sample_intervals_do_not_understate_student_t_uncertainty\n    self.assertEqual(self.compare()['decision'], 'reject')\nAssertionError: 'eligible' != 'reject'\n- eligible\n+ reject\n\n\n======================================================================\nFAIL: test_large_sample_intervals_do_not_understate_student_t_uncertainty (test_hill_climb.HillClimbTests.test_large_sample_intervals_do_not_understate_student_t_uncertainty) (cases=42)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_hill_climb.py\", line 138, in test_large_sample_intervals_do_not_understate_student_t_uncertainty\n    self.assertEqual(self.compare()['decision'], 'reject')\nAssertionError: 'eligible' != 'reject'\n- eligible\n+ reject\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.012s\n\nFAILED (failures=2)\n"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 104.509,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-target-1.log",
+            "log_sha256": "c134a14aad36eb5ed92291708c169815fe811de64ce3b83b3fa3d39324757e94"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 122.334,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-target-2.log",
+            "log_sha256": "c134a14aad36eb5ed92291708c169815fe811de64ce3b83b3fa3d39324757e94"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 102.163,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-guard-0.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 111.914,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-guard-1.log",
+            "log_sha256": "c3dc4ce80790d0a5a68dcff2d3009be59564c24dfe01144e0f6b50051e539cc3"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 103.237,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "baseline-hill-interval-guard-2.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 216.552,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-target-0.log",
+            "log_sha256": "e92b0ffd03bb5447a0dbd23d6627ba8b9193e54e2b435416328ff01c3080cf06",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 0.018s\n\nOK\n"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 174.405,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-target-1.log",
+            "log_sha256": "8fc491c33af10c373d8f98a2362fd7e66cdc6c96497aa5aa59d429264ca5ac92"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 181.758,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-target-2.log",
+            "log_sha256": "ff54520eb41a16677c9d2e2fc45533519a89fbdc9fb068da141805c0296b7a63"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 188.136,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-guard-0.log",
+            "log_sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 183.44,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-guard-1.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 102.39,
+            "test_sha256": "1e053b410c4d13c33f0a95aeb5499d7de9e97a6cbdc2f5b481798dd5d244e870",
+            "log": "round-5-hill-interval-guard-2.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_hill_climb.py",
+        "target": "test_large_sample_intervals_do_not_understate_student_t_uncertainty",
+        "guard": "test_paired_gain_and_untouched_claim_boundary",
+        "timeout_seconds": 45
+      },
+      "superseded": false,
+      "merged_candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 162.888,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-target-0.log",
+            "log_sha256": "8fc491c33af10c373d8f98a2362fd7e66cdc6c96497aa5aa59d429264ca5ac92"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 105.357,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-target-1.log",
+            "log_sha256": "65d3a21d9a25d3449538a550bbf07742cec0a72ecf37d6271c24c8db70978275"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 127.485,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-target-2.log",
+            "log_sha256": "a9737d36e97e253c4c5c8c2c01ccfbe550909d17b13e2615aff5689762cb559b"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 170.009,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-guard-0.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 180.934,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-guard-1.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "check": "hill-interval",
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 108.413,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-interval-guard-2.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          }
+        ],
+        "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.011s\n\nOK\n"
+      }
+    },
+    {
+      "case": "testify-descendants",
+      "problem": "A timed-out generated case left an ordinary child process running.",
+      "candidate_commit": "63e7dbd",
+      "baseline_commit": "6719372",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 1518.474,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-target-0.log",
+            "log_sha256": "6d899f2a8dc6af3dd2691d465c72caa9f1876dc22b092746f90b3db7b5cd4826",
+            "log_contents": "F\n======================================================================\nFAIL: test_generated_case_timeout_cleans_ordinary_descendants (test_authoring.TestifyTests.test_generated_case_timeout_cleans_ordinary_descendants)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_authoring.py\", line 330, in test_generated_case_timeout_cleans_ordinary_descendants\n    self.assertFalse(alive, 'Timed-out test left its ordinary child running')\nAssertionError: True is not false : Timed-out test left its ordinary child running\n\n----------------------------------------------------------------------\nRan 1 test in 1.353s\n\nFAILED (failures=1)\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 1428.575,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-target-1.log",
+            "log_sha256": "612c29ee05666033bea3abaa42a7b6988148514088e23f3e462d5ed93d9ac5cc"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 1428.259,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-target-2.log",
+            "log_sha256": "c0850d273ecff14ee4974d7c5d1fda7e509d6f6ba22bbb34723edbc2508bb31c"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 2087.205,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-guard-0.log",
+            "log_sha256": "664d07db7902da88a69bc75e2261b9e7815fc1afa40d0c6996953a63289f3c96"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 2951.595,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-guard-1.log",
+            "log_sha256": "6870d5f7666732e40de34094b19ebc7b502262ab7b9a589afd9ce61c261e6982"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 2918.804,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "baseline-testify-descendants-guard-2.log",
+            "log_sha256": "7690c7db4588366f6f6ca125e81347b912a880fa80d24aedebe046ffe1f2bb73"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1531.328,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-target-0.log",
+            "log_sha256": "fcb5ffaa858e39895b5cd7a715de8b3a8c9a05423d082fbbb4dc3c4400188443",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 1.385s\n\nOK\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1402.496,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-target-1.log",
+            "log_sha256": "44bb01907b69b05c51f33a4f9e9b0eb12ba06b50aacce481b19cf13b3171bab5"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1349.335,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-target-2.log",
+            "log_sha256": "12f8a536d38374e81f99a21b19e0b13282d34e15f22085afa4efb9ade5f17a93"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 2092.411,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-guard-0.log",
+            "log_sha256": "3b3f4e55a831d6471a229e4f1c565c4dffd71b15f53f277c5ab63dabd169be30"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 2323.829,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-guard-1.log",
+            "log_sha256": "f49e42c6d75581d36699827007562a0e2bf2506581bc19cdfbbbebc628d47d1d"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 2343.323,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "round-6-testify-descendants-guard-2.log",
+            "log_sha256": "5ce0b88abc546dfa318847f15d687a78d2b2dd95b72d5112a338bde814d0759b"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_authoring.py",
+        "target": "test_generated_case_timeout_cleans_ordinary_descendants",
+        "guard": "test_plan_create_and_real_run_detect_a_behavioral_fault",
+        "timeout_seconds": 45
+      },
+      "superseded": false,
+      "merged_candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1393.888,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-target-0.log",
+            "log_sha256": "c5379fb43dbf9241312162b85d8ab3896bb5198ea4adb23b1035027a6b024e5e"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1389.348,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-target-1.log",
+            "log_sha256": "00177e5a2e7c8cc746a44c2621e6877bff88d896ab8d505aa1f6c52f7f2fe6cd"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1415.213,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-target-2.log",
+            "log_sha256": "422e70535e24ce7547b942d97a507b29ebaa116ffc65b06ee51cb6bc34b79d77"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 1761.313,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-guard-0.log",
+            "log_sha256": "12da58b857ff32726f2f06e0972ae745093c6739545955d05bb7c6cf5662c0d9"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1802.983,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-guard-1.log",
+            "log_sha256": "b3bc715001acc04dcb7ee085e30cbe37e5868edde6cdc6b08982d09c0b874566"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 1783.45,
+            "test_sha256": "9ccefbc395974e855b94ae4103063b391114a5d0674f4487e47d2af043b7877d",
+            "log": "merged-testify-descendants-guard-2.log",
+            "log_sha256": "b623d2bb45930a3b8a55dfeab1939c074b856799076758c8cb0f4759b2cd7625"
+          }
+        ],
+        "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 1.225s\n\nOK\n"
+      }
+    },
+    {
+      "case": "eval-size",
+      "problem": "The adapter parsed a valid result larger than its new 64 MiB bound.",
+      "candidate_commit": "8d19b8a",
+      "baseline_commit": "63e7dbd",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 1097.362,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-target-0.log",
+            "log_sha256": "6ac826deaa1f7d7284a611baf9b15177212243ebcab2311924f8faaf6867d802",
+            "log_contents": "F\n======================================================================\nFAIL: test_oversized_result_is_bounded_and_reported (test_evalify.EvalifyTests.test_oversized_result_is_bounded_and_reported)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_evalify.py\", line 126, in test_oversized_result_is_bounded_and_reported\n    self.assertNotEqual(result.returncode, 0)\nAssertionError: 0 == 0\n\n----------------------------------------------------------------------\nRan 1 test in 0.993s\n\nFAILED (failures=1)\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 1124.971,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-target-1.log",
+            "log_sha256": "f55056dd481b780e61514ebf352897af97f44675afb3685ee8febd5526075253"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 1358.742,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-target-2.log",
+            "log_sha256": "1c1ac6b98bc94f3e93a6d48619b64136fbbf7c7cbefe6d0a13ccfb54fe81c120"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 571.101,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-guard-0.log",
+            "log_sha256": "d503c885b32f633cd3089d3b2f149ade3e59ce5edc41befe1afebe731a0913d7"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 1074.799,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-guard-1.log",
+            "log_sha256": "34284f63841c7f2a11d4f2c04faa3d8555a34ac3a7767852d0cdf246af4f5e25"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 959.691,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "baseline-eval-size-guard-2.log",
+            "log_sha256": "6f6095fe8d67f9ef150bc20f84e0f0d46a750471e17da34bf56ab68ebdb74b59"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 529.902,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-target-0.log",
+            "log_sha256": "d503c885b32f633cd3089d3b2f149ade3e59ce5edc41befe1afebe731a0913d7",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 0.428s\n\nOK\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 310.774,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-target-1.log",
+            "log_sha256": "3d10979a6a93089d498356cf0185d3176781034c71fb7139a342ac78d04bf5ce"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 452.91,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-target-2.log",
+            "log_sha256": "61a84b4a1aea4ea73c97633f374dfb872c387008f4ea25dc9cbdc56cf24914f7"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 563.183,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-guard-0.log",
+            "log_sha256": "6332a739fe9dffedf5bc96f7329d10b5983ef25b606b5dc6bf25907f131c47a9"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 703.572,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-guard-1.log",
+            "log_sha256": "860132f7d7cb4dac60c8e716422777b7e7ff5983a25ac99c7b5351ecafbe2e6c"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 506.045,
+            "test_sha256": "e5afc409a200f1c4077dab2d86cba510e1cb2c19f5698eca907e3086b3cf22a8",
+            "log": "round-7-eval-size-guard-2.log",
+            "log_sha256": "060b56fed63490ba2eb3d287905588affd3c7be1e486e40021b1b8e007cde1d9"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_evalify.py",
+        "target": "test_oversized_result_is_bounded_and_reported",
+        "guard": "test_runner_results_are_bounded_retained_and_fail_closed",
+        "timeout_seconds": 45
+      },
+      "superseded": true,
+      "superseded_reason": "The affected adapter or evolution interface was replaced by the host-bound implementation; these historical measurements do not establish current behavior."
+    },
+    {
+      "case": "hill-model",
+      "problem": "Model-based comparisons accepted one repetition or a zero noise floor.",
+      "candidate_commit": "6e34fb4",
+      "baseline_commit": "8d19b8a",
+      "baseline": {
+        "target_passes": 0,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 1,
+            "elapsed_ms": 128.522,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-target-0.log",
+            "log_sha256": "6d78b64d6fa8f05ff0174d638032d6382d0b832585c87653e3e0dda7fd83f660",
+            "log_contents": "FF\n======================================================================\nFAIL: test_model_comparisons_require_repeated_baseline_and_nonzero_noise (test_hill_climb.HillClimbTests.test_model_comparisons_require_repeated_baseline_and_nonzero_noise) (reps=1, noise=1)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_hill_climb.py\", line 145, in test_model_comparisons_require_repeated_baseline_and_nonzero_noise\n    with self.assertRaisesRegex(ValueError, 'Model-based comparisons'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_model_comparisons_require_repeated_baseline_and_nonzero_noise (test_hill_climb.HillClimbTests.test_model_comparisons_require_repeated_baseline_and_nonzero_noise) (reps=2, noise=0)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_hill_climb.py\", line 145, in test_model_comparisons_require_repeated_baseline_and_nonzero_noise\n    with self.assertRaisesRegex(ValueError, 'Model-based comparisons'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.002s\n\nFAILED (failures=2)\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 1,
+            "elapsed_ms": 102.468,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-target-1.log",
+            "log_sha256": "9af888290282ce960cd3e0507f77f41365ec2f8140e0606185fc6d230f17635f"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 1,
+            "elapsed_ms": 118.975,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-target-2.log",
+            "log_sha256": "6d78b64d6fa8f05ff0174d638032d6382d0b832585c87653e3e0dda7fd83f660"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 97.198,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-guard-0.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 117.135,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-guard-1.log",
+            "log_sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 98.473,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "baseline-hill-model-guard-2.log",
+            "log_sha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+          }
+        ]
+      },
+      "candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 144.29,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-target-0.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+            "log_contents": ".\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nOK\n"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 141.269,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-target-1.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 101.374,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-target-2.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 109.256,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-guard-0.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 98.672,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-guard-1.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 121.57,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "round-8-hill-model-guard-2.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          }
+        ]
+      },
+      "command": {
+        "test_file": "test_hill_climb.py",
+        "target": "test_model_comparisons_require_repeated_baseline_and_nonzero_noise",
+        "guard": "test_model_receipts_need_real_identity_usage_and_grade",
+        "timeout_seconds": 45
+      },
+      "superseded": false,
+      "merged_candidate": {
+        "target_passes": 3,
+        "guard_passes": 3,
+        "repetitions": 3,
+        "observations": [
+          {
+            "kind": "target",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 115.502,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-target-0.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+          },
+          {
+            "kind": "target",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 108.321,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-target-1.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+          },
+          {
+            "kind": "target",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 116.92,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-target-2.log",
+            "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+          },
+          {
+            "kind": "guard",
+            "rep": 0,
+            "exit": 0,
+            "elapsed_ms": 95.876,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-guard-0.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "kind": "guard",
+            "rep": 1,
+            "exit": 0,
+            "elapsed_ms": 115.182,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-guard-1.log",
+            "log_sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+          },
+          {
+            "kind": "guard",
+            "rep": 2,
+            "exit": 0,
+            "elapsed_ms": 99.281,
+            "test_sha256": "63da4cab249d6e456cace126c6c1964dfc5d581d81890b58170c0a057d98ebaa",
+            "log": "merged-hill-model-guard-2.log",
+            "log_sha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+          }
+        ],
+        "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nOK\n"
+      }
+    }
+  ],
+  "runner_sources": {
+    "benchmark.py": "\"\"\"Run frozen, local production-boundary cases; exit status is the metric.\"\"\"\nimport hashlib, json, platform, subprocess, sys, time\nfrom pathlib import Path\n\nroot = Path(__file__).resolve().parents[3]\nhere = Path(__file__).resolve().parent\nchecks = {\n    \"timing\": (\"test_stack_runner.py\", \"test_direct_workflow_payload_cannot_hide_timing\"),\n    \"eval-concurrency\": (\"test_evalify.py\", \"test_concurrent_runs_reserve_receipt_and_output_before_dispatch\"),\n    \"constrain-context\": (\"test_constrain.py\", \"test_identical_bodies_with_distinct_fixtures_or_decorators_are_not_proven_duplicates\"),\n    \"hill-interval\": (\"test_hill_climb.py\", \"test_large_sample_intervals_do_not_understate_student_t_uncertainty\"),\n    \"learn-evolution\": (\"test_skill_evolution.py\", \"test_all_requested_authored_suites_can_prepare_for_evolution\"),\n}\nguards = {\n    \"timing\": (\"test_stack_runner.py\", \"test_runner_records_a_real_deadline_without_recording_payload\"),\n    \"eval-concurrency\": (\"test_evalify.py\", \"test_runner_results_are_bounded_retained_and_fail_closed\"),\n    \"constrain-context\": (\"test_constrain.py\", \"test_duplicate_renamed_tests_and_budget_growth_block_without_automatic_baseline\"),\n    \"hill-interval\": (\"test_hill_climb.py\", \"test_paired_gain_and_untouched_claim_boundary\"),\n    \"learn-evolution\": (\"test_skill_evolution.py\", \"test_evolution_scopes_memory_and_gates_without_global_config\"),\n}\nname, label = sys.argv[1:]\nif name not in checks or not label.replace(\"-\", \"\").isalnum():\n    raise SystemExit(\"invalid name or label\")\nresult = []\nfor kind, source in ((\"target\", checks[name]), (\"guard\", guards[name])):\n    file, test = source\n    for rep in range(3):\n        started = time.monotonic()\n        command = [sys.executable, \"-m\", \"unittest\", \"discover\", \"-s\", \"tests\", \"-p\", file, \"-k\", test]\n        try:\n            run = subprocess.run(command, cwd=root, text=True, capture_output=True, timeout=40)\n            output = run.stdout + run.stderr\n            status = run.returncode\n        except subprocess.TimeoutExpired as error:\n            output = str(error)\n            status = 124\n        out = here / (label + \"-\" + name + \"-\" + kind + \"-\" + str(rep) + \".log\")\n        out.write_text(output)\n        result.append({\"check\": name, \"kind\": kind, \"rep\": rep, \"exit\": status,\n            \"elapsed_ms\": round((time.monotonic() - started) * 1000, 3),\n            \"test_sha256\": hashlib.sha256((root / \"tests\" / file).read_bytes()).hexdigest(),\n            \"log\": out.name, \"log_sha256\": hashlib.sha256(out.read_bytes()).hexdigest()})\n(here / (label + \"-\" + name + \".json\")).write_text(json.dumps(result, indent=2) + \"\\n\")\nprint(name, label, [(row[\"kind\"], row[\"exit\"]) for row in result])\n",
+    "extra.py": "import hashlib, json, subprocess, sys, time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3]\nhere=Path(__file__).resolve().parent\ncases={\n \"testify-descendants\":(\"test_authoring.py\",\"test_generated_case_timeout_cleans_ordinary_descendants\",\"test_plan_create_and_real_run_detect_a_behavioral_fault\"),\n \"eval-size\":(\"test_evalify.py\",\"test_oversized_result_is_bounded_and_reported\",\"test_runner_results_are_bounded_retained_and_fail_closed\"),\n}\nname,label=sys.argv[1:]\nfile,target,guard=cases[name]\nrows=[]\nfor kind,case in ((\"target\",target),(\"guard\",guard)):\n for rep in range(3):\n  start=time.monotonic()\n  try:\n   run=subprocess.run([sys.executable,\"-m\",\"unittest\",\"discover\",\"-s\",\"tests\",\"-p\",file,\"-k\",case],\n      cwd=root,capture_output=True,text=True,timeout=45)\n   output=run.stdout+run.stderr;code=run.returncode\n  except subprocess.TimeoutExpired as e:\n   output=str(e);code=124\n  path=here/(label+\"-\"+name+\"-\"+kind+\"-\"+str(rep)+\".log\");path.write_text(output)\n  rows.append({\"kind\":kind,\"rep\":rep,\"exit\":code,\"elapsed_ms\":round((time.monotonic()-start)*1000,3),\n      \"test_sha256\":hashlib.sha256((root/\"tests\"/file).read_bytes()).hexdigest(),\n      \"log\":path.name,\"log_sha256\":hashlib.sha256(path.read_bytes()).hexdigest()})\n(here/(label+\"-\"+name+\".json\")).write_text(json.dumps(rows,indent=2)+\"\\n\")\nprint(name,label,[(r[\"kind\"],r[\"exit\"]) for r in rows])\n",
+    "bench8.py": "import hashlib,json,subprocess,sys,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3];here=Path(__file__).resolve().parent\nlabel=sys.argv[1];rows=[]\nfor kind,case in ((\"target\",\"test_model_comparisons_require_repeated_baseline_and_nonzero_noise\"),\n                  (\"guard\",\"test_model_receipts_need_real_identity_usage_and_grade\")):\n for rep in range(3):\n  started=time.monotonic()\n  run=subprocess.run([sys.executable,\"-m\",\"unittest\",\"discover\",\"-s\",\"tests\",\"-p\",\"test_hill_climb.py\",\"-k\",case],cwd=root,capture_output=True,text=True,timeout=30)\n  path=here/(label+\"-hill-model-\"+kind+\"-\"+str(rep)+\".log\");path.write_text(run.stdout+run.stderr)\n  rows.append({\"kind\":kind,\"rep\":rep,\"exit\":run.returncode,\"elapsed_ms\":round((time.monotonic()-started)*1000,3),\n               \"test_sha256\":hashlib.sha256((root/\"tests/test_hill_climb.py\").read_bytes()).hexdigest(),\n               \"log\":path.name,\"log_sha256\":hashlib.sha256(path.read_bytes()).hexdigest()})\n(here/(label+\"-hill-model.json\")).write_text(json.dumps(rows,indent=2)+\"\\n\")\nprint(label,[(r[\"kind\"],r[\"exit\"]) for r in rows])\n"
+  },
+  "reproduction": "Run each named test and guard with python3 -m unittest discover -s tests -p <test_file> -k <test_name>, once on the named baseline commit and once on the candidate commit, using the recorded regression-test bytes. Frozen runner source and SHA-256 are included; logs for the first target repetition are embedded. Remaining log digests identify local .tkstack evidence.",
+  "independent_numeric_crosscheck": {
+    "library": "SciPy 1.17.0",
+    "scope": "Reference 97.5% Student-t quantiles, degrees of freedom 1..30 and interval boundaries 31, 40, 60, 120.",
+    "result": "All chosen critical values were greater than or equal to scipy.stats.t.ppf(0.975, df).",
+    "limit": "Verifies the numeric table, not independence of cases, holdout isolation, or model performance."
+  },
+  "status": "Historical first phase followed by a host-bound redesign",
+  "host_bound_phase": {
+    "plans": [
+      {
+        "objective": "Keep skill evaluation and optimization inside the invoking agent and its model",
+        "rounds": 4,
+        "repetitions": 3,
+        "paid_calls": 0,
+        "selection": "authored local cases; no independent semantic holdout",
+        "guard": "existing deterministic comparison contract",
+        "timeout_per_process_seconds": 40,
+        "files": {
+          "check.py": "ea0d92675ec2233fa60fa4f6919198fd7d709a095acea6c0dd1a6bf01c2709ad",
+          "bench.py": "344ba6cc44fca53a02ec408543e221c4ecd02e4223e784bf8755d27675b9e4ad"
+        }
+      },
+      {
+        "objective": "Remove alternate model and harness profiles from skill formation and execution",
+        "rounds": 2,
+        "repetitions": 3,
+        "paid_calls": 0,
+        "files": {
+          "codify_check.py": "8be1a806ce6fa4c1eb45c54ba7f456ebd55b673a1f1423a0c1c3bd752cdc3dec",
+          "codify_bench.py": "8f3270933a75481418882a69aa0a6bc2abd2582f45c6257159288d6ac9f5c15f"
+        },
+        "selection": "authored local cases; no independent semantic holdout"
+      }
+    ],
+    "extra_attempts": "The inventory mismatch was discovered during lock rebuilding; confusion and timing were separate scoped follow-up hypotheses.",
+    "runner_sources": {
+      "check.py": "import json, os, subprocess, sys, tempfile\nfrom pathlib import Path\nrepo=Path(__file__).resolve().parents[3]\nname=sys.argv[1]\nwith tempfile.TemporaryDirectory(prefix='host-boundary-') as temporary:\n root=Path(temporary)\n if name=='eval-no-external':\n  (root/'config.yaml').write_text('fixture: true\\n')\n  binary=root/'external'\n  binary.write_text('#!/usr/bin/env python3\\nfrom pathlib import Path\\nPath(\"called\").write_text(\"yes\")\\n')\n  binary.chmod(0o755)\n  cmd=[sys.executable,str(repo/'skills/learn/skills/evalify/scripts/evalify.py'),'validate',\n       '--project',str(root),'--config','config.yaml','--executable',str(binary),'--receipt','receipt.json']\n  p=subprocess.run(cmd,cwd=root,capture_output=True,text=True,timeout=12)\n  assert p.returncode!=0 and not (root/'called').exists(), f'alternative executable was invoked (exit {p.returncode})'\n elif name=='evolve-no-backend':\n  cmd=[sys.executable,str(repo/'skills/learn/scripts/evolve.py'),'learn','--backend','mock','--dry-run',\n       '--run-dir',str(root/'.tkstack/evolution')]\n  p=subprocess.run(cmd,capture_output=True,text=True,timeout=12)\n  assert p.returncode!=0, 'evolution accepted a separate backend selector'\n elif name=='hill-no-command':\n  sys.path.insert(0,str(repo/'skills/hill-climb/scripts'))\n  import experiment_proposer as proposer\n  assert not hasattr(proposer,'CommandProvider'), 'alternate command-based agent provider is exposed'\n elif name=='host-calibration':\n  runtime=root/'.tkstack/runtime/evalify'\n  runtime.mkdir(parents=True)\n  (runtime/'node_modules').symlink_to(repo/'.tkstack/runtime/evalify/node_modules',target_is_directory=True)\n  data={'version':1,'source':'invoking-agent','cases':[\n   {'id':'good','judgment':True,'reference':True,'elapsed_ms':2},\n   {'id':'bad','judgment':False,'reference':False,'elapsed_ms':3},\n   {'id':'current','judgment':True,'reference':None,'elapsed_ms':4}]}\n  (root/'cases.json').write_text(json.dumps(data))\n  cmd=[sys.executable,str(repo/'skills/learn/skills/evalify/scripts/evalify.py'),'run',\n       '--project',str(root),'--cases','cases.json','--output','results.json','--receipt','receipt.json','--timeout','20']\n  p=subprocess.run(cmd,capture_output=True,text=True,timeout=25)\n  assert p.returncode==0, 'host-graded offline framework analysis failed: '+p.stderr\n  result=json.loads((root/'results.json').read_text())\n  assert result['calibration']['matched']==2 and result['calibration']['total']==2 and result['current']['passed']==1\n else:\n  raise ValueError(name)\n print('pass',name)\n",
+      "bench.py": "import hashlib,json,subprocess,sys,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3];here=Path(__file__).resolve().parent\nname,label=sys.argv[1:];rows=[]\nfor kind in ('target','guard'):\n for rep in range(3):\n  cmd=([sys.executable,str(here/'check.py'),name] if kind=='target' else\n       [sys.executable,'-m','unittest','discover','-s','tests','-p','test_hill_climb.py','-k','test_paired_gain_and_untouched_claim_boundary'])\n  started=time.monotonic()\n  try:\n   run=subprocess.run(cmd,cwd=root,capture_output=True,text=True,timeout=40)\n   output=run.stdout+run.stderr;code=run.returncode\n  except subprocess.TimeoutExpired as error:\n   output=str(error);code=124\n  log=here/(label+'-'+name+'-'+kind+'-'+str(rep)+'.log');log.write_text(output)\n  rows.append({'kind':kind,'rep':rep,'exit':code,'elapsed_ms':round((time.monotonic()-started)*1000,3),\n      'log':log.name,'sha256':hashlib.sha256(log.read_bytes()).hexdigest()})\n(here/(label+'-'+name+'.json')).write_text(json.dumps(rows,indent=2)+'\\n')\nprint(name,label,[(r['kind'],r['exit']) for r in rows])\n",
+      "codify_check.py": "import importlib.util, json, subprocess, sys, tempfile\nfrom pathlib import Path\nrepo=Path(__file__).resolve().parents[3]\nname=sys.argv[1]\nwith tempfile.TemporaryDirectory(prefix='host-codify-') as temp:\n root=Path(temp)\n if name=='runner-profile':\n  sys.path.insert(0,str(repo/'src'))\n  spec=importlib.util.spec_from_file_location('runner_for_test',repo/'src/tkstack.py')\n  runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)\n  profile={'version':1,'providers':{'other':{'kind':'openai','apiKeyEnv':'OTHER'}},\n           'profiles':{'other':{'kind':'language','provider':'other','api':'responses','model':'other'}}}\n  path=root/'profiles.json';path.write_text(json.dumps(profile))\n  try:\n   runner.configuration({'inference':{'mode':'explicit','profiles':['other']}},path,\n                        {'workspace':root,'user':root,'global':root},{},{})\n  except ValueError:\n   pass\n  else:\n   raise AssertionError('compiled runner accepted a different model profile')\n elif name=='codify-scaffold':\n  source=root/'prompt.md';source.write_text('do work')\n  target=root/'generated'\n  p=subprocess.run([sys.executable,str(repo/'skills/learn/skills/codify/scripts/codify.py'),\n        'scaffold',str(source),'--target',str(target),'--backend','ai-sdk'],capture_output=True,text=True,timeout=15)\n  assert p.returncode!=0 and not target.exists(), 'codify generated a separate model/harness runtime'\n else: raise ValueError(name)\n print('pass',name)\n",
+      "codify_bench.py": "import hashlib,json,subprocess,sys,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3];here=Path(__file__).resolve().parent\nname,label=sys.argv[1:];rows=[]\nfor kind in ('target','guard'):\n for rep in range(3):\n  cmd=([sys.executable,str(here/'codify_check.py'),name] if kind=='target' else\n       [sys.executable,'-m','unittest','discover','-s','tests','-p','test_hill_climb.py','-k','test_paired_gain_and_untouched_claim_boundary'])\n  start=time.monotonic();p=subprocess.run(cmd,cwd=root,capture_output=True,text=True,timeout=30)\n  log=here/(label+'-'+name+'-'+kind+'-'+str(rep)+'.log');log.write_text(p.stdout+p.stderr)\n  rows.append({'kind':kind,'rep':rep,'exit':p.returncode,'elapsed_ms':round((time.monotonic()-start)*1000,3),\n               'log':log.name,'sha256':hashlib.sha256(log.read_bytes()).hexdigest()})\n(here/(label+'-'+name+'.json')).write_text(json.dumps(rows,indent=2)+'\\n')\nprint(name,label,[(r['kind'],r['exit']) for r in rows])\n",
+      "inventory_bench.py": "import hashlib,json,subprocess,sys,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3];here=Path(__file__).resolve().parent\nlabel=sys.argv[1];rows=[]\nfor kind,case in [('target','test_contract_package_compiles_its_default_inventory_and_rejects_drift'),\n                  ('guard','test_compilation_replays_cached_code_without_a_provider_and_is_byte_reproducible')]:\n for rep in range(3):\n  start=time.monotonic()\n  p=subprocess.run([sys.executable,'-m','unittest','discover','-s','tests','-p','test_codify.py','-k',case],\n                   cwd=root,capture_output=True,text=True,timeout=45)\n  log=here/(label+'-inventory-'+kind+'-'+str(rep)+'.log');log.write_text(p.stdout+p.stderr)\n  rows.append({'kind':kind,'rep':rep,'exit':p.returncode,'elapsed_ms':round((time.monotonic()-start)*1000,3),\n               'log':log.name,'sha256':hashlib.sha256(log.read_bytes()).hexdigest(),\n               'test_sha256':hashlib.sha256((root/'tests/test_codify.py').read_bytes()).hexdigest()})\n(here/(label+'-inventory.json')).write_text(json.dumps(rows,indent=2)+'\\n')\nprint(label,[(r['kind'],r['exit']) for r in rows])\n",
+      "additional.py": "import hashlib,json,subprocess,sys,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parents[3];here=Path(__file__).resolve().parent\nname,label=sys.argv[1:]\ntargets={'confusion':'test_calibration_distinguishes_false_positives_from_false_negatives',\n         'timing':'test_host_timing_summary_preserves_unknown_observations'}\nrows=[]\nfor kind,case in [('target',targets[name]),\n                  ('guard','test_alternate_model_executable_and_malformed_records_are_rejected_before_dispatch')]:\n for rep in range(3):\n  start=time.monotonic()\n  p=subprocess.run([sys.executable,'-m','unittest','discover','-s','tests','-p','test_evalify.py','-k',case],\n                   cwd=root,capture_output=True,text=True,timeout=45)\n  log=here/(label+'-'+name+'-'+kind+'-'+str(rep)+'.log');log.write_text(p.stdout+p.stderr)\n  rows.append({'kind':kind,'rep':rep,'exit':p.returncode,'elapsed_ms':round((time.monotonic()-start)*1000,3),\n               'log':log.name,'sha256':hashlib.sha256(log.read_bytes()).hexdigest(),\n               'test_sha256':hashlib.sha256((root/'tests/test_evalify.py').read_bytes()).hexdigest()})\n(here/(label+'-'+name+'.json')).write_text(json.dumps(rows,indent=2)+'\\n')\nprint(name,label,[(r['kind'],r['exit']) for r in rows])\n"
+    },
+    "rounds": [
+      {
+        "case": "eval-no-external",
+        "hypothesis": "Reject an arbitrary executable before any invocation.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 197.796,
+              "log": "baseline-eval-no-external-target-0.log",
+              "sha256": "51de877e73031c802f6942a287e3d24073b7d80599bf92150178c5d183a24095"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 163.135,
+              "log": "baseline-eval-no-external-target-1.log",
+              "sha256": "51de877e73031c802f6942a287e3d24073b7d80599bf92150178c5d183a24095"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 190.08,
+              "log": "baseline-eval-no-external-target-2.log",
+              "sha256": "51de877e73031c802f6942a287e3d24073b7d80599bf92150178c5d183a24095"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 123.269,
+              "log": "baseline-eval-no-external-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 112.712,
+              "log": "baseline-eval-no-external-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 103.995,
+              "log": "baseline-eval-no-external-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/check.py\", line 15, in <module>\n    assert p.returncode!=0 and not (root/'called').exists(), f'alternative executable was invoked (exit {p.returncode})'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: alternative executable was invoked (exit 0)\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 155.652,
+              "log": "candidate-eval-no-external-target-0.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 110.417,
+              "log": "candidate-eval-no-external-target-1.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 114.597,
+              "log": "candidate-eval-no-external-target-2.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 136.964,
+              "log": "candidate-eval-no-external-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 100.515,
+              "log": "candidate-eval-no-external-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 121.714,
+              "log": "candidate-eval-no-external-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "pass eval-no-external\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 123.274,
+              "log": "merged-eval-no-external-target-0.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 137.928,
+              "log": "merged-eval-no-external-target-1.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 107.933,
+              "log": "merged-eval-no-external-target-2.log",
+              "sha256": "12f177289da7f1c281224e1ba07d0a1f0f15ed3082028a89b8e9fbd2f5408005"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 122.662,
+              "log": "merged-eval-no-external-guard-0.log",
+              "sha256": "46df4f0edcf4a6f9a32504da3478dd3a1a7db82b7890d0c616cbb1a0a9b16b2a"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 100.989,
+              "log": "merged-eval-no-external-guard-1.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 128.084,
+              "log": "merged-eval-no-external-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass eval-no-external\n"
+        }
+      },
+      {
+        "case": "evolve-no-backend",
+        "hypothesis": "Reject the separate evolution backend selector.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 269.581,
+              "log": "baseline-evolve-no-backend-target-0.log",
+              "sha256": "1652ecb10e5498dfd92e6e0c96d8fae96280fdd282c3201280439e8ac3e51ddc"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 330.831,
+              "log": "baseline-evolve-no-backend-target-1.log",
+              "sha256": "1652ecb10e5498dfd92e6e0c96d8fae96280fdd282c3201280439e8ac3e51ddc"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 330.615,
+              "log": "baseline-evolve-no-backend-target-2.log",
+              "sha256": "1652ecb10e5498dfd92e6e0c96d8fae96280fdd282c3201280439e8ac3e51ddc"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 99.17,
+              "log": "baseline-evolve-no-backend-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 134.947,
+              "log": "baseline-evolve-no-backend-guard-1.log",
+              "sha256": "46df4f0edcf4a6f9a32504da3478dd3a1a7db82b7890d0c616cbb1a0a9b16b2a"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 116.385,
+              "log": "baseline-evolve-no-backend-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/check.py\", line 20, in <module>\n    assert p.returncode!=0, 'evolution accepted a separate backend selector'\n           ^^^^^^^^^^^^^^^\nAssertionError: evolution accepted a separate backend selector\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 195.539,
+              "log": "candidate-evolve-no-backend-target-0.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 212.294,
+              "log": "candidate-evolve-no-backend-target-1.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 170.696,
+              "log": "candidate-evolve-no-backend-target-2.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 116.888,
+              "log": "candidate-evolve-no-backend-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 99.048,
+              "log": "candidate-evolve-no-backend-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 161.619,
+              "log": "candidate-evolve-no-backend-guard-2.log",
+              "sha256": "0276289a917b36926f4a82fd7b7e1660cb3eb443b96c998d41c5d3cf04007a39"
+            }
+          ],
+          "first_target_log": "pass evolve-no-backend\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 246.493,
+              "log": "merged-evolve-no-backend-target-0.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 178.627,
+              "log": "merged-evolve-no-backend-target-1.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 178.129,
+              "log": "merged-evolve-no-backend-target-2.log",
+              "sha256": "791f7411e9a15d368fbd5583405252dd507bdbc41501c12160fd449bb0cb0a9a"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 108.515,
+              "log": "merged-evolve-no-backend-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 128.856,
+              "log": "merged-evolve-no-backend-guard-1.log",
+              "sha256": "c3dc4ce80790d0a5a68dcff2d3009be59564c24dfe01144e0f6b50051e539cc3"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 107.965,
+              "log": "merged-evolve-no-backend-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass evolve-no-backend\n"
+        }
+      },
+      {
+        "case": "hill-no-command",
+        "hypothesis": "Remove the alternate command-based agent provider.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 56.159,
+              "log": "baseline-hill-no-command-target-0.log",
+              "sha256": "7bdec95b995865b9af26fcfd363bb4add4076b6ca05c42c2d6877db59fb32ec9"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 42.774,
+              "log": "baseline-hill-no-command-target-1.log",
+              "sha256": "7bdec95b995865b9af26fcfd363bb4add4076b6ca05c42c2d6877db59fb32ec9"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 43.94,
+              "log": "baseline-hill-no-command-target-2.log",
+              "sha256": "7bdec95b995865b9af26fcfd363bb4add4076b6ca05c42c2d6877db59fb32ec9"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 94.223,
+              "log": "baseline-hill-no-command-guard-0.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 109.784,
+              "log": "baseline-hill-no-command-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 92.411,
+              "log": "baseline-hill-no-command-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/check.py\", line 24, in <module>\n    assert not hasattr(proposer,'CommandProvider'), 'alternate command-based agent provider is exposed'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: alternate command-based agent provider is exposed\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 52.336,
+              "log": "candidate-hill-no-command-target-0.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 54.181,
+              "log": "candidate-hill-no-command-target-1.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 53.773,
+              "log": "candidate-hill-no-command-target-2.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 140.618,
+              "log": "candidate-hill-no-command-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 164.295,
+              "log": "candidate-hill-no-command-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 112.73,
+              "log": "candidate-hill-no-command-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "pass hill-no-command\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 54.922,
+              "log": "merged-hill-no-command-target-0.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 66.725,
+              "log": "merged-hill-no-command-target-1.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 64.79,
+              "log": "merged-hill-no-command-target-2.log",
+              "sha256": "424303fe843dff08e48bc036fad9c4f70ef61562251fb16e72cf2521a510d2ee"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 97.047,
+              "log": "merged-hill-no-command-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 98.856,
+              "log": "merged-hill-no-command-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 124.179,
+              "log": "merged-hill-no-command-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "pass hill-no-command\n"
+        }
+      },
+      {
+        "case": "host-calibration",
+        "hypothesis": "Score the invoking agent’s retained judgments with fixed offline Promptfoo assertions.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 107.754,
+              "log": "baseline-host-calibration-target-0.log",
+              "sha256": "b62b10cc8305c76fad8b0d77981d30eab10fed74583ae1ee6e6f577c78d54ebc"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 111.527,
+              "log": "baseline-host-calibration-target-1.log",
+              "sha256": "b62b10cc8305c76fad8b0d77981d30eab10fed74583ae1ee6e6f577c78d54ebc"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 106.496,
+              "log": "baseline-host-calibration-target-2.log",
+              "sha256": "b62b10cc8305c76fad8b0d77981d30eab10fed74583ae1ee6e6f577c78d54ebc"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 125.653,
+              "log": "baseline-host-calibration-guard-0.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 99.533,
+              "log": "baseline-host-calibration-guard-1.log",
+              "sha256": "46df4f0edcf4a6f9a32504da3478dd3a1a7db82b7890d0c616cbb1a0a9b16b2a"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 109.98,
+              "log": "baseline-host-calibration-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/check.py\", line 37, in <module>\n    assert p.returncode==0, 'host-graded offline framework analysis failed: '+p.stderr\n           ^^^^^^^^^^^^^^^\nAssertionError: host-graded offline framework analysis failed: usage: evalify.py [-h] --project PROJECT --config CONFIG --executable\n                  EXECUTABLE --receipt RECEIPT [--output OUTPUT]\n                  [--timeout TIMEOUT]\n                  {validate,run}\nevalify.py: error: the following arguments are required: --config, --executable\n\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 2720.483,
+              "log": "candidate-host-calibration-target-0.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 3363.631,
+              "log": "candidate-host-calibration-target-1.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 2093.432,
+              "log": "candidate-host-calibration-target-2.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 179.074,
+              "log": "candidate-host-calibration-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 100.568,
+              "log": "candidate-host-calibration-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 128.232,
+              "log": "candidate-host-calibration-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "pass host-calibration\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 2974.43,
+              "log": "merged-host-calibration-target-0.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 2679.608,
+              "log": "merged-host-calibration-target-1.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 1964.944,
+              "log": "merged-host-calibration-target-2.log",
+              "sha256": "e530d67bdbe051d8a822ee5fc8519c66ca62495408e4e274ccd57a379901af1d"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 123.176,
+              "log": "merged-host-calibration-guard-0.log",
+              "sha256": "46df4f0edcf4a6f9a32504da3478dd3a1a7db82b7890d0c616cbb1a0a9b16b2a"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 112.102,
+              "log": "merged-host-calibration-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 109.735,
+              "log": "merged-host-calibration-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass host-calibration\n"
+        }
+      },
+      {
+        "case": "runner-profile",
+        "hypothesis": "Reject compiled artifacts that select a different model or harness.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 152.665,
+              "log": "baseline-runner-profile-target-0.log",
+              "sha256": "048727fbf62342124a6aba1a0983e122449e30f1888fd78c252078f7461c92e1"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 181.502,
+              "log": "baseline-runner-profile-target-1.log",
+              "sha256": "048727fbf62342124a6aba1a0983e122449e30f1888fd78c252078f7461c92e1"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 117.927,
+              "log": "baseline-runner-profile-target-2.log",
+              "sha256": "048727fbf62342124a6aba1a0983e122449e30f1888fd78c252078f7461c92e1"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 139.004,
+              "log": "baseline-runner-profile-guard-0.log",
+              "sha256": "c3dc4ce80790d0a5a68dcff2d3009be59564c24dfe01144e0f6b50051e539cc3"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 194.093,
+              "log": "baseline-runner-profile-guard-1.log",
+              "sha256": "2299339565fdc7c4fedeb54e99b181ba53b821f77194926422cc7df3301ba0ee"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 130.043,
+              "log": "baseline-runner-profile-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/codify_check.py\", line 20, in <module>\n    raise AssertionError('compiled runner accepted a different model profile')\nAssertionError: compiled runner accepted a different model profile\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 107.262,
+              "log": "candidate-runner-profile-target-0.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 119.689,
+              "log": "candidate-runner-profile-target-1.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 87.16,
+              "log": "candidate-runner-profile-target-2.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 168.94,
+              "log": "candidate-runner-profile-guard-0.log",
+              "sha256": "c3dc4ce80790d0a5a68dcff2d3009be59564c24dfe01144e0f6b50051e539cc3"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 145.855,
+              "log": "candidate-runner-profile-guard-1.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 152.205,
+              "log": "candidate-runner-profile-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass runner-profile\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 80.652,
+              "log": "merged-runner-profile-target-0.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 86.466,
+              "log": "merged-runner-profile-target-1.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 78.321,
+              "log": "merged-runner-profile-target-2.log",
+              "sha256": "721a7defdc3d5301882f1694073bab6b291d47ba5d998cacd4790a4b72142c5f"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 105.33,
+              "log": "merged-runner-profile-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 118.147,
+              "log": "merged-runner-profile-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 105.308,
+              "log": "merged-runner-profile-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass runner-profile\n"
+        }
+      },
+      {
+        "case": "codify-scaffold",
+        "hypothesis": "Reject generation of a separate AI SDK agent runtime.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 182.184,
+              "log": "baseline-codify-scaffold-target-0.log",
+              "sha256": "94d3b031ac71b9fc59353cfd685a1673ac6408edb1ee3e76fcd6525ec651b366"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 155.37,
+              "log": "baseline-codify-scaffold-target-1.log",
+              "sha256": "94d3b031ac71b9fc59353cfd685a1673ac6408edb1ee3e76fcd6525ec651b366"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 169.929,
+              "log": "baseline-codify-scaffold-target-2.log",
+              "sha256": "94d3b031ac71b9fc59353cfd685a1673ac6408edb1ee3e76fcd6525ec651b366"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 98.84,
+              "log": "baseline-codify-scaffold-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 142.331,
+              "log": "baseline-codify-scaffold-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 212.2,
+              "log": "baseline-codify-scaffold-guard-2.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            }
+          ],
+          "first_target_log": "Traceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/.tkstack/hill-climb/2026-11-host-boundary/codify_check.py\", line 26, in <module>\n    assert p.returncode!=0 and not target.exists(), 'codify generated a separate model/harness runtime'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: codify generated a separate model/harness runtime\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 181.475,
+              "log": "candidate-codify-scaffold-target-0.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 141.927,
+              "log": "candidate-codify-scaffold-target-1.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 149.014,
+              "log": "candidate-codify-scaffold-target-2.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 89.611,
+              "log": "candidate-codify-scaffold-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 136.579,
+              "log": "candidate-codify-scaffold-guard-1.log",
+              "sha256": "a626407facf1102b512cc38f00f6e7d889aa6280a5c03d1722ac6d1c4eb08dc5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 96.511,
+              "log": "candidate-codify-scaffold-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass codify-scaffold\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 143.628,
+              "log": "merged-codify-scaffold-target-0.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 130.313,
+              "log": "merged-codify-scaffold-target-1.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 198.455,
+              "log": "merged-codify-scaffold-target-2.log",
+              "sha256": "efbbdbf1148d7d93bf077d5148418307cbf74ae416c244c2c3a007975a33948a"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 129.451,
+              "log": "merged-codify-scaffold-guard-0.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 114.866,
+              "log": "merged-codify-scaffold-guard-1.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 111.05,
+              "log": "merged-codify-scaffold-guard-2.log",
+              "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+            }
+          ],
+          "first_target_log": "pass codify-scaffold\n"
+        }
+      },
+      {
+        "case": "inventory",
+        "hypothesis": "Freeze the package inventory expected by the compiler’s own freshness check.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 477.35,
+              "log": "baseline-inventory-target-0.log",
+              "sha256": "21856f95c6e8c1a5b1ef9327cb09bd2439d74ff02738b9e475be500395a3ba18",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 406.571,
+              "log": "baseline-inventory-target-1.log",
+              "sha256": "6d4e2121d408af7587391e0fd32023d6939a11fe7d8fae7f9423346431139db3",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 438.475,
+              "log": "baseline-inventory-target-2.log",
+              "sha256": "54c014477bd953309b15794c726cee272cc8cff378b0888e9e69a8cc930b36ab",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 1307.385,
+              "log": "baseline-inventory-guard-0.log",
+              "sha256": "8948291010505690d0dfd9a161de2cecff1b6451c29314deed10c471488b6ce6",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 1051.695,
+              "log": "baseline-inventory-guard-1.log",
+              "sha256": "842ef5aa70a3de2b98bc33422254453bc73ce8182506cf36d43cad95af0fee5c",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 1110.85,
+              "log": "baseline-inventory-guard-2.log",
+              "sha256": "e35affcf81fd2d1287962c0b25dc9d2dedcdcdf627eab45c981e7b94e6442244",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            }
+          ],
+          "first_target_log": "E\n======================================================================\nERROR: test_contract_package_compiles_its_default_inventory_and_rejects_drift (test_codify.CodifyTests.test_contract_package_compiles_its_default_inventory_and_rejects_drift)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-constrain/tests/test_codify.py\", line 74, in test_contract_package_compiles_its_default_inventory_and_rejects_drift\n    artifact = codify.check(self.output)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/work/tkstack-constrain/skills/learn/skills/codify/scripts/codify.py\", line 337, in check\n    raise ValueError(\"Stale workflow inventory; recompile explicitly: \" + shown)\nValueError: Stale workflow inventory; recompile explicitly: Normalize.md, cases.json, references/guide.md\n\n----------------------------------------------------------------------\nRan 1 test in 0.216s\n\nFAILED (errors=1)\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 381.11,
+              "log": "candidate-inventory-target-0.log",
+              "sha256": "3420909f8b5c2e3ee7325bad5947edcfa5b9f48b5d7f6d59842d38ed1ffb6865",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 457.931,
+              "log": "candidate-inventory-target-1.log",
+              "sha256": "c4b85d3f5a796661aadc8b8aa6f0ecd25c887a0f419ae23c62d10fa609850fe9",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 346.115,
+              "log": "candidate-inventory-target-2.log",
+              "sha256": "0a8b6e4da6781683fcc6e305b54222b6ea488f0cad35f6fffbcfba2e9fd754ef",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 1030.639,
+              "log": "candidate-inventory-guard-0.log",
+              "sha256": "2875f6ec4a7e1c85cf052af1611215ee65fea26c88dd2556cdab42c01f6a6f49",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 1079.958,
+              "log": "candidate-inventory-guard-1.log",
+              "sha256": "f619e711276fd70ab6327deceb6ef339085001a5b01eb189451c05787338439c",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 1139.234,
+              "log": "candidate-inventory-guard-2.log",
+              "sha256": "61dbc5de5050663206ca19d09d03aaa8fa9b0e4f5a22ff7b8a64438513d2214d",
+              "test_sha256": "44dc7c19772e9793c79ed6185af545655a45440010599e7eefabd27e81577503"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.175s\n\nOK\n"
+        },
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 321.016,
+              "log": "merged-inventory-target-0.log",
+              "sha256": "f273be5bbc99663e9adf2c4e013ddd5aa3553edbe28d7c83f63f52f3a32e5369",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 321.429,
+              "log": "merged-inventory-target-1.log",
+              "sha256": "f273be5bbc99663e9adf2c4e013ddd5aa3553edbe28d7c83f63f52f3a32e5369",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 322.735,
+              "log": "merged-inventory-target-2.log",
+              "sha256": "a0cfe86190080202d3aacea1d756d87348fe49085a7b87f661f9376bb1954a95",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 1062.931,
+              "log": "merged-inventory-guard-0.log",
+              "sha256": "34e8ad414188a68fae624869fbf27336954ba86ebbb6e790c43dbcae302b432b",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 905.53,
+              "log": "merged-inventory-guard-1.log",
+              "sha256": "ae87650641854912e0c9230c5914ab2a0e385f65faa399c2a8d354f7d5f13b0f",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 902.428,
+              "log": "merged-inventory-guard-2.log",
+              "sha256": "b81d661bc25c11775452d0d7ec8c8030cf007f56ee1320a557090dae05465077",
+              "test_sha256": "4010250d103588740f56f0ca5abf0fd199b32e8836a847a2cfab2861ecd0955b"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.144s\n\nOK\n"
+        }
+      },
+      {
+        "case": "confusion",
+        "hypothesis": "Distinguish false-positive and false-negative host judgments.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 305.104,
+              "log": "baseline-v3-confusion-target-0.log",
+              "sha256": "1d0cf6126925f04737085f2e51504b64a7fb32e3cbf8c98e6e9231f78922044d",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 225.366,
+              "log": "baseline-v3-confusion-target-1.log",
+              "sha256": "d9feb54a09184f8fe93ee1170dcb4bff04b48026f897227ca7f843db65a8dbf6",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 318.605,
+              "log": "baseline-v3-confusion-target-2.log",
+              "sha256": "7ef7f8057a141024b0706644a94e14323bc22067b321ad13a62a64e159ba8279",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 585.018,
+              "log": "baseline-v3-confusion-guard-0.log",
+              "sha256": "af793779fa67246e141efc84bae1047dce8bfb39135b73ef2d5af651f6b388c5",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 548.546,
+              "log": "baseline-v3-confusion-guard-1.log",
+              "sha256": "1634aa068e72aecdd48609164599c9754f5d36ad8131e4dae834a920f6245b6c",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 516.057,
+              "log": "baseline-v3-confusion-guard-2.log",
+              "sha256": "bcaed3a7ad6d9cf391ccb6719d7e572c67daf16e237b619f28d4d3e39d15196d",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": "E\n======================================================================\nERROR: test_calibration_distinguishes_false_positives_from_false_negatives (test_evalify.EvalifyTests.test_calibration_distinguishes_false_positives_from_false_negatives)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/evalify-baseline-confusion/tests/test_evalify.py\", line 79, in test_calibration_distinguishes_false_positives_from_false_negatives\n    self.assertEqual(calibration['confusion'], {'true_positive': 1, 'true_negative': 1,\n                     ~~~~~~~~~~~^^^^^^^^^^^^^\nKeyError: 'confusion'\n\n----------------------------------------------------------------------\nRan 1 test in 0.173s\n\nFAILED (errors=1)\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 1237.613,
+              "log": "candidate-v2-confusion-target-0.log",
+              "sha256": "1ad8b829eae0097637ae1b2ce012634d1e065cf16037b81a42cb217d59b3edef",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 251.775,
+              "log": "candidate-v2-confusion-target-1.log",
+              "sha256": "ecfae4c055fbe7795c0401c236d69c667f6ef424586d05ba2c5aaada6468bae5",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 378.804,
+              "log": "candidate-v2-confusion-target-2.log",
+              "sha256": "d449397493bd4cd3d1e811413ff74c6f309e51abab23aa62ac93624a90912939",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 718.944,
+              "log": "candidate-v2-confusion-guard-0.log",
+              "sha256": "71108f9754c527d02a451ffabbb62b064dd8f568f1f512d20d1b885a0c0e3c2b",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 608.652,
+              "log": "candidate-v2-confusion-guard-1.log",
+              "sha256": "ad1c2477e590aef3abe33921feb7ab6c3bf0ed4e1f161cc3f93727ef4f345abe",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 566.11,
+              "log": "candidate-v2-confusion-guard-2.log",
+              "sha256": "af65a811086d28f004055023c33bf1374339c02963ca756f619110ea25cffcb0",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.445s\n\nOK\n"
+        },
+        "baseline_commit": "c2cfc84",
+        "candidate_commit": "ce40678",
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 220.111,
+              "log": "merged-confusion-target-0.log",
+              "sha256": "e8fa7046ec4873655e3fe0490885465f3f5c4bcc04487625e0ffa81a6fa10273",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 231.86,
+              "log": "merged-confusion-target-1.log",
+              "sha256": "10063a6af10eb3a2ebb24aa694cc5aa63d76c1bc18774591d00cc6088fb21f13",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 225.186,
+              "log": "merged-confusion-target-2.log",
+              "sha256": "10063a6af10eb3a2ebb24aa694cc5aa63d76c1bc18774591d00cc6088fb21f13",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 514.654,
+              "log": "merged-confusion-guard-0.log",
+              "sha256": "8c01189b3404f0b090a0cb18a445310f895e032878435d262fc3113ba358e9ce",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 521.676,
+              "log": "merged-confusion-guard-1.log",
+              "sha256": "79a21a17d17d388d3792da01bebbef0f7f42728a8ba0e85b9edc270c551def1a",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 621.381,
+              "log": "merged-confusion-guard-2.log",
+              "sha256": "6573c7df3eab812c6938b26f486a9f88517d4838d36b9fcb8b323b07045e3c9d",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.116s\n\nOK\n"
+        }
+      },
+      {
+        "case": "timing",
+        "hypothesis": "Summarize observed host durations without filling in missing observations.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 295.916,
+              "log": "baseline-v3-timing-target-0.log",
+              "sha256": "500d033f314821fc7604a341e34ae634005d72e7865e0420f42bf0a776d36edd",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 302.291,
+              "log": "baseline-v3-timing-target-1.log",
+              "sha256": "71a354e271608ff6ddf0f9e5d726d49b93a6f8d5c6511715d18209a9646e7c35",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 279.91,
+              "log": "baseline-v3-timing-target-2.log",
+              "sha256": "78b56360b0079046fa9f4e4587dd13b9ba9afc6d5da4387111a0345cf54c5afb",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 541.917,
+              "log": "baseline-v3-timing-guard-0.log",
+              "sha256": "bb8338622ea5a4661a6b6886d302e5c25022cc8bec1114f4c0aff03047d9fda3",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 601.156,
+              "log": "baseline-v3-timing-guard-1.log",
+              "sha256": "af793779fa67246e141efc84bae1047dce8bfb39135b73ef2d5af651f6b388c5",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 554.225,
+              "log": "baseline-v3-timing-guard-2.log",
+              "sha256": "e2489ef34799d5ce9637de6dbe7081fad35813da86195d707615f5fb8ead503f",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": "E\n======================================================================\nERROR: test_host_timing_summary_preserves_unknown_observations (test_evalify.EvalifyTests.test_host_timing_summary_preserves_unknown_observations)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/evalify-baseline-timing/tests/test_evalify.py\", line 89, in test_host_timing_summary_preserves_unknown_observations\n    summary = json.loads((self.root / 'timing.json').read_text())['timing']\n              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'timing'\n\n----------------------------------------------------------------------\nRan 1 test in 0.183s\n\nFAILED (errors=1)\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 369.342,
+              "log": "candidate-v2-timing-target-0.log",
+              "sha256": "acbb93df8f1dff9724237252f0843e44b481e969a7158edabc66dd8938fe381c",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 459.626,
+              "log": "candidate-v2-timing-target-1.log",
+              "sha256": "7659c04d981879751aa3d77d32894aa4b53e11e89e5f85b3d3fd7f2ed8753858",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 475.632,
+              "log": "candidate-v2-timing-target-2.log",
+              "sha256": "4a47717c2d56cf56275fb603b3d501ac4334c19ed218c2a448b3b3916eeef536",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 658.403,
+              "log": "candidate-v2-timing-guard-0.log",
+              "sha256": "992caf13b148a1b2cc82558f46d2deba9c7c3ebe50b0bc65614c1ae02c41d87a",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 580.004,
+              "log": "candidate-v2-timing-guard-1.log",
+              "sha256": "6393d15dff624c5db685d2a3bc00482b7e231ce4e7d495fe2c7d247f40a02fbc",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 589.096,
+              "log": "candidate-v2-timing-guard-2.log",
+              "sha256": "cc0aa053797eb1753201c729a81691e8161c07a45d10143ee894382976e0aeb1",
+              "test_sha256": "3bb13227d498cdd8b6c333d3fca8b8c9687d5bfb1d299d495774cb6210684e9c"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.258s\n\nOK\n"
+        },
+        "baseline_commit": "9f7eaa6",
+        "candidate_commit": "d5bb3c7",
+        "merged_candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 360.945,
+              "log": "merged-timing-target-0.log",
+              "sha256": "e6b0cd8f7dffeb73e3266e7fdaa58762e7c73282db31c8d3930a12ac5904f8b6",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 339.089,
+              "log": "merged-timing-target-1.log",
+              "sha256": "ea8a7f9a5149ead78602b38c26a78ef84b3f07c3020995ff1a3b881bcb57ad5f",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 336.091,
+              "log": "merged-timing-target-2.log",
+              "sha256": "6249146287fe38bf0b1fb3d144fb631e57d77e55c4f0265618beebb73b1f4914",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 557.465,
+              "log": "merged-timing-guard-0.log",
+              "sha256": "55d5212a109589d4b4ff7ba84e7f2e5a2e7cfb95e6ed00b2cbaf47e59dcbfdcc",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 599.233,
+              "log": "merged-timing-guard-1.log",
+              "sha256": "756606e75ce5fde38fcffe01260a370b162a5af11bafd39e85dfc1bd11241ea8",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 524.583,
+              "log": "merged-timing-guard-2.log",
+              "sha256": "9ad1d46ad18a9def4839b52852a3fc936971cc95fd86f5807f5fbbe2bb53e6b9",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.244s\n\nOK\n"
+        }
+      },
+      {
+        "case": "extreme-duration",
+        "hypothesis": "Reject unrepresentable elapsed values cleanly before analysis.",
+        "baseline": {
+          "target_passes": 0,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 1,
+              "elapsed_ms": 229.466,
+              "log": "baseline-target-0.log",
+              "sha256": "fd323ad53763d0f8cf67699870eb1549430c98e8d0e4d083bdafd195ee3f43ab",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 1,
+              "elapsed_ms": 241.982,
+              "log": "baseline-target-1.log",
+              "sha256": "d69f2990e02d912d4aa2e2eefbbcf96f0e1a3eb6c934d9efa0c6976317b0fefa",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 1,
+              "elapsed_ms": 263.797,
+              "log": "baseline-target-2.log",
+              "sha256": "994997aaa82ebed57b2907e8ff98138380880163e2412b641fa79981e150b44d",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 680.414,
+              "log": "baseline-guard-0.log",
+              "sha256": "203da42ef62aae56ebd1d12648988166db5dc713a82af24d7bb09f888b521f10",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 573.715,
+              "log": "baseline-guard-1.log",
+              "sha256": "31605e6650338166586c622392f3648ccd02cc86f28ee3ed42bb473a2dc2d791",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 652.549,
+              "log": "baseline-guard-2.log",
+              "sha256": "bbda19d5157392e05a84dd49d9d0e0f68a73c3a20b6e491d12ecf42849f82c0d",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": "F\n======================================================================\nFAIL: test_extreme_host_duration_fails_cleanly_before_dispatch (test_evalify.EvalifyTests.test_extreme_host_duration_fails_cleanly_before_dispatch)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/work/tkstack-integration/tests/test_evalify.py\", line 122, in test_extreme_host_duration_fails_cleanly_before_dispatch\n    self.assertIn('Elapsed milliseconds', result.stderr)\nAssertionError: 'Elapsed milliseconds' not found in 'Traceback (most recent call last):\\n  File \"/workspace/work/tkstack-integration/skills/learn/skills/evalify/scripts/evalify.py\", line 208, in <module>\\n    raise SystemExit(main())\\n                     ^^^^^^\\n  File \"/workspace/work/tkstack-integration/skills/learn/skills/evalify/scripts/evalify.py\", line 104, in main\\n    raw, cases = read_cases(source)\\n                 ^^^^^^^^^^^^^^^^^^\\n  File \"/workspace/work/tkstack-integration/skills/learn/skills/evalify/scripts/evalify.py\", line 71, in read_cases\\n    if elapsed is not None and (isinstance(elapsed, bool) or not isinstance(elapsed, (int, float)) or not math.isfinite(elapsed) or elapsed < 0):\\n                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^\\nOverflowError: int too large to convert to float\\n'\n\n----------------------------------------------------------------------\nRan 1 test in 0.078s\n\nFAILED (failures=1)\n"
+        },
+        "candidate": {
+          "target_passes": 3,
+          "guard_passes": 3,
+          "repetitions": 3,
+          "observations": [
+            {
+              "kind": "target",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 310.183,
+              "log": "candidate-target-0.log",
+              "sha256": "a74157e4f452f46b4be5e1ff4b5147b2e8372a03265c2e08dda0b642a4b06763",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 263.753,
+              "log": "candidate-target-1.log",
+              "sha256": "13776c3dae1886542afebd793c5293fee6f765d7dc0e87bf738741d5f619261e",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "target",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 255.39,
+              "log": "candidate-target-2.log",
+              "sha256": "06e514f0aaca2195def37a23faf50b2546a36dc9b10c83ee5ee5d58de9fb477b",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 0,
+              "exit": 0,
+              "elapsed_ms": 651.036,
+              "log": "candidate-guard-0.log",
+              "sha256": "90e8fa28984015f375e7e18582f0e2ac2076d76e4edea6c017d35a2551ab6aa0",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 1,
+              "exit": 0,
+              "elapsed_ms": 619.306,
+              "log": "candidate-guard-1.log",
+              "sha256": "5e8ec1be5a81c58210761e2829044a39a0c3b6acb8283320a36a0497cd4c31c4",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            },
+            {
+              "kind": "guard",
+              "rep": 2,
+              "exit": 0,
+              "elapsed_ms": 577.819,
+              "log": "candidate-guard-2.log",
+              "sha256": "df9d71d13c46ae4360cf47fbe378ac845472f0dd7fd29a215d2159fd1554ba72",
+              "test_sha256": "f7f4127ee125e7719412fff4235df6713b4fbe08cb893a9b0c51ed58eab16218"
+            }
+          ],
+          "first_target_log": ".\n----------------------------------------------------------------------\nRan 1 test in 0.074s\n\nOK\n"
+        },
+        "candidate_commit": "c4daf23"
+      }
+    ],
+    "limits": [
+      "All cases are locally authored and visible to the proposing agent; they are exploratory, not independent semantic holdouts.",
+      "No other model, agent harness, or paid model call was used.",
+      "Promptfoo was used only for deterministic assertion processing of supplied host judgments.",
+      "The host-bound provenance label and host timing records are supplied data, not authenticated identity or automatically instrumented model calls.",
+      "Arbitrary trusted native code and host MCP calls are not a general network sandbox or automatically timed by this adapter."
+    ],
+    "final_stability": [
+      {
+        "case": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch",
+        "rep": 0,
+        "exit": 0,
+        "elapsed_ms": 1889.429,
+        "log": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch-0.log",
+        "sha256": "1d3a78ff6269e00b9da4b1446cdfab30d4b65403e543ad784b4b52cdc5908d7b"
+      },
+      {
+        "case": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch",
+        "rep": 1,
+        "exit": 0,
+        "elapsed_ms": 1816.102,
+        "log": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch-1.log",
+        "sha256": "48406388b0461312b9fa406312271dfcc519490adace07ad9f4e40b4a707f48c"
+      },
+      {
+        "case": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch",
+        "rep": 2,
+        "exit": 0,
+        "elapsed_ms": 1960.929,
+        "log": "test_concurrent_analysis_reserves_receipt_and_output_before_dispatch-2.log",
+        "sha256": "82e1a6105659f720c81d9c92743e569b52c56a60286cb8c08d5a4fd5643810f8"
+      },
+      {
+        "case": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time",
+        "rep": 0,
+        "exit": 0,
+        "elapsed_ms": 1161.712,
+        "log": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time-0.log",
+        "sha256": "af50220fb18c4b6dacf400c21035fa3ad47786d950324b7e2ac9dc202afb2a4f"
+      },
+      {
+        "case": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time",
+        "rep": 1,
+        "exit": 0,
+        "elapsed_ms": 1206.362,
+        "log": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time-1.log",
+        "sha256": "3b1e7d1bf936116489748ae86b7118cccd16d23d99ece8684b37be69e6d19131"
+      },
+      {
+        "case": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time",
+        "rep": 2,
+        "exit": 0,
+        "elapsed_ms": 1195.814,
+        "log": "test_timeout_stops_offline_analysis_group_and_records_elapsed_time-2.log",
+        "sha256": "b018b07d20abf04b1552d8c3afbeda2239f8adc323b9c7215744db8b8af1417c"
+      }
+    ],
+    "self_evaluation": {
+      "rubric_and_limit": "# Same-conversation evaluation smoke\n\nRubric: pass a test when it exercises a distinct observable failure with an\nindependently meaningful assertion; fail a constant tautology.\n\nThe invoking agent reviewed the direct-workflow timing case in\ntests/test_stack_runner.py as positive, the self-equality bad fixture in\ntests/test_constrain.py as negative, and the extreme-duration rejection case\nin tests/test_evalify.py as positive. The first two expected labels were\nauthored in this same conversation, so they are not independent human labels.\nHost judgment durations were unavailable and are recorded as null. This smoke\ndemonstrates the workflow, not model calibration or a performance gain.\n",
+      "cases": {
+        "version": 1,
+        "source": "invoking-agent",
+        "cases": [
+          {
+            "id": "trace-positive",
+            "judgment": true,
+            "reference": true,
+            "elapsed_ms": null
+          },
+          {
+            "id": "tautology-negative",
+            "judgment": false,
+            "reference": false,
+            "elapsed_ms": null
+          },
+          {
+            "id": "extreme-duration",
+            "judgment": true,
+            "reference": null,
+            "elapsed_ms": null
+          }
+        ]
+      },
+      "result": {
+        "calibration": {
+          "confusion": {
+            "false_negative": 0,
+            "false_positive": 0,
+            "true_negative": 1,
+            "true_positive": 1
+          },
+          "matched": 2,
+          "total": 2
+        },
+        "current": {
+          "passed": 1,
+          "total": 1
+        },
+        "timing": {
+          "max_ms": null,
+          "median_ms": null,
+          "missing": 3,
+          "observed": 0
+        }
+      },
+      "receipt": {
+        "case_count": 3,
+        "cases_sha256": "ced984061a0e06d16c99602040a8ff8c1521ad8c9dd3029bac4010ac076a653f",
+        "elapsed_ms": 2730.768,
+        "exit_code": 0,
+        "framework": "promptfoo assertions",
+        "framework_version": "0.125.1",
+        "limits": "Source and per-case timings are supplied records, not authenticated host provenance.",
+        "operation": "run",
+        "source": "invoking-agent",
+        "started_at": "2026-11-18T00:47:35.098760+00:00",
+        "status": "pass",
+        "timeout_seconds": 20,
+        "version": 1
+      },
+      "limit": "Judgments and expected labels were authored in the same conversation; this is a real workflow smoke, not independent calibration."
+    }
+  },
+  "merged_stack_validation": {
+    "tested_commit": "c4daf234ff8cc30ed7f0302fe7466f5043da8b6e",
+    "full_unittest_count": 590,
+    "skipped": 10,
+    "elapsed_seconds": 349.77,
+    "repo_quality_gate": true,
+    "real_promptfoo_assertions": true,
+    "model_calls": 0,
+    "scope": "The full suite preceded only the evidence and documentation commit."
+  },
+  "final_interpretation": "Fifteen retained local regression scenarios improved from 0/3 to 3/3 with separate guards 3/3 before and after. Fourteen previously measured scenarios were repeated after merging main; the extreme-duration case was measured on the merged code. These are authored, same-session correctness checks, not independent model-quality or latency benchmarks. Three earlier adapter/evolution scenarios were superseded by the host-only redesign."
+}

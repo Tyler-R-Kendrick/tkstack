@@ -13,7 +13,7 @@ from tkstack_state import ensure_state, session_path, state_container, state_roo
 
 ROUTES = {'reasoning': 'learn', 'instruction': 'instructify', 'procedure': 'skillify',
           'native-workflow': 'flowify', 'compiled-workflow': 'codify',
-          'lint-rule': 'lintify', 'behavioral-test': 'testify', 'event-guard': 'hookify', 'reusable-code': 'reusify'}
+          'lint-rule': 'lintify', 'behavioral-test': 'testify', 'model-evaluation': 'evalify', 'event-guard': 'hookify', 'reusable-code': 'reusify'}
 FIELDS = ('observation', 'trigger', 'principle', 'boundary', 'transfer', 'counterexample', 'rationale', 'scope_basis')
 MAX_FILES, MAX_BYTES, MAX_SESSIONS = 128, 1024 * 1024, 64
 

@@ -76,7 +76,7 @@
     {
       "name": "learn",
       "source": "./skills/learn",
-      "description": "Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.",
+      "description": "Learn from user corrections, frustrations, workflow outcomes, and temporary .tkstack sessions. Use for /learn, help, repeated instructions, a rejected approach, session consolidation, report-only audits, or direct evalify/skillify/hookify/instructify/flowify/lintify/testify/reusify/codify subcommands. Preserve provenance, extract scoped reasoning rules, and turn verified procedural lessons into reviewable reusable artifacts shared across harnesses.",
       "version": "0.8.0",
       "license": "MIT",
       "strict": false,

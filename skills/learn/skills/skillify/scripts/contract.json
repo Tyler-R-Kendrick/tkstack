@@ -105,8 +105,7 @@
           "schema": {
             "type": "string",
             "enum": [
-              "python",
-              "ai-sdk"
+              "python"
             ]
           },
           "flags": [
@@ -230,20 +229,6 @@
           ],
           "default": null
         },
-        "profile": {
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "flags": [
-            "--profile"
-          ],
-          "repeat": true,
-          "default": []
-        },
         "dependencies": {
           "schema": {
             "type": [
@@ -276,19 +261,6 @@
             "--dry-run"
           ],
           "default": false
-        },
-        "config": {
-          "schema": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "flags": [
-            "--config"
-          ],
-          "path": true,
-          "default": null
         },
         "project": {
           "schema": {
@@ -333,7 +305,7 @@
         "native",
         "compile"
       ],
-      "description": "Compile supplied native code and actual contract cases with the existing skillify compiler. Cases can execute their declared effects/inference; retain actual authorization and explicit profiles."
+      "description": "Compile supplied code and cases without selecting a separate model or agent harness."
     }
   },
   "limits": [

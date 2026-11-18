@@ -6,8 +6,8 @@
    do not expand the current task's authority. Audit/preview stays read-only.
 2. Inspect reusable functions, templates, generators, and native workflow hosts
    before producing code. Reuse an existing implementation when it satisfies the
-   contract. Choose pure Python for deterministic procedures; use the shared
-   TypeScript/Vercel AI SDK backend only where actual inference is needed. For
+   contract. Choose pure Python for deterministic procedures; leave semantic judgment
+   with the invoking agent. For
    MAF YAML or Grok-hosted Rhai, use flowify when available and compile a thin
    native-host binding with its real definitions included. Do not create a
    private workflow language. A lock is a build manifest/code image, not a DSL.
@@ -15,8 +15,7 @@
    explicit JSON CLI. The agent can use inference during this authoring stage;
    the finished code must implement the procedure rather than forward the whole
    source prompt to a model at runtime. Facts, branching, policy gates, limits,
-   data dependencies, and error propagation belong in code. Keep residual
-   generation/classification/harness calls behind explicit named profiles.
+   data dependencies, and error propagation belong in code. Keep residual semantic judgment in the invoking conversation.
 4. Define a contract case file with reproducing, transfer, rejection, and relevant
    boundary cases. Positive and negative cases are mandatory. Observe real
    domain outcomes, not only scaffolding or marker absence. Freeze expected
@@ -30,7 +29,7 @@
    time. Compilation executes the trusted workflow on fixtures, so use cases
    with authorized, isolated effects and explicit resource budgets.
 6. Update the invocation index/tool documentation to run the lock. Describe its
-   exact input/output contract, errors, effects, profile requirements, and build
+   exact input/output contract, errors, effects, host boundaries, and build
    command. For a skill keep `SKILL.md` as a short table of contents; retain the
    original Markdown as provenance where conversion replaces its entrypoint.
 7. Inspect the generated code and lock, execute real transfer cases through

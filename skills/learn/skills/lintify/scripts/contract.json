@@ -67,8 +67,7 @@
             "type": "string",
             "enum": [
               "eslint",
-              "lintbook",
-              "gptlint"
+              "lintbook"
             ]
           },
           "flags": [
@@ -91,7 +90,7 @@
         "native",
         "scaffold"
       ],
-      "description": "Create the existing native ESLint/Lintbook/GPTLint example package; installation never activates it."
+      "description": "Create the existing deterministic ESLint or Lintbook example package."
     }
   },
   "limits": [

@@ -3,12 +3,12 @@ import json
 from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parent.parent
-BACKENDS = {"python": ("py", "python3"), "ai-sdk": ("ts", "node")}
+BACKENDS = {"python": ("py", "python3")}
 
 
 def workflow_files(backend, description):
     if backend not in BACKENDS:
-        raise ValueError("Backend must be python or ai-sdk")
+        raise ValueError("Only the deterministic Python backend is supported")
     suffix, runtime = BACKENDS[backend]
     files = {"scripts/LICENSE.tkstack": (PACKAGE / "LICENSE").read_bytes()}
     files["scripts/tkstack_state.py"] = (PACKAGE / "scripts/tkstack_state.py").read_bytes()
@@ -22,15 +22,9 @@ def workflow_files(backend, description):
     for path in (PACKAGE / "templates" / backend).iterdir():
         data = path.read_text().replace("@DESCRIPTION_JSON@", json.dumps(description))
         files["scripts/" + path.name] = data.encode()
-    if backend == "ai-sdk":
-        runtime_directory = PACKAGE / "scripts/ai-runtime"
-        for name in ("package.json", "package-lock.json", "tsconfig.json", "config.ts", "harness.ts",
-                     "inference.ts", "limits.ts", "profiles.json", "runtime.test.ts"):
-            files["scripts/" + name] = (runtime_directory / name).read_bytes()
     guide = (PACKAGE / "templates/tool.md.tmpl").read_text()
     replacements = {"@ENTRYPOINT@": f"scripts/run.{suffix}", "@WORKFLOW@": f"scripts/workflow.{suffix}",
-        "@SETUP@": "# From this skill directory; Python 3.11+; no package install." if backend == "python" else
-                    "# From this skill directory; Node 24+.\nnpm --prefix scripts ci",
+        "@SETUP@": "# From this skill directory; Python 3.11+; no package install.",
         "@INVOKE@": f"{runtime} scripts/run.{suffix} --input /path/to/input.json"}
     for key, value in replacements.items():
         guide = guide.replace(key, value)

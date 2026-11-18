@@ -13,20 +13,18 @@ test scenarios provide a final measurement and never drive edits. Fixed tests
 lose their novelty over repeated tuning; add genuinely new scenarios and retain
 their provenance before claiming generalization.
 
-Run the pinned SkillOpt-Sleep engine with:
+Prepare reviewed authored cases for the current agent with:
 
 ```sh
-python3 skills/learn/scripts/evolve.py learn --backend mock --dry-run
-python3 skills/learn/scripts/evolve.py learn
-python3 skills/learn/scripts/evolve.py sdlc
+python3 skills/learn/scripts/evolve.py learn --dry-run
+python3 skills/learn/scripts/evolve.py constrain
 ```
 
-Default `handoff` runs return exit 3 while fresh-context model replies are
-pending. Follow the [official handoff instructions](../vendor/skillopt/plugins/claude-code/commands/skillopt-sleep-handoff.md)
-and repeat the identical command for each round. Do not answer from a context
-that has seen the references or optimizer run. Completed proposals remain
-staged for review; no live skill, memory, steering ledger, or upstream snapshot
-is automatically changed. See [the evaluation and usage guide](../docs/skill-evolution.md).
+This validates case shape and pinned inputs without invoking a model or launching
+another harness. The current agent performs any semantic evaluation in its
+existing conversation. Cases and labels it can see are not independent holdouts.
+The old separate-backend results below are historical and do not authorize
+replaying another model or agent.
 
 ## All 19 owned skills
 
@@ -38,6 +36,21 @@ real handoff results are recorded in
 rejected a perfect tie; no arbitrary optimizer edit was adopted. These narrow
 policy cases complement actual compiler/native/report behavior tests, rather
 than replacing full skill outcomes or creative/provider execution.
+
+Constrain's authored decisions include test overlap, mutation survivors,
+boundary protection and agent outcomes. The replay supplies the target
+`SKILL.md` text, so these multiple-choice cases do not by themselves exercise
+the linked test-value reference or demonstrate a working portfolio review.
+Measuring that procedure requires representative repository tasks, actual
+runner traces and independently reviewed outcomes; a mock run checks wiring only.
+Evalify's authored decisions and local fixture-judge integration similarly do
+not establish a calibrated live judge or a measured skill-quality gain.
+
+## Host-bound testing improvements
+
+The [2026-11-17 measured record](results/2026-11-17-host-bound-hill-climb.md)
+documents repeated local regression scenarios, superseded attempts, and the
+limits of same-conversation model evaluation.
 
 ## Repository quality
 
@@ -65,19 +78,6 @@ python3 -m unittest tests.test_repo_quality -v
 `python3 -m unittest discover` run. Set `REPO_QUALITY_GATE=1` to enforce them;
 a failure's text is that check's explanation and evidence.
 
-Promptfoo 0.125.1 grades ten `llm-rubric` metrics and passes only at score 1.0.
-`defaultTest.options.provider` is the grader. The default judge writes the
-prompt to a file and runs `grok --prompt-file <file> -m grok-4.7 --output-format
-plain --disable-web-search`. When `CURSOR_API_KEY` is set, the judge is
-`cursor-agent -p --model composer-2.5` with the prompt on stdin.
-`REPO_QUALITY_CURSOR_MODEL` replaces that model id. `REPO_QUALITY_JUDGE`
-replaces the whole command; put `{prompt}` or `{prompt_file}` where that value
-belongs. The judge allows 900 seconds and retries once if that command times
-out. The opt-in test requires every metric to score 1.0:
-
-```sh
-RUN_JUDGE=1 python3 -m unittest tests.test_repo_quality.RepoQualityTests.test_judge_eval -v
-```
-
-That executes `npx -y promptfoo@0.125.1 eval -c evals/repo-quality/eval.yaml --no-cache -o evals/repo-quality/results/latest.json`.
-`latest.json` is gitignored.
+The [rubric anchors](repo-quality/rubrics.md) can be reviewed by the invoking
+agent in its current conversation. They do not launch a separate model or
+harness, and a same-context review is not an independent benchmark.

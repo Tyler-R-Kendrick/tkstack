@@ -1,0 +1,114 @@
+# Repository-quality rubrics
+
+Use these anchors as guidance for the invoking agent in its current conversation.
+They do not by themselves establish independent model evaluation.
+
+## conventions
+
+Grade conventions. The repository follows its documented expectations, idioms, and conventions. Penalize surprises a reader would not predict from README.md, AGENTS.md, docs/harnesses.md, or the manifests.
+10: Layout, names, and install paths match those documents. Root files, skill paths, and harness placement are the ones the docs describe.
+7: One small surprise remains, and a specific file documents it.
+5: A parallel layout, naming scheme, or install path appears that those documents do not predict.
+3: Several undocumented roots or instructions contradict a stated convention.
+0: The snapshot shows no discernible convention, or its files contradict each other.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## minimal_setup
+
+Grade minimal setup. A new user reaches a working install from the quickstart with one command.
+10: The quickstart's first shell block is a single install command, and README.md states what that command does.
+7: One install command does the work, and a following command is only a documented reload of the current shell.
+5: The quickstart requires two or three commands, such as clone, enter the directory, and install.
+3: The quickstart is a longer procedure, or the user must install prerequisites by hand before the installer can run.
+0: README.md has no install command.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## minimal_code
+
+Grade minimal code. Installer and glue code stay small. Count non-blank lines under scripts/ plus src/. Also count a skills/**/scripts file only when scripts/, src/, CI, or tests are its only users and its own skill never mentions it in SKILL.md, references, or workflow. Skill engines the skill itself names, such as codify.py and skillify.py, stay product code even when a thin CLI imports them. Each script has one job.
+10: that total is at most 1500 non-blank lines, and the LOC breakdown shows a short, obvious split.
+7: that total is 1501 to 1650 non-blank lines, and the split is still obvious.
+5: that total is 1651 to 2500 non-blank lines, or the same behavior shows up in more than one script while the total is at most 2500.
+3: that total is more than 2500 non-blank lines, or large undifferentiated scripts dominate the counted files.
+0: The glue code is large enough that the snapshot's LOC breakdown has no readable structure.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## cross_harness
+
+Grade cross-harness support for all nine harnesses: claude, codex, cursor, copilot, grok, kimi, muse, opencode, and t3code. A mention in docs/harnesses.md or docs/ counts only when the snapshot also shows a placement, config, or install path for that harness.
+10: All nine are documented and have a real path in the tree, manifests, or harness docs.
+7: Seven or eight are documented with a real path, and the snapshot names the omitted harnesses as out of scope.
+5: Four, five, or six are actually supported.
+3: One, two, or three harnesses are actually supported.
+0: The snapshot has no harness story.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## marketplace_install
+
+Grade marketplace install. The checkout is a plugin/skills marketplace a user can add.
+10: .claude-plugin/marketplace.json and .claude-plugin/plugin.json are present and valid, every shown SKILL.md has name and description frontmatter, and the docs show a marketplace-add command that names both a package from those manifests and a placement path present in the tree. Pasting a command string that does not name a manifest package and a tree path does not qualify.
+7: The marketplace manifest is valid and skills have frontmatter, with one field missing from plugin.json or one skill.
+5: One of the two manifests is absent or invalid, and a marketplace path is still recognizable.
+3: Manifests are absent or broken, so install would be guesswork.
+0: The snapshot has no marketplace manifest and no skill frontmatter.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## direct_install
+
+Grade direct install. A user installs one plugin or one skill with one command.
+10: README.md or the docs give one install command that names a package from the manifests and a placement path present in the tree. A command string with no matching manifest package and tree path does not qualify.
+7: One command installs the whole set, and selecting a single skill needs one extra documented flag.
+5: Direct install is documented as several commands, or only as a local checkout plus extra steps.
+3: The docs mention direct install and omit a command that could succeed.
+0: The snapshot has no direct install command.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## state_of_the_art
+
+Grade state of the art for a portable agent-skills repository. Current practice is the Agent Skills layout, SKILL.md with name and description, a valid marketplace manifest, one marketplace-add command and one direct skill-add command, and harness-independent placement.
+10: The snapshot shows that layout, both commands, and multi-harness placement, and each command names a package from the manifest and a placement path present in the tree. The docs match those files. A bare command string with no matching package and path does not qualify.
+7: The main path is current, and one older mechanism remains explicitly labeled as legacy.
+5: The tree mixes a current skills layout with a single-harness or copy-the-prompts assumption.
+3: The layout is an older single-IDE prompt collection.
+0: The snapshot describes a repo that does not use current skill or plugin practice.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## documentation
+
+Grade documentation. README.md, AGENTS.md, docs/harnesses.md, and the docs list follow one repo convention and describe the files in the snapshot.
+10: Install, scope, harness placement, and limits are accurate, linked, and matched by the tree and manifests.
+7: Those docs are accurate, with one command or path left undocumented.
+5: Useful docs exist, and they omit or contradict a path the tree clearly contains.
+3: The docs are too sparse for a newcomer to tell what is supported.
+0: README.md is absent, or the docs describe a different repository.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## developer_experience
+
+Grade developer experience for someone maintaining this repo. The README shows how to install, preview, test, and check docs, and the root is easy to scan.
+10: Those maintainer commands are in README.md, a read-only preview exists, and the file tree keeps the entry points obvious.
+7: The maintainer loop is documented, with one awkward step such as a private test interpreter.
+5: The loop is split across several docs, and a maintainer can run the wrong command from README.md alone.
+3: Maintainer commands are buried, or the only documented install writes immediately with no preview.
+0: The snapshot shows no maintainer loop.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
+
+## dotfiles
+
+Grade this repository as dotfiles. Best practice is idempotent symlinks, a minimal install, a read-only dry run, and an uninstall that removes only this checkout's links.
+10: install.sh or the installer it documents provides idempotent links, --dry-run, and uninstall, and the quickstart is a minimal command.
+7: Idempotent install and --dry-run are present, and uninstall is documented one step away from install.sh.
+5: Install can be repeated, and either --dry-run or uninstall is absent.
+3: Install copies files into place, or a second run would disturb unrelated user files.
+0: The snapshot has no dotfiles installer.
+Use only the scores 0, 3, 5, 7, or 10. Set JSON score to that anchor divided by 10. pass is true only when score is 1.
+Reply with only JSON {"pass": bool, "score": 0..1, "reason": "..."}. The reason must cite specific file paths as evidence and explain every deduction from 10.
