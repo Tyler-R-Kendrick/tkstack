@@ -396,9 +396,9 @@
     "overlap": "Counting evidence differs from semantic equivalence; reuse-catalog boundary tests do not duplicate code-generation or task scheduling."
   },
   "tests/test_sdlc.py": {
-    "sha256": "f857cea2c9aaa7884114e4b746bf676d81c59b7bf8df444c66e1d88c7a07141f",
+    "sha256": "ccc337572e88c52739c09fbbe42b424aba4fafd6fb83f043aa62c9dc5418585d",
     "risk": "Task ownership, accepted heads or reviewed evidence could be bypassed across dependency transitions or concurrent execution.",
-    "oracle": "Use real Git fixtures and controlled leases/evidence mutations; assert rejection, invalidated descendants, isolated sparse worktrees and exact merge gates.",
+    "oracle": "Use real Git fixtures and controlled leases/evidence mutations; assert rejection, invalidated descendants, isolated sparse worktrees and exact merge gates. Exercise retained checker reports at the gate, including conflicting results, duplicate verdict fields, unreached conditions and baseline-only evidence. Vary a later binary or text read of the receipt and verify the checker uses only the bytes bound to its review hash.",
     "kinds": [
       "contract",
       "state-machine",
@@ -408,9 +408,9 @@
     "overlap": "Graph/proof semantics here complement durable transaction/restart behavior in test_sdlc_store. Example transitions are not TLA+ or Lean proofs."
   },
   "tests/test_sdlc_store.py": {
-    "sha256": "1690f109c713b6614146f1718842197c8cce811fd664ae11182a887ebdebe3e1",
+    "sha256": "1c63cc1c123e19ce7e1ad502382dfb2cdbeaf1e6abda9569e6894c4323b945e0",
     "risk": "Concurrent workers or recovery could double-claim tasks, lose committed state or accept stale lease tokens after restart.",
-    "oracle": "Run isolated durable-store and multi-process fixtures; inspect persisted state, exclusive tokens, crash rollback, revision invalidation and compiled CLI equivalence.",
+    "oracle": "Run isolated durable-store and multi-process fixtures; inspect persisted state, exclusive tokens, crash rollback, revision invalidation and compiled CLI equivalence. Inspect the affected task list through a grandchild while independent work can still be claimed.",
     "kinds": [
       "contract",
       "state-machine",

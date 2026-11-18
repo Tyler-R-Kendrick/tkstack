@@ -27,6 +27,11 @@ For active SDLC stacks, preserve the root-first squash/restack and exact-head
 gates in the existing stack reference. A watcher wake is an event, not permission
 or proof that merging is safe. Keep merged, deployed, and measured states distinct.
 
+For a schedule-dependent fix, hand off the replay command, failing sequence
+and affected revision. Keep the short regression in PR checks. Give any larger
+search or real-environment probe an owner, budget and trigger tied to the
+remaining risk. Feed a new escaped failure back into the relevant scenario.
+
 A handoff records original scope, current heads/worktree, completed evidence,
 failed attempts, remaining obligations, watcher/lease ownership, and one concrete
 next action. It does not launch a new agent or transfer a writer lease silently.
