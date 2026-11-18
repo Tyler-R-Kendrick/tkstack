@@ -15,11 +15,14 @@ import subprocess
 import sys
 sys.dont_write_bytecode = True
 import tempfile
+import threading
+import time
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from tkstack_state import ensure_state, state_path, project_root, session_tempdir
 from json_contract import loads as parse_json
+from package_runtime import can_wait_unreaped, wait_unreaped, reap_owned
 
 PACKAGE = Path(__file__).resolve().parent.parent
 _spec = importlib.util.spec_from_file_location("codify_workflow_authoring_" + hashlib.sha256(str(PACKAGE).encode()).hexdigest()[:12], PACKAGE / "scripts/workflow_authoring.py")
@@ -338,14 +341,15 @@ def check(path):
     return lock
 
 
-def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, environment=None):
+def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, environment=None, max_timeout=300):
     if lock['inference']['mode'] != 'none' or config is not None:
         raise ValueError("Separate model or harness inference is not supported; use the invoking agent")
     decoded = decode_files(lock)
     if not isinstance(payload, dict) or len(canonical(payload)) > 1024 * 1024:
         raise ValueError("Input must be a JSON object within 1 MiB")
-    if not 1 <= timeout <= 300:
-        raise ValueError("Timeout must be 1..300 seconds")
+    if (type(max_timeout) is not int or not 300 <= max_timeout <= 86400 or
+            type(timeout) is not int or not 1 <= timeout <= max_timeout):
+        raise ValueError(f"Timeout must be 1..{max_timeout} seconds")
     if lock['inference']['mode'] == 'none' and config is not None:
         raise ValueError("This lock declares no inference; external profiles are not accepted")
     if config is not None:
@@ -393,16 +397,57 @@ def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, e
             child_environment = dict(os.environ if environment is None else environment)
             shared_group = child_environment.get('TKSTACK_CODIFY_EXECUTION') == '1'
             child_environment['TKSTACK_CODIFY_EXECUTION'] = '1'
-            process = subprocess.Popen(command, cwd=work, env=child_environment, stdout=out, stderr=err, start_new_session=not shared_group)
+            graceful = max_timeout > 300 and os.name == 'posix'
+            if graceful and shared_group:
+                raise ValueError('Long-running commands require an independent process group')
+            if os.name == 'posix' and not can_wait_unreaped():
+                raise ValueError('Commands require non-reaping POSIX process supervision')
+            process = None
+            pending_signal = False
+            class Cancelled(Exception):
+                pass
+            def cancel(_signum, _frame):
+                nonlocal pending_signal
+                if process is None:
+                    pending_signal = True
+                    return
+                raise Cancelled()
+            handles_term = os.name == 'posix' and threading.current_thread() is threading.main_thread()
+            previous_term = signal.signal(signal.SIGTERM, cancel) if handles_term else None
+            previous_int = signal.signal(signal.SIGINT, cancel) if handles_term else None
             try:
                 try:
-                    code = process.wait(timeout=timeout)
-                except (subprocess.TimeoutExpired, KeyboardInterrupt):
-                    if shared_group:
-                        process.kill()
+                    process = subprocess.Popen(command, cwd=work, env=child_environment, stdout=out, stderr=err,
+                                               start_new_session=not shared_group)
+                    if pending_signal:
+                        raise Cancelled()
+                    if os.name == 'posix':
+                        wait_unreaped(process, timeout)
+                        code = reap_owned(process, kill_group=not shared_group)
                     else:
-                        os.killpg(process.pid, signal.SIGKILL)
-                    process.wait()
+                        code = process.wait(timeout=timeout)
+                except (subprocess.TimeoutExpired, KeyboardInterrupt, Cancelled):
+                    if handles_term:
+                        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+                        signal.signal(signal.SIGINT, signal.SIG_IGN)
+                    if process is None:
+                        raise ValueError("Workflow interrupted before launch")
+                    if process.returncode is not None:
+                        raise ValueError("Workflow deadline exceeded or invocation interrupted")
+                    if graceful:
+                        try:
+                            if shared_group:
+                                process.terminate()
+                            else:
+                                os.killpg(process.pid, signal.SIGTERM)
+                        except ProcessLookupError:
+                            pass
+                        # Do not reap the leader before signaling the group again.
+                        # Native controllers need bounded time to stop their own sessions.
+                        time.sleep(3)
+                    if shared_group or os.name != 'posix':
+                        process.kill()
+                    reap_owned(process, kill_group=not shared_group and os.name == 'posix')
                     raise ValueError("Workflow deadline exceeded or invocation interrupted")
                 if out.tell() > 1024 * 1024 or err.tell() > 1024 * 1024:
                     raise ValueError("Workflow output exceeds 1 MiB")
@@ -410,11 +455,13 @@ def invoke(lock, payload, project, timeout=30, dependencies=None, config=None, e
                 err.seek(0)
                 return code, out.read().decode('utf-8'), err.read().decode('utf-8')
             finally:
-                if not shared_group:
-                    try:
-                        os.killpg(process.pid, signal.SIGKILL)
-                    except ProcessLookupError:
-                        pass
+                if handles_term:
+                    signal.signal(signal.SIGTERM, previous_term)
+                    signal.signal(signal.SIGINT, previous_int)
+                if process is not None and process.returncode is None:
+                    if shared_group or os.name != 'posix':
+                        process.kill()
+                    reap_owned(process, kill_group=not shared_group and os.name == 'posix')
 
 
 def compile_workflow(source, entrypoint, cases, output=None, root=None, includes=(), profiles=(), dry_run=False,

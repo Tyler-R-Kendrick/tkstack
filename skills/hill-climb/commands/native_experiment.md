@@ -30,6 +30,7 @@ cli:
     operation: native_experiment
 run:
   artifact: scripts/workflow.lock.json
+  timeout_seconds: 86400
 ---
 
 # Native experiment

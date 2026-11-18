@@ -5,9 +5,11 @@ import json
 import os
 import sqlite3
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -137,6 +139,31 @@ class GepaAdapterTests(unittest.TestCase):
         state = json.loads(status.stdout)
         self.assertEqual(state["ledger"]["settled_trials"], value["evaluations"])
         self.assertEqual(state["integration"], self.base)
+        if os.name == 'posix':
+            started, release, escaped = (self.path / name for name in ('started', 'release', 'escaped'))
+            self.evaluator.write_text(
+                "import signal,time\nfrom pathlib import Path\n"
+                "signal.signal(signal.SIGTERM, signal.SIG_IGN)\n"
+                f"Path({str(started)!r}).touch()\n"
+                f"while not Path({str(release)!r}).exists(): time.sleep(.01)\n"
+                f"Path({str(escaped)!r}).touch()\n")
+            self.root = self.path / 'cancelled-experiment'
+            self.init()
+            self.command.write_text(json.dumps(self.request()))
+            process = subprocess.Popen([os.environ['TKSTACK_GEPA_PYTHON'], str(SCRIPT), '--request', str(self.command)],
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.addCleanup(lambda: process.kill() if process.poll() is None else None)
+            for _ in range(160):
+                if started.exists() or process.poll() is not None:
+                    break
+                time.sleep(.05)
+            self.assertTrue(started.exists(), 'GEPA evaluator did not start')
+            process.send_signal(signal.SIGTERM)
+            _, stderr = process.communicate(timeout=15)
+            self.assertEqual(process.returncode, 130, stderr)
+            release.touch()
+            time.sleep(1)
+            self.assertFalse(escaped.exists(), 'GEPA evaluator survived cancellation')
 
     @unittest.skipUnless(os.environ.get("TKSTACK_GEPA_PYTHON"), "set TKSTACK_GEPA_PYTHON for native GEPA")
     def test_missing_case_attestation_never_becomes_score(self):

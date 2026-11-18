@@ -6,7 +6,7 @@
     ],
     "exclude": [],
     "max_cases": 632,
-    "max_bytes": 700000,
+    "max_bytes": 710000,
     "reviews": ".constrain/reviews.json",
     "exceptions": [
       {
@@ -103,6 +103,11 @@
         "rule": "tests.constant-oracle",
         "path": "tests/test_experiment_integration.py:ExperimentIntegrationTests.test_same_tree_reuse_keeps_the_measured_commit_in_decision",
         "reason": "assert_call_fails checks the real controller exit for a tampered backend identity; the test also checks saved source provenance and promotion."
+      },
+      {
+        "rule": "tests.constant-oracle",
+        "path": "tests/test_experiment_lean.py:LeanLedgerBridgeTests.test_real_staged_launch_consults_checked_gate",
+        "reason": "The test observes real target execution and blocked marker creation; the helper call assertions verify which registered/cancelled state reached the proven gate."
       }
     ]
   },
@@ -115,7 +120,7 @@
         ],
         "exclude": [],
         "max_files": 54,
-        "max_bytes": 704000,
+        "max_bytes": 715000,
         "max_depth": 2,
         "reason": "Allow distinct reviewed regressions for timing coverage, concurrent dispatch, contextual duplicates, statistical decisions and evolution wiring."
       },
@@ -149,7 +154,7 @@
         ],
         "exclude": [],
         "max_files": 2,
-        "max_bytes": 43000,
+        "max_bytes": 44000,
         "max_depth": 2,
         "reason": "Keep one policy and per-suite review inventory, including the reviewed Evalify deadline and framework adapter tests."
       },

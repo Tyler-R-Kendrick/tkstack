@@ -55,7 +55,7 @@
       "name": "hill-climb",
       "source": "./skills/hill-climb",
       "description": "Run a bounded, evidence-driven improvement loop for code, prompts, skills, websites, or generated media. Use for an explicitly requested measured improvement loop or as an SDLC subworkflow for qualifying feature work with an observable quality difference. Freeze a sensitive evaluation, measure baseline noise, change one hypothesis at a time, keep or revert from evidence, and confirm the winner on untouched cases.",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "license": "MIT",
       "strict": false,
       "skills": [
@@ -110,7 +110,7 @@
       "name": "sdlc",
       "source": "./skills/sdlc",
       "description": "Run the BDD/contract lifecycle or scoped planning, architecture, verification, review, delivery, and handoff. Invoke only when the user explicitly asks for /sdlc or one of those modes. Coordinate durable SQLite task DAGs with fenced leases and explicit development-to-requirements/ADR revisions. Full mode retains sparse COW worktrees, independent evidence review, and squash-merged stacked PRs.",
-      "version": "0.5.1",
+      "version": "0.5.2",
       "license": "MIT",
       "strict": false,
       "skills": [

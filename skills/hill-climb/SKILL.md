@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Harness independent. Python 3.11+ for the optional offline comparison helper. Actual experiments require the project's runner and relevant runtime or media tools. Typed contract tools require Python 3.11+ and the managed command-schema runtime."
 metadata:
   author: Tyler Kendrick
-  version: "0.4.0"
+  version: "0.4.1"
   disable-model-invocation: "true"
 ---
 
@@ -35,6 +35,9 @@ harness. Use deterministic local tools for supporting checks.
 
 Improve an actual outcome through bounded attributable experiments. This skill
 does not start an experiment, spend money, or expand merge authority by existing.
+The invoking host agent carries out the loop using its existing tools and
+authorized context. Perform bounded rounds in the same conversation.
+Do not launch another agent runtime, provider or model.
 
 | Stage | Read before acting |
 | --- | --- |

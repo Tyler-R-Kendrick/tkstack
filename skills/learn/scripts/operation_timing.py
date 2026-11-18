@@ -30,11 +30,11 @@ def record(state, kind, name, timeout, elapsed, status, code, artifact):
         os.close(fd)
 
 
-def invoke(runner, lock, payload, project, timeout, dependencies, config, environment, state, kind, name):
+def invoke(runner, lock, payload, project, timeout, dependencies, config, environment, state, kind, name, max_timeout=300):
     start = time.monotonic()
     status, exit_code = 'error', None
     try:
-        result = runner(lock, payload, project, timeout, dependencies, config, environment=environment)
+        result = runner(lock, payload, project, timeout, dependencies, config, environment=environment, max_timeout=max_timeout)
         exit_code = result[0]
         status = 'pass' if exit_code == 0 else 'fail'
         return result

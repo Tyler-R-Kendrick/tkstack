@@ -37,7 +37,17 @@ OpenAI function-tool parameters, local nested paths/aliases/flags/defaults,
 and a verified artifact binding. CLI and Responses/Chat tool calls share input
 validation. Execution checks freshness and the exact command-to-lock binding,
 then runs frozen code in an isolated temporary session with a bounded deadline.
-`--timeout 1..300` defaults to 30 seconds. Workflow exits and output propagate.
+`--timeout 1..300` defaults to 30 seconds for ordinary commands. A reviewed,
+lock-bound command may declare a longer default and maximum, up to 86,400
+seconds; an explicit `--timeout` can select a shorter limit. Long-running
+commands receive SIGTERM before forced termination on POSIX, so a cooperating
+controller can stop its own child sessions. A hard kill or host crash cannot
+guarantee descendant cleanup. An extended-timeout command requires its own
+process group and fails explicitly inside another compiled workflow. Workflow
+exits and output propagate. POSIX commands require `waitid(WNOWAIT)` and the
+default SIGCHLD disposition; embedding hosts must not reap their children.
+Lost child ownership stops execution without signaling the former process ID;
+descendants may survive and require external process reconciliation.
 
 An explicitly selected compiled file uses the existing Codify JSON interface:
 

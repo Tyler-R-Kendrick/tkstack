@@ -149,3 +149,53 @@ release asset; it is a reproducibility pin, not an independent attestation.
 The checker also verifies the compiler identifies itself as Lean 4.19.0, commit
 `6caaee842e94`. The normal offline suite explicitly skips this bridge if
 `LEAN_BIN` is unavailable. The CI job always runs it.
+
+## Proposal attempt count
+
+The Lean `proposal_start_preserves` theorem proves that a successful fresh
+proposal admission cannot exceed its limit. `proposal_trace_preserves` proves
+by induction that any finite accepted sequence of fresh admissions and
+completions remains within the limit, from a state already within the limit.
+`proposal_finish_keeps_count` and
+`proposal_finish_does_not_restore_capacity` establish that completion neither
+refunds the attempt nor reopens exhausted capacity. The proof covers all natural
+numbers and all finite accepted action sequences. It assumes that the limit is
+immutable, each authorized fresh start consumes exactly one attempt, and the
+check and increment are one atomic transition. It does not prove external host
+execution, cancellation truthfulness, token spending, isolation, database
+implementation, or unique-key enforcement.
+
+The Lean oracle also emits 14 cases spanning proposal limits one through four
+and each valid prior attempt count. The SQLite bridge creates mixed host and
+scripted proposal histories, marks host responses uncertain, finishes host
+proposals, cancels scripted reservations, checks that none refund attempts,
+and tests a fresh host admission against the Lean result. It also checks that a
+host admission grants dispatch once and that reusing its key does not grant
+another. The bridge reads the durable count directly from SQLite. A mutation
+changing the real proposal guard from `>=` to `>` must fail this check. Another
+mutation replaces the sequence theorem with an axiom, which the checker must
+reject. These are finite implementation-correspondence tests, not a proof of
+SQLite concurrency; the separate simultaneous-dispatch test exercises that
+boundary. Host model token usage remains reported by the host or unknown and is
+not covered by the local token-budget theorem.
+
+## Launch admission
+
+`launch_requires_registration` and `launch_respects_cancellation` prove the
+Boolean admission decision cannot grant a launch unless the process identity is
+registered and the cancellation flag is clear. The production POSIX launch
+path invokes `launch_permitted` with an identity check and the current flag
+while holding the cancellation-scope lock, immediately before writing the
+staged child permit. The bridge checks all four Boolean inputs against the
+checked Lean definition and detects mutations that ignore either input.
+
+A real staged-process integration test observes the registered, uncancelled
+inputs and confirms that replacing the production predicate with a denial
+prevents the target from running. It also observes the registered, cancelled
+inputs after pre-cancellation. Those tests establish that the helper participates
+in the tested path. They do not prove all Python interleavings, lock behavior,
+process identity reuse, signal delivery, reaping, host crashes, nested scopes,
+remote jobs, or detached descendants. Those require the separate lifecycle,
+concurrency, and provider-boundary checks. The Lean theorem assumes the Boolean
+inputs faithfully represent state held under the shared lock and does not prove
+that the process is ultimately terminated.

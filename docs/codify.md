@@ -19,6 +19,9 @@ python3 skills/learn/skills/codify/scripts/codify.py run /repo/workflow/scripts/
 The executable lock contains exact code/resource bytes, hashes, source/case
 provenance, a native entrypoint, a no-inference declaration, and contract-check
 results. It is an authored deliverable that can be versioned with its source.
+Command authors can declare a reviewed, lock-bound execution timeout for work
+that needs more than the ordinary 30-second default. The command and native
+binding must use compatible bounds; see [runner deadlines](runner.md).
 Private staging and publication locks stay inside `.tkstack/` and are ignored.
 `check` and `compile --dry-run` remain read-only. The runner rejects stale inputs;
 it never silently compiles, forwards the Markdown to a model, or substitutes a

@@ -60,6 +60,68 @@ theorem overrun_blocks_reservation (s next : Budget) (held actual extra : Nat)
     simp [reserve, hover]
   next => simp at h
 
+-- A proposal is charged once when authorized, and completion never refunds it.
+def proposalStart (limit count : Nat) : Option Nat :=
+  if count < limit then some (count + 1) else none
+
+def proposalFinish (count : Nat) : Nat := count
+
+theorem proposal_start_preserves (limit count next : Nat)
+    (h : proposalStart limit count = some next) : next ≤ limit := by
+  unfold proposalStart at h
+  split at h
+  next hg =>
+    simp only [Option.some.injEq] at h
+    subst next
+    omega
+  next => simp at h
+
+theorem proposal_finish_keeps_count (count : Nat) : proposalFinish count = count := by
+  rfl
+
+theorem proposal_finish_does_not_restore_capacity (limit count : Nat)
+    (h : limit ≤ count) : proposalStart limit (proposalFinish count) = none := by
+  simp [proposalStart, proposalFinish, Nat.not_lt.mpr h]
+
+-- Boolean true models a fresh admission; false models completion. Failed starts
+-- are left out of an accepted trace. Duplicate keys and concurrency are external
+-- assumptions checked by the executable ledger bridge and concurrency tests.
+def proposalTrace (limit : Nat) : Nat → List Bool → Option Nat
+  | count, [] => some count
+  | count, true :: rest => (proposalStart limit count).bind (fun next => proposalTrace limit next rest)
+  | count, false :: rest => proposalTrace limit (proposalFinish count) rest
+
+theorem proposal_trace_preserves (limit count final : Nat) (actions : List Bool)
+    (initial : count ≤ limit) (result : proposalTrace limit count actions = some final) : final ≤ limit := by
+  induction actions generalizing count with
+  | nil =>
+    simp [proposalTrace] at result
+    omega
+  | cons action rest ih =>
+    cases action with
+    | false =>
+      simp only [proposalTrace, proposalFinish] at result
+      exact ih count initial result
+    | true =>
+      simp only [proposalTrace] at result
+      cases h : proposalStart limit count with
+      | none => simp [h] at result
+      | some next =>
+        simp [h] at result
+        exact ih next (proposal_start_preserves limit count next h) result
+
+-- The parent decides the child permit while holding the cancellation scope
+-- lock. Registered is an identity check against that scope's active mapping.
+def launchPermit (registered cancelled : Bool) : Bool := registered && !cancelled
+
+theorem launch_requires_registration (registered cancelled : Bool)
+    (h : launchPermit registered cancelled = true) : registered = true := by
+  cases registered <;> cases cancelled <;> simp_all [launchPermit]
+
+theorem launch_respects_cancellation (registered cancelled : Bool)
+    (h : launchPermit registered cancelled = true) : cancelled = false := by
+  cases registered <;> cases cancelled <;> simp_all [launchPermit]
+
 -- Produce concrete oracle rows directly from the definitions proved above.
 def boolBit (b : Bool) : Nat := if b then 1 else 0
 
@@ -77,6 +139,14 @@ def cases : Array String := Id.run do
             let s := Budget.mk limit held settled false
             let after := (settle s held actual).getD s
             out := out.push s!"S {limit} {held} {settled} {actual} {after.reserved} {after.settled} {boolBit after.overrun}"
+  for limit in [1:5] do
+    for count in [0:5] do
+      if count ≤ limit then
+        let started := (proposalStart limit count).isSome
+        out := out.push s!"P {limit} {count} {boolBit started} {proposalFinish count}"
+  for registered in #[false, true] do
+    for cancelled in #[false, true] do
+      out := out.push s!"L {boolBit registered} {boolBit cancelled} {boolBit (launchPermit registered cancelled)}"
   return out
 
 end ExperimentBudget

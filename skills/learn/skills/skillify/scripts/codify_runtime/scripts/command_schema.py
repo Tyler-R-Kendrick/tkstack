@@ -137,8 +137,10 @@ def validate_document(value):
             raise ValueError('Invalid CLI default: ' + name)
     if set(positionals) | set(flags) | set(defaults) != set(properties):
         raise ValueError('Every parameter needs a CLI binding or a default')
-    if not isinstance(run, dict) or (set(run) not in ({'artifact'}, {'skill'}) and run not in [{'builtin': name} for name in RESERVED]):
+    if not isinstance(run, dict) or (set(run) not in ({'artifact'}, {'artifact', 'timeout_seconds'}, {'skill'}) and run not in [{'builtin': name} for name in RESERVED]):
         raise ValueError('Run binds one artifact, a mounted subskill, or a reserved read-only builtin')
+    if 'timeout_seconds' in run and (type(run['timeout_seconds']) is not int or not 1 <= run['timeout_seconds'] <= 86400):
+        raise ValueError('Command timeout must be an integer from 1 to 86400 seconds')
     if 'skill' in run:
         argv = properties.get('argv', {})
         if ({key: value for key, value in schema.items() if key != 'description'} !=
@@ -360,7 +362,7 @@ def bound_lock(engine, directory, item):
     return lock
 
 
-def execute(engine, directory, argv=(), call=None, project=None, timeout=30, dependencies=None, config=None):
+def execute(engine, directory, argv=(), call=None, project=None, timeout=None, dependencies=None, config=None):
     root = directory.resolve(strict=True)
     items = catalog(root)
     identity = package_identity(root)
@@ -381,7 +383,12 @@ def execute(engine, directory, argv=(), call=None, project=None, timeout=30, dep
         # The subskill is a complete package: its own catalog, identity, and lock bind the call.
         return execute(engine, mounted(root, item['run']['skill']), payload['argv'], None, project, timeout, dependencies, config)
     lock = bound_lock(engine, root, item)
-    return engine.invoke(lock, payload, project or engine.project_root(), timeout, dependencies, config)
+    default = item['run'].get('timeout_seconds', 30)
+    effective = default if timeout is None else timeout
+    if 'timeout_seconds' in item['run']:
+        return engine.invoke(lock, payload, project or engine.project_root(), effective, dependencies, config,
+                             max_timeout=max(300, default))
+    return engine.invoke(lock, payload, project or engine.project_root(), effective, dependencies, config)
 
 
 def add_parsers(commands):
@@ -392,7 +399,7 @@ def add_parsers(commands):
     invoke.add_argument('directory', type=Path)
     invoke.add_argument('--call', help='Tool-call JSON file, or - for stdin; otherwise use -- <command> [args]')
     invoke.add_argument('--project', type=Path)
-    invoke.add_argument('--timeout', type=int, default=30)
+    invoke.add_argument('--timeout', type=int)
     invoke.add_argument('--dependencies', type=Path)
     # parse_known_args in the frontend preserves only tokens after an explicit --.
     return listing, invoke

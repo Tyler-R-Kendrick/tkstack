@@ -57,7 +57,7 @@ def check(root=ROOT, jobs=4):
         mounts = {item['cli']['path'][0]: item['run']['skill'] for item in commands if 'skill' in item['run']}
         if mounts != {child: 'skills/' + child for child in subskills(directory)}:
             raise ValueError('Every packaged subskill of ' + name + ' needs exactly one mount command')
-        if any(item['run'] != {'artifact': 'scripts/workflow.lock.json'} for item in commands
+        if any(item['run'].get('artifact') != 'scripts/workflow.lock.json' or set(item['run']) - {'artifact', 'timeout_seconds'} for item in commands
                if item['cli']['path'][0] not in ('help', 'version') and 'skill' not in item['run']):
             raise ValueError('Owned execution must use its reviewed shared artifact')
         skillify.codify.check(directory / 'scripts/workflow.lock.json')

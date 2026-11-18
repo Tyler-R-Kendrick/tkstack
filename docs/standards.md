@@ -61,8 +61,9 @@ See [installation, examples, and boundaries](principles.md).
   apply matching confirmed criteria with legitimate exceptions. Its `grade`
   mode is read-only. Pstack's prose-only rules remain `pstack-unslop`; `deslop`
   can assist with code cleanup. See [anti-slop review](unslop.md).
-- Use `hill-climb` for explicitly requested sustained optimization. Prove and
-  freeze a sensitive evaluation, measure noise, keep or revert one hypothesis,
+- Use `hill-climb` for explicitly requested sustained optimization and as the
+  measured SDLC subworkflow for qualifying feature work. Prove and freeze a
+  sensitive evaluation, measure noise, keep or revert one hypothesis,
   and confirm the winner on untouched cases. Quality and meaningful behavior
   remain gates when optimizing cost or speed. See [the workflow](hill-climb.md).
 - Use `learn` when the user corrects reasoning or expresses frustration. Capture

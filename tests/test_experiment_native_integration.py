@@ -1,7 +1,9 @@
 """Exercise the real native adapter through the strict Git experiment CLI."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
@@ -74,6 +76,84 @@ class NativeExperimentIntegrationTests(unittest.TestCase):
                                      'noise_floor': 0, 'deterministic': True},
                          max_trials=2, max_tokens=0, max_elapsed_seconds=max_elapsed_seconds)
 
+    def installed_runner(self):
+        subprocess.run([sys.executable, str(ROOT / 'scripts/install.py'), '--target',
+                        str(self.directory), '--harness', 'codex'], cwd=self.directory,
+                       capture_output=True, text=True, timeout=60, check=True)
+        return self.directory / '.tkstack/tkstack'
+
+    def skill_run(self, runner, *, timeout=None):
+        request = self.directory / 'skill-run.json'
+        request.write_text(json.dumps({'action': 'run', 'root': str(self.root), 'side': 'baseline',
+                                       'rep': 0, 'run_key': 'skill-run'}))
+        command = [str(runner), 'skills', 'hill-climb']
+        if timeout is not None:
+            command += ['--timeout', str(timeout)]
+        command += ['--', 'native', 'experiment', '--request', str(request)]
+        return subprocess.Popen(command, cwd=self.directory, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, text=True)
+
+    def set_command(self, command, timeout):
+        config = json.loads(self.config.read_text())
+        config.update(argv=[sys.executable, '-c', command], timeout_seconds=timeout)
+        self.config.write_text(json.dumps(config))
+
+    @unittest.skipUnless(os.environ.get('TKSTACK_SLOW_NATIVE_TIMEOUT') == '1',
+                         'set TKSTACK_SLOW_NATIVE_TIMEOUT=1 for the 62-second native timeout regression')
+    def test_installed_skill_allows_trial_past_old_wrapper_deadlines(self):
+        self.set_command("import time; time.sleep(62); print('Ran 1 test in 62s')", 70)
+        self.initialize(max_elapsed_seconds=120)
+        process = self.skill_run(self.installed_runner())
+        stdout, stderr = process.communicate(timeout=90)
+        self.assertEqual(process.returncode, 0, stderr)
+        self.assertEqual(json.loads(stdout)['result']['status'], 'passed')
+
+    def check_nested_cancellation(self, by_timeout):
+        started, release, escaped = (self.directory / name for name in ('started', 'release', 'escaped'))
+        command = ("from pathlib import Path\nimport time\n"
+                   f"Path({str(started)!r}).write_text('started')\n"
+                   f"p=Path({str(release)!r})\n"
+                   "while not p.exists(): time.sleep(0.01)\n"
+                   f"Path({str(escaped)!r}).write_text('escaped')\n")
+        self.set_command(command, 90)
+        self.initialize(max_elapsed_seconds=120)
+        process = self.skill_run(self.installed_runner(), timeout=4 if by_timeout else None)
+        self.addCleanup(lambda: process.kill() if process.poll() is None else None)
+        if not by_timeout:
+            for _ in range(120):
+                if started.exists() or process.poll() is not None:
+                    break
+                time.sleep(0.05)
+            self.assertTrue(started.exists(), 'native command did not start')
+            process.send_signal(signal.SIGTERM)
+        stdout, stderr = process.communicate(timeout=15)
+        self.assertNotEqual(process.returncode, 0, stdout)
+        self.assertIn('deadline exceeded' if by_timeout else 'interrupted', stderr)
+        self.assertTrue(started.exists())
+        release.write_text('release')
+        time.sleep(1)
+        return escaped.exists()
+
+    def check_timeout_limits(self):
+        runner = self.installed_runner()
+        result = subprocess.run([str(runner), 'skills', 'hill-climb', '--timeout', '301', '--', 'model'],
+                                cwd=self.directory, capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('1..300', result.stderr)
+        with self.assertRaisesRegex(AssertionError, 'cannot exceed 84600'):
+            self.initialize(max_elapsed_seconds=84601)
+        return self.root.exists()
+
+    @unittest.skipUnless(os.name == 'posix', 'SIGTERM requires POSIX')
+    def test_installed_cancellation_and_timeout_limits(self):
+        cases = (lambda: self.check_nested_cancellation(True), lambda: self.check_nested_cancellation(False),
+                 self.check_timeout_limits)
+        for index, check in enumerate(cases):
+            if index:
+                self.setUp()
+            with self.subTest(case=index):
+                self.assertFalse(check())
+
     def test_controller_deadline_terminates_native_command_descendants(self):
         started = self.directory / 'started'
         release = self.directory / 'release'
@@ -83,11 +163,7 @@ class NativeExperimentIntegrationTests(unittest.TestCase):
                    f"p=Path({str(release)!r})\n"
                    "while not p.exists(): time.sleep(0.01)\n"
                    f"Path({str(escaped)!r}).write_text('escaped')\n")
-        self.config.write_text(json.dumps({
-            'argv': [sys.executable, '-c', command],
-            'work_regex': r'Ran (?P<count>\d+) tests? in',
-            'gate': 'tests', 'metric': 'success', 'timeout_seconds': 10,
-        }))
+        self.set_command(command, 10)
         self.initialize(max_elapsed_seconds=3)
         result = self.call('run', side='baseline', rep=0, run_key='deadline')
         self.assertEqual(result['result']['status'], 'timeout')

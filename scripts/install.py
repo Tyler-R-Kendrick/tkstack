@@ -159,10 +159,8 @@ def prepare_aliases(root, profile="catalog"):
 
 def source_directories(root, kind, harness=None):
     lock = root / "sources.lock.json"
-    if lock.is_file():
-        sources = json.loads(lock.read_text())["sources"]
-    else:
-        sources = {path.name: {} for path in (root / "vendor").glob("*") if path.is_dir()}
+    sources = (json.loads(lock.read_text())["sources"] if lock.is_file() else
+               {path.name: {} for path in (root / "vendor").glob("*") if path.is_dir()})
     result = []
     for name, source in sorted(sources.items()):
         if kind == "skills" and source.get("skill_templates"):

@@ -153,8 +153,10 @@ def print(*args, **kwargs):
         for key, revision in (("cal-bad", self.base), ("cal-good", commit)):
             self.call("calibration-run", run_key=key, commit=revision, case=case,
                       case_file=config["case_files"][case]["path"], evaluator_file=str(grader), registry=registry)
-        return [{"id": "good", "run_key": "cal-good", "gate": "preserves", "expected": True},
-                {"id": "bad", "run_key": "cal-bad", "gate": "preserves", "expected": False}]
+        return [{"id": "good", "run_key": "cal-good", "gate": "preserves", "expected": True,
+                 "metrics": {"recovery": 3}},
+                {"id": "bad", "run_key": "cal-bad", "gate": "preserves", "expected": False,
+                 "metrics": {"recovery": 1}}]
 
     def test_confirmation_locks_winner_and_requires_disjoint_trials(self):
         frozen = self.confirmation_setup()
@@ -230,6 +232,7 @@ def print(*args, **kwargs):
                   counterexample="previously used", old_contract=current, new_contract=current, changes=["cases"])
         registry = {"check": {"argv": [sys.executable, str(self.grader), "{{case}}"], "cwd": "."}}
         calibration = self._calibration(self.grader, registry)
+        calibration = [{key: value for key, value in row.items() if key != "metrics"} for row in calibration]
         evaluation = {"cases": ["selection"], "repetitions": 1, "required_gates": ["submit"],
                       "candidate_only_gates": ["preserves"], "metric": "recovery", "direction": "higher",
                       "min_gain": 1, "noise_floor": 0, "deterministic": True}
@@ -237,7 +240,10 @@ def print(*args, **kwargs):
                     registry=registry, calibration=calibration, evaluation=evaluation)
         self.assert_call_fails("revise", **args, confirmation={"cases": ["holdout"], "repetitions": 1})
         self.assert_call_fails("revise", **args, confirmation={"cases": ["selection"], "repetitions": 1})
-        self.call("revise", **args, confirmation={"cases": ["fresh"], "repetitions": 1})
+        revised = self.call("revise", **args, confirmation={"cases": ["fresh"], "repetitions": 1})
+        self.assertEqual(revised["calibration"]["scope"], {"kind": "gate", "name": "preserves"})
+        self.assertTrue(revised["calibration"]["gate_qualified"])
+        self.assertFalse(revised["calibration"]["score_anchors_required"])
         self.call("run", side="baseline", rep=0, run_key="next-old")
 
     def test_revision_rechecks_case_binding(self):
@@ -822,14 +828,28 @@ def print(*args, **kwargs):
                            "metric": "recovery", "direction": "higher", "min_gain": 1,
                            "noise_floor": 0, "deterministic": True},
             "max_trials": 2, "max_tokens": 0})
-        request.write_text(json.dumps({"action": "init", "root": str(self.root), **prepared}))
-        result = subprocess.run([
-            sys.executable, str(ROOT / "skills/learn/skills/skillify/scripts/skillify.py"),
-            "invoke", str(ROOT / "skills/hill-climb"), "--",
-            "native", "experiment", "--request", str(request)],
-            text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue((self.root / "experiment.json").is_file())
+        def invoke(action, **fields):
+            request.write_text(json.dumps({"action": action, "root": str(self.root), **fields}))
+            result = subprocess.run([
+                sys.executable, str(ROOT / "skills/learn/skills/skillify/scripts/skillify.py"),
+                "invoke", str(ROOT / "skills/hill-climb"), "--",
+                "native", "experiment", "--request", str(request)],
+                text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            return json.loads(result.stdout)
+
+        invoke("init", **prepared)
+        arm = invoke("allocate", arm="host")
+        started = invoke("host-start", arm="host", run_key="host-work", expected=arm["identity"],
+                         host="active-host", worker="worker", hypothesis="preserve valid fields")
+        self.assertEqual(started["token_usage"], {"status": "unknown"})
+        (Path(arm["worktree"]) / "product.txt").write_text("preserves fields")
+        invoke("host-finish", run_key="host-work", outcome="frozen", message="host edit",
+               writers_stopped=True)
+        invoke("run", side="baseline", rep=0, run_key="old")
+        invoke("run", side="candidate", arm="host", rep=0, run_key="new")
+        result = invoke("compare", arm="host", baseline=["old"], candidate=["new"], decision="pick")
+        self.assertEqual(result["decision"], "eligible")
 
     def test_evaluator_drift_stops_execution(self):
         self.call("init", source=str(self.source), experiment="drift", base=self.base,

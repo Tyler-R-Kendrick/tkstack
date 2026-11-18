@@ -8,7 +8,7 @@
         },
         "docs/codify.md": {
           "mode": "100644",
-          "oid": "9b95133826fd709b049e93be229ddbd48110f1e0"
+          "oid": "f487dc5e683f7b4e49b3882ee8b87cea6e5d975c"
         },
         "docs/normalization.md": {
           "mode": "100644",
@@ -98,7 +98,7 @@
         },
         "skills/learn/skills/codify/references/command-definitions.md": {
           "mode": "100644",
-          "oid": "be502159dbd27471e7a6083f9f0dc42b4a61b83d"
+          "oid": "bb75fb317362eb27887e1428dfebd9f0fd09858f"
         },
         "skills/learn/skills/codify/references/commands.md": {
           "mode": "100644",
@@ -138,11 +138,11 @@
         },
         "skills/learn/skills/codify/scripts/codify.py": {
           "mode": "100644",
-          "oid": "d45ce7bc493bef7c486b29995f8cca479e2d72ad"
+          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
         },
         "skills/learn/skills/codify/scripts/command.schema.json": {
           "mode": "100644",
-          "oid": "0234063a31711ac594517303840e9ba46fda9c27"
+          "oid": "a2d74e87b46f3836b3de3550c72d97e36a91a0f8"
         },
         "skills/learn/skills/codify/scripts/command_manual.py": {
           "mode": "100644",
@@ -150,7 +150,7 @@
         },
         "skills/learn/skills/codify/scripts/command_schema.py": {
           "mode": "100644",
-          "oid": "b881c6f53a04f6ab4d683d0cee5108af061e6c1a"
+          "oid": "98bc4a12f854e0f0dc15418351a0a27d4cd616ee"
         },
         "skills/learn/skills/codify/scripts/contract.json": {
           "mode": "100644",
@@ -162,11 +162,11 @@
         },
         "skills/learn/skills/codify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "da483228ed2c9178c35353d1490be4a9ff762de9"
+          "oid": "0dba12bfc60d7a965b6ac599dd2b4c722b64731c"
         },
         "skills/learn/skills/codify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/codify/scripts/run.py": {
           "mode": "100644",
@@ -182,11 +182,11 @@
         },
         "skills/learn/skills/codify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "47d6b0c96329d213367100eba5a2e1654dc87d7d"
+          "oid": "43c5c90e8a375bae40b16280b2f5ffebe90e7279"
         },
         "skills/learn/skills/codify/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "3d33ce10cb465c3813b2e3b207ce305ce33c9d75"
+          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
         },
         "skills/learn/skills/codify/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -306,7 +306,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/references/command-definitions.md": {
           "mode": "100644",
-          "oid": "be502159dbd27471e7a6083f9f0dc42b4a61b83d"
+          "oid": "bb75fb317362eb27887e1428dfebd9f0fd09858f"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/requirements/requirements.in": {
           "mode": "100644",
@@ -318,11 +318,11 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/codify.py": {
           "mode": "100644",
-          "oid": "d45ce7bc493bef7c486b29995f8cca479e2d72ad"
+          "oid": "02ea26bdec330e0a938f654cd04025ad06928aa2"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command.schema.json": {
           "mode": "100644",
-          "oid": "0234063a31711ac594517303840e9ba46fda9c27"
+          "oid": "a2d74e87b46f3836b3de3550c72d97e36a91a0f8"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command_manual.py": {
           "mode": "100644",
@@ -330,7 +330,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/command_schema.py": {
           "mode": "100644",
-          "oid": "b881c6f53a04f6ab4d683d0cee5108af061e6c1a"
+          "oid": "98bc4a12f854e0f0dc15418351a0a27d4cd616ee"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/json_contract.py": {
           "mode": "100644",
@@ -338,7 +338,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/tkstack_state.py": {
           "mode": "100644",
@@ -346,7 +346,7 @@
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/scripts/workflow_authoring.py": {
           "mode": "100644",
-          "oid": "3d33ce10cb465c3813b2e3b207ce305ce33c9d75"
+          "oid": "4613ae3f76555bad6248b5d1ddc41fdc2bb9cb72"
         },
         "skills/learn/skills/skillify/scripts/codify_runtime/templates/commands/help.md.tmpl": {
           "mode": "100644",
@@ -382,11 +382,11 @@
         },
         "skills/learn/skills/skillify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "8b25e4a512a6d2f93f845f999f21185e9146bcd4"
+          "oid": "06dbbd0c86d6ddca92b9650a8cd1d503f7b3d79a"
         },
         "skills/learn/skills/skillify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/skillify/scripts/run.py": {
           "mode": "100644",
@@ -394,7 +394,7 @@
         },
         "skills/learn/skills/skillify/scripts/skill_normalize.py": {
           "mode": "100644",
-          "oid": "6410661858df25811830ff4667d5460d913d6d18"
+          "oid": "6da08505122245db8a08f7f70c28987cde41c0a9"
         },
         "skills/learn/skills/skillify/scripts/skillify.py": {
           "mode": "100644",
@@ -414,7 +414,7 @@
         },
         "skills/learn/skills/skillify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "3115fba208366eaffa8f114972da041058dcba00"
+          "oid": "01702f9ebcb4c8034a8b9e756cfcb3e0df2400aa"
         },
         "skills/learn/skills/skillify/templates/SKILL.md.tmpl": {
           "mode": "100644",
@@ -434,7 +434,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the invoking-agent-only model boundary, deterministic calibration library, removed alternate harnesses, and changed regression suites."
+      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
     },
     "catalog": {
       "docs": {
@@ -444,7 +444,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/harnesses.md": {
           "mode": "100644",
@@ -470,7 +470,7 @@
       "inputs": {
         ".claude-plugin/marketplace.json": {
           "mode": "100644",
-          "oid": "eeace4543af3b4f59c61f5b91a5292686b0f4821"
+          "oid": "2026b1cfc4cb7dd9cae943023f72430bbda9ee8e"
         },
         ".claude-plugin/plugin.json": {
           "mode": "100644",
@@ -518,7 +518,7 @@
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the invoking-agent-only model boundary, deterministic calibration library, removed alternate harnesses, and changed regression suites."
+      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
     },
     "documentation": {
       "docs": {
@@ -534,11 +534,11 @@
       "inputs": {
         ".constrain/config.json": {
           "mode": "100644",
-          "oid": "212cbc40f228ef2ceb3967dd7bf3cc687f8251ab"
+          "oid": "b3ee24a52525c1ba085ddbb23f4a49c74ca9f894"
         },
         ".constrain/reviews.json": {
           "mode": "100644",
-          "oid": "4410210d97f8b3d6c9c07ae3572770840d7a1971"
+          "oid": "b0bc8b590946bec45cd563b9efd4b4607074a779"
         },
         ".githooks/pre-commit": {
           "mode": "100755",
@@ -575,7 +575,7 @@
         },
         "tests/test_codify.py": {
           "mode": "100644",
-          "oid": "1732483ee58c32b20534e5974cd62d462e690425"
+          "oid": "525111c249b2da3d6df55c4c3e1da8c9ea5e1cff"
         },
         "tests/test_command_schema.py": {
           "mode": "100644",
@@ -599,7 +599,7 @@
         },
         "tests/test_experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "ddc16ffe6c8dbfed27965ebe7205561684de85ba"
+          "oid": "8be4cc6f75d17be85905661466c17e74a69dc0e5"
         },
         "tests/test_experiment_factory.py": {
           "mode": "100644",
@@ -607,7 +607,7 @@
         },
         "tests/test_experiment_gepa.py": {
           "mode": "100644",
-          "oid": "dcbd199056eb03858ed818c7d8b7e6f51c8a9989"
+          "oid": "d0c42f1ae10c69f43192db4e01127df190061e07"
         },
         "tests/test_experiment_git.py": {
           "mode": "100644",
@@ -619,15 +619,15 @@
         },
         "tests/test_experiment_integration.py": {
           "mode": "100644",
-          "oid": "29bc166b8dbe01b72ca4ad65d878cbc22f48afe8"
+          "oid": "40379ae31aa2f34bd5d79300a5e86dc2555bfe1b"
         },
         "tests/test_experiment_integrity.py": {
           "mode": "100644",
-          "oid": "f5329b4a48c73c9d81c0c14cbd13524652ecd315"
+          "oid": "a3ec47aa644ab705cb55481428892148627b70ca"
         },
         "tests/test_experiment_lean.py": {
           "mode": "100644",
-          "oid": "e85fd954f7837d6cff46903cd2b67b0788351b34"
+          "oid": "14c757f154a2b923a83e936ff7985a621d98c9ab"
         },
         "tests/test_experiment_ledger.py": {
           "mode": "100644",
@@ -643,11 +643,11 @@
         },
         "tests/test_experiment_native_integration.py": {
           "mode": "100644",
-          "oid": "02f61dc3cd5b5d2f6f816a47a97599afc7844e40"
+          "oid": "1ea78ab7eb71f38e4678d208e34ba24f1b3af06f"
         },
         "tests/test_experiment_parallel.py": {
           "mode": "100644",
-          "oid": "f23dcef9871b6a27f9cae66e400e6b06b7edf411"
+          "oid": "b82a021adb4902902a24600baadf5525d60e7522"
         },
         "tests/test_experiment_process_isolation.py": {
           "mode": "100644",
@@ -663,11 +663,11 @@
         },
         "tests/test_experiment_proposer_integration.py": {
           "mode": "100644",
-          "oid": "64d014c17d0050c8d1f1eb8724e05a0d8e21ab26"
+          "oid": "b38ccb1cecb31cbf05f7980ae0a1950aa40e0db5"
         },
         "tests/test_experiment_runner.py": {
           "mode": "100644",
-          "oid": "7112783969e9fa9815ed84f4227eac500cd43f02"
+          "oid": "e7173477e0459984f0f5c26a28af819a62f1efd0"
         },
         "tests/test_flowify.py": {
           "mode": "100644",
@@ -758,8 +758,8 @@
           "oid": "d5ab7d99dbde01c10c88da7b952f8271d3f450d4"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed the invoking-agent-only model boundary, deterministic calibration library, removed alternate harnesses, and changed regression suites."
+      "no_doc_impact": true,
+      "reason": "Reviewed upstream behavioral tests and merged review records; the maintainer documentation already describes the applicable gates."
     },
     "execution": {
       "docs": {
@@ -773,7 +773,7 @@
         },
         "docs/runner.md": {
           "mode": "100644",
-          "oid": "073b31a0d75781596bc37930477f34ef9f61830c"
+          "oid": "f37747bd3c5a757eed1106afb9c07ed40eb6a2ff"
         }
       },
       "inputs": {
@@ -783,11 +783,11 @@
         },
         "src/tkstack.py": {
           "mode": "100755",
-          "oid": "e056fd70a08bafbc6edd6a06c04c9caecaecd42d"
+          "oid": "1268fa157614f2a8fc5a1a32e6f5a6f6c1b47f20"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the invoking-agent-only model boundary, deterministic calibration library, removed alternate harnesses, and changed regression suites."
+      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
     },
     "setup": {
       "docs": {
@@ -797,7 +797,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/bootstrap.md": {
           "mode": "100644",
@@ -812,7 +812,6 @@
           "oid": "3b0ab9824d8ad1650cb90bcdc24fdcf8f1bdc080"
         }
       },
-      "docs_refresh_reason": "Reviewed runner timing traces and deadline behavior, changed regression checks, and updated usage guidance",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -836,7 +835,7 @@
         },
         "scripts/install.py": {
           "mode": "100755",
-          "oid": "19c3885ecc25a19fc6bc2a92094afccab0954402"
+          "oid": "be4926b3062bbd0022c77e96fdb36e11ed79d038"
         },
         "scripts/target_setup.py": {
           "mode": "100644",
@@ -848,7 +847,7 @@
         },
         "src/check_skills.py": {
           "mode": "100644",
-          "oid": "8c0e61748e92e3653781b8f009e92e696bc437ba"
+          "oid": "e55cdcab75a0b0248a2e550953ffb6e72ee5fa5e"
         },
         "src/runner.json": {
           "mode": "100644",
@@ -863,8 +862,8 @@
           "oid": "f26cceac3e06795499ba4d1130f253e7851e558e"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed bootstrap and installation guidance; the README experiment link does not change installation."
+      "no_doc_impact": false,
+      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
     },
     "skills": {
       "docs": {
@@ -874,7 +873,7 @@
         },
         "docs/agent-plugins.md": {
           "mode": "100644",
-          "oid": "6bf1489113d6bd04239b7906ce3a6c6d17ef860f"
+          "oid": "1d420885a0cf6b582318daa8864e4ba446feacdc"
         },
         "docs/authoring.md": {
           "mode": "100644",
@@ -890,7 +889,7 @@
         },
         "docs/hill-climb.md": {
           "mode": "100644",
-          "oid": "217bf9c6b38026a55eba19db5626032095291541"
+          "oid": "36c355f2f69fac4bf58fbd78950fe31b1f2786a4"
         },
         "docs/integrations.md": {
           "mode": "100644",
@@ -934,7 +933,7 @@
         },
         "docs/standards.md": {
           "mode": "100644",
-          "oid": "f77b9254af7e32c32d4f083cb79367df5f5c9c48"
+          "oid": "264d84a365207202d741b095be174114b962c991"
         },
         "docs/state-layout.md": {
           "mode": "100644",
@@ -1192,11 +1191,11 @@
         },
         "skills/constrain/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "9277a4b35c968c7be241645a19e52a21cb238191"
+          "oid": "4c09186af8eb06c77aacd0da999749f8f5972656"
         },
         "skills/constrain/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/constrain/scripts/run.py": {
           "mode": "100644",
@@ -1212,7 +1211,7 @@
         },
         "skills/constrain/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "11289500b76b9f4909ae80770c2d3947aee8437f"
+          "oid": "1b9610fb82d29da44821aa570736a6b69ed18961"
         },
         "skills/document/LICENSE": {
           "mode": "100644",
@@ -1272,11 +1271,11 @@
         },
         "skills/document/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "9bc63859a963fdfe9cbf5d32da11657c08f146df"
+          "oid": "52e234497396b6e775eb5ea0602d282e332177e5"
         },
         "skills/document/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/document/scripts/run.py": {
           "mode": "100644",
@@ -1292,7 +1291,7 @@
         },
         "skills/document/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "fd92f01e27682255dd27bc323a91cf333d6e90a7"
+          "oid": "fdb4c4d16ab22b74210ed1cdc78ccac36a92ee6a"
         },
         "skills/hill-climb/LICENSE": {
           "mode": "100644",
@@ -1300,7 +1299,7 @@
         },
         "skills/hill-climb/SKILL.md": {
           "mode": "100644",
-          "oid": "41265edbbf30954d9676e440b6892be12a853521"
+          "oid": "f659251843a64e2fb8a1207f31d444858747eaef"
         },
         "skills/hill-climb/commands/help.md": {
           "mode": "100644",
@@ -1316,7 +1315,7 @@
         },
         "skills/hill-climb/commands/native_experiment.md": {
           "mode": "100644",
-          "oid": "27eda4c944e9272cec02330130758b7377f31c7d"
+          "oid": "dd821f361e4386c24ecfefc0c66757f2a55fea3b"
         },
         "skills/hill-climb/commands/verify.md": {
           "mode": "100644",
@@ -1328,7 +1327,7 @@
         },
         "skills/hill-climb/formal/Budget.lean": {
           "mode": "100644",
-          "oid": "a1546651afb03437a7715d6cfa0fd95b0864babf"
+          "oid": "d8ad9d0b3d140000f4ffc1c4f42b04e0678e2cda"
         },
         "skills/hill-climb/formal/Budget.tla": {
           "mode": "100644",
@@ -1360,11 +1359,11 @@
         },
         "skills/hill-climb/formal/README.md": {
           "mode": "100644",
-          "oid": "2974a4b076f5bf2a3f3eb54f6134f6bb6491cd6f"
+          "oid": "e27f1b57eea1c4011e75ff0a1ce31524faa7a105"
         },
         "skills/hill-climb/formal/lean_bridge.py": {
           "mode": "100644",
-          "oid": "80524757a94232a14090e7f3ccc39bfd85b4bc55"
+          "oid": "2536b96ce6171af1abc8bea76f6c50c18cb05006"
         },
         "skills/hill-climb/formal/model_check.py": {
           "mode": "100644",
@@ -1384,7 +1383,7 @@
         },
         "skills/hill-climb/references/git-experiments.md": {
           "mode": "100644",
-          "oid": "5cfd67924f59c2b8d4753888d2335b0af6c016e5"
+          "oid": "0f9acfb11f02b4ef44a2a5ac5920a00e0cddbb1f"
         },
         "skills/hill-climb/references/git-handoff.md": {
           "mode": "100644",
@@ -1412,11 +1411,11 @@
         },
         "skills/hill-climb/scripts/contract.json": {
           "mode": "100644",
-          "oid": "9d3e5b56ec66d1ad22011c6c518375cd614aaec8"
+          "oid": "a48afdf5b5509ba75de120507a88e4b4081b19f2"
         },
         "skills/hill-climb/scripts/experiment.py": {
           "mode": "100644",
-          "oid": "b54536293a122cf66b3810e65a7241f76243e791"
+          "oid": "54d5c31c352934ad9d06b1f30901ef4e121e3da2"
         },
         "skills/hill-climb/scripts/experiment_agent_arm.py": {
           "mode": "100644",
@@ -1424,11 +1423,11 @@
         },
         "skills/hill-climb/scripts/experiment_evaluate.py": {
           "mode": "100644",
-          "oid": "250ceb2b0ffa764efb04ae74860e815c36da3e3a"
+          "oid": "5d14bc571112fec8b6f9ed1938c31cecdec1377b"
         },
         "skills/hill-climb/scripts/experiment_gepa.py": {
           "mode": "100644",
-          "oid": "325955ac97cf014f6560582902318a9684eb4a6b"
+          "oid": "918696c6dc06f073b05700298c09a2c7e89df1a4"
         },
         "skills/hill-climb/scripts/experiment_git.py": {
           "mode": "100644",
@@ -1440,15 +1439,15 @@
         },
         "skills/hill-climb/scripts/experiment_ledger.py": {
           "mode": "100644",
-          "oid": "0bae84a431026234b80e1e5dcb3ee1baad0636f0"
+          "oid": "014969e901511dea6c681677e512c43d4c4fbe56"
         },
         "skills/hill-climb/scripts/experiment_native_check.py": {
           "mode": "100644",
-          "oid": "ce7c61a2333037c7cc9bc0ec5e2f089575be4b1e"
+          "oid": "92cf328d84cf4cc0df1021496a8ed6e269642063"
         },
         "skills/hill-climb/scripts/experiment_parallel.py": {
           "mode": "100644",
-          "oid": "8e6c9f9a94288a844216b27ed13365767b71ca48"
+          "oid": "d545808be5bf16dddd307060d8045199424b980c"
         },
         "skills/hill-climb/scripts/experiment_proposer.py": {
           "mode": "100644",
@@ -1460,7 +1459,7 @@
         },
         "skills/hill-climb/scripts/experiment_runner.py": {
           "mode": "100644",
-          "oid": "9d25397b6b03626c378afe8f4cd307cd1bf5be44"
+          "oid": "446a3968323252169ec1af54aead63c05823ba3d"
         },
         "skills/hill-climb/scripts/hill_climb.py": {
           "mode": "100644",
@@ -1472,11 +1471,11 @@
         },
         "skills/hill-climb/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "8751330509b0acfedb611153d975ab5e28f36b21"
+          "oid": "7b63531ed7393f8d5f6b28c9a52cc40ace0795b1"
         },
         "skills/hill-climb/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/hill-climb/scripts/requirements-gepa.lock": {
           "mode": "100644",
@@ -1496,7 +1495,7 @@
         },
         "skills/hill-climb/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "708ce0f4901682717c128318c939f664d4cac814"
+          "oid": "9e31b6cac237f6b6f3f2201ef6c8951ad029da3e"
         },
         "skills/hill-climb/templates/plan.json": {
           "mode": "100644",
@@ -1564,11 +1563,11 @@
         },
         "skills/investigate/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "b24eeec3a65f306d372aceb1b4f12cf8e9099cba"
+          "oid": "89ec15d454071534a3d318cf662de8bb2e7f2c8f"
         },
         "skills/investigate/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/investigate/scripts/run.py": {
           "mode": "100644",
@@ -1584,7 +1583,7 @@
         },
         "skills/investigate/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "3c63b51b2bb2cc64421e4930ebfaf44c53e8afd8"
+          "oid": "dfed569e0843d505d67f5588176ce38fa20f87b2"
         },
         "skills/learn/LICENSE": {
           "mode": "100644",
@@ -1724,15 +1723,15 @@
         },
         "skills/learn/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "a92a1f1b5c0545b3700b4ba265f4aaa98ba75b3a"
+          "oid": "aaebce74f0b8fb885f31a4e89860d5fb7020f119"
         },
         "skills/learn/scripts/operation_timing.py": {
           "mode": "100644",
-          "oid": "5bb6649e23b5e299710659b30338e0af18a202a0"
+          "oid": "3bea1d595e0a9dd046bb04cbf607c7368e9097d0"
         },
         "skills/learn/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/scripts/run.py": {
           "mode": "100644",
@@ -1752,7 +1751,7 @@
         },
         "skills/learn/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "91c30cc5e461afd4381f558d95c2f02913f53bcc"
+          "oid": "49f883355e12756540559770e1a07f765743875a"
         },
         "skills/learn/skills/evalify/LICENSE": {
           "mode": "100644",
@@ -1820,11 +1819,11 @@
         },
         "skills/learn/skills/evalify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "0eb2b11e8af54d8224fb30e7e25519438a604e14"
+          "oid": "dee418ec587d529870124277e92754454dfb7d67"
         },
         "skills/learn/skills/evalify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/evalify/scripts/run.py": {
           "mode": "100644",
@@ -1840,7 +1839,7 @@
         },
         "skills/learn/skills/evalify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "9fed701b585b41332ddedde12ad4e56b90ba8909"
+          "oid": "48bc28bbcc22b902762e986c5f6752da1d356f90"
         },
         "skills/learn/skills/flowify/LICENSE": {
           "mode": "100644",
@@ -1924,11 +1923,11 @@
         },
         "skills/learn/skills/flowify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "ee54ac93d9a96571e8407ac0d330a83dcb4dfb8c"
+          "oid": "5df0dd3c072766456d87e73726af364d851c5d81"
         },
         "skills/learn/skills/flowify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/flowify/scripts/run.py": {
           "mode": "100644",
@@ -1944,7 +1943,7 @@
         },
         "skills/learn/skills/flowify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "d0f3eff4cb819d73134693d568aca7e006bd9ee2"
+          "oid": "680eff6e687f5f391ebe0e43a35e33b5c0a6ede8"
         },
         "skills/learn/skills/flowify/templates/maf/README.md.tmpl": {
           "mode": "100644",
@@ -2076,11 +2075,11 @@
         },
         "skills/learn/skills/hookify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "6694d2f96b984ff946aac8367a69e8df0764da27"
+          "oid": "eadb6406fe38141edb9a1aac9fe35dd9b24f7a75"
         },
         "skills/learn/skills/hookify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/hookify/scripts/run.py": {
           "mode": "100644",
@@ -2096,7 +2095,7 @@
         },
         "skills/learn/skills/hookify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "577b7e596a63f37d3e445c2ccdc0420384c15ff4"
+          "oid": "22eb83950b06a2dd4ef5bd9a36717f59319fa8bd"
         },
         "skills/learn/skills/instructify/LICENSE": {
           "mode": "100644",
@@ -2180,11 +2179,11 @@
         },
         "skills/learn/skills/instructify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "dd41ffa60dbf7e2d4cfc1d61168fe5a0240e48ad"
+          "oid": "4970810a38bb75646a9b38cf43a20b517e76b651"
         },
         "skills/learn/skills/instructify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/instructify/scripts/run.py": {
           "mode": "100644",
@@ -2200,7 +2199,7 @@
         },
         "skills/learn/skills/instructify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "0bb3071129870a399fa94c7ce6b6cf27f931aed7"
+          "oid": "f873be5c8e770a869b4f9121e700a8011d3d2c76"
         },
         "skills/learn/skills/lintify/LICENSE": {
           "mode": "100644",
@@ -2272,11 +2271,11 @@
         },
         "skills/learn/skills/lintify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "9a3e76ff53414a83b8d2c3e45e5390424eebed22"
+          "oid": "0d5dce130bc300027e8d365091058cc0e2f46449"
         },
         "skills/learn/skills/lintify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/lintify/scripts/run.py": {
           "mode": "100644",
@@ -2292,7 +2291,7 @@
         },
         "skills/learn/skills/lintify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "9e66f51411cfef4659b6671f6423c0fe50f93298"
+          "oid": "a041c799cedec702872f956ec9513b023453004e"
         },
         "skills/learn/skills/lintify/templates/eslint/README.md": {
           "mode": "100644",
@@ -2468,11 +2467,11 @@
         },
         "skills/learn/skills/reusify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "5ce9c88fe3a9a9394a810aae8c76003c9f68e004"
+          "oid": "0a046c03f27131edfaf2b5a2eddcaa0e8457f58a"
         },
         "skills/learn/skills/reusify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/reusify/scripts/reusify.py": {
           "mode": "100644",
@@ -2492,7 +2491,7 @@
         },
         "skills/learn/skills/reusify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "f054fd986185cc8f1cd3b087c739e7014d711958"
+          "oid": "6af02408bb50987782d0259cd2af576991fb28a5"
         },
         "skills/learn/skills/testify/LICENSE": {
           "mode": "100644",
@@ -2556,11 +2555,11 @@
         },
         "skills/learn/skills/testify/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "6042abe0463a99d6256b781295bf0ce88468a479"
+          "oid": "4f8840e343ef7c25e03a47bcab21e1c4b2177ab5"
         },
         "skills/learn/skills/testify/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/learn/skills/testify/scripts/run.py": {
           "mode": "100644",
@@ -2580,7 +2579,7 @@
         },
         "skills/learn/skills/testify/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "b0126baf954c2e6b3f6adbf68245b181a6dd5e2a"
+          "oid": "e1d57b315ee17ba796192f5c9bd94603758078bd"
         },
         "skills/learn/templates/improvement.json": {
           "mode": "100644",
@@ -2596,7 +2595,7 @@
         },
         "skills/sdlc/SKILL.md": {
           "mode": "100644",
-          "oid": "00448ef584ba6adf96b936f7b3bbc483315f03bc"
+          "oid": "d820d1cd7424d2a12187fc952be2b5b870f86112"
         },
         "skills/sdlc/commands/claim.md": {
           "mode": "100644",
@@ -2692,7 +2691,7 @@
         },
         "skills/sdlc/references/measured-feature-work.md": {
           "mode": "100644",
-          "oid": "b53c554d325f78ac68dfb0110e6138eab13e25cf"
+          "oid": "7bf90c64c2644b9bb54c6e9df51bb4f247e4e039"
         },
         "skills/sdlc/references/operating-guide.md": {
           "mode": "100644",
@@ -2736,11 +2735,11 @@
         },
         "skills/sdlc/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "1c2601a444304e5bb9beaa3cd195dc7b0c3b94e9"
+          "oid": "411708d697836277959646dd9a5d6770a4f491d5"
         },
         "skills/sdlc/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/sdlc/scripts/routing_inventory.py": {
           "mode": "100644",
@@ -2772,7 +2771,7 @@
         },
         "skills/sdlc/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "e6091f7d8b317c1af659c6dbf2a6bb5651966eba"
+          "oid": "e02d69440ff8bfbb3f5df971b8d0051daf5ebc6d"
         },
         "skills/sdlc/templates/evidence-plan.json": {
           "mode": "100644",
@@ -2876,11 +2875,11 @@
         },
         "skills/tkstack-principles/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "c82117ddaaa71ce2f91aee6ecc60d07aeb0a6f54"
+          "oid": "1963c9522673d6ab8e37c43207a794d2e32b1fc6"
         },
         "skills/tkstack-principles/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/tkstack-principles/scripts/run.py": {
           "mode": "100644",
@@ -2896,7 +2895,7 @@
         },
         "skills/tkstack-principles/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "c28843f3cfeea4f18d184c9027c397f1251eedde"
+          "oid": "8d998fbff159aa16d9ca3f55968bb9474aa010ec"
         },
         "skills/unslop/LICENSE": {
           "mode": "100644",
@@ -2980,11 +2979,11 @@
         },
         "skills/unslop/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "6fbf26fdbd09d7ed014374981a8d61ca053f72ed"
+          "oid": "39b36bc9a53dffc13c80273e67fdf39e4c293a0b"
         },
         "skills/unslop/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/unslop/scripts/run.py": {
           "mode": "100644",
@@ -3004,7 +3003,7 @@
         },
         "skills/unslop/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "33eb13c313a9c2e08699fc0ff0ee201f03cda0bd"
+          "oid": "0fca31428f1c638afecc1f10b1ebf7945f30e549"
         },
         "skills/write/LICENSE": {
           "mode": "100644",
@@ -3060,11 +3059,11 @@
         },
         "skills/write/scripts/normalization.json": {
           "mode": "100644",
-          "oid": "76be825860b388fab7ea9ecf11b48afd8b75fc7f"
+          "oid": "0bd9fbecac3bf2c56484ff8340fdd85b4c4d5218"
         },
         "skills/write/scripts/package_runtime.py": {
           "mode": "100644",
-          "oid": "fe307d9a679989579514bfa26a86d3befec7d4fc"
+          "oid": "04a6bb2082d0c30391a018ac3835d859041d386e"
         },
         "skills/write/scripts/run.py": {
           "mode": "100644",
@@ -3080,11 +3079,11 @@
         },
         "skills/write/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "50cfb38aecebfabecba25f559603c4aed28a226f"
+          "oid": "bc1e0502b3e5714174539d67cf9040f03256b59a"
         }
       },
       "no_doc_impact": false,
-      "reason": "Reviewed the invoking-agent-only model boundary, deterministic calibration library, removed alternate harnesses, and changed regression suites."
+      "reason": "Reviewed upstream host accounting and deadline supervision together with the invoking-agent-only execution and evaluation boundary."
     }
   },
   "object_format": "sha1",

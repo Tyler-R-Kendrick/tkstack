@@ -122,6 +122,14 @@ to a contained, nonsymlinked lock path. There is no shell command binding.
 Parser usage errors exit 2; invalid metadata/arguments or stale bindings exit 1.
 Real execution uses the existing bounded deadline and isolated session runner.
 
+An artifact-bound command may declare `run.timeout_seconds` from 1 to 86,400.
+This reviewed value becomes its default and, when above 300, its maximum
+accepted explicit `--timeout`; all other commands keep the 30-second default
+and 300-second maximum. A smaller explicit timeout still applies. Long-command
+termination on POSIX first sends SIGTERM and allows a bounded cleanup grace;
+processes that detach sessions require their own cooperating supervisor. A hard
+kill or host failure is not covered by that grace.
+
 ## Mounted subskills
 
 A parent package can expose a packaged subskill as one subcommand with
