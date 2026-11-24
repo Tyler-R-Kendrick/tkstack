@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "files": [
+    "scripts/contract.json",
+    "scripts/json_contract.py",
+    "scripts/package_runtime.py",
+    "scripts/tkstack_state.py"
+  ]
+}

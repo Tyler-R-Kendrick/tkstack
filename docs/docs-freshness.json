@@ -2946,6 +2946,10 @@
           "mode": "100644",
           "oid": "7b12683b116ee4368438b1cffd77cf7c5d504954"
         },
+        "skills/tkstack-principles/scripts/lock-runtime.json": {
+          "mode": "100644",
+          "oid": "f8ecb5f17e0099f58f544ac65f7341e160a92ef0"
+        },
         "skills/tkstack-principles/scripts/normalization.json": {
           "mode": "100644",
           "oid": "1963c9522673d6ab8e37c43207a794d2e32b1fc6"
@@ -2968,7 +2972,7 @@
         },
         "skills/tkstack-principles/scripts/workflow.lock.json": {
           "mode": "100644",
-          "oid": "ed314424fac37eeb6c982119f7d4d8ce0248e532"
+          "oid": "10b96f8f9d791129d5e3e5075b7c7c1f59b7c055"
         },
         "skills/unslop/LICENSE": {
           "mode": "100644",
@@ -3163,8 +3167,8 @@
           "oid": "eedb5eeac337b0464b53436c21d9ed340743674c"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Document impacted-only test execution across principles, Cursor steering, AGENTS.md, and installed target instructions"
+      "no_doc_impact": true,
+      "reason": "Recompiled tkstack-principles workflow.lock.json and added lock-runtime.json after updating references/evidence-and-context.md in previous commit"
     }
   },
   "object_format": "sha1",
