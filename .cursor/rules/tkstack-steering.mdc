@@ -9,7 +9,9 @@ path is the installer's gitignored link to the tracked
 `skills/tkstack-principles/SKILL.md`. Prefer
 deterministic code/rules, then constrained decision models/APIs, then LLMs/agents.
 Design all code for bounded concurrency, explicit dependencies, isolated mutable
-state, and stable results. Serialize only for a concrete constraint.
+state, and stable results. Serialize only for a concrete constraint. Always run
+only tests related to your changes (file-scoped, package-scoped, or affected
+lanes) — never full unrelated suites unless explicitly requested.
 
 At task start and after a correction, read `.agents/steering/rules.md` in this
 project, falling back to `~/.agents/steering/rules.md`. That file is generated

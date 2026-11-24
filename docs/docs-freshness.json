@@ -494,7 +494,7 @@
         },
         ".cursor/rules/tkstack-steering.mdc": {
           "mode": "100644",
-          "oid": "9e5c8f3ab7b8330d5d6a101954dee0661d36307e"
+          "oid": "b1e15dcb3506ea938c366df81f12ad9298dcfe5b"
         },
         ".github/lever.yml": {
           "mode": "100644",
@@ -526,7 +526,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the scratch marketplace version update; catalog placement and published inventory are unchanged."
+      "reason": "Added standing impacted-only test rule to installed steering instructions, Cursor rule, and AGENTS.md without changing installer flags, catalog layout, or doc-check workflow"
     },
     "documentation": {
       "docs": {
@@ -555,7 +555,7 @@
         "AGENTS.md": {
           "mode": "100644",
           "normalized": "installer-steering-v1",
-          "oid": "5b24dd66c0c59c63719832a0118907e94bc456e4"
+          "oid": "944a5841128ba3ae677a78e31994bc166d1404a3"
         },
         "docs/docs-policy.json": {
           "mode": "100644",
@@ -771,7 +771,7 @@
         }
       },
       "no_doc_impact": true,
-      "reason": "Reviewed the documentation gate after integrating installer regression coverage and current main; maintenance behavior is unchanged."
+      "reason": "Added standing impacted-only test rule to installed steering instructions, Cursor rule, and AGENTS.md without changing installer flags, catalog layout, or doc-check workflow"
     },
     "execution": {
       "docs": {
@@ -825,7 +825,6 @@
           "oid": "2b4dcde222ae305c40f1dc685651cef3ee3fd3c5"
         }
       },
-      "docs_refresh_reason": "Reviewed compact workflow inventories and web-performance routing alongside updated SDLC verification guidance",
       "inputs": {
         ".devcontainer/devcontainer.json": {
           "mode": "100644",
@@ -853,7 +852,7 @@
         },
         "scripts/target_setup.py": {
           "mode": "100644",
-          "oid": "b6da89bd242f86dad69272a543998cd5ab142fc7"
+          "oid": "68289522c46825447c4f584c367f8d4bae289dc9"
         },
         "src/README.md": {
           "mode": "100644",
@@ -876,8 +875,8 @@
           "oid": "7cf7a807db4722209d13d6707a6126584c123cb1"
         }
       },
-      "no_doc_impact": false,
-      "reason": "Reviewed installation and bootstrap guidance for creation, checking and Git exclusion of the scratch workspace."
+      "no_doc_impact": true,
+      "reason": "Added standing impacted-only test rule to installed steering instructions, Cursor rule, and AGENTS.md without changing installer flags, catalog layout, or doc-check workflow"
     },
     "skills": {
       "docs": {
@@ -923,7 +922,7 @@
         },
         "docs/principles.md": {
           "mode": "100644",
-          "oid": "65fee1ae16faeca77ef3e7eb560b9d009c2354d6"
+          "oid": "87f4cb8e72b6c8a734198164baee2a11da57d38f"
         },
         "docs/reusify.md": {
           "mode": "100644",
@@ -2921,7 +2920,7 @@
         },
         "skills/tkstack-principles/references/evidence-and-context.md": {
           "mode": "100644",
-          "oid": "30ed7db46ad5ed18eb3d330aea327d522e27185b"
+          "oid": "734b94e88f2e56b568da1e90d6a41480ba697c12"
         },
         "skills/tkstack-principles/references/execution.md": {
           "mode": "100644",
@@ -3164,8 +3163,8 @@
           "oid": "eedb5eeac337b0464b53436c21d9ed340743674c"
         }
       },
-      "no_doc_impact": true,
-      "reason": "Reviewed scratch cleanup guidance after adding explicit symlink and direct-child checks; the state-layout guide already describes task-owned cleanup."
+      "no_doc_impact": false,
+      "reason": "Document impacted-only test execution across principles, Cursor steering, AGENTS.md, and installed target instructions"
     }
   },
   "object_format": "sha1",
