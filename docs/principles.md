@@ -20,7 +20,9 @@ structure while keeping this package independently owned and portable.
 4. [Interfaces and invariants](../skills/tkstack-principles/references/interfaces-and-invariants.md):
    design around actual callers, concentrated ownership, and meaningful seams.
 5. [Evidence and context](../skills/tkstack-principles/references/evidence-and-context.md):
-   verify actual outcomes and load detailed context only for its stated trigger.
+   verify actual outcomes by running only tests related to the changed files,
+   symbols, or packages (never full unrelated suites unless explicitly requested),
+   and load detailed context only for its stated trigger.
 
 The first two are explicit user preferences. The additional three are curated
 adaptations requested from the installed catalog; they are not invented user

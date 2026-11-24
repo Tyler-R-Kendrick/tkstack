@@ -8,7 +8,10 @@ and measured results.
 Use a reproduction or check that can disagree with the implementation. Confirm
 the intended path ran and captures contain meaningful work. Keep contradicted
 or inconclusive results explicit. A successful parser, agent summary, empty
-screenshot, or model consensus cannot replace the required observation.
+screenshot, or model consensus cannot replace the required observation. Always
+run only tests related to the changed files, symbols, or packages (file-scoped,
+package-scoped, or affected-only lanes) rather than full unrelated suites unless
+the user explicitly asks for a full sweep or a cross-cutting change requires it.
 
 Keep stable entrypoints concise. Each pointer names the condition that makes
 its referenced Markdown relevant. Read that material when the condition holds;
@@ -21,5 +24,6 @@ gets a later correction with its evidence; preserve the history needed for
 review. Avoid private transcript mining or fabricated progress.
 
 **Example:** attach matched rendered states and real provider contract results
-to a UI acceptance requirement. **Boundary:** a documentation-only change needs
+to a UI acceptance requirement, and run only the owning package or affected test
+files for a scoped edit. **Boundary:** a documentation-only change needs
 link/content review, not an unrelated browser suite or new measurement program.

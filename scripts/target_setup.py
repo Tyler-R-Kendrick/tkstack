@@ -43,6 +43,7 @@ def instruction_changes(root, target, harnesses, scope="project", remove=False, 
     helper = instructify(root)
     content = (
         'Read `.agents/principles/SKILL.md` and applicable references before designing changes.\n'
+        'Always run only tests related to your changes (file-scoped, package-scoped, or affected lanes) rather than full unrelated suites unless explicitly requested.\n'
         'Use the installed learn skill for corrections and the scratch skill for drafts, notes, and exploratory evaluations in a task-owned `.tkstack/.scratch/` directory. '
         'Never commit scratch; promote requested durable artifacts and clean up only your own finished task directory.\n'
         'When changing tests or repository structure, read the installed constrain skill. '
@@ -57,6 +58,7 @@ def instruction_changes(root, target, harnesses, scope="project", remove=False, 
         paths = {name: None for name in ("AGENTS.md", "CLAUDE.md")}
         home_body = (f"Read <{target / '.agents/principles/SKILL.md'}> and applicable references.\n"
                      f"Read matching learned rules in <{target / '.agents/steering/rules.md'}>.\n"
+                     "Always run only tests related to your changes (file-scoped, package-scoped, or affected lanes) rather than full unrelated suites unless explicitly requested.\n"
                      f"From the active project invoke `{shlex.quote(str(target / '.tkstack/tkstack'))} skills <name> -- <command>`. "
                      f"Bundled tool commands are in `{target / '.tkstack/bin'}`. "
                      "Use the scratch skill for task-owned drafts, notes and exploratory evaluations in the active project's ignored .tkstack/.scratch directory. "
